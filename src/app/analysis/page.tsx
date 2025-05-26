@@ -999,9 +999,19 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                             <div className="pt-2 border-t border-gray-200">
                               <button 
                                 onClick={() => {
-                                  if (cacheKey && confirm('Clear cached extraction data? Next optimization will be slower but fresh.')) {
-                                    localStorage.removeItem(cacheKey)
-                                    setCachedExtractionData(null)
+                                  if (cacheKey) {
+                                    showAlert({
+                                      title: "Clear Cache",
+                                      description: "Clear cached extraction data? Next optimization will be slower but fresh.",
+                                      type: "warning",
+                                      confirmText: "Clear Cache",
+                                      cancelText: "Keep Cache",
+                                      showCancel: true,
+                                      onConfirm: () => {
+                                        localStorage.removeItem(cacheKey)
+                                        setCachedExtractionData(null)
+                                      }
+                                    })
                                   }
                                 }}
                                 className="text-xs text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1 rounded transition-colors"
