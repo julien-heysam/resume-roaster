@@ -1,0 +1,306 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  name              String?
+  emailVerified     DateTime?
+  image             String?
+  hashedPassword    String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Subscription and billing
+  subscriptionTier  SubscriptionTier @default(FREE)
+  subscriptionId    String?
+  customerId        String? // Stripe customer ID
+  subscriptionEndsAt DateTime?
+  
+  // Usage tracking
+  monthlyRoasts     Int      @default(0)
+  totalRoasts       Int      @default(0)
+  lastRoastReset    DateTime @default(now())
+
+  // Relations
+  accounts          Account[]
+  sessions          Session[]
+  documents         Document[]
+  usageRecords      UsageRecord[]
+  invoices          Invoice[]
+  llmConversations  LLMConversation[]
+  sharedAnalyses    SharedAnalysis[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Document {
+  id              String   @id @default(cuid())
+  userId          String?  // Null for anonymous users
+  
+  // File information
+  filename        String
+  originalSize    Int
+  fileHash        String   @unique // SHA-256 hash to detect duplicates
+  mimeType        String
+  
+  // Extraction data
+  extractedText   String   @db.Text
+  wordCount       Int
+  pageCount       Int
+  aiProvider      String   // "anthropic" or "openai"
+  extractionCost  Float    @default(0) // Cost in USD
+  
+  // Metadata from AI
+  summary         String?  @db.Text
+  sections        String[] // JSON array of sections
+  
+  // Processing info
+  processedAt     DateTime @default(now())
+  processingTime  Int      // milliseconds
+  
+  // Relations
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  usageRecords    UsageRecord[]
+  llmConversations LLMConversation[]
+
+  @@index([fileHash])
+  @@index([userId])
+  @@map("documents")
+}
+
+model UsageRecord {
+  id          String      @id @default(cuid())
+  userId      String
+  documentId  String
+  action      UsageAction
+  cost        Float       @default(0) // Cost in USD
+  creditsUsed Int         @default(1)
+  createdAt   DateTime    @default(now())
+  
+  // Billing period
+  billingMonth String     // Format: "2025-01"
+  
+  // Relations
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document    Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([userId, billingMonth])
+  @@index([createdAt])
+  @@map("usage_records")
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  userId          String
+  
+  // Billing details
+  amount          Float         // Total amount in USD
+  currency        String        @default("USD")
+  status          InvoiceStatus @default(PENDING)
+  
+  // Billing period
+  billingPeriodStart DateTime
+  billingPeriodEnd   DateTime
+  
+  // Stripe integration
+  stripeInvoiceId    String?   @unique
+  stripePaymentId    String?
+  
+  // Metadata
+  itemCount       Int           // Number of roasts in this invoice
+  generatedAt     DateTime      @default(now())
+  paidAt          DateTime?
+  
+  // Relations
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("invoices")
+}
+
+model LLMConversation {
+  id              String   @id @default(cuid())
+  userId          String?  // Null for anonymous users
+  
+  // Conversation metadata
+  type            ConversationType // RESUME_ANALYSIS, JOB_EXTRACTION, COVER_LETTER, etc.
+  title           String?  // Optional title for the conversation
+  documentId      String?  // Related document if applicable
+  
+  // Provider and model info
+  provider        String   // "anthropic", "openai", etc.
+  model           String   // "claude-3-sonnet", "gpt-4", etc.
+  
+  // Costs and tokens
+  totalTokensUsed Int      @default(0)
+  totalCost       Float    @default(0) // Cost in USD
+  
+  // Timing
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  completedAt     DateTime?
+  
+  // Status
+  status          ConversationStatus @default(ACTIVE)
+  errorMessage    String?
+  
+  // Relations
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  messages        LLMMessage[]
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("llm_conversations")
+}
+
+model LLMMessage {
+  id              String   @id @default(cuid())
+  conversationId  String
+  
+  // Message content
+  role            MessageRole // USER, ASSISTANT, SYSTEM
+  content         String   @db.Text
+  
+  // Token usage for this specific message
+  inputTokens     Int?     // Tokens in the input
+  outputTokens    Int?     // Tokens in the output
+  totalTokens     Int?     // Total tokens for this message
+  
+  // Cost for this specific message
+  cost            Float    @default(0) // Cost in USD
+  
+  // Metadata
+  messageIndex    Int      // Order in conversation (0, 1, 2, ...)
+  processingTime  Int?     // Response time in milliseconds
+  
+  // AI-specific metadata
+  finishReason    String?  // "stop", "length", "content_filter", etc.
+  temperature     Float?   // Temperature used for generation
+  maxTokens       Int?     // Max tokens requested
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  
+  // Relations
+  conversation    LLMConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([createdAt])
+  @@unique([conversationId, messageIndex])
+  @@map("llm_messages")
+}
+
+model SharedAnalysis {
+  id            String   @id // Custom ID for sharing
+  userId        String
+  
+  // Analysis content
+  analysisData  String   @db.Text // JSON string of analysis results
+  settings      String?  @db.Text // JSON string of share settings
+  
+  // Sharing metadata
+  viewCount     Int      @default(0)
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("shared_analyses")
+}
+
+// Enums
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum UsageAction {
+  EXTRACT_PDF
+  ROAST_ANALYSIS
+  COVER_LETTER_GENERATION
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum ConversationType {
+  RESUME_ANALYSIS
+  JOB_EXTRACTION
+  COVER_LETTER_GENERATION
+  PDF_EXTRACTION
+  GENERAL_CHAT
+}
+
+enum ConversationStatus {
+  ACTIVE
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
