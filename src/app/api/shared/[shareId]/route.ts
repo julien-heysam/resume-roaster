@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/database'
 
-interface RouteParams {
-  params: {
+interface RouteContext {
+  params: Promise<{
     shareId: string
-  }
+  }>
 }
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const { shareId } = await params
+    const { shareId } = await context.params
 
     if (!shareId) {
       return NextResponse.json(
