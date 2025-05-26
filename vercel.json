@@ -8,12 +8,48 @@
     "NEXTAUTH_URL": "https://resume-roaster.vercel.app"
   },
   "functions": {
+    "src/app/api/analyze-resume/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "src/app/api/extract-pdf-ai/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "src/app/api/extract-job-description/route.ts": {
+      "maxDuration": 45,
+      "memory": 512
+    },
+    "src/app/api/generate-optimized-resume/route.ts": {
+      "maxDuration": 45,
+      "memory": 512
+    },
+    "src/app/api/extract-resume-data/route.ts": {
+      "maxDuration": 45,
+      "memory": 512
+    },
     "src/app/api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 512
     }
   },
   "regions": ["iad1"],
   "github": {
     "silent": true
-  }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ]
 } 
