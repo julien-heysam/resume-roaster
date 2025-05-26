@@ -1,13 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Flame, Zap, Target, FileCheck, ArrowRight, Upload, Loader, Menu, X, LogOut, User } from "lucide-react"
+import { Flame, Zap, Target, FileCheck, ArrowRight, Upload, Loader, Menu, X, LogOut, User, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileUpload } from "@/components/ui/file-upload"
 import { RoastLimitBanner } from "@/components/ui/roast-limit-banner"
 import { ExtractedTextPreview } from "@/components/ui/extracted-text-preview"
 import { AnalysisLoading } from "@/components/ui/analysis-loading"
+import { useAlertDialog } from "@/components/ui/alert-dialog"
 import { useRoastLimit } from "@/hooks/useRoastLimit"
 import { usePdfExtractionAI } from "@/hooks/usePdfExtractionAI"
 import { useRouter } from "next/navigation"
@@ -26,6 +27,7 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [analysisProgress, setAnalysisProgress] = useState(0)
   const { data: session, status } = useSession()
+  const { showAlert, AlertDialog } = useAlertDialog()
   
   const { 
     roastCount, 
@@ -72,6 +74,11 @@ export default function Home() {
       icon: <FileCheck className="h-8 w-8 text-green-500" />,
       title: "ATS-Friendly Format",
       description: "Ensure your resume passes through applicant tracking systems successfully."
+    },
+    {
+      icon: <Sparkles className="h-8 w-8 text-purple-500" />,
+      title: "Resume Optimizer",
+      description: "Generate ATS-optimized resumes tailored to specific job descriptions with professional templates."
     }
   ]
 
@@ -96,17 +103,31 @@ export default function Home() {
 
   const handleStartRoasting = async (resumeData: any, jobDescription: string) => {
     if (!resumeData) {
-      alert("Please upload a resume first!")
+      showAlert({
+        title: "Resume Required",
+        description: "Please upload a resume first!",
+        type: "warning"
+      })
       return
     }
 
     if (!canRoast) {
-      alert("You've reached your free roast limit. Please upgrade to continue!")
+      showAlert({
+        title: "Roast Limit Reached",
+        description: "You've reached your free roast limit. Please upgrade to continue!",
+        type: "warning",
+        confirmText: "Upgrade Now",
+        onConfirm: () => router.push('/pricing')
+      })
       return
     }
 
     if (!jobDescription.trim()) {
-      alert("Please provide a job description!")
+      showAlert({
+        title: "Job Description Required",
+        description: "Please provide a job description!",
+        type: "warning"
+      })
       return
     }
 
@@ -161,7 +182,11 @@ export default function Home() {
       }, 500)
     } catch (error) {
       console.error('Analysis error:', error)
-      alert(error instanceof Error ? error.message : 'Failed to analyze resume. Please try again.')
+      showAlert({
+        title: "Analysis Failed",
+        description: error instanceof Error ? error.message : 'Failed to analyze resume. Please try again.',
+        type: "error"
+      })
       
       // Reset to previous step on error
       setStep('extracted')
@@ -219,6 +244,9 @@ export default function Home() {
                   <Button variant="ghost" onClick={() => router.push('/dashboard')}>
                     Dashboard
                   </Button>
+                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
+                    Resume Optimizer
+                  </Button>
                   <Button variant="ghost" onClick={() => router.push('/pricing')}>
                     Pricing
                   </Button>
@@ -233,6 +261,9 @@ export default function Home() {
                       <DropdownMenuItem onClick={() => router.push('/dashboard')}>
                         Dashboard
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push('/resume-optimizer')}>
+                        Resume Optimizer
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => router.push('/pricing')}>
                         Pricing
                       </DropdownMenuItem>
@@ -246,6 +277,9 @@ export default function Home() {
                 </>
               ) : (
                 <>
+                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
+                    Resume Optimizer
+                  </Button>
                   <Button variant="ghost" onClick={() => router.push('/pricing')}>
                     Pricing
                   </Button>
@@ -277,6 +311,9 @@ export default function Home() {
                     <Button variant="ghost" className="justify-start" onClick={() => router.push('/dashboard')}>
                       Dashboard
                     </Button>
+                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/resume-optimizer')}>
+                      Resume Optimizer
+                    </Button>
                     <Button variant="ghost" className="justify-start" onClick={() => router.push('/pricing')}>
                       Pricing
                     </Button>
@@ -290,6 +327,9 @@ export default function Home() {
                   </>
                 ) : (
                   <>
+                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/resume-optimizer')}>
+                      Resume Optimizer
+                    </Button>
                     <Button variant="ghost" className="justify-start" onClick={() => router.push('/pricing')}>
                       Pricing
                     </Button>
@@ -406,7 +446,7 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
                 <CardHeader className="text-center pb-2">
@@ -495,6 +535,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      
+      {/* Alert Dialog */}
+      {AlertDialog}
     </div>
   )
 }

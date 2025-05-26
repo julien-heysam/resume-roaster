@@ -1,13 +1,34 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, Download, Share2, AlertTriangle, CheckCircle, XCircle, Zap } from "lucide-react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Separator } from "@/components/ui/separator"
+import { useAlertDialog } from "@/components/ui/alert-dialog"
+import { 
+  CheckCircle, 
+  AlertTriangle, 
+  AlertCircle, 
+  TrendingUp, 
+  Target, 
+  FileText, 
+  Zap,
+  ArrowRight,
+  Download,
+  Share2,
+  Sparkles,
+  Flame,
+  Crown,
+  Star,
+  XCircle
+} from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import Link from "next/link"
+import { ArrowLeft, ChevronDown, ChevronRight, Info } from "lucide-react"
 import { useAnalysisActions } from "@/hooks/useAnalysisActions"
 
 interface AnalysisData {
@@ -41,10 +62,297 @@ export default function AnalysisPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [resumeData, setResumeData] = useState<any>(null)
   const [jobDescription, setJobDescription] = useState<string | undefined>(undefined)
+  const [isGeneratingOptimized, setIsGeneratingOptimized] = useState(false)
+  const [cachedExtractionData, setCachedExtractionData] = useState<any>(null)
+  const [cacheKey, setCacheKey] = useState<string | null>(null)
+  const [isDebugExpanded, setIsDebugExpanded] = useState(false)
   
   const { downloadReport, shareAnalysis, isDownloading, isSharing } = useAnalysisActions()
+  const router = useRouter()
+  const { showAlert, AlertDialog } = useAlertDialog()
+
+  // Generate cache key based on analysis data and job description
+  const generateCacheKey = (analysis: AnalysisData, resume: any, jobDesc: string) => {
+    try {
+      // Simple hash function that works in all environments
+      const simpleHash = (str: string) => {
+        let hash = 0
+        if (str.length === 0) return hash.toString(36)
+        for (let i = 0; i < str.length; i++) {
+          const char = str.charCodeAt(i)
+          hash = ((hash << 5) - hash) + char
+          hash = hash & hash // Convert to 32bit integer
+        }
+        return Math.abs(hash).toString(36)
+      }
+
+      const analysisData = JSON.stringify({
+        score: analysis.overallScore,
+        strengths: analysis.strengths,
+        weaknesses: analysis.weaknesses,
+        suggestions: analysis.suggestions.map(s => s.solution),
+        keywords: analysis.keywordMatch
+      })
+      
+      const resumeText = typeof resume === 'string' ? resume.slice(0, 200) : 
+        (resume?.text || resume?.extractedText || '').slice(0, 200)
+      
+      const jobText = jobDesc.slice(0, 200)
+      
+      const analysisHash = simpleHash(analysisData)
+      const resumeHash = simpleHash(resumeText)
+      const jobHash = simpleHash(jobText)
+      
+      return `extraction_${analysisHash}_${resumeHash}_${jobHash}`
+    } catch (error) {
+      console.error('Failed to generate cache key:', error)
+      // Fallback to timestamp-based key
+      return `extraction_fallback_${Date.now()}`
+    }
+  }
+
+  // Load cached extraction data
+  const loadCachedExtraction = (key: string) => {
+    try {
+      const cached = localStorage.getItem(key)
+      if (cached) {
+        const parsedCache = JSON.parse(cached)
+        // Check if cache is not older than 24 hours
+        const cacheAge = Date.now() - parsedCache.timestamp
+        const maxAge = 24 * 60 * 60 * 1000 // 24 hours
+        
+        if (cacheAge < maxAge) {
+          return parsedCache.data
+        } else {
+          // Remove expired cache
+          localStorage.removeItem(key)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load cached extraction:', error)
+    }
+    return null
+  }
+
+  // Save extraction data to cache
+  const saveCachedExtraction = (key: string, data: any) => {
+    try {
+      const cacheData = {
+        data: data,
+        timestamp: Date.now(),
+        version: '1.0'
+      }
+      localStorage.setItem(key, JSON.stringify(cacheData))
+    } catch (error) {
+      console.error('Failed to save extraction to cache:', error)
+    }
+  }
+
+  // Clean up old cache entries to prevent localStorage bloat
+  const cleanupOldCaches = () => {
+    try {
+      const maxAge = 24 * 60 * 60 * 1000 // 24 hours
+      const keysToRemove: string[] = []
+      
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith('extraction_')) {
+          try {
+            const cached = localStorage.getItem(key)
+            if (cached) {
+              const parsedCache = JSON.parse(cached)
+              const cacheAge = Date.now() - parsedCache.timestamp
+              
+              if (cacheAge > maxAge) {
+                keysToRemove.push(key)
+              }
+            }
+          } catch (error) {
+            // If we can't parse it, it's probably corrupted, remove it
+            keysToRemove.push(key)
+          }
+        }
+      }
+      
+      keysToRemove.forEach(key => localStorage.removeItem(key))
+      
+      if (keysToRemove.length > 0) {
+        console.log(`Cleaned up ${keysToRemove.length} old extraction cache entries`)
+      }
+    } catch (error) {
+      console.error('Failed to cleanup old caches:', error)
+    }
+  }
+
+  // Handle generating optimized version
+  const handleGenerateOptimized = async () => {
+    // Check if we have analysis data
+    if (!analysisData) {
+      showAlert({
+        title: "Analysis Data Missing",
+        description: "Analysis data not available. Please try analyzing your resume again.",
+        type: "warning",
+        confirmText: "Go Back",
+        onConfirm: () => router.push('/')
+      })
+      return
+    }
+
+    // Check if we have resume data, if not, provide options
+    if (!resumeData) {
+      showAlert({
+        title: "Resume Text Not Found",
+        description: "Resume text not found in session. Would you like to go to Resume Optimizer and enter your details manually, or upload and analyze your resume first?",
+        type: "warning",
+        confirmText: "Go to Resume Optimizer",
+        cancelText: "Upload Resume First",
+        showCancel: true,
+        onConfirm: () => router.push('/resume-optimizer'),
+        onCancel: () => router.push('/')
+      })
+      return
+    }
+
+    setIsGeneratingOptimized(true)
+    
+    try {
+      // Prepare resume text - handle different possible formats
+      let resumeText = ''
+      if (typeof resumeData === 'string') {
+        resumeText = resumeData
+      } else if (resumeData.text) {
+        resumeText = resumeData.text
+      } else if (resumeData.extractedText) {
+        resumeText = resumeData.extractedText
+      } else if (resumeData.content) {
+        resumeText = resumeData.content
+      } else {
+        // If we still don't have text, create a basic structure from analysis
+        resumeText = `Resume Analysis Results:
+        
+Overall Score: ${analysisData.overallScore}/100
+Strengths: ${analysisData.strengths.join(', ')}
+Areas for Improvement: ${analysisData.weaknesses.join(', ')}
+
+Note: Original resume text was not available, using analysis data for optimization.`
+      }
+
+      // Generate cache key for this specific combination
+      const currentCacheKey = generateCacheKey(analysisData, resumeData, jobDescription || '')
+      
+      // Check if we have cached data for this exact combination
+      let extractedData = loadCachedExtraction(currentCacheKey)
+      
+      if (extractedData) {
+        console.log('Using cached extraction data - skipping AI processing')
+        
+        // Show user that we're using cached data
+        showAlert({
+          title: "🚀 Cached Data Found!",
+          description: "Found cached optimization data for this analysis! This will be much faster than re-processing. Would you like to use the cached data or re-process with AI?",
+          type: "info",
+          confirmText: "Use Cached Data (Instant)",
+          cancelText: "Re-process with AI",
+          showCancel: true,
+          onConfirm: () => {
+            // Continue with cached data
+            proceedWithExtractedData(extractedData)
+          },
+          onCancel: () => {
+            // User wants fresh processing, remove cache and continue
+            localStorage.removeItem(currentCacheKey)
+            proceedWithFreshExtraction(resumeText, currentCacheKey)
+          }
+        })
+        return
+      }
+      
+      // No cached data, proceed with fresh extraction
+      await proceedWithFreshExtraction(resumeText, currentCacheKey)
+      
+    } catch (error) {
+      console.error('Error generating optimized version:', error)
+      
+      // Provide more helpful error messages
+      let errorMessage = 'Failed to generate optimized version.'
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Authentication required')) {
+          errorMessage = 'Please sign in to use the AI optimization feature.'
+        } else if (error.message.includes('rate limit')) {
+          errorMessage = 'AI service is busy. Please try again in a few minutes.'
+        } else if (error.message.includes('API key')) {
+          errorMessage = 'AI service is temporarily unavailable. Please try again later.'
+        } else {
+          errorMessage = error.message
+        }
+      }
+      
+      showAlert({
+        title: "Optimization Failed",
+        description: `${errorMessage}\n\nWould you like to go to Resume Optimizer to enter your details manually instead?`,
+        type: "error",
+        confirmText: "Go to Resume Optimizer",
+        cancelText: "Try Again Later",
+        showCancel: true,
+        onConfirm: () => router.push('/resume-optimizer')
+      })
+    } finally {
+      setIsGeneratingOptimized(false)
+    }
+  }
+
+  // Helper function to proceed with extracted data
+  const proceedWithExtractedData = (extractedData: any) => {
+    console.log('Resume data ready:', extractedData)
+    
+    // Store the extracted data in session storage
+    sessionStorage.setItem('extractedResumeData', JSON.stringify(extractedData))
+    if (jobDescription) {
+      sessionStorage.setItem('analysisJobDescription', jobDescription)
+    }
+    
+    // Redirect to Resume Optimizer with prefilled parameter
+    router.push('/resume-optimizer?prefilled=true')
+  }
+
+  // Helper function to proceed with fresh extraction
+  const proceedWithFreshExtraction = async (resumeText: string, currentCacheKey: string) => {
+    console.log('No cached data found - running AI extraction...')
+    
+    // Call the extraction API
+    const response = await fetch('/api/extract-resume-data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        resumeText: resumeText,
+        analysisData: analysisData,
+        jobDescription: jobDescription || ''
+      }),
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to extract resume data')
+    }
+
+    const extractedData = result.data
+    
+    // Cache the result for future use
+    saveCachedExtraction(currentCacheKey, extractedData)
+    console.log('Extraction completed and cached for future use')
+    
+    // Proceed with the extracted data
+    proceedWithExtractedData(extractedData)
+  }
 
   useEffect(() => {
+    // Clean up old cache entries first
+    cleanupOldCaches()
+    
     // Load analysis results from sessionStorage
     const storedAnalysis = sessionStorage.getItem('analysisResults')
     const storedResumeData = sessionStorage.getItem('resumeData')
@@ -70,14 +378,69 @@ export default function AnalysisPage() {
         console.error('Failed to parse analysis results:', error)
         // Fall back to mock data if parsing fails
         setAnalysisData(getMockData())
+        // Also set mock resume data for demo purposes
+        if (!storedResumeData) {
+          setResumeData(getMockResumeData())
+        }
       }
     } else {
       // Use mock data if no real analysis is available
       setAnalysisData(getMockData())
+      // Also set mock resume data for demo purposes
+      if (!storedResumeData) {
+        setResumeData(getMockResumeData())
+      }
     }
     
     setIsLoading(false)
   }, [])
+
+  // Generate cache key when data is available
+  useEffect(() => {
+    if (analysisData && resumeData) {
+      const key = generateCacheKey(analysisData, resumeData, jobDescription || '')
+      setCacheKey(key)
+      
+      // Check if we have cached extraction data
+      const cached = loadCachedExtraction(key)
+      if (cached) {
+        setCachedExtractionData(cached)
+        console.log('Found cached extraction data for current analysis')
+      }
+    }
+  }, [analysisData, resumeData, jobDescription])
+
+  const getMockResumeData = () => ({
+    text: `John Doe
+Software Engineer
+john.doe@email.com | (555) 123-4567 | San Francisco, CA
+LinkedIn: linkedin.com/in/johndoe | GitHub: github.com/johndoe
+
+PROFESSIONAL SUMMARY
+Experienced software engineer with 5+ years developing web applications. Skilled in JavaScript, React, and Node.js. Looking for senior developer opportunities.
+
+EXPERIENCE
+Software Engineer | TechCorp Inc. | San Francisco, CA | 2020 - Present
+• Developed web applications using React and Node.js
+• Worked with team of 5 developers
+• Fixed bugs and implemented new features
+• Used Git for version control
+
+Junior Developer | StartupXYZ | San Francisco, CA | 2019 - 2020
+• Built websites using HTML, CSS, and JavaScript
+• Learned new technologies
+• Participated in code reviews
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of California, Berkeley | 2019
+GPA: 3.5
+
+SKILLS
+JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
+    extractedText: `John Doe - Software Engineer with 5+ years experience in web development using JavaScript, React, and Node.js. Currently at TechCorp Inc. developing applications and working with development teams.`,
+    fileName: 'demo-resume.pdf'
+  })
 
   const getMockData = (): AnalysisData => ({
     overallScore: 67,
@@ -537,9 +900,121 @@ export default function AnalysisPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button className="w-full" size="sm">
-                    Generate Optimized Version
+                  <Button 
+                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium" 
+                    size="sm" 
+                    onClick={handleGenerateOptimized}
+                    disabled={isGeneratingOptimized}
+                  >
+                    {isGeneratingOptimized ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Generating...
+                      </>
+                    ) : cachedExtractionData ? (
+                      <>
+                        <Zap className="h-4 w-4 mr-2" />
+                        Generate Optimized Version (Instant)
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="h-4 w-4 mr-2" />
+                        Generate Optimized Version
+                      </>
+                    )}
                   </Button>
+                  
+                  {/* Debug Panel */}
+                  <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+                    <button
+                      onClick={() => setIsDebugExpanded(!isDebugExpanded)}
+                      className="w-full px-3 py-2 flex items-center justify-between text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Info className="h-3 w-3" />
+                        <span>System Status</span>
+                        <div className="flex items-center space-x-1">
+                          <div className={`w-2 h-2 rounded-full ${
+                            analysisData && resumeData ? 'bg-green-500' : 'bg-yellow-500'
+                          }`}></div>
+                          <span className="text-gray-500">
+                            {cachedExtractionData ? 'Cached' : 'Ready'}
+                          </span>
+                        </div>
+                      </div>
+                      {isDebugExpanded ? (
+                        <ChevronDown className="h-3 w-3" />
+                      ) : (
+                        <ChevronRight className="h-3 w-3" />
+                      )}
+                    </button>
+                    
+                    {isDebugExpanded && (
+                      <div className="px-3 py-2 border-t border-gray-100 bg-gray-50/50">
+                        <div className="space-y-2">
+                          {/* Data Status Grid */}
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Analysis</span>
+                              <span className={`font-medium ${analysisData ? 'text-green-600' : 'text-red-600'}`}>
+                                {analysisData ? '✓' : '✗'}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Resume</span>
+                              <span className={`font-medium ${resumeData ? 'text-green-600' : 'text-red-600'}`}>
+                                {resumeData ? '✓' : '✗'}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Job Desc</span>
+                              <span className={`font-medium ${jobDescription ? 'text-green-600' : 'text-gray-400'}`}>
+                                {jobDescription ? '✓' : '○'}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Cache</span>
+                              <span className={`font-medium ${cachedExtractionData ? 'text-blue-600' : 'text-gray-400'}`}>
+                                {cachedExtractionData ? '⚡' : '○'}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {/* Resume Type */}
+                          {resumeData && (
+                            <div className="pt-2 border-t border-gray-200">
+                              <div className="text-xs text-gray-500">
+                                <span className="font-medium">Format:</span> {
+                                  typeof resumeData === 'string' ? 'Plain Text' : 
+                                  resumeData.text ? 'Structured (text)' : 
+                                  resumeData.extractedText ? 'Structured (extracted)' : 
+                                  'Unknown'
+                                }
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Cache Management */}
+                          {cacheKey && cachedExtractionData && (
+                            <div className="pt-2 border-t border-gray-200">
+                              <button 
+                                onClick={() => {
+                                  if (cacheKey && confirm('Clear cached extraction data? Next optimization will be slower but fresh.')) {
+                                    localStorage.removeItem(cacheKey)
+                                    setCachedExtractionData(null)
+                                  }
+                                }}
+                                className="text-xs text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1 rounded transition-colors"
+                              >
+                                Clear Cache
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
                   <Button variant="outline" className="w-full" size="sm">
                     Get Cover Letter
                   </Button>
@@ -573,6 +1048,9 @@ export default function AnalysisPage() {
           </div>
         </div>
       </div>
+      
+      {/* Alert Dialog */}
+      {AlertDialog}
     </div>
   )
 } 

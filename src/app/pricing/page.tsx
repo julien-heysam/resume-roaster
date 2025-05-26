@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { useAlertDialog } from "@/components/ui/alert-dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +21,7 @@ export default function PricingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { showAlert, AlertDialog } = useAlertDialog()
   
   const isAuthenticated = status === 'authenticated'
 
@@ -100,13 +102,18 @@ export default function PricingPage() {
   const handleUpgrade = (tier: string, price: number) => {
     if (tier === 'FREE') {
       // Redirect to signup
-      window.location.href = '/auth/signup'
+      router.push('/auth/signup')
     } else if (tier === 'ENTERPRISE') {
       // Contact sales
       window.open('mailto:sales@resumeroaster.com?subject=Enterprise Plan Inquiry')
     } else {
-      // Redirect to Stripe checkout (placeholder)
-      alert(`Redirecting to payment for ${tier} plan ($${price}/${billingCycle})...`)
+      // Show payment redirect alert
+      showAlert({
+        title: "Redirecting to Payment",
+        description: `Redirecting to payment for ${tier} plan ($${price}/${billingCycle})...`,
+        type: "info",
+        confirmText: "Continue"
+      })
       // In real implementation: redirect to Stripe
     }
   }
@@ -134,6 +141,9 @@ export default function PricingPage() {
                   <Button variant="ghost" onClick={() => router.push('/dashboard')}>
                     Dashboard
                   </Button>
+                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
+                    Resume Optimizer
+                  </Button>
                   <span className="text-orange-500 font-medium">Pricing</span>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -145,6 +155,9 @@ export default function PricingPage() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => router.push('/dashboard')}>
                         Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push('/resume-optimizer')}>
+                        Resume Optimizer
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => router.push('/pricing')}>
                         Pricing
@@ -159,6 +172,9 @@ export default function PricingPage() {
                 </>
               ) : (
                 <>
+                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
+                    Resume Optimizer
+                  </Button>
                   <span className="text-orange-500 font-medium">Pricing</span>
                   <Button variant="outline" onClick={() => router.push('/auth/signin')}>
                     Sign In
@@ -191,6 +207,9 @@ export default function PricingPage() {
                     <Button variant="ghost" className="justify-start" onClick={() => router.push('/dashboard')}>
                       Dashboard
                     </Button>
+                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/resume-optimizer')}>
+                      Resume Optimizer
+                    </Button>
                     <div className="px-3 py-2 text-sm text-orange-500 font-medium">
                       Pricing
                     </div>
@@ -204,6 +223,9 @@ export default function PricingPage() {
                   </>
                 ) : (
                   <>
+                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/resume-optimizer')}>
+                      Resume Optimizer
+                    </Button>
                     <div className="px-3 py-2 text-sm text-orange-500 font-medium">
                       Pricing
                     </div>
@@ -460,6 +482,9 @@ export default function PricingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Alert Dialog */}
+      {AlertDialog}
     </div>
   )
 } 
