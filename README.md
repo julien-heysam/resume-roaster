@@ -9,7 +9,7 @@ Resume Roaster is a Next.js application that provides detailed, no-holds-barred 
 ## Features
 
 ### Core Analysis Engine
-- **Resume Upload**: Support for PDF, DOC, and DOCX files with drag-and-drop interface
+- **Resume Upload**: Support for PDF, DOC, TXT, and DOCX files with drag-and-drop interface
 - **Job Matching**: Paste job posting URLs or text for targeted analysis  
 - **Roast Score**: 0-100% compatibility rating with detailed breakdown
 - **Keyword Analysis**: Identifies missing skills and keywords from job requirements

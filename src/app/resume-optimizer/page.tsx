@@ -1,9 +1,10 @@
 import { ResumeOptimizer } from "@/components/ui/resume-optimizer"
+import { Footer } from "@/components/ui/footer"
 
 export default function ResumeOptimizerPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex flex-col">
+      <div className="container mx-auto px-4 py-8 flex-1">
         {/* Hero Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-full mb-6 shadow-lg">
@@ -18,9 +19,11 @@ export default function ResumeOptimizerPage() {
             Generate ATS-optimized resumes tailored to specific job descriptions with professional templates
           </p>
         </div>
+        
+        <ResumeOptimizer />
       </div>
       
-      <ResumeOptimizer />
+      <Footer />
     </div>
   )
 } 

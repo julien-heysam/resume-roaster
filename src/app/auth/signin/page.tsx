@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { useAlertDialog } from "@/components/ui/alert-dialog"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
@@ -18,6 +19,7 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const { showAlert, AlertDialog } = useAlertDialog()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -74,19 +76,21 @@ export default function SignInPage() {
   }
 
   const handleGoogleSignin = async () => {
-    try {
-      await signIn('google', { callbackUrl: '/' })
-    } catch (error) {
-      setErrors({ general: 'Failed to sign in with Google' })
-    }
+    showAlert({
+      title: "Feature Not Available",
+      description: "Google sign-in is not available yet. Please use the email and password form below to sign in to your account.",
+      type: "warning",
+      confirmText: "Got it"
+    })
   }
 
   const handleGithubSignin = async () => {
-    try {
-      await signIn('github', { callbackUrl: '/' })
-    } catch (error) {
-      setErrors({ general: 'Failed to sign in with GitHub' })
-    }
+    showAlert({
+      title: "Feature Not Available",
+      description: "GitHub sign-in is not available yet. Please use the email and password form below to sign in to your account.",
+      type: "warning", 
+      confirmText: "Got it"
+    })
   }
 
   return (
@@ -251,6 +255,9 @@ export default function SignInPage() {
                 </div>
               </div>
             </div>
+
+            {/* Alert Dialog */}
+            {AlertDialog}
           </CardContent>
         </Card>
 

@@ -10,9 +10,10 @@ import { ExtractedTextPreview } from "@/components/ui/extracted-text-preview"
 import { AnalysisLoading } from "@/components/ui/analysis-loading"
 import { useAlertDialog } from "@/components/ui/alert-dialog"
 import { useRoastLimit } from "@/hooks/useRoastLimit"
-import { usePdfExtractionAI } from "@/hooks/usePdfExtractionAI"
+import { useFileExtraction } from "@/hooks/useFileExtraction"
 import { useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
+import { Footer } from "@/components/ui/footer"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,13 +45,11 @@ export default function Home() {
     isExtracting,
     extractedData,
     error: extractionError,
-    summary,
-    sections,
-    currentProvider,
-    extractPdf,
-    switchProvider,
-    clearExtraction
-  } = usePdfExtractionAI()
+    extractFile,
+    clearExtraction,
+    retryExtraction,
+    getFileTypeInfo
+  } = useFileExtraction()
   
   const router = useRouter()
 
@@ -85,12 +84,10 @@ export default function Home() {
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file)
     
-    // Only extract PDF files automatically
-    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-      const extracted = await extractPdf(file, currentProvider)
-      if (extracted) {
-        setStep('extracted')
-      }
+    // Extract all supported file types automatically
+    const extracted = await extractFile(file, session?.user?.id)
+    if (extracted) {
+      setStep('extracted')
     }
   }
 
@@ -200,12 +197,8 @@ export default function Home() {
 
   const handleRetryExtraction = async () => {
     if (selectedFile) {
-      await extractPdf(selectedFile, currentProvider)
+      await retryExtraction(selectedFile, session?.user?.id)
     }
-  }
-
-  const handleProviderSwitch = (provider: 'anthropic' | 'openai') => {
-    switchProvider(provider)
   }
 
   if (isLoading) {
@@ -378,17 +371,20 @@ export default function Home() {
                     onFileSelect={handleFileSelect}
                     onFileRemove={handleFileRemove}
                     accept={{
-                      'application/pdf': ['.pdf']
+                      'application/pdf': ['.pdf'],
+                      'application/msword': ['.doc'],
+                      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+                      'text/plain': ['.txt']
                     }}
                   />
                   
                   {/* Extraction Loading */}
-                  {isExtracting && (
+                  {isExtracting && selectedFile && (
                     <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="flex items-center justify-center space-x-3">
                         <Loader className="h-5 w-5 animate-spin text-blue-500" />
                         <span className="text-blue-700">
-                          Extracting text using {currentProvider === 'anthropic' ? 'Local LLM' : 'Fine-tuned LLM'}...
+                          Extracting text from {getFileTypeInfo(selectedFile).type} file...
                         </span>
                       </div>
                     </div>
@@ -405,7 +401,7 @@ export default function Home() {
                           onClick={handleRetryExtraction}
                           disabled={!selectedFile}
                         >
-                          Retry with Claude
+                          Retry Extraction
                         </Button>
                       </div>
                     </div>
@@ -474,7 +470,7 @@ export default function Home() {
               Ready to Transform Your Resume?
             </h3>
             <p className="text-xl mb-8 opacity-90">
-              Join thousands of job seekers who've improved their interview rates with AI-powered Resume Roaster.
+              Join many job seekers who've improved their interview rates with AI-powered Resume Roaster.
             </p>
             <Button size="lg" variant="secondary" className="group" onClick={handleUpgrade}>
               <Upload className="mr-2 h-5 w-5" />
@@ -486,55 +482,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 bg-gray-900 text-white">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Flame className="h-6 w-6 text-orange-500" />
-                <span className="text-lg font-bold">Resume Roaster</span>
-              </div>
-              <p className="text-gray-400 text-sm">
-                Brutally honest AI-powered resume feedback that actually helps you get hired.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">How it Works</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Examples</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Connect</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Newsletter</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 Resume Roaster. All rights reserved. Get roasted responsibly. 🔥</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
       
       {/* Alert Dialog */}
       {AlertDialog}

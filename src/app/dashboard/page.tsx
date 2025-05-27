@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Footer } from '@/components/ui/footer'
 import { useAnalysisActions } from '@/hooks/useAnalysisActions'
 
 interface AnalysisHistoryItem {
@@ -211,7 +212,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex flex-col">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-orange-100">
         <div className="container mx-auto px-4 py-4">
@@ -241,7 +242,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 flex-1">
         {/* Stats Overview */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-200 shadow-lg">
@@ -598,6 +599,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   )
 } 

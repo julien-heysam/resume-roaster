@@ -30,6 +30,7 @@ import remarkGfm from 'remark-gfm'
 import Link from "next/link"
 import { ArrowLeft, ChevronDown, ChevronRight, Info } from "lucide-react"
 import { useAnalysisActions } from "@/hooks/useAnalysisActions"
+import { Footer } from "@/components/ui/footer"
 
 interface AnalysisData {
   overallScore: number
@@ -1061,6 +1062,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
       
       {/* Alert Dialog */}
       {AlertDialog}
+      <Footer />
     </div>
   )
 } 

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { useAlertDialog } from "@/components/ui/alert-dialog"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
@@ -20,6 +21,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const { showAlert, AlertDialog } = useAlertDialog()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -45,8 +47,8 @@ export default function SignUpPage() {
 
     if (!formData.password) {
       newErrors.password = 'Password is required'
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
+    } else if (formData.password.length < 5) {
+      newErrors.password = 'Password must be at least 5 characters'
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -106,19 +108,21 @@ export default function SignUpPage() {
   }
 
   const handleGoogleSignup = async () => {
-    try {
-      await signIn('google', { callbackUrl: '/' })
-    } catch (error) {
-      setErrors({ general: 'Failed to sign up with Google' })
-    }
+    showAlert({
+      title: "Feature Not Available",
+      description: "Google sign-up is not available yet. Please use the email registration form below to create your account.",
+      type: "warning",
+      confirmText: "Got it"
+    })
   }
 
   const handleGithubSignup = async () => {
-    try {
-      await signIn('github', { callbackUrl: '/' })
-    } catch (error) {
-      setErrors({ general: 'Failed to sign up with GitHub' })
-    }
+    showAlert({
+      title: "Feature Not Available", 
+      description: "GitHub sign-up is not available yet. Please use the email registration form below to create your account.",
+      type: "warning",
+      confirmText: "Got it"
+    })
   }
 
   return (
@@ -291,9 +295,9 @@ export default function SignUpPage() {
             {/* Terms */}
             <p className="text-xs text-gray-600 text-center">
               By creating an account, you agree to our{' '}
-              <a href="#" className="text-orange-500 hover:underline">Terms of Service</a>
+              <a href="/terms" className="text-orange-500 hover:underline">Terms of Service</a>
               {' '}and{' '}
-              <a href="#" className="text-orange-500 hover:underline">Privacy Policy</a>
+              <a href="/privacy" className="text-orange-500 hover:underline">Privacy Policy</a>
             </p>
 
             {/* Sign in link */}
@@ -318,6 +322,9 @@ export default function SignUpPage() {
                 </div>
               </div>
             </div>
+
+            {/* Alert Dialog */}
+            {AlertDialog}
           </CardContent>
         </Card>
 

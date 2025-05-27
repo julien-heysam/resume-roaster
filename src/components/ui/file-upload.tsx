@@ -22,7 +22,8 @@ export function FileUpload({
   accept = {
     'application/pdf': ['.pdf'],
     'application/msword': ['.doc'],
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+    'text/plain': ['.txt']
   },
   maxSize = 10 * 1024 * 1024, // 10MB
   className
@@ -80,7 +81,7 @@ export function FileUpload({
           {isDragActive ? "Drop your resume here" : "Upload your resume"}
         </p>
         <p className="mt-2 text-sm text-gray-500">
-          PDF, DOC, or DOCX files up to 10MB
+          PDF, DOC, TXT, or DOCX files up to 10MB
         </p>
         <p className="mt-1 text-xs text-gray-400">
           Click to browse or drag and drop
