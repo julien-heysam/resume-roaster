@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Flame, Zap, Target, FileCheck, ArrowRight, Upload, Loader, Menu, X, LogOut, User, Sparkles } from "lucide-react"
+import { Flame, Zap, Target, FileCheck, ArrowRight, Upload, Loader, Menu, X, LogOut, User, Sparkles, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileUpload } from "@/components/ui/file-upload"
@@ -451,6 +451,28 @@ export default function Home() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+          
+          {/* Demo Section */}
+          <div className="mt-16 text-center">
+            <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-8 max-w-2xl mx-auto">
+              <h4 className="text-2xl font-bold text-gray-900 mb-4">
+                See Our Resume Template in Action
+              </h4>
+              <p className="text-gray-600 mb-6">
+                Check out our professional resume template based on Julien Wuthrich's design - clean, ATS-optimized, and interview-ready.
+              </p>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="group border-orange-300 hover:bg-orange-50"
+                onClick={() => router.push('/demo')}
+              >
+                <Eye className="mr-2 h-5 w-5" />
+                View Template Demo
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
           </div>
         </div>
       </section>

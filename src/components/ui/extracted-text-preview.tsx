@@ -155,7 +155,7 @@ export function ExtractedTextPreview({
               </div>
             )}
             
-            <ScrollArea className="max-h-64 w-full">
+            <ScrollArea className={showFullText ? "w-full" : "max-h-64 w-full"}>
               <div className="prose prose-sm max-w-none">
                 <ReactMarkdown 
                   key={`${renderKey}-${data.text.length}`}

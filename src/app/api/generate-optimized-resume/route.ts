@@ -5,7 +5,7 @@ import {
   ResumeData, 
   getTemplateById, 
   optimizeResumeForJob,
-  resumeTemplates 
+  allTemplates 
 } from '@/lib/resume-templates'
 
 export async function POST(request: NextRequest) {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const { 
       resumeData, 
       jobDescription, 
-      templateId = 'modern-ats',
+      templateId = 'classic-professional',
       format = 'html' // 'html' or 'markdown'
     }: {
       resumeData: ResumeData
@@ -105,7 +105,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: {
-        templates: resumeTemplates.map(template => ({
+        templates: allTemplates.map(template => ({
           id: template.id,
           name: template.name,
           description: template.description,
