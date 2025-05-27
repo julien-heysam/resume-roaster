@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import { yourResumeTemplate } from "@/lib/resume-templates"
 import { julienWuthrichSampleData } from "@/lib/sample-resume-data"
+import { generatePDF, generateDOCX, downloadBlob } from "@/lib/document-generators"
 import Link from "next/link"
 
 export default function DemoPage() {
@@ -55,6 +56,26 @@ export default function DemoPage() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
+  }
+
+  const downloadPDF = async () => {
+    try {
+      const pdfBlob = await generatePDF(julienWuthrichSampleData, generateHTML())
+      downloadBlob(pdfBlob, 'julien-wuthrich-resume.pdf')
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+      alert('Failed to generate PDF. Please try again.')
+    }
+  }
+
+  const downloadDOCX = async () => {
+    try {
+      const docxBlob = await generateDOCX(julienWuthrichSampleData)
+      downloadBlob(docxBlob, 'julien-wuthrich-resume.docx')
+    } catch (error) {
+      console.error('Error generating DOCX:', error)
+      alert('Failed to generate DOCX. Please try again.')
+    }
   }
 
   return (
@@ -127,14 +148,22 @@ export default function DemoPage() {
                   </div>
                 </div>
                 
-                <div className="flex gap-2 mt-4">
-                  <Button onClick={downloadHTML} className="flex-1">
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  <Button onClick={downloadHTML} className="flex items-center justify-center">
                     <Download className="h-4 w-4 mr-2" />
-                    Download HTML
+                    HTML
                   </Button>
-                  <Button onClick={downloadMarkdown} variant="outline" className="flex-1">
+                  <Button onClick={downloadMarkdown} variant="outline" className="flex items-center justify-center">
                     <Download className="h-4 w-4 mr-2" />
-                    Download Markdown
+                    Markdown
+                  </Button>
+                  <Button onClick={downloadPDF} variant="outline" className="flex items-center justify-center border-green-200 text-green-600 hover:bg-green-50">
+                    <Download className="h-4 w-4 mr-2" />
+                    PDF
+                  </Button>
+                  <Button onClick={downloadDOCX} variant="outline" className="flex items-center justify-center border-yellow-200 text-yellow-600 hover:bg-yellow-50">
+                    <Download className="h-4 w-4 mr-2" />
+                    DOCX
                   </Button>
                 </div>
               </CardContent>

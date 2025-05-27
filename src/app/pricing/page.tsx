@@ -73,7 +73,7 @@ export default function PricingPage() {
         "Analytics dashboard"
       ],
       limitations: [],
-      cta: "Contact Sales",
+      cta: "Upgrade to Enterprise",
       popular: false,
       tier: "ENTERPRISE"
     }
@@ -90,16 +90,18 @@ export default function PricingPage() {
       return
     }
 
-    if (tier === 'ENTERPRISE') {
-      // Handle enterprise contact
-      window.open('mailto:sales@resumeroaster.com?subject=Enterprise Plan Inquiry', '_blank')
-      return
-    }
-
     try {
-      const priceId = billingCycle === 'monthly' ? 
-        process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID : 
-        process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID
+      let priceId: string | undefined
+
+      if (tier === 'PRO') {
+        priceId = billingCycle === 'monthly' ? 
+          process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID : 
+          process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID
+      } else if (tier === 'ENTERPRISE') {
+        priceId = billingCycle === 'monthly' ? 
+          process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID : 
+          process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_YEARLY_PRICE_ID
+      }
 
       if (!priceId) {
         throw new Error('Price ID not configured')

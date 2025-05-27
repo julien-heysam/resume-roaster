@@ -15,6 +15,13 @@ Resume Roaster is a Next.js application that provides detailed, no-holds-barred 
 - **Keyword Analysis**: Identifies missing skills and keywords from job requirements
 - **ATS Optimization**: Ensures resume passes applicant tracking systems
 
+### Resume Generation & Downloads
+- **Multiple Formats**: Download optimized resumes in HTML, PDF, DOC/DOCX, and ATS-friendly text formats
+- **Professional Templates**: Clean, ATS-optimized resume templates with modern styling
+- **AI-Powered Optimization**: Generate tailored resumes based on job descriptions
+- **Edit Mode**: Simple markdown-style editing for quick resume modifications
+- **Template Variety**: Choose from classic, modern, tech, creative, and executive templates
+
 ### Smart Feedback
 - **Brutally Honest Analysis**: No sugar-coating - honest feedback about weaknesses
 - **Strength Identification**: Highlights what's working well
@@ -36,6 +43,7 @@ Resume Roaster is a Next.js application that provides detailed, no-holds-barred 
 - **Styling**: Tailwind CSS with custom design system
 - **UI Components**: Radix UI primitives with custom styling
 - **File Upload**: React Dropzone for drag-and-drop functionality
+- **Document Generation**: jsPDF for PDF creation, docx for DOC/DOCX generation
 - **Icons**: Lucide React
 - **TypeScript**: Full type safety throughout
 

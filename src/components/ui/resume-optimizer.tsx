@@ -32,6 +32,7 @@ import {
   RefreshCw
 } from "lucide-react"
 import { ResumeData } from "@/lib/resume-templates"
+import { generatePDF, generateDOCX, downloadBlob } from "@/lib/document-generators"
 
 interface Template {
   id: string
@@ -656,6 +657,48 @@ export function ResumeOptimizer() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
+  }
+
+  const downloadAsPDF = async () => {
+    if (!generatedResume) return
+
+    try {
+      const pdfBlob = await generatePDF(resumeData, generatedResume.resume)
+      const fileName = resumeData.personalInfo.name 
+        ? `${resumeData.personalInfo.name.replace(/\s+/g, '_')}_Resume.pdf`
+        : 'Resume.pdf'
+      
+      downloadBlob(pdfBlob, fileName)
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+      showAlert({
+        title: "PDF Generation Failed",
+        description: "Failed to generate PDF. Please try again.",
+        type: "error",
+        confirmText: "OK"
+      })
+    }
+  }
+
+  const downloadAsDOCX = async () => {
+    if (!generatedResume) return
+
+    try {
+      const docxBlob = await generateDOCX(resumeData)
+      const fileName = resumeData.personalInfo.name 
+        ? `${resumeData.personalInfo.name.replace(/\s+/g, '_')}_Resume.docx`
+        : 'Resume.docx'
+      
+      downloadBlob(docxBlob, fileName)
+    } catch (error) {
+      console.error('Error generating DOCX:', error)
+      showAlert({
+        title: "DOCX Generation Failed",
+        description: "Failed to generate DOCX. Please try again.",
+        type: "error",
+        confirmText: "OK"
+      })
+    }
   }
 
   const addExperience = () => {
@@ -2410,13 +2453,29 @@ Leadership, Communication, Problem-solving, Team Management
                           <Download className="h-4 w-4" />
                           <span>Download HTML</span>
                         </Button>
-                        <Button 
+                        {/* <Button 
                           onClick={downloadAsText}
                           variant="outline"
                           className="flex items-center space-x-2 border-orange-200 text-orange-600 hover:bg-orange-50"
                         >
                           <Download className="h-4 w-4" />
                           <span>ATS Text</span>
+                        </Button> */}
+                        <Button 
+                          onClick={downloadAsPDF}
+                          variant="outline"
+                          className="flex items-center space-x-2 border-green-200 text-green-600 hover:bg-green-50"
+                        >
+                          <Download className="h-4 w-4" />
+                          <span>Download PDF</span>
+                        </Button>
+                        <Button 
+                          onClick={downloadAsDOCX}
+                          variant="outline"
+                          className="flex items-center space-x-2 border-yellow-200 text-yellow-600 hover:bg-yellow-50"
+                        >
+                          <Download className="h-4 w-4" />
+                          <span>Download DOCX</span>
                         </Button>
                       </div>
                       <Button 
