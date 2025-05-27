@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M16 2C16 2 10 6 10 12C10 15 12 17 14 18C13 16 14 14 16 14C18 14 19 16 18 18C20 17 22 15 22 12C22 6 16 2 16 2Z" fill="url(#flameGradient)"/>
+  <path d="M16 14C16 14 12 16 12 20C12 22 13 24 15 25C14 23 15 22 16 22C17 22 18 23 17 25C19 24 20 22 20 20C20 16 16 14 16 14Z" fill="url(#flameGradient)" opacity="0.8"/>
+  <path d="M16 22C16 22 14 23 14 25C14 26 15 27 16 27C17 27 18 26 18 25C18 23 16 22 16 22Z" fill="url(#flameGradient)" opacity="0.6"/>
+</svg> 

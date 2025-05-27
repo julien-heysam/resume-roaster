@@ -1,313 +1,260 @@
 "use client"
 
 import { useState } from "react"
-import { Flame, Check, Zap, Star, ArrowRight, CreditCard, User, LogOut, Menu, X } from "lucide-react"
+import { Check, Crown, Zap, Star, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useSession, signOut } from "next-auth/react"
+import { Switch } from "@/components/ui/switch"
+import { Navigation } from "@/components/ui/navigation"
 import { useRouter } from "next/navigation"
-import { useAlertDialog } from "@/components/ui/alert-dialog"
-import { StripeCheckout } from "@/components/stripe/StripeCheckout"
+import { useSession } from "next-auth/react"
+import { useSubscription } from "@/hooks/useSubscription"
 import { Footer } from "@/components/ui/footer"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { data: session, status } = useSession()
   const router = useRouter()
-  const { showAlert, AlertDialog } = useAlertDialog()
-  
-  const isAuthenticated = status === 'authenticated'
+  const { data: session } = useSession()
+  const { subscription, loading, createCheckoutSession } = useSubscription()
 
   const plans = [
     {
       name: "Free",
+      price: { monthly: 0, yearly: 0 },
       description: "Perfect for trying out Resume Roaster",
-      price: {
-        monthly: 0,
-        yearly: 0
-      },
       features: [
         "3 resume roasts per month",
-        "AI-powered PDF extraction",
-        "Basic markdown formatting",
-        "Claude 4 Sonnet analysis",
+        "Basic AI feedback",
+        "PDF/DOCX upload support",
+        "Markdown export",
         "Email support"
       ],
       limitations: [
-        "Limited to 3 roasts monthly",
-        "No document history",
-        "Basic analysis only"
+        "Limited roasts per month",
+        "Basic feedback only",
+        "No priority support"
       ],
-      buttonText: "Get Started Free",
+      cta: "Get Started",
       popular: false,
-      tier: "FREE" as const,
-      priceIds: {
-        monthly: "",
-        yearly: ""
-      }
+      tier: "FREE"
     },
     {
       name: "Pro",
-      description: "Best for active job seekers",
-      price: {
-        monthly: 9.99,
-        yearly: 99.99
-      },
+      price: { monthly: 9.99, yearly: 99.99 },
+      description: "For serious job seekers who want the best",
       features: [
-        "100 resume roasts per month",
-        "Document history",
-        "Priority AI processing",
-        "Advanced analysis insights",
-        "Cover letter generation",
-        "ATS optimization tips",
-        "Multiple resume versions",
+        "Unlimited resume roasts",
+        "Advanced AI analysis",
+        "Job-specific optimization",
+        "ATS compatibility check",
+        "Multiple export formats",
         "Priority email support",
-        "Download formatted resumes",
-        "Fine tuned AI models"
+        "Resume templates",
+        "Interview tips"
       ],
       limitations: [],
-      buttonText: "Upgrade to Pro",
+      cta: "Upgrade to Pro",
       popular: true,
-      tier: "PRO" as const,
-      priceIds: {
-        monthly: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID || "",
-        yearly: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID || ""
-      }
+      tier: "PRO"
     },
     {
       name: "Enterprise",
-      description: "For teams and career services",
-      price: {
-        monthly: 49.99,
-        yearly: 499.99
-      },
+      price: { monthly: 49.99, yearly: 499.99 },
+      description: "For teams and organizations",
       features: [
-        "Unlimited resume roasts",
-        "Team collaboration tools",
-        "API access",
+        "Everything in Pro",
+        "Team management",
+        "Bulk resume processing",
         "Custom branding",
-        "Bulk processing",
-        "Advanced analytics",
+        "API access",
+        "Dedicated support",
         "Custom integrations",
-        "Dedicated account manager",
-        "SLA guarantees",
-        "Custom AI training"
+        "Analytics dashboard"
       ],
       limitations: [],
-      buttonText: "Contact Sales",
+      cta: "Contact Sales",
       popular: false,
-      tier: "ENTERPRISE" as const,
-      priceIds: {
-        monthly: process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || "",
-        yearly: process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || ""
-      }
+      tier: "ENTERPRISE"
     }
   ]
 
+  const handleSubscribe = async (tier: string) => {
+    if (!session) {
+      router.push('/auth/signin')
+      return
+    }
+
+    if (tier === 'FREE') {
+      router.push('/')
+      return
+    }
+
+    if (tier === 'ENTERPRISE') {
+      // Handle enterprise contact
+      window.open('mailto:sales@resumeroaster.com?subject=Enterprise Plan Inquiry', '_blank')
+      return
+    }
+
+    try {
+      const priceId = billingCycle === 'monthly' ? 
+        process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID : 
+        process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID
+
+      if (!priceId) {
+        throw new Error('Price ID not configured')
+      }
+
+      await createCheckoutSession(priceId, tier, billingCycle)
+    } catch (error) {
+      console.error('Subscription error:', error)
+      // Handle error (show toast, etc.)
+    }
+  }
+
+  const getCurrentPlan = () => {
+    if (!subscription) return 'FREE'
+    return subscription.tier
+  }
+
+  const isCurrentPlan = (tier: string) => {
+    return getCurrentPlan() === tier
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-      {/* Header */}
-      <header className="border-b border-orange-100 bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Flame className="h-8 w-8 text-orange-500" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                Resume Roaster
-              </h1>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
-              <Button variant="ghost" onClick={() => router.push('/')}>
-                Home
-              </Button>
-              {isAuthenticated ? (
-                <>
-                  <Button variant="ghost" onClick={() => router.push('/dashboard')}>
-                    Dashboard
-                  </Button>
-                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
-                    Resume Optimizer
-                  </Button>
-                  <span className="text-orange-500 font-medium">Pricing</span>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <User className="h-4 w-4 mr-2" />
-                        {session?.user?.name || session?.user?.email}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => router.push('/dashboard')}>
-                        Dashboard
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push('/resume-optimizer')}>
-                        Resume Optimizer
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push('/pricing')}>
-                        Pricing
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push('/settings')}>
-                        Settings
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => signOut()}>
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Sign Out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <>
-                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
-                    Resume Optimizer
-                  </Button>
-                  <span className="text-orange-500 font-medium">Pricing</span>
-                  <Button variant="outline" onClick={() => router.push('/auth/signin')}>
-                    Sign In
-                  </Button>
-                </>
-              )}
-            </div>
-            
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-              </Button>
-            </div>
-          </div>
-          
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t border-orange-100">
-              <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="ghost" onClick={() => router.push('/')} className="justify-start">
-                  Home
-                </Button>
-                {isAuthenticated ? (
-                  <>
-                    <Button variant="ghost" onClick={() => router.push('/dashboard')} className="justify-start">
-                      Dashboard
-                    </Button>
-                    <Button variant="ghost" onClick={() => router.push('/resume-optimizer')} className="justify-start">
-                      Resume Optimizer
-                    </Button>
-                    <span className="text-orange-500 font-medium px-3 py-2">Pricing</span>
-                    <Button variant="ghost" onClick={() => router.push('/settings')} className="justify-start">
-                      Settings
-                    </Button>
-                    <Button variant="ghost" onClick={() => signOut()} className="justify-start">
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="ghost" onClick={() => router.push('/resume-optimizer')} className="justify-start">
-                      Resume Optimizer
-                    </Button>
-                    <span className="text-orange-500 font-medium px-3 py-2">Pricing</span>
-                    <Button variant="outline" onClick={() => router.push('/auth/signin')} className="justify-start">
-                      Sign In
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation currentPage="pricing" />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Choose Your <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Plan</span>
+      <div className="container mx-auto px-4 py-16">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 bg-clip-text text-transparent">
+            Choose Your Plan
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Get your resume roasted by AI and land your dream job faster
+            Get the brutal feedback you need to land your dream job. No sugar-coating, just results.
           </p>
           
           {/* Billing Toggle */}
           <div className="flex items-center justify-center space-x-4 mb-8">
-            <span className={billingCycle === 'monthly' ? 'text-orange-500 font-medium' : 'text-gray-500'}>
+            <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-gray-900' : 'text-gray-500'}`}>
               Monthly
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
-              className="relative"
-            >
-              <div className={`w-12 h-6 rounded-full transition-colors ${billingCycle === 'yearly' ? 'bg-orange-500' : 'bg-gray-300'}`}>
-                <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${billingCycle === 'yearly' ? 'translate-x-6' : 'translate-x-0.5'} mt-0.5`} />
-              </div>
-            </Button>
-            <span className={billingCycle === 'yearly' ? 'text-orange-500 font-medium' : 'text-gray-500'}>
+            <Switch
+              checked={billingCycle === 'yearly'}
+              onCheckedChange={(checked: boolean) => setBillingCycle(checked ? 'yearly' : 'monthly')}
+            />
+            <span className={`text-sm font-medium ${billingCycle === 'yearly' ? 'text-gray-900' : 'text-gray-500'}`}>
               Yearly
             </span>
-            {billingCycle === 'yearly' && (
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                Save up to 17%
-              </Badge>
-            )}
+            <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800">
+              Save 17%
+            </Badge>
           </div>
         </div>
 
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
-            <StripeCheckout 
-              key={index} 
-              plan={plan} 
-              billingCycle={billingCycle} 
-            />
+            <Card 
+              key={plan.name} 
+              className={`relative ${plan.popular ? 'border-orange-500 border-2 shadow-xl scale-105' : 'border-gray-200'} transition-all hover:shadow-lg`}
+            >
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1">
+                    <Star className="h-3 w-3 mr-1" />
+                    Most Popular
+                  </Badge>
+                </div>
+              )}
+              
+              <CardHeader className="text-center pb-8">
+                <div className="flex items-center justify-center mb-4">
+                  {plan.name === 'Free' && <Zap className="h-8 w-8 text-blue-500" />}
+                  {plan.name === 'Pro' && <Crown className="h-8 w-8 text-orange-500" />}
+                  {plan.name === 'Enterprise' && <Star className="h-8 w-8 text-purple-500" />}
+                </div>
+                <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                <CardDescription className="text-gray-600 mt-2">
+                  {plan.description}
+                </CardDescription>
+                <div className="mt-6">
+                  <div className="flex items-baseline justify-center">
+                    <span className="text-4xl font-bold text-gray-900">
+                      ${plan.price[billingCycle]}
+                    </span>
+                    <span className="text-gray-500 ml-1">
+                      /{billingCycle === 'yearly' ? 'year' : 'month'}
+                    </span>
+                  </div>
+                  {billingCycle === 'yearly' && plan.price.yearly > 0 && (
+                    <div className="text-sm text-green-600 mt-1">
+                      Save ${(plan.price.monthly * 12 - plan.price.yearly).toFixed(2)} per year
+                    </div>
+                  )}
+                </div>
+              </CardHeader>
+              
+              <CardContent className="space-y-6">
+                {/* Features */}
+                <div className="space-y-3">
+                  {plan.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-start space-x-3">
+                      <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* CTA Button */}
+                <Button 
+                  className={`w-full ${plan.popular ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600' : ''}`}
+                  variant={plan.popular ? 'default' : 'outline'}
+                  onClick={() => handleSubscribe(plan.tier)}
+                  disabled={loading || isCurrentPlan(plan.tier)}
+                >
+                  {isCurrentPlan(plan.tier) ? 'Current Plan' : plan.cta}
+                  {!isCurrentPlan(plan.tier) && <ArrowRight className="ml-2 h-4 w-4" />}
+                </Button>
+                
+                {isCurrentPlan(plan.tier) && (
+                  <p className="text-center text-sm text-green-600 font-medium">
+                    ✓ This is your current plan
+                  </p>
+                )}
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-20 max-w-4xl mx-auto">
+        <div className="mt-20 max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="space-y-8">
             <div>
               <h3 className="text-lg font-semibold mb-2">Can I cancel anytime?</h3>
               <p className="text-gray-600">Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period.</p>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">What payment methods do you accept?</h3>
-              <p className="text-gray-600">We accept all major credit cards, Apple Pay, Google Pay, and PayPal through our secure Stripe integration.</p>
+              <p className="text-gray-600">We accept all major credit cards (Visa, MasterCard, American Express) through our secure payment processor Stripe.</p>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">Is there a free trial?</h3>
-              <p className="text-gray-600">Yes! Our Free plan gives you 3 resume roasts per month to try out our service.</p>
+              <p className="text-gray-600">Our Free plan gives you 3 roasts per month to try out the service. No credit card required!</p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-2">Do you offer refunds?</h3>
-              <p className="text-gray-600">We offer a 30-day money-back guarantee if you're not satisfied with our service.</p>
+              <h3 className="text-lg font-semibold mb-2">How does the AI analysis work?</h3>
+              <p className="text-gray-600">Our AI analyzes your resume against job descriptions, checking for ATS compatibility, keyword optimization, and providing actionable feedback to improve your chances.</p>
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       <Footer />
-      {AlertDialog}
     </div>
   )
 } 

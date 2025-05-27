@@ -1,0 +1,21 @@
+{
+  "name": "Resume Roaster",
+  "short_name": "Resume Roaster", 
+  "description": "Get AI-powered, brutally honest feedback on your resume",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon",
+      "sizes": "32x32", 
+      "type": "image/png"
+    }
+  ]
+} 

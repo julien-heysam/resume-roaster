@@ -8,11 +8,34 @@ export const metadata: Metadata = {
   description: "Get AI-powered, brutally honest feedback on your resume. Transform weak resumes into interview magnets with Resume Roaster's intelligent analysis and optimization suggestions.",
   keywords: ["resume", "feedback", "AI", "job search", "career", "optimization", "ATS"],
   authors: [{ name: "Resume Roaster Team" }],
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: { url: '/icon', type: 'image/png', sizes: '32x32' },
+  },
   openGraph: {
     title: "Resume Roaster - Brutally Honest Resume Feedback",
     description: "Transform your resume with AI-powered analysis and get the job you deserve",
     type: "website",
+    siteName: "Resume Roaster",
+    images: [
+      {
+        url: '/icon',
+        width: 32,
+        height: 32,
+        alt: 'Resume Roaster Logo',
+      },
+    ],
   },
+  twitter: {
+    card: 'summary',
+    title: "Resume Roaster - Brutally Honest Resume Feedback",
+    description: "Transform your resume with AI-powered analysis and get the job you deserve",
+    images: ['/icon'],
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

@@ -1,33 +1,26 @@
 "use client"
 
 import { useState } from "react"
-import { Flame, Zap, Target, FileCheck, ArrowRight, Upload, Loader, Menu, X, LogOut, User, Sparkles, Eye } from "lucide-react"
+import { Flame, Zap, Target, FileCheck, ArrowRight, Upload, Loader, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileUpload } from "@/components/ui/file-upload"
 import { RoastLimitBanner } from "@/components/ui/roast-limit-banner"
 import { ExtractedTextPreview } from "@/components/ui/extracted-text-preview"
 import { AnalysisLoading } from "@/components/ui/analysis-loading"
+import { Navigation } from "@/components/ui/navigation"
 import { useAlertDialog } from "@/components/ui/alert-dialog"
 import { useRoastLimit } from "@/hooks/useRoastLimit"
 import { useFileExtraction } from "@/hooks/useFileExtraction"
 import { useRouter } from "next/navigation"
-import { useSession, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { Footer } from "@/components/ui/footer"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [step, setStep] = useState<'upload' | 'extracted' | 'analyzing'>('upload')
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [analysisProgress, setAnalysisProgress] = useState(0)
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const { showAlert, AlertDialog } = useAlertDialog()
   
   const { 
@@ -75,7 +68,7 @@ export default function Home() {
       description: "Ensure your resume passes through applicant tracking systems successfully."
     },
     {
-      icon: <Sparkles className="h-8 w-8 text-purple-500" />,
+      icon: <Eye className="h-8 w-8 text-purple-500" />,
       title: "Resume Optimizer",
       description: "Generate ATS-optimized resumes tailored to specific job descriptions with professional templates."
     }
@@ -219,123 +212,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-      {/* Header */}
-      <header className="border-b border-orange-100 bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Flame className="h-8 w-8 text-orange-500" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                Resume Roaster
-              </h1>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
-              {isAuthenticated ? (
-                <>
-                  <Button variant="ghost" onClick={() => router.push('/dashboard')}>
-                    Dashboard
-                  </Button>
-                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
-                    Resume Optimizer
-                  </Button>
-                  <Button variant="ghost" onClick={() => router.push('/pricing')}>
-                    Pricing
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <User className="h-4 w-4 mr-2" />
-                        {session?.user?.name || session?.user?.email}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => router.push('/dashboard')}>
-                        Dashboard
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push('/resume-optimizer')}>
-                        Resume Optimizer
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push('/pricing')}>
-                        Pricing
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => signOut()}>
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Sign Out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <>
-                  <Button variant="ghost" onClick={() => router.push('/resume-optimizer')}>
-                    Resume Optimizer
-                  </Button>
-                  <Button variant="ghost" onClick={() => router.push('/pricing')}>
-                    Pricing
-                  </Button>
-                  <Button variant="outline" onClick={() => router.push('/auth/signin')}>
-                    Sign In
-                  </Button>
-                </>
-              )}
-            </div>
-            
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-              </Button>
-            </div>
-          </div>
-          
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t border-orange-100">
-              <div className="flex flex-col space-y-2 pt-4">
-                {isAuthenticated ? (
-                  <>
-                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/dashboard')}>
-                      Dashboard
-                    </Button>
-                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/resume-optimizer')}>
-                      Resume Optimizer
-                    </Button>
-                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/pricing')}>
-                      Pricing
-                    </Button>
-                    <div className="px-3 py-2 text-sm text-gray-600">
-                      {session?.user?.name || session?.user?.email}
-                    </div>
-                    <Button variant="ghost" className="justify-start text-red-600" onClick={() => signOut()}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/resume-optimizer')}>
-                      Resume Optimizer
-                    </Button>
-                    <Button variant="ghost" className="justify-start" onClick={() => router.push('/pricing')}>
-                      Pricing
-                    </Button>
-                    <Button variant="outline" className="justify-start" onClick={() => router.push('/auth/signin')}>
-                      Sign In
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation currentPage="home" />
 
       {/* Hero Section */}
       <section className="py-20 px-4">

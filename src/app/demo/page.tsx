@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Navigation } from "@/components/ui/navigation"
 import { 
   FileText, 
   Download, 
@@ -58,14 +59,12 @@ export default function DemoPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50">
+      {/* Navigation */}
+      <Navigation currentPage="demo" />
+      
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/" className="inline-flex items-center text-gray-600 hover:text-orange-500 transition-colors mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Link>
-          
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Resume Template Demo
@@ -254,12 +253,6 @@ export default function DemoPage() {
                   <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600">
                     <Sparkles className="h-5 w-5 mr-2" />
                     Create Your Resume
-                  </Button>
-                </Link>
-                <Link href="/">
-                  <Button variant="outline" size="lg">
-                    <ArrowLeft className="h-5 w-5 mr-2" />
-                    Back to Home
                   </Button>
                 </Link>
               </div>

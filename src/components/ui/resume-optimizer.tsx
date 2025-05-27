@@ -1591,14 +1591,6 @@ Leadership, Communication, Problem-solving, Team Management
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Return Home Button */}
       <div className="flex justify-between items-center mb-6">
-        <Button 
-          onClick={() => window.location.href = '/'}
-          variant="outline"
-          className="flex items-center space-x-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-400 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Return Home</span>
-        </Button>
         
         <div className="flex items-center space-x-4">
           {/* Loading indicator */}
@@ -1610,7 +1602,7 @@ Leadership, Communication, Problem-solving, Team Management
           )}
           
           {/* Save Profile Button for authenticated users */}
-          {session?.user && hasLoadedProfile && (
+          {/* {session?.user && hasLoadedProfile && (
             <Button 
               onClick={saveUserProfile}
               variant="outline"
@@ -1619,9 +1611,9 @@ Leadership, Communication, Problem-solving, Team Management
               <Save className="h-4 w-4" />
               <span>Save Profile</span>
             </Button>
-          )}
+          )} */}
           
-          <div className="text-right">
+          {/* <div className="text-right">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 bg-clip-text text-transparent">
               Resume Optimizer
             </h1>
@@ -1634,7 +1626,7 @@ Leadership, Communication, Problem-solving, Team Management
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -2278,6 +2270,16 @@ Leadership, Communication, Problem-solving, Team Management
               </svg>
               Back to Templates
             </Button>
+            {session?.user && hasLoadedProfile && (
+              <Button 
+                onClick={saveUserProfile}
+                variant="outline"
+                className="flex items-center space-x-2 border-green-200 text-green-600 hover:bg-green-50 hover:border-green-400 transition-colors"
+              >
+                <Save className="h-4 w-4" />
+                <span>Save Profile</span>
+              </Button>
+            )}
             <Button 
               onClick={generateOptimizedResume}
               disabled={isGenerating || !jobDescription.trim() || !resumeData.personalInfo.name || !resumeData.personalInfo.email}
