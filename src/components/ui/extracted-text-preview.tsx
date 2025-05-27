@@ -20,6 +20,9 @@ interface ExtractedResumeData {
     fileName: string
     fileSize: number
     extractedAt: string
+    fileType?: string
+    aiProvider?: string
+    fromCache?: boolean
   }
 }
 
@@ -41,6 +44,12 @@ export function ExtractedTextPreview({
   const [jobDescriptionUrl, setJobDescriptionUrl] = useState("")
   const [activeTab, setActiveTab] = useState("text")
   const [isStartingAnalysis, setIsStartingAnalysis] = useState(false)
+  const [renderKey, setRenderKey] = useState(0)
+
+  const handleToggleFullText = () => {
+    setShowFullText(prev => !prev)
+    setRenderKey(prev => prev + 1) // Force re-render
+  }
 
   const handleProceed = () => {
     if (onProceed && !isProcessing && !isAnalyzing && !isStartingAnalysis && jobDescriptionText.trim()) {
@@ -112,31 +121,55 @@ export function ExtractedTextPreview({
           <div className="border border-gray-200 rounded-lg p-4 bg-white">
             <div className="flex items-center justify-between mb-3">
               <h4 className="font-semibold text-gray-900">Resume Content</h4>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowFullText(!showFullText)}
-                className="text-orange-600 hover:text-orange-700"
-              >
-                {showFullText ? (
-                  <>
-                    <EyeOff className="h-4 w-4 mr-1" />
-                    Show Less
-                  </>
-                ) : (
-                  <>
-                    <Eye className="h-4 w-4 mr-1" />
-                    Show Full Content
-                  </>
-                )}
-              </Button>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-gray-500">
+                  {data.text.length} chars | {showFullText ? 'Full' : 'Truncated'}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleToggleFullText}
+                  className="text-orange-600 hover:text-orange-700 border-orange-200 hover:border-orange-300"
+                >
+                  {showFullText ? (
+                    <>
+                      <EyeOff className="h-4 w-4 mr-1" />
+                      Show Less
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="h-4 w-4 mr-1" />
+                      Show Full Content
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
+            
+            {/* Truncation Warning Banner */}
+            {!showFullText && data.text.length > 1000 && (
+              <div className="mb-3 p-3 bg-orange-50 border border-orange-200 rounded-lg text-center">
+                <p className="text-sm text-orange-700 font-medium">
+                  📄 Content is truncated - Click "Show Full Content" to see the complete resume ({data.text.length} characters total)
+                </p>
+              </div>
+            )}
             
             <ScrollArea className="max-h-64 w-full">
               <div className="prose prose-sm max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown 
+                  key={`${renderKey}-${data.text.length}`}
+                  remarkPlugins={[remarkGfm]}
+                >
                   {displayText}
                 </ReactMarkdown>
+                {!showFullText && data.text.length > 1000 && (
+                  <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg text-center">
+                    <p className="text-sm text-orange-700">
+                      📄 Content truncated - Click "Show Full Content" to see the complete resume
+                    </p>
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </div>
