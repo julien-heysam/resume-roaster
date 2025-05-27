@@ -268,9 +268,9 @@ export default function PrivacyPage() {
               </p>
               
               <div className="space-y-2 text-orange-700">
-                <p><strong>Email:</strong> privacy@resumeroaster.com</p>
-                <p><strong>Address:</strong> 123 Innovation Drive, San Francisco, CA 94105</p>
-                <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+                <p><strong>Email:</strong> support@resume-roaster.com</p>
+                <p><strong>Address:</strong> 1717 webster st, Oakland, CA 94612</p>
+                <p><strong>Phone:</strong> +1 (415) 430-8779</p>
               </div>
 
               <div className="mt-6">

@@ -221,7 +221,7 @@ export default function ContactPage() {
                   <Mail className="h-5 w-5 text-orange-500 mt-0.5" />
                   <div>
                     <p className="font-medium">Email</p>
-                    <p className="text-sm text-gray-600">support@resumeroaster.com</p>
+                    <p className="text-sm text-gray-600">support@resume-roaster.com</p>
                   </div>
                 </div>
 
@@ -229,7 +229,7 @@ export default function ContactPage() {
                   <Phone className="h-5 w-5 text-orange-500 mt-0.5" />
                   <div>
                     <p className="font-medium">Phone</p>
-                    <p className="text-sm text-gray-600">+1 (555) 123-4567</p>
+                    <p className="text-sm text-gray-600">+1 (415) 430-8779</p>
                   </div>
                 </div>
 
@@ -238,8 +238,8 @@ export default function ContactPage() {
                   <div>
                     <p className="font-medium">Address</p>
                     <p className="text-sm text-gray-600">
-                      123 Innovation Drive<br />
-                      San Francisco, CA 94105<br />
+                      1717 webster st<br />
+                      Oakland, CA 94612<br />
                       United States
                     </p>
                   </div>
