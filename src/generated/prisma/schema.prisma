@@ -44,6 +44,7 @@ model User {
   invoices         Invoice[]
   llmConversations LLMConversation[]
   sharedAnalyses   SharedAnalysis[]
+  analyses         Analysis[]
 
   @@map("users")
 }
@@ -113,6 +114,7 @@ model Document {
   user             User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
   usageRecords     UsageRecord[]
   llmConversations LLMConversation[]
+  analyses         Analysis[]
 
   @@index([fileHash])
   @@index([userId])
@@ -200,6 +202,7 @@ model LLMConversation {
   user     User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   document Document?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
   messages LLMMessage[]
+  analyses Analysis[]
 
   @@index([userId])
   @@index([type])
@@ -242,6 +245,47 @@ model LLMMessage {
   @@index([conversationId])
   @@index([createdAt])
   @@map("llm_messages")
+}
+
+model Analysis {
+  id     String  @id @default(cuid())
+  userId String? // Null for anonymous users
+
+  // Analysis metadata
+  title      String // User-provided or auto-generated title
+  documentId String? // Related document if applicable
+
+  // Input data
+  jobDescription String @db.Text // The job description used for analysis
+  resumeText     String @db.Text // The resume text that was analyzed
+
+  // Analysis results
+  analysisData String @db.Text // JSON string of the complete analysis results
+  overallScore Int? // Overall score for quick access
+
+  // AI metadata
+  provider       String // "anthropic", "openai", etc.
+  model          String // "claude-3-sonnet", "gpt-4", etc.
+  conversationId String? // Link to LLM conversation if available
+
+  // Costs and performance
+  totalTokensUsed Int   @default(0)
+  totalCost       Float @default(0) // Cost in USD
+  processingTime  Int? // Processing time in milliseconds
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user         User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  document     Document?        @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  conversation LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([overallScore])
+  @@map("analyses")
 }
 
 model SharedAnalysis {
@@ -292,6 +336,7 @@ enum ConversationType {
   COVER_LETTER_GENERATION
   PDF_EXTRACTION
   GENERAL_CHAT
+  CHATBOT_SUPPORT
 }
 
 enum ConversationStatus {

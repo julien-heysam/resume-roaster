@@ -9,23 +9,17 @@ export async function GET(request: NextRequest) {
     
     if (!session?.user?.id) {
       return NextResponse.json(
-        { error: 'Authentication required' },
+        { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    // Get URL search params for filtering
-    const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
-    const type = searchParams.get('type') || 'RESUME_ANALYSIS'
-    const skip = (page - 1) * limit
+    const userId = session.user.id
 
-    // Fetch user's analysis conversations with related data
-    const conversations = await db.lLMConversation.findMany({
+    // Fetch user's analyses with related document data
+    const analyses = await db.analysis.findMany({
       where: {
-        userId: session.user.id,
-        type: type as any
+        userId: userId
       },
       include: {
         document: {
@@ -36,104 +30,62 @@ export async function GET(request: NextRequest) {
             wordCount: true,
             pageCount: true,
             summary: true,
-            processedAt: true
+            processedAt: true,
+            images: true // Include PDF images
           }
-        },
-        messages: {
-          where: {
-            role: 'ASSISTANT'
-          },
-          select: {
-            id: true,
-            content: true,
-            createdAt: true,
-            totalTokens: true,
-            cost: true
-          },
-          orderBy: {
-            messageIndex: 'desc'
-          },
-          take: 1 // Only get the final analysis result
         }
       },
       orderBy: {
         createdAt: 'desc'
-      },
-      skip,
-      take: limit
-    })
-
-    // Get total count for pagination
-    const totalCount = await db.lLMConversation.count({
-      where: {
-        userId: session.user.id,
-        type: type as any
       }
     })
 
-    // Parse analysis results from assistant messages
-    const analysisHistory = conversations.map(conversation => {
+    // Transform the data to match the expected format
+    const analysisHistory = analyses.map(analysis => {
       let analysisData = null
       
-      if (conversation.messages.length > 0) {
-        try {
-          const assistantMessage = conversation.messages[0]
-          let content = assistantMessage.content.trim()
-          
-          // Extract JSON from markdown code blocks if present
-          const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/)
-          if (jsonMatch) {
-            content = jsonMatch[1].trim()
-          }
-          
-          // Remove any leading/trailing backticks or spaces
-          content = content.replace(/^`+|`+$/g, '').trim()
-          
-          analysisData = JSON.parse(content)
-        } catch (error) {
-          console.error('Failed to parse analysis data:', error)
-          console.error('Content that failed to parse:', conversation.messages[0]?.content?.substring(0, 200) + '...')
-        }
+      try {
+        analysisData = JSON.parse(analysis.analysisData)
+      } catch (error) {
+        console.error('Failed to parse analysis data:', error)
+        analysisData = null
       }
 
       return {
-        id: conversation.id,
-        title: conversation.title || `Resume Analysis - ${conversation.createdAt.toLocaleDateString()}`,
-        createdAt: conversation.createdAt,
-        completedAt: conversation.completedAt,
-        status: conversation.status,
-        totalCost: conversation.totalCost,
-        totalTokensUsed: conversation.totalTokensUsed,
-        provider: conversation.provider,
-        model: conversation.model,
-        document: conversation.document,
+        id: analysis.id,
+        title: analysis.title,
+        createdAt: analysis.createdAt,
+        completedAt: analysis.createdAt, // Analysis is completed when created
+        status: 'COMPLETED',
+        totalCost: analysis.totalCost,
+        totalTokensUsed: analysis.totalTokensUsed,
+        provider: analysis.provider,
+        model: analysis.model,
+        document: analysis.document,
         analysisData,
-        // Summary stats from analysis (updated for new format)
-        overallScore: analysisData?.overallScore || null,
+        // Include PDF images if available
+        pdfImages: analysis.document?.images || [],
+        // Include job description
+        jobDescription: analysis.jobDescription,
+        // Summary stats from analysis
+        overallScore: analysis.overallScore,
         scoreLabel: analysisData?.scoreLabel || null,
-        strengthsCount: analysisData?.strengths?.length || 0,
-        weaknessesCount: analysisData?.weaknesses?.length || 0,
-        suggestionsCount: analysisData?.suggestions?.length || 0,
-        atsIssuesCount: analysisData?.atsIssues?.length || 0,
-        keywordMatchPercentage: analysisData?.keywordMatch?.matchPercentage || null,
-        scoringBreakdown: analysisData?.scoringBreakdown || null
+        strengths: analysisData?.strengths || [],
+        weaknesses: analysisData?.weaknesses || [],
+        suggestions: analysisData?.suggestions || [],
+        keywordMatch: analysisData?.keywordMatch || null,
+        atsIssues: analysisData?.atsIssues || []
       }
     })
 
     return NextResponse.json({
       success: true,
       data: analysisHistory,
-      pagination: {
-        page,
-        limit,
-        total: totalCount,
-        totalPages: Math.ceil(totalCount / limit),
-        hasMore: skip + limit < totalCount
-      }
+      total: analysisHistory.length
     })
 
   } catch (error) {
-    console.error('Get analysis history error:', error)
+    console.error('Analysis history fetch error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch analysis history' },
       { status: 500 }

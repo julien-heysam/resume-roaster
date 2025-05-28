@@ -12,6 +12,7 @@ import { createCanvas } from 'canvas'
 
 interface ExtractedResumeData {
   text: string
+  documentId?: string
   metadata: {
     pages: number
     wordCount: number
@@ -205,6 +206,7 @@ export async function POST(request: NextRequest) {
       // Return cached result
       const extractedData: ExtractedResumeData = {
         text: existingDocument.extractedText,
+        documentId: existingDocument.id,
         metadata: {
           pages: existingDocument.pageCount,
           wordCount: existingDocument.wordCount,
@@ -620,6 +622,7 @@ ${rawText}
 
     const resultData: ExtractedResumeData = {
       text: extractedText,
+      documentId: savedDocument.id,
       metadata: {
         pages: estimatedPages,
         wordCount,

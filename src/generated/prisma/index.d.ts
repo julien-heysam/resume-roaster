@@ -54,6 +54,11 @@ export type LLMConversation = $Result.DefaultSelection<Prisma.$LLMConversationPa
  */
 export type LLMMessage = $Result.DefaultSelection<Prisma.$LLMMessagePayload>
 /**
+ * Model Analysis
+ * 
+ */
+export type Analysis = $Result.DefaultSelection<Prisma.$AnalysisPayload>
+/**
  * Model SharedAnalysis
  * 
  */
@@ -96,7 +101,8 @@ export const ConversationType: {
   JOB_EXTRACTION: 'JOB_EXTRACTION',
   COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION',
   PDF_EXTRACTION: 'PDF_EXTRACTION',
-  GENERAL_CHAT: 'GENERAL_CHAT'
+  GENERAL_CHAT: 'GENERAL_CHAT',
+  CHATBOT_SUPPORT: 'CHATBOT_SUPPORT'
 };
 
 export type ConversationType = (typeof ConversationType)[keyof typeof ConversationType]
@@ -350,6 +356,16 @@ export class PrismaClient<
     * ```
     */
   get lLMMessage(): Prisma.LLMMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.analysis`: Exposes CRUD operations for the **Analysis** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Analyses
+    * const analyses = await prisma.analysis.findMany()
+    * ```
+    */
+  get analysis(): Prisma.AnalysisDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.sharedAnalysis`: Exposes CRUD operations for the **SharedAnalysis** model.
@@ -808,6 +824,7 @@ export namespace Prisma {
     Invoice: 'Invoice',
     LLMConversation: 'LLMConversation',
     LLMMessage: 'LLMMessage',
+    Analysis: 'Analysis',
     SharedAnalysis: 'SharedAnalysis'
   };
 
@@ -827,7 +844,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "document" | "usageRecord" | "invoice" | "lLMConversation" | "lLMMessage" | "sharedAnalysis"
+      modelProps: "user" | "account" | "session" | "document" | "usageRecord" | "invoice" | "lLMConversation" | "lLMMessage" | "analysis" | "sharedAnalysis"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1423,6 +1440,80 @@ export namespace Prisma {
           }
         }
       }
+      Analysis: {
+        payload: Prisma.$AnalysisPayload<ExtArgs>
+        fields: Prisma.AnalysisFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AnalysisFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AnalysisFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+          }
+          findFirst: {
+            args: Prisma.AnalysisFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AnalysisFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+          }
+          findMany: {
+            args: Prisma.AnalysisFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>[]
+          }
+          create: {
+            args: Prisma.AnalysisCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+          }
+          createMany: {
+            args: Prisma.AnalysisCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AnalysisCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>[]
+          }
+          delete: {
+            args: Prisma.AnalysisDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+          }
+          update: {
+            args: Prisma.AnalysisUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+          }
+          deleteMany: {
+            args: Prisma.AnalysisDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AnalysisUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AnalysisUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>[]
+          }
+          upsert: {
+            args: Prisma.AnalysisUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+          }
+          aggregate: {
+            args: Prisma.AnalysisAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAnalysis>
+          }
+          groupBy: {
+            args: Prisma.AnalysisGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AnalysisCountArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisCountAggregateOutputType> | number
+          }
+        }
+      }
       SharedAnalysis: {
         payload: Prisma.$SharedAnalysisPayload<ExtArgs>
         fields: Prisma.SharedAnalysisFieldRefs
@@ -1589,6 +1680,7 @@ export namespace Prisma {
     invoice?: InvoiceOmit
     lLMConversation?: LLMConversationOmit
     lLMMessage?: LLMMessageOmit
+    analysis?: AnalysisOmit
     sharedAnalysis?: SharedAnalysisOmit
   }
 
@@ -1691,6 +1783,7 @@ export namespace Prisma {
     invoices: number
     llmConversations: number
     sharedAnalyses: number
+    analyses: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1701,6 +1794,7 @@ export namespace Prisma {
     invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
     llmConversations?: boolean | UserCountOutputTypeCountLlmConversationsArgs
     sharedAnalyses?: boolean | UserCountOutputTypeCountSharedAnalysesArgs
+    analyses?: boolean | UserCountOutputTypeCountAnalysesArgs
   }
 
   // Custom InputTypes
@@ -1763,6 +1857,13 @@ export namespace Prisma {
     where?: SharedAnalysisWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisWhereInput
+  }
+
 
   /**
    * Count Type DocumentCountOutputType
@@ -1771,11 +1872,13 @@ export namespace Prisma {
   export type DocumentCountOutputType = {
     usageRecords: number
     llmConversations: number
+    analyses: number
   }
 
   export type DocumentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     usageRecords?: boolean | DocumentCountOutputTypeCountUsageRecordsArgs
     llmConversations?: boolean | DocumentCountOutputTypeCountLlmConversationsArgs
+    analyses?: boolean | DocumentCountOutputTypeCountAnalysesArgs
   }
 
   // Custom InputTypes
@@ -1803,6 +1906,13 @@ export namespace Prisma {
     where?: LLMConversationWhereInput
   }
 
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisWhereInput
+  }
+
 
   /**
    * Count Type LLMConversationCountOutputType
@@ -1810,10 +1920,12 @@ export namespace Prisma {
 
   export type LLMConversationCountOutputType = {
     messages: number
+    analyses: number
   }
 
   export type LLMConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | LLMConversationCountOutputTypeCountMessagesArgs
+    analyses?: boolean | LLMConversationCountOutputTypeCountAnalysesArgs
   }
 
   // Custom InputTypes
@@ -1832,6 +1944,13 @@ export namespace Prisma {
    */
   export type LLMConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LLMMessageWhereInput
+  }
+
+  /**
+   * LLMConversationCountOutputType without action
+   */
+  export type LLMConversationCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisWhereInput
   }
 
 
@@ -2128,6 +2247,7 @@ export namespace Prisma {
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     llmConversations?: boolean | User$llmConversationsArgs<ExtArgs>
     sharedAnalyses?: boolean | User$sharedAnalysesArgs<ExtArgs>
+    analyses?: boolean | User$analysesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2194,6 +2314,7 @@ export namespace Prisma {
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     llmConversations?: boolean | User$llmConversationsArgs<ExtArgs>
     sharedAnalyses?: boolean | User$sharedAnalysesArgs<ExtArgs>
+    analyses?: boolean | User$analysesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2209,6 +2330,7 @@ export namespace Prisma {
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
       llmConversations: Prisma.$LLMConversationPayload<ExtArgs>[]
       sharedAnalyses: Prisma.$SharedAnalysisPayload<ExtArgs>[]
+      analyses: Prisma.$AnalysisPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2627,6 +2749,7 @@ export namespace Prisma {
     invoices<T extends User$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     llmConversations<T extends User$llmConversationsArgs<ExtArgs> = {}>(args?: Subset<T, User$llmConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sharedAnalyses<T extends User$sharedAnalysesArgs<ExtArgs> = {}>(args?: Subset<T, User$sharedAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharedAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    analyses<T extends User$analysesArgs<ExtArgs> = {}>(args?: Subset<T, User$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3224,6 +3347,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SharedAnalysisScalarFieldEnum | SharedAnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * User.analyses
+   */
+  export type User$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    cursor?: AnalysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
   }
 
   /**
@@ -5822,6 +5969,7 @@ export namespace Prisma {
     user?: boolean | Document$userArgs<ExtArgs>
     usageRecords?: boolean | Document$usageRecordsArgs<ExtArgs>
     llmConversations?: boolean | Document$llmConversationsArgs<ExtArgs>
+    analyses?: boolean | Document$analysesArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
 
@@ -5889,6 +6037,7 @@ export namespace Prisma {
     user?: boolean | Document$userArgs<ExtArgs>
     usageRecords?: boolean | Document$usageRecordsArgs<ExtArgs>
     llmConversations?: boolean | Document$llmConversationsArgs<ExtArgs>
+    analyses?: boolean | Document$analysesArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5904,6 +6053,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs> | null
       usageRecords: Prisma.$UsageRecordPayload<ExtArgs>[]
       llmConversations: Prisma.$LLMConversationPayload<ExtArgs>[]
+      analyses: Prisma.$AnalysisPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6319,6 +6469,7 @@ export namespace Prisma {
     user<T extends Document$userArgs<ExtArgs> = {}>(args?: Subset<T, Document$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     usageRecords<T extends Document$usageRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Document$usageRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     llmConversations<T extends Document$llmConversationsArgs<ExtArgs> = {}>(args?: Subset<T, Document$llmConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    analyses<T extends Document$analysesArgs<ExtArgs> = {}>(args?: Subset<T, Document$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6824,6 +6975,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LLMConversationScalarFieldEnum | LLMConversationScalarFieldEnum[]
+  }
+
+  /**
+   * Document.analyses
+   */
+  export type Document$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    cursor?: AnalysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
   }
 
   /**
@@ -9452,6 +9627,7 @@ export namespace Prisma {
     user?: boolean | LLMConversation$userArgs<ExtArgs>
     document?: boolean | LLMConversation$documentArgs<ExtArgs>
     messages?: boolean | LLMConversation$messagesArgs<ExtArgs>
+    analyses?: boolean | LLMConversation$analysesArgs<ExtArgs>
     _count?: boolean | LLMConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lLMConversation"]>
 
@@ -9515,6 +9691,7 @@ export namespace Prisma {
     user?: boolean | LLMConversation$userArgs<ExtArgs>
     document?: boolean | LLMConversation$documentArgs<ExtArgs>
     messages?: boolean | LLMConversation$messagesArgs<ExtArgs>
+    analyses?: boolean | LLMConversation$analysesArgs<ExtArgs>
     _count?: boolean | LLMConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LLMConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9532,6 +9709,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs> | null
       document: Prisma.$DocumentPayload<ExtArgs> | null
       messages: Prisma.$LLMMessagePayload<ExtArgs>[]
+      analyses: Prisma.$AnalysisPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9945,6 +10123,7 @@ export namespace Prisma {
     user<T extends LLMConversation$userArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     document<T extends LLMConversation$documentArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     messages<T extends LLMConversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LLMMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    analyses<T extends LLMConversation$analysesArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10443,6 +10622,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LLMMessageScalarFieldEnum | LLMMessageScalarFieldEnum[]
+  }
+
+  /**
+   * LLMConversation.analyses
+   */
+  export type LLMConversation$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    cursor?: AnalysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
   }
 
   /**
@@ -11698,6 +11901,1326 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: LLMMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Analysis
+   */
+
+  export type AggregateAnalysis = {
+    _count: AnalysisCountAggregateOutputType | null
+    _avg: AnalysisAvgAggregateOutputType | null
+    _sum: AnalysisSumAggregateOutputType | null
+    _min: AnalysisMinAggregateOutputType | null
+    _max: AnalysisMaxAggregateOutputType | null
+  }
+
+  export type AnalysisAvgAggregateOutputType = {
+    overallScore: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+  }
+
+  export type AnalysisSumAggregateOutputType = {
+    overallScore: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+  }
+
+  export type AnalysisMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    title: string | null
+    documentId: string | null
+    jobDescription: string | null
+    resumeText: string | null
+    analysisData: string | null
+    overallScore: number | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AnalysisMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    title: string | null
+    documentId: string | null
+    jobDescription: string | null
+    resumeText: string | null
+    analysisData: string | null
+    overallScore: number | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AnalysisCountAggregateOutputType = {
+    id: number
+    userId: number
+    title: number
+    documentId: number
+    jobDescription: number
+    resumeText: number
+    analysisData: number
+    overallScore: number
+    provider: number
+    model: number
+    conversationId: number
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AnalysisAvgAggregateInputType = {
+    overallScore?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+  }
+
+  export type AnalysisSumAggregateInputType = {
+    overallScore?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+  }
+
+  export type AnalysisMinAggregateInputType = {
+    id?: true
+    userId?: true
+    title?: true
+    documentId?: true
+    jobDescription?: true
+    resumeText?: true
+    analysisData?: true
+    overallScore?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AnalysisMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    title?: true
+    documentId?: true
+    jobDescription?: true
+    resumeText?: true
+    analysisData?: true
+    overallScore?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AnalysisCountAggregateInputType = {
+    id?: true
+    userId?: true
+    title?: true
+    documentId?: true
+    jobDescription?: true
+    resumeText?: true
+    analysisData?: true
+    overallScore?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AnalysisAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Analysis to aggregate.
+     */
+    where?: AnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Analyses to fetch.
+     */
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Analyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Analyses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Analyses
+    **/
+    _count?: true | AnalysisCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AnalysisAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AnalysisSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AnalysisMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AnalysisMaxAggregateInputType
+  }
+
+  export type GetAnalysisAggregateType<T extends AnalysisAggregateArgs> = {
+        [P in keyof T & keyof AggregateAnalysis]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAnalysis[P]>
+      : GetScalarType<T[P], AggregateAnalysis[P]>
+  }
+
+
+
+
+  export type AnalysisGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisWhereInput
+    orderBy?: AnalysisOrderByWithAggregationInput | AnalysisOrderByWithAggregationInput[]
+    by: AnalysisScalarFieldEnum[] | AnalysisScalarFieldEnum
+    having?: AnalysisScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AnalysisCountAggregateInputType | true
+    _avg?: AnalysisAvgAggregateInputType
+    _sum?: AnalysisSumAggregateInputType
+    _min?: AnalysisMinAggregateInputType
+    _max?: AnalysisMaxAggregateInputType
+  }
+
+  export type AnalysisGroupByOutputType = {
+    id: string
+    userId: string | null
+    title: string
+    documentId: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore: number | null
+    provider: string
+    model: string
+    conversationId: string | null
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AnalysisCountAggregateOutputType | null
+    _avg: AnalysisAvgAggregateOutputType | null
+    _sum: AnalysisSumAggregateOutputType | null
+    _min: AnalysisMinAggregateOutputType | null
+    _max: AnalysisMaxAggregateOutputType | null
+  }
+
+  type GetAnalysisGroupByPayload<T extends AnalysisGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AnalysisGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AnalysisGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AnalysisGroupByOutputType[P]>
+            : GetScalarType<T[P], AnalysisGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AnalysisSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    documentId?: boolean
+    jobDescription?: boolean
+    resumeText?: boolean
+    analysisData?: boolean
+    overallScore?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | Analysis$userArgs<ExtArgs>
+    document?: boolean | Analysis$documentArgs<ExtArgs>
+    conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["analysis"]>
+
+  export type AnalysisSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    documentId?: boolean
+    jobDescription?: boolean
+    resumeText?: boolean
+    analysisData?: boolean
+    overallScore?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | Analysis$userArgs<ExtArgs>
+    document?: boolean | Analysis$documentArgs<ExtArgs>
+    conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["analysis"]>
+
+  export type AnalysisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    documentId?: boolean
+    jobDescription?: boolean
+    resumeText?: boolean
+    analysisData?: boolean
+    overallScore?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | Analysis$userArgs<ExtArgs>
+    document?: boolean | Analysis$documentArgs<ExtArgs>
+    conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["analysis"]>
+
+  export type AnalysisSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    documentId?: boolean
+    jobDescription?: boolean
+    resumeText?: boolean
+    analysisData?: boolean
+    overallScore?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "documentId" | "jobDescription" | "resumeText" | "analysisData" | "overallScore" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "createdAt" | "updatedAt", ExtArgs["result"]["analysis"]>
+  export type AnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Analysis$userArgs<ExtArgs>
+    document?: boolean | Analysis$documentArgs<ExtArgs>
+    conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+  }
+  export type AnalysisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Analysis$userArgs<ExtArgs>
+    document?: boolean | Analysis$documentArgs<ExtArgs>
+    conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+  }
+  export type AnalysisIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Analysis$userArgs<ExtArgs>
+    document?: boolean | Analysis$documentArgs<ExtArgs>
+    conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+  }
+
+  export type $AnalysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Analysis"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      document: Prisma.$DocumentPayload<ExtArgs> | null
+      conversation: Prisma.$LLMConversationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      title: string
+      documentId: string | null
+      jobDescription: string
+      resumeText: string
+      analysisData: string
+      overallScore: number | null
+      provider: string
+      model: string
+      conversationId: string | null
+      totalTokensUsed: number
+      totalCost: number
+      processingTime: number | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["analysis"]>
+    composites: {}
+  }
+
+  type AnalysisGetPayload<S extends boolean | null | undefined | AnalysisDefaultArgs> = $Result.GetResult<Prisma.$AnalysisPayload, S>
+
+  type AnalysisCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AnalysisFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AnalysisCountAggregateInputType | true
+    }
+
+  export interface AnalysisDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Analysis'], meta: { name: 'Analysis' } }
+    /**
+     * Find zero or one Analysis that matches the filter.
+     * @param {AnalysisFindUniqueArgs} args - Arguments to find a Analysis
+     * @example
+     * // Get one Analysis
+     * const analysis = await prisma.analysis.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AnalysisFindUniqueArgs>(args: SelectSubset<T, AnalysisFindUniqueArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Analysis that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AnalysisFindUniqueOrThrowArgs} args - Arguments to find a Analysis
+     * @example
+     * // Get one Analysis
+     * const analysis = await prisma.analysis.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AnalysisFindUniqueOrThrowArgs>(args: SelectSubset<T, AnalysisFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Analysis that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisFindFirstArgs} args - Arguments to find a Analysis
+     * @example
+     * // Get one Analysis
+     * const analysis = await prisma.analysis.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AnalysisFindFirstArgs>(args?: SelectSubset<T, AnalysisFindFirstArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Analysis that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisFindFirstOrThrowArgs} args - Arguments to find a Analysis
+     * @example
+     * // Get one Analysis
+     * const analysis = await prisma.analysis.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AnalysisFindFirstOrThrowArgs>(args?: SelectSubset<T, AnalysisFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Analyses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Analyses
+     * const analyses = await prisma.analysis.findMany()
+     * 
+     * // Get first 10 Analyses
+     * const analyses = await prisma.analysis.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const analysisWithIdOnly = await prisma.analysis.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AnalysisFindManyArgs>(args?: SelectSubset<T, AnalysisFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Analysis.
+     * @param {AnalysisCreateArgs} args - Arguments to create a Analysis.
+     * @example
+     * // Create one Analysis
+     * const Analysis = await prisma.analysis.create({
+     *   data: {
+     *     // ... data to create a Analysis
+     *   }
+     * })
+     * 
+     */
+    create<T extends AnalysisCreateArgs>(args: SelectSubset<T, AnalysisCreateArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Analyses.
+     * @param {AnalysisCreateManyArgs} args - Arguments to create many Analyses.
+     * @example
+     * // Create many Analyses
+     * const analysis = await prisma.analysis.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AnalysisCreateManyArgs>(args?: SelectSubset<T, AnalysisCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Analyses and returns the data saved in the database.
+     * @param {AnalysisCreateManyAndReturnArgs} args - Arguments to create many Analyses.
+     * @example
+     * // Create many Analyses
+     * const analysis = await prisma.analysis.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Analyses and only return the `id`
+     * const analysisWithIdOnly = await prisma.analysis.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AnalysisCreateManyAndReturnArgs>(args?: SelectSubset<T, AnalysisCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Analysis.
+     * @param {AnalysisDeleteArgs} args - Arguments to delete one Analysis.
+     * @example
+     * // Delete one Analysis
+     * const Analysis = await prisma.analysis.delete({
+     *   where: {
+     *     // ... filter to delete one Analysis
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AnalysisDeleteArgs>(args: SelectSubset<T, AnalysisDeleteArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Analysis.
+     * @param {AnalysisUpdateArgs} args - Arguments to update one Analysis.
+     * @example
+     * // Update one Analysis
+     * const analysis = await prisma.analysis.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AnalysisUpdateArgs>(args: SelectSubset<T, AnalysisUpdateArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Analyses.
+     * @param {AnalysisDeleteManyArgs} args - Arguments to filter Analyses to delete.
+     * @example
+     * // Delete a few Analyses
+     * const { count } = await prisma.analysis.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AnalysisDeleteManyArgs>(args?: SelectSubset<T, AnalysisDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Analyses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Analyses
+     * const analysis = await prisma.analysis.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AnalysisUpdateManyArgs>(args: SelectSubset<T, AnalysisUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Analyses and returns the data updated in the database.
+     * @param {AnalysisUpdateManyAndReturnArgs} args - Arguments to update many Analyses.
+     * @example
+     * // Update many Analyses
+     * const analysis = await prisma.analysis.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Analyses and only return the `id`
+     * const analysisWithIdOnly = await prisma.analysis.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AnalysisUpdateManyAndReturnArgs>(args: SelectSubset<T, AnalysisUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Analysis.
+     * @param {AnalysisUpsertArgs} args - Arguments to update or create a Analysis.
+     * @example
+     * // Update or create a Analysis
+     * const analysis = await prisma.analysis.upsert({
+     *   create: {
+     *     // ... data to create a Analysis
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Analysis we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AnalysisUpsertArgs>(args: SelectSubset<T, AnalysisUpsertArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Analyses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisCountArgs} args - Arguments to filter Analyses to count.
+     * @example
+     * // Count the number of Analyses
+     * const count = await prisma.analysis.count({
+     *   where: {
+     *     // ... the filter for the Analyses we want to count
+     *   }
+     * })
+    **/
+    count<T extends AnalysisCountArgs>(
+      args?: Subset<T, AnalysisCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AnalysisCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Analysis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AnalysisAggregateArgs>(args: Subset<T, AnalysisAggregateArgs>): Prisma.PrismaPromise<GetAnalysisAggregateType<T>>
+
+    /**
+     * Group by Analysis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AnalysisGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AnalysisGroupByArgs['orderBy'] }
+        : { orderBy?: AnalysisGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AnalysisGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnalysisGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Analysis model
+   */
+  readonly fields: AnalysisFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Analysis.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AnalysisClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends Analysis$userArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    document<T extends Analysis$documentArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends Analysis$conversationArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$conversationArgs<ExtArgs>>): Prisma__LLMConversationClient<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Analysis model
+   */
+  interface AnalysisFieldRefs {
+    readonly id: FieldRef<"Analysis", 'String'>
+    readonly userId: FieldRef<"Analysis", 'String'>
+    readonly title: FieldRef<"Analysis", 'String'>
+    readonly documentId: FieldRef<"Analysis", 'String'>
+    readonly jobDescription: FieldRef<"Analysis", 'String'>
+    readonly resumeText: FieldRef<"Analysis", 'String'>
+    readonly analysisData: FieldRef<"Analysis", 'String'>
+    readonly overallScore: FieldRef<"Analysis", 'Int'>
+    readonly provider: FieldRef<"Analysis", 'String'>
+    readonly model: FieldRef<"Analysis", 'String'>
+    readonly conversationId: FieldRef<"Analysis", 'String'>
+    readonly totalTokensUsed: FieldRef<"Analysis", 'Int'>
+    readonly totalCost: FieldRef<"Analysis", 'Float'>
+    readonly processingTime: FieldRef<"Analysis", 'Int'>
+    readonly createdAt: FieldRef<"Analysis", 'DateTime'>
+    readonly updatedAt: FieldRef<"Analysis", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Analysis findUnique
+   */
+  export type AnalysisFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * Filter, which Analysis to fetch.
+     */
+    where: AnalysisWhereUniqueInput
+  }
+
+  /**
+   * Analysis findUniqueOrThrow
+   */
+  export type AnalysisFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * Filter, which Analysis to fetch.
+     */
+    where: AnalysisWhereUniqueInput
+  }
+
+  /**
+   * Analysis findFirst
+   */
+  export type AnalysisFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * Filter, which Analysis to fetch.
+     */
+    where?: AnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Analyses to fetch.
+     */
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Analyses.
+     */
+    cursor?: AnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Analyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Analyses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Analyses.
+     */
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * Analysis findFirstOrThrow
+   */
+  export type AnalysisFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * Filter, which Analysis to fetch.
+     */
+    where?: AnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Analyses to fetch.
+     */
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Analyses.
+     */
+    cursor?: AnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Analyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Analyses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Analyses.
+     */
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * Analysis findMany
+   */
+  export type AnalysisFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * Filter, which Analyses to fetch.
+     */
+    where?: AnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Analyses to fetch.
+     */
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Analyses.
+     */
+    cursor?: AnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Analyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Analyses.
+     */
+    skip?: number
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * Analysis create
+   */
+  export type AnalysisCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Analysis.
+     */
+    data: XOR<AnalysisCreateInput, AnalysisUncheckedCreateInput>
+  }
+
+  /**
+   * Analysis createMany
+   */
+  export type AnalysisCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Analyses.
+     */
+    data: AnalysisCreateManyInput | AnalysisCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Analysis createManyAndReturn
+   */
+  export type AnalysisCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * The data used to create many Analyses.
+     */
+    data: AnalysisCreateManyInput | AnalysisCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Analysis update
+   */
+  export type AnalysisUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Analysis.
+     */
+    data: XOR<AnalysisUpdateInput, AnalysisUncheckedUpdateInput>
+    /**
+     * Choose, which Analysis to update.
+     */
+    where: AnalysisWhereUniqueInput
+  }
+
+  /**
+   * Analysis updateMany
+   */
+  export type AnalysisUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Analyses.
+     */
+    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyInput>
+    /**
+     * Filter which Analyses to update
+     */
+    where?: AnalysisWhereInput
+    /**
+     * Limit how many Analyses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Analysis updateManyAndReturn
+   */
+  export type AnalysisUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * The data used to update Analyses.
+     */
+    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyInput>
+    /**
+     * Filter which Analyses to update
+     */
+    where?: AnalysisWhereInput
+    /**
+     * Limit how many Analyses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Analysis upsert
+   */
+  export type AnalysisUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Analysis to update in case it exists.
+     */
+    where: AnalysisWhereUniqueInput
+    /**
+     * In case the Analysis found by the `where` argument doesn't exist, create a new Analysis with this data.
+     */
+    create: XOR<AnalysisCreateInput, AnalysisUncheckedCreateInput>
+    /**
+     * In case the Analysis was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AnalysisUpdateInput, AnalysisUncheckedUpdateInput>
+  }
+
+  /**
+   * Analysis delete
+   */
+  export type AnalysisDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    /**
+     * Filter which Analysis to delete.
+     */
+    where: AnalysisWhereUniqueInput
+  }
+
+  /**
+   * Analysis deleteMany
+   */
+  export type AnalysisDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Analyses to delete
+     */
+    where?: AnalysisWhereInput
+    /**
+     * Limit how many Analyses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Analysis.user
+   */
+  export type Analysis$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Analysis.document
+   */
+  export type Analysis$documentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+  }
+
+  /**
+   * Analysis.conversation
+   */
+  export type Analysis$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LLMConversation
+     */
+    select?: LLMConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LLMConversation
+     */
+    omit?: LLMConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LLMConversationInclude<ExtArgs> | null
+    where?: LLMConversationWhereInput
+  }
+
+  /**
+   * Analysis without action
+   */
+  export type AnalysisDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
   }
 
 
@@ -12993,6 +14516,28 @@ export namespace Prisma {
   export type LLMMessageScalarFieldEnum = (typeof LLMMessageScalarFieldEnum)[keyof typeof LLMMessageScalarFieldEnum]
 
 
+  export const AnalysisScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    title: 'title',
+    documentId: 'documentId',
+    jobDescription: 'jobDescription',
+    resumeText: 'resumeText',
+    analysisData: 'analysisData',
+    overallScore: 'overallScore',
+    provider: 'provider',
+    model: 'model',
+    conversationId: 'conversationId',
+    totalTokensUsed: 'totalTokensUsed',
+    totalCost: 'totalCost',
+    processingTime: 'processingTime',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AnalysisScalarFieldEnum = (typeof AnalysisScalarFieldEnum)[keyof typeof AnalysisScalarFieldEnum]
+
+
   export const SharedAnalysisScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -13205,6 +14750,7 @@ export namespace Prisma {
     invoices?: InvoiceListRelationFilter
     llmConversations?: LLMConversationListRelationFilter
     sharedAnalyses?: SharedAnalysisListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13230,6 +14776,7 @@ export namespace Prisma {
     invoices?: InvoiceOrderByRelationAggregateInput
     llmConversations?: LLMConversationOrderByRelationAggregateInput
     sharedAnalyses?: SharedAnalysisOrderByRelationAggregateInput
+    analyses?: AnalysisOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13258,6 +14805,7 @@ export namespace Prisma {
     invoices?: InvoiceListRelationFilter
     llmConversations?: LLMConversationListRelationFilter
     sharedAnalyses?: SharedAnalysisListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -13490,6 +15038,7 @@ export namespace Prisma {
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     usageRecords?: UsageRecordListRelationFilter
     llmConversations?: LLMConversationListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }
 
   export type DocumentOrderByWithRelationInput = {
@@ -13512,6 +15061,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     usageRecords?: UsageRecordOrderByRelationAggregateInput
     llmConversations?: LLMConversationOrderByRelationAggregateInput
+    analyses?: AnalysisOrderByRelationAggregateInput
   }
 
   export type DocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -13537,6 +15087,7 @@ export namespace Prisma {
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     usageRecords?: UsageRecordListRelationFilter
     llmConversations?: LLMConversationListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }, "id" | "fileHash">
 
   export type DocumentOrderByWithAggregationInput = {
@@ -13773,6 +15324,7 @@ export namespace Prisma {
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
     messages?: LLMMessageListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }
 
   export type LLMConversationOrderByWithRelationInput = {
@@ -13793,6 +15345,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     document?: DocumentOrderByWithRelationInput
     messages?: LLMMessageOrderByRelationAggregateInput
+    analyses?: AnalysisOrderByRelationAggregateInput
   }
 
   export type LLMConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -13816,6 +15369,7 @@ export namespace Prisma {
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
     messages?: LLMMessageListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }, "id">
 
   export type LLMConversationOrderByWithAggregationInput = {
@@ -13963,6 +15517,124 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"LLMMessage"> | Date | string
   }
 
+  export type AnalysisWhereInput = {
+    AND?: AnalysisWhereInput | AnalysisWhereInput[]
+    OR?: AnalysisWhereInput[]
+    NOT?: AnalysisWhereInput | AnalysisWhereInput[]
+    id?: StringFilter<"Analysis"> | string
+    userId?: StringNullableFilter<"Analysis"> | string | null
+    title?: StringFilter<"Analysis"> | string
+    documentId?: StringNullableFilter<"Analysis"> | string | null
+    jobDescription?: StringFilter<"Analysis"> | string
+    resumeText?: StringFilter<"Analysis"> | string
+    analysisData?: StringFilter<"Analysis"> | string
+    overallScore?: IntNullableFilter<"Analysis"> | number | null
+    provider?: StringFilter<"Analysis"> | string
+    model?: StringFilter<"Analysis"> | string
+    conversationId?: StringNullableFilter<"Analysis"> | string | null
+    totalTokensUsed?: IntFilter<"Analysis"> | number
+    totalCost?: FloatFilter<"Analysis"> | number
+    processingTime?: IntNullableFilter<"Analysis"> | number | null
+    createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    updatedAt?: DateTimeFilter<"Analysis"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+  }
+
+  export type AnalysisOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    documentId?: SortOrderInput | SortOrder
+    jobDescription?: SortOrder
+    resumeText?: SortOrder
+    analysisData?: SortOrder
+    overallScore?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    document?: DocumentOrderByWithRelationInput
+    conversation?: LLMConversationOrderByWithRelationInput
+  }
+
+  export type AnalysisWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AnalysisWhereInput | AnalysisWhereInput[]
+    OR?: AnalysisWhereInput[]
+    NOT?: AnalysisWhereInput | AnalysisWhereInput[]
+    userId?: StringNullableFilter<"Analysis"> | string | null
+    title?: StringFilter<"Analysis"> | string
+    documentId?: StringNullableFilter<"Analysis"> | string | null
+    jobDescription?: StringFilter<"Analysis"> | string
+    resumeText?: StringFilter<"Analysis"> | string
+    analysisData?: StringFilter<"Analysis"> | string
+    overallScore?: IntNullableFilter<"Analysis"> | number | null
+    provider?: StringFilter<"Analysis"> | string
+    model?: StringFilter<"Analysis"> | string
+    conversationId?: StringNullableFilter<"Analysis"> | string | null
+    totalTokensUsed?: IntFilter<"Analysis"> | number
+    totalCost?: FloatFilter<"Analysis"> | number
+    processingTime?: IntNullableFilter<"Analysis"> | number | null
+    createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    updatedAt?: DateTimeFilter<"Analysis"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+  }, "id">
+
+  export type AnalysisOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    documentId?: SortOrderInput | SortOrder
+    jobDescription?: SortOrder
+    resumeText?: SortOrder
+    analysisData?: SortOrder
+    overallScore?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AnalysisCountOrderByAggregateInput
+    _avg?: AnalysisAvgOrderByAggregateInput
+    _max?: AnalysisMaxOrderByAggregateInput
+    _min?: AnalysisMinOrderByAggregateInput
+    _sum?: AnalysisSumOrderByAggregateInput
+  }
+
+  export type AnalysisScalarWhereWithAggregatesInput = {
+    AND?: AnalysisScalarWhereWithAggregatesInput | AnalysisScalarWhereWithAggregatesInput[]
+    OR?: AnalysisScalarWhereWithAggregatesInput[]
+    NOT?: AnalysisScalarWhereWithAggregatesInput | AnalysisScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Analysis"> | string
+    userId?: StringNullableWithAggregatesFilter<"Analysis"> | string | null
+    title?: StringWithAggregatesFilter<"Analysis"> | string
+    documentId?: StringNullableWithAggregatesFilter<"Analysis"> | string | null
+    jobDescription?: StringWithAggregatesFilter<"Analysis"> | string
+    resumeText?: StringWithAggregatesFilter<"Analysis"> | string
+    analysisData?: StringWithAggregatesFilter<"Analysis"> | string
+    overallScore?: IntNullableWithAggregatesFilter<"Analysis"> | number | null
+    provider?: StringWithAggregatesFilter<"Analysis"> | string
+    model?: StringWithAggregatesFilter<"Analysis"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"Analysis"> | string | null
+    totalTokensUsed?: IntWithAggregatesFilter<"Analysis"> | number
+    totalCost?: FloatWithAggregatesFilter<"Analysis"> | number
+    processingTime?: IntNullableWithAggregatesFilter<"Analysis"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Analysis"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Analysis"> | Date | string
+  }
+
   export type SharedAnalysisWhereInput = {
     AND?: SharedAnalysisWhereInput | SharedAnalysisWhereInput[]
     OR?: SharedAnalysisWhereInput[]
@@ -14058,6 +15730,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -14083,6 +15756,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -14108,6 +15782,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -14133,6 +15808,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -14388,6 +16064,7 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutDocumentsInput
     usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateInput = {
@@ -14409,6 +16086,7 @@ export namespace Prisma {
     processingTime: number
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUpdateInput = {
@@ -14430,6 +16108,7 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutDocumentsNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateInput = {
@@ -14451,6 +16130,7 @@ export namespace Prisma {
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentCreateManyInput = {
@@ -14704,6 +16384,7 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutLlmConversationsInput
     document?: DocumentCreateNestedOneWithoutLlmConversationsInput
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateInput = {
@@ -14722,6 +16403,7 @@ export namespace Prisma {
     status?: $Enums.ConversationStatus
     errorMessage?: string | null
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUpdateInput = {
@@ -14740,6 +16422,7 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutLlmConversationsNestedInput
     document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateInput = {
@@ -14758,6 +16441,7 @@ export namespace Prisma {
     status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationCreateManyInput = {
@@ -14925,6 +16609,136 @@ export namespace Prisma {
     temperature?: NullableFloatFieldUpdateOperationsInput | number | null
     maxTokens?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisCreateInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAnalysesInput
+    document?: DocumentCreateNestedOneWithoutAnalysesInput
+    conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+  }
+
+  export type AnalysisUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAnalysesNestedInput
+    document?: DocumentUpdateOneWithoutAnalysesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisCreateManyInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SharedAnalysisCreateInput = {
@@ -15115,6 +16929,12 @@ export namespace Prisma {
     none?: SharedAnalysisWhereInput
   }
 
+  export type AnalysisListRelationFilter = {
+    every?: AnalysisWhereInput
+    some?: AnalysisWhereInput
+    none?: AnalysisWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -15145,6 +16965,10 @@ export namespace Prisma {
   }
 
   export type SharedAnalysisOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AnalysisOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15908,6 +17732,82 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type LLMConversationNullableScalarRelationFilter = {
+    is?: LLMConversationWhereInput | null
+    isNot?: LLMConversationWhereInput | null
+  }
+
+  export type AnalysisCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    documentId?: SortOrder
+    jobDescription?: SortOrder
+    resumeText?: SortOrder
+    analysisData?: SortOrder
+    overallScore?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnalysisAvgOrderByAggregateInput = {
+    overallScore?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+  }
+
+  export type AnalysisMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    documentId?: SortOrder
+    jobDescription?: SortOrder
+    resumeText?: SortOrder
+    analysisData?: SortOrder
+    overallScore?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnalysisMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    documentId?: SortOrder
+    jobDescription?: SortOrder
+    resumeText?: SortOrder
+    analysisData?: SortOrder
+    overallScore?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnalysisSumOrderByAggregateInput = {
+    overallScore?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+  }
+
   export type SharedAnalysisCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -15998,6 +17898,13 @@ export namespace Prisma {
     connect?: SharedAnalysisWhereUniqueInput | SharedAnalysisWhereUniqueInput[]
   }
 
+  export type AnalysisCreateNestedManyWithoutUserInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -16045,6 +17952,13 @@ export namespace Prisma {
     connectOrCreate?: SharedAnalysisCreateOrConnectWithoutUserInput | SharedAnalysisCreateOrConnectWithoutUserInput[]
     createMany?: SharedAnalysisCreateManyUserInputEnvelope
     connect?: SharedAnalysisWhereUniqueInput | SharedAnalysisWhereUniqueInput[]
+  }
+
+  export type AnalysisUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -16173,6 +18087,20 @@ export namespace Prisma {
     deleteMany?: SharedAnalysisScalarWhereInput | SharedAnalysisScalarWhereInput[]
   }
 
+  export type AnalysisUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutUserInput | AnalysisUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutUserInput | AnalysisUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutUserInput | AnalysisUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -16271,6 +18199,20 @@ export namespace Prisma {
     deleteMany?: SharedAnalysisScalarWhereInput | SharedAnalysisScalarWhereInput[]
   }
 
+  export type AnalysisUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutUserInput | AnalysisUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutUserInput | AnalysisUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutUserInput | AnalysisUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutAccountsInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -16335,6 +18277,13 @@ export namespace Prisma {
     connect?: LLMConversationWhereUniqueInput | LLMConversationWhereUniqueInput[]
   }
 
+  export type AnalysisCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<AnalysisCreateWithoutDocumentInput, AnalysisUncheckedCreateWithoutDocumentInput> | AnalysisCreateWithoutDocumentInput[] | AnalysisUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutDocumentInput | AnalysisCreateOrConnectWithoutDocumentInput[]
+    createMany?: AnalysisCreateManyDocumentInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  }
+
   export type UsageRecordUncheckedCreateNestedManyWithoutDocumentInput = {
     create?: XOR<UsageRecordCreateWithoutDocumentInput, UsageRecordUncheckedCreateWithoutDocumentInput> | UsageRecordCreateWithoutDocumentInput[] | UsageRecordUncheckedCreateWithoutDocumentInput[]
     connectOrCreate?: UsageRecordCreateOrConnectWithoutDocumentInput | UsageRecordCreateOrConnectWithoutDocumentInput[]
@@ -16347,6 +18296,13 @@ export namespace Prisma {
     connectOrCreate?: LLMConversationCreateOrConnectWithoutDocumentInput | LLMConversationCreateOrConnectWithoutDocumentInput[]
     createMany?: LLMConversationCreateManyDocumentInputEnvelope
     connect?: LLMConversationWhereUniqueInput | LLMConversationWhereUniqueInput[]
+  }
+
+  export type AnalysisUncheckedCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<AnalysisCreateWithoutDocumentInput, AnalysisUncheckedCreateWithoutDocumentInput> | AnalysisCreateWithoutDocumentInput[] | AnalysisUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutDocumentInput | AnalysisCreateOrConnectWithoutDocumentInput[]
+    createMany?: AnalysisCreateManyDocumentInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -16405,6 +18361,20 @@ export namespace Prisma {
     deleteMany?: LLMConversationScalarWhereInput | LLMConversationScalarWhereInput[]
   }
 
+  export type AnalysisUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<AnalysisCreateWithoutDocumentInput, AnalysisUncheckedCreateWithoutDocumentInput> | AnalysisCreateWithoutDocumentInput[] | AnalysisUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutDocumentInput | AnalysisCreateOrConnectWithoutDocumentInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutDocumentInput | AnalysisUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: AnalysisCreateManyDocumentInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutDocumentInput | AnalysisUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutDocumentInput | AnalysisUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  }
+
   export type UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput = {
     create?: XOR<UsageRecordCreateWithoutDocumentInput, UsageRecordUncheckedCreateWithoutDocumentInput> | UsageRecordCreateWithoutDocumentInput[] | UsageRecordUncheckedCreateWithoutDocumentInput[]
     connectOrCreate?: UsageRecordCreateOrConnectWithoutDocumentInput | UsageRecordCreateOrConnectWithoutDocumentInput[]
@@ -16431,6 +18401,20 @@ export namespace Prisma {
     update?: LLMConversationUpdateWithWhereUniqueWithoutDocumentInput | LLMConversationUpdateWithWhereUniqueWithoutDocumentInput[]
     updateMany?: LLMConversationUpdateManyWithWhereWithoutDocumentInput | LLMConversationUpdateManyWithWhereWithoutDocumentInput[]
     deleteMany?: LLMConversationScalarWhereInput | LLMConversationScalarWhereInput[]
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<AnalysisCreateWithoutDocumentInput, AnalysisUncheckedCreateWithoutDocumentInput> | AnalysisCreateWithoutDocumentInput[] | AnalysisUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutDocumentInput | AnalysisCreateOrConnectWithoutDocumentInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutDocumentInput | AnalysisUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: AnalysisCreateManyDocumentInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutDocumentInput | AnalysisUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutDocumentInput | AnalysisUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutUsageRecordsInput = {
@@ -16502,11 +18486,25 @@ export namespace Prisma {
     connect?: LLMMessageWhereUniqueInput | LLMMessageWhereUniqueInput[]
   }
 
+  export type AnalysisCreateNestedManyWithoutConversationInput = {
+    create?: XOR<AnalysisCreateWithoutConversationInput, AnalysisUncheckedCreateWithoutConversationInput> | AnalysisCreateWithoutConversationInput[] | AnalysisUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutConversationInput | AnalysisCreateOrConnectWithoutConversationInput[]
+    createMany?: AnalysisCreateManyConversationInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  }
+
   export type LLMMessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<LLMMessageCreateWithoutConversationInput, LLMMessageUncheckedCreateWithoutConversationInput> | LLMMessageCreateWithoutConversationInput[] | LLMMessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: LLMMessageCreateOrConnectWithoutConversationInput | LLMMessageCreateOrConnectWithoutConversationInput[]
     createMany?: LLMMessageCreateManyConversationInputEnvelope
     connect?: LLMMessageWhereUniqueInput | LLMMessageWhereUniqueInput[]
+  }
+
+  export type AnalysisUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<AnalysisCreateWithoutConversationInput, AnalysisUncheckedCreateWithoutConversationInput> | AnalysisCreateWithoutConversationInput[] | AnalysisUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutConversationInput | AnalysisCreateOrConnectWithoutConversationInput[]
+    createMany?: AnalysisCreateManyConversationInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
   }
 
   export type EnumConversationTypeFieldUpdateOperationsInput = {
@@ -16551,6 +18549,20 @@ export namespace Prisma {
     deleteMany?: LLMMessageScalarWhereInput | LLMMessageScalarWhereInput[]
   }
 
+  export type AnalysisUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<AnalysisCreateWithoutConversationInput, AnalysisUncheckedCreateWithoutConversationInput> | AnalysisCreateWithoutConversationInput[] | AnalysisUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutConversationInput | AnalysisCreateOrConnectWithoutConversationInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutConversationInput | AnalysisUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: AnalysisCreateManyConversationInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutConversationInput | AnalysisUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutConversationInput | AnalysisUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  }
+
   export type LLMMessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<LLMMessageCreateWithoutConversationInput, LLMMessageUncheckedCreateWithoutConversationInput> | LLMMessageCreateWithoutConversationInput[] | LLMMessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: LLMMessageCreateOrConnectWithoutConversationInput | LLMMessageCreateOrConnectWithoutConversationInput[]
@@ -16563,6 +18575,20 @@ export namespace Prisma {
     update?: LLMMessageUpdateWithWhereUniqueWithoutConversationInput | LLMMessageUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: LLMMessageUpdateManyWithWhereWithoutConversationInput | LLMMessageUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: LLMMessageScalarWhereInput | LLMMessageScalarWhereInput[]
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<AnalysisCreateWithoutConversationInput, AnalysisUncheckedCreateWithoutConversationInput> | AnalysisCreateWithoutConversationInput[] | AnalysisUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutConversationInput | AnalysisCreateOrConnectWithoutConversationInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutConversationInput | AnalysisUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: AnalysisCreateManyConversationInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutConversationInput | AnalysisUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutConversationInput | AnalysisUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
   }
 
   export type LLMConversationCreateNestedOneWithoutMessagesInput = {
@@ -16589,6 +18615,54 @@ export namespace Prisma {
     upsert?: LLMConversationUpsertWithoutMessagesInput
     connect?: LLMConversationWhereUniqueInput
     update?: XOR<XOR<LLMConversationUpdateToOneWithWhereWithoutMessagesInput, LLMConversationUpdateWithoutMessagesInput>, LLMConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserCreateNestedOneWithoutAnalysesInput = {
+    create?: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnalysesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DocumentCreateNestedOneWithoutAnalysesInput = {
+    create?: XOR<DocumentCreateWithoutAnalysesInput, DocumentUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutAnalysesInput
+    connect?: DocumentWhereUniqueInput
+  }
+
+  export type LLMConversationCreateNestedOneWithoutAnalysesInput = {
+    create?: XOR<LLMConversationCreateWithoutAnalysesInput, LLMConversationUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutAnalysesInput
+    connect?: LLMConversationWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutAnalysesNestedInput = {
+    create?: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnalysesInput
+    upsert?: UserUpsertWithoutAnalysesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnalysesInput, UserUpdateWithoutAnalysesInput>, UserUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type DocumentUpdateOneWithoutAnalysesNestedInput = {
+    create?: XOR<DocumentCreateWithoutAnalysesInput, DocumentUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutAnalysesInput
+    upsert?: DocumentUpsertWithoutAnalysesInput
+    disconnect?: DocumentWhereInput | boolean
+    delete?: DocumentWhereInput | boolean
+    connect?: DocumentWhereUniqueInput
+    update?: XOR<XOR<DocumentUpdateToOneWithWhereWithoutAnalysesInput, DocumentUpdateWithoutAnalysesInput>, DocumentUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type LLMConversationUpdateOneWithoutAnalysesNestedInput = {
+    create?: XOR<LLMConversationCreateWithoutAnalysesInput, LLMConversationUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutAnalysesInput
+    upsert?: LLMConversationUpsertWithoutAnalysesInput
+    disconnect?: LLMConversationWhereInput | boolean
+    delete?: LLMConversationWhereInput | boolean
+    connect?: LLMConversationWhereUniqueInput
+    update?: XOR<XOR<LLMConversationUpdateToOneWithWhereWithoutAnalysesInput, LLMConversationUpdateWithoutAnalysesInput>, LLMConversationUncheckedUpdateWithoutAnalysesInput>
   }
 
   export type UserCreateNestedOneWithoutSharedAnalysesInput = {
@@ -17013,6 +19087,7 @@ export namespace Prisma {
     processingTime: number
     usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutUserInput = {
@@ -17033,6 +19108,7 @@ export namespace Prisma {
     processingTime: number
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutUserInput = {
@@ -17128,6 +19204,7 @@ export namespace Prisma {
     errorMessage?: string | null
     document?: DocumentCreateNestedOneWithoutLlmConversationsInput
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutUserInput = {
@@ -17145,6 +19222,7 @@ export namespace Prisma {
     status?: $Enums.ConversationStatus
     errorMessage?: string | null
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutUserInput = {
@@ -17184,6 +19262,52 @@ export namespace Prisma {
 
   export type SharedAnalysisCreateManyUserInputEnvelope = {
     data: SharedAnalysisCreateManyUserInput | SharedAnalysisCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AnalysisCreateWithoutUserInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    document?: DocumentCreateNestedOneWithoutAnalysesInput
+    conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutUserInput = {
+    id?: string
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisCreateOrConnectWithoutUserInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput>
+  }
+
+  export type AnalysisCreateManyUserInputEnvelope = {
+    data: AnalysisCreateManyUserInput | AnalysisCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -17419,6 +19543,44 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"SharedAnalysis"> | Date | string
   }
 
+  export type AnalysisUpsertWithWhereUniqueWithoutUserInput = {
+    where: AnalysisWhereUniqueInput
+    update: XOR<AnalysisUpdateWithoutUserInput, AnalysisUncheckedUpdateWithoutUserInput>
+    create: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput>
+  }
+
+  export type AnalysisUpdateWithWhereUniqueWithoutUserInput = {
+    where: AnalysisWhereUniqueInput
+    data: XOR<AnalysisUpdateWithoutUserInput, AnalysisUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AnalysisUpdateManyWithWhereWithoutUserInput = {
+    where: AnalysisScalarWhereInput
+    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AnalysisScalarWhereInput = {
+    AND?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+    OR?: AnalysisScalarWhereInput[]
+    NOT?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+    id?: StringFilter<"Analysis"> | string
+    userId?: StringNullableFilter<"Analysis"> | string | null
+    title?: StringFilter<"Analysis"> | string
+    documentId?: StringNullableFilter<"Analysis"> | string | null
+    jobDescription?: StringFilter<"Analysis"> | string
+    resumeText?: StringFilter<"Analysis"> | string
+    analysisData?: StringFilter<"Analysis"> | string
+    overallScore?: IntNullableFilter<"Analysis"> | number | null
+    provider?: StringFilter<"Analysis"> | string
+    model?: StringFilter<"Analysis"> | string
+    conversationId?: StringNullableFilter<"Analysis"> | string | null
+    totalTokensUsed?: IntFilter<"Analysis"> | number
+    totalCost?: FloatFilter<"Analysis"> | number
+    processingTime?: IntNullableFilter<"Analysis"> | number | null
+    createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    updatedAt?: DateTimeFilter<"Analysis"> | Date | string
+  }
+
   export type UserCreateWithoutAccountsInput = {
     id?: string
     email: string
@@ -17441,6 +19603,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -17465,6 +19628,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -17505,6 +19669,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -17529,6 +19694,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -17553,6 +19719,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -17577,6 +19744,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -17617,6 +19785,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -17641,6 +19810,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDocumentsInput = {
@@ -17665,6 +19835,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -17689,6 +19860,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -17741,6 +19913,7 @@ export namespace Prisma {
     errorMessage?: string | null
     user?: UserCreateNestedOneWithoutLlmConversationsInput
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutDocumentInput = {
@@ -17758,6 +19931,7 @@ export namespace Prisma {
     status?: $Enums.ConversationStatus
     errorMessage?: string | null
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutDocumentInput = {
@@ -17767,6 +19941,52 @@ export namespace Prisma {
 
   export type LLMConversationCreateManyDocumentInputEnvelope = {
     data: LLMConversationCreateManyDocumentInput | LLMConversationCreateManyDocumentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AnalysisCreateWithoutDocumentInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAnalysesInput
+    conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutDocumentInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisCreateOrConnectWithoutDocumentInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutDocumentInput, AnalysisUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type AnalysisCreateManyDocumentInputEnvelope = {
+    data: AnalysisCreateManyDocumentInput | AnalysisCreateManyDocumentInput[]
     skipDuplicates?: boolean
   }
 
@@ -17803,6 +20023,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -17827,6 +20048,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsageRecordUpsertWithWhereUniqueWithoutDocumentInput = {
@@ -17861,6 +20083,22 @@ export namespace Prisma {
     data: XOR<LLMConversationUpdateManyMutationInput, LLMConversationUncheckedUpdateManyWithoutDocumentInput>
   }
 
+  export type AnalysisUpsertWithWhereUniqueWithoutDocumentInput = {
+    where: AnalysisWhereUniqueInput
+    update: XOR<AnalysisUpdateWithoutDocumentInput, AnalysisUncheckedUpdateWithoutDocumentInput>
+    create: XOR<AnalysisCreateWithoutDocumentInput, AnalysisUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type AnalysisUpdateWithWhereUniqueWithoutDocumentInput = {
+    where: AnalysisWhereUniqueInput
+    data: XOR<AnalysisUpdateWithoutDocumentInput, AnalysisUncheckedUpdateWithoutDocumentInput>
+  }
+
+  export type AnalysisUpdateManyWithWhereWithoutDocumentInput = {
+    where: AnalysisScalarWhereInput
+    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutDocumentInput>
+  }
+
   export type UserCreateWithoutUsageRecordsInput = {
     id?: string
     email: string
@@ -17883,6 +20121,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutUsageRecordsInput = {
@@ -17907,6 +20146,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutUsageRecordsInput = {
@@ -17932,6 +20172,7 @@ export namespace Prisma {
     processingTime: number
     user?: UserCreateNestedOneWithoutDocumentsInput
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutUsageRecordsInput = {
@@ -17952,6 +20193,7 @@ export namespace Prisma {
     processedAt?: Date | string
     processingTime: number
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutUsageRecordsInput = {
@@ -17992,6 +20234,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUsageRecordsInput = {
@@ -18016,6 +20259,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DocumentUpsertWithoutUsageRecordsInput = {
@@ -18047,6 +20291,7 @@ export namespace Prisma {
     processingTime?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneWithoutDocumentsNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutUsageRecordsInput = {
@@ -18067,6 +20312,7 @@ export namespace Prisma {
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type UserCreateWithoutInvoicesInput = {
@@ -18091,6 +20337,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvoicesInput = {
@@ -18115,6 +20362,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvoicesInput = {
@@ -18155,6 +20403,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoicesInput = {
@@ -18179,6 +20428,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutLlmConversationsInput = {
@@ -18203,6 +20453,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutLlmConversationsInput = {
@@ -18227,6 +20478,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutLlmConversationsInput = {
@@ -18252,6 +20504,7 @@ export namespace Prisma {
     processingTime: number
     user?: UserCreateNestedOneWithoutDocumentsInput
     usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutLlmConversationsInput = {
@@ -18272,6 +20525,7 @@ export namespace Prisma {
     processedAt?: Date | string
     processingTime: number
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutLlmConversationsInput = {
@@ -18321,6 +20575,52 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AnalysisCreateWithoutConversationInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAnalysesInput
+    document?: DocumentCreateNestedOneWithoutAnalysesInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutConversationInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisCreateOrConnectWithoutConversationInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutConversationInput, AnalysisUncheckedCreateWithoutConversationInput>
+  }
+
+  export type AnalysisCreateManyConversationInputEnvelope = {
+    data: AnalysisCreateManyConversationInput | AnalysisCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutLlmConversationsInput = {
     update: XOR<UserUpdateWithoutLlmConversationsInput, UserUncheckedUpdateWithoutLlmConversationsInput>
     create: XOR<UserCreateWithoutLlmConversationsInput, UserUncheckedCreateWithoutLlmConversationsInput>
@@ -18354,6 +20654,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLlmConversationsInput = {
@@ -18378,6 +20679,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DocumentUpsertWithoutLlmConversationsInput = {
@@ -18409,6 +20711,7 @@ export namespace Prisma {
     processingTime?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneWithoutDocumentsNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutLlmConversationsInput = {
@@ -18429,6 +20732,7 @@ export namespace Prisma {
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type LLMMessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -18467,6 +20771,22 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"LLMMessage"> | Date | string
   }
 
+  export type AnalysisUpsertWithWhereUniqueWithoutConversationInput = {
+    where: AnalysisWhereUniqueInput
+    update: XOR<AnalysisUpdateWithoutConversationInput, AnalysisUncheckedUpdateWithoutConversationInput>
+    create: XOR<AnalysisCreateWithoutConversationInput, AnalysisUncheckedCreateWithoutConversationInput>
+  }
+
+  export type AnalysisUpdateWithWhereUniqueWithoutConversationInput = {
+    where: AnalysisWhereUniqueInput
+    data: XOR<AnalysisUpdateWithoutConversationInput, AnalysisUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type AnalysisUpdateManyWithWhereWithoutConversationInput = {
+    where: AnalysisScalarWhereInput
+    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutConversationInput>
+  }
+
   export type LLMConversationCreateWithoutMessagesInput = {
     id?: string
     type: $Enums.ConversationType
@@ -18482,6 +20802,7 @@ export namespace Prisma {
     errorMessage?: string | null
     user?: UserCreateNestedOneWithoutLlmConversationsInput
     document?: DocumentCreateNestedOneWithoutLlmConversationsInput
+    analyses?: AnalysisCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutMessagesInput = {
@@ -18499,6 +20820,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     status?: $Enums.ConversationStatus
     errorMessage?: string | null
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutMessagesInput = {
@@ -18532,6 +20854,7 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneWithoutLlmConversationsNestedInput
     document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
+    analyses?: AnalysisUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutMessagesInput = {
@@ -18549,6 +20872,311 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type UserCreateWithoutAnalysesInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAnalysesInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAnalysesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type DocumentCreateWithoutAnalysesInput = {
+    id?: string
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    user?: UserCreateNestedOneWithoutDocumentsInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutAnalysesInput = {
+    id?: string
+    userId?: string | null
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutAnalysesInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutAnalysesInput, DocumentUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type LLMConversationCreateWithoutAnalysesInput = {
+    id?: string
+    type: $Enums.ConversationType
+    title?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    user?: UserCreateNestedOneWithoutLlmConversationsInput
+    document?: DocumentCreateNestedOneWithoutLlmConversationsInput
+    messages?: LLMMessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationUncheckedCreateWithoutAnalysesInput = {
+    id?: string
+    userId?: string | null
+    type: $Enums.ConversationType
+    title?: string | null
+    documentId?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationCreateOrConnectWithoutAnalysesInput = {
+    where: LLMConversationWhereUniqueInput
+    create: XOR<LLMConversationCreateWithoutAnalysesInput, LLMConversationUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type UserUpsertWithoutAnalysesInput = {
+    update: XOR<UserUpdateWithoutAnalysesInput, UserUncheckedUpdateWithoutAnalysesInput>
+    create: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAnalysesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAnalysesInput, UserUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type UserUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type DocumentUpsertWithoutAnalysesInput = {
+    update: XOR<DocumentUpdateWithoutAnalysesInput, DocumentUncheckedUpdateWithoutAnalysesInput>
+    create: XOR<DocumentCreateWithoutAnalysesInput, DocumentUncheckedCreateWithoutAnalysesInput>
+    where?: DocumentWhereInput
+  }
+
+  export type DocumentUpdateToOneWithWhereWithoutAnalysesInput = {
+    where?: DocumentWhereInput
+    data: XOR<DocumentUpdateWithoutAnalysesInput, DocumentUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type DocumentUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneWithoutDocumentsNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type LLMConversationUpsertWithoutAnalysesInput = {
+    update: XOR<LLMConversationUpdateWithoutAnalysesInput, LLMConversationUncheckedUpdateWithoutAnalysesInput>
+    create: XOR<LLMConversationCreateWithoutAnalysesInput, LLMConversationUncheckedCreateWithoutAnalysesInput>
+    where?: LLMConversationWhereInput
+  }
+
+  export type LLMConversationUpdateToOneWithWhereWithoutAnalysesInput = {
+    where?: LLMConversationWhereInput
+    data: XOR<LLMConversationUpdateWithoutAnalysesInput, LLMConversationUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type LLMConversationUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneWithoutLlmConversationsNestedInput
+    document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
+    messages?: LLMMessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type LLMConversationUncheckedUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type UserCreateWithoutSharedAnalysesInput = {
@@ -18573,6 +21201,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSharedAnalysesInput = {
@@ -18597,6 +21226,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSharedAnalysesInput = {
@@ -18637,6 +21267,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSharedAnalysesInput = {
@@ -18661,6 +21292,7 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -18755,6 +21387,24 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AnalysisCreateManyUserInput = {
+    id?: string
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type AccountUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
@@ -18845,6 +21495,7 @@ export namespace Prisma {
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutUserInput = {
@@ -18865,6 +21516,7 @@ export namespace Prisma {
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateManyWithoutUserInput = {
@@ -18972,6 +21624,7 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutUserInput = {
@@ -18989,6 +21642,7 @@ export namespace Prisma {
     status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateManyWithoutUserInput = {
@@ -19037,6 +21691,60 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AnalysisUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    document?: DocumentUpdateOneWithoutAnalysesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UsageRecordCreateManyDocumentInput = {
     id?: string
     userId: string
@@ -19061,6 +21769,24 @@ export namespace Prisma {
     completedAt?: Date | string | null
     status?: $Enums.ConversationStatus
     errorMessage?: string | null
+  }
+
+  export type AnalysisCreateManyDocumentInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UsageRecordUpdateWithoutDocumentInput = {
@@ -19108,6 +21834,7 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneWithoutLlmConversationsNestedInput
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutDocumentInput = {
@@ -19125,6 +21852,7 @@ export namespace Prisma {
     status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateManyWithoutDocumentInput = {
@@ -19143,6 +21871,60 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type AnalysisUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAnalysesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LLMMessageCreateManyConversationInput = {
     id?: string
     role: $Enums.MessageRole
@@ -19157,6 +21939,24 @@ export namespace Prisma {
     temperature?: number | null
     maxTokens?: number | null
     createdAt?: Date | string
+  }
+
+  export type AnalysisCreateManyConversationInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type LLMMessageUpdateWithoutConversationInput = {
@@ -19205,6 +22005,60 @@ export namespace Prisma {
     temperature?: NullableFloatFieldUpdateOperationsInput | number | null
     maxTokens?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAnalysesNestedInput
+    document?: DocumentUpdateOneWithoutAnalysesNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

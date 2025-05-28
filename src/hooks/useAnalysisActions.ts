@@ -74,18 +74,32 @@ export function useAnalysisActions() {
     }
   }
 
-  const shareAnalysis = async (analysisData: AnalysisData, settings?: ShareSettings) => {
+  const shareAnalysis = async (
+    analysisData: AnalysisData, 
+    settings?: ShareSettings,
+    resumeData?: any,
+    jobDescription?: string,
+    pdfImages?: string[]
+  ) => {
     if (isSharing) return null
 
     setIsSharing(true)
     try {
+      // Create comprehensive data object that includes all necessary information
+      const comprehensiveData = {
+        analysis: analysisData,
+        resumeData,
+        jobDescription,
+        pdfImages: pdfImages || []
+      }
+
       const response = await fetch('/api/share-analysis', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          analysisData,
+          analysisData: comprehensiveData,
           settings: settings || { expirationDays: 30 }
         }),
       })

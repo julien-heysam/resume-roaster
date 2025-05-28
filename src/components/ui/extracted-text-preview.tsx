@@ -15,6 +15,7 @@ import { Eye, EyeOff, FileText, Hash, Calendar, HardDrive, Link, Loader, Briefca
 
 interface ExtractedResumeData {
   text: string
+  documentId?: string
   metadata: {
     pages: number
     wordCount: number
@@ -30,7 +31,7 @@ interface ExtractedResumeData {
 interface ExtractedTextPreviewProps {
   data: ExtractedResumeData
   images?: string[]
-  onProceed?: (resumeData: ExtractedResumeData, jobDescription: string) => void
+  onProceed?: (resumeData: ExtractedResumeData, jobDescription: string, analysisName?: string) => void
   onClear?: () => void
   isProcessing?: boolean
   isAnalyzing?: boolean
@@ -47,6 +48,7 @@ export function ExtractedTextPreview({
   const [showFullText, setShowFullText] = useState(false)
   const [jobDescriptionText, setJobDescriptionText] = useState("")
   const [jobDescriptionUrl, setJobDescriptionUrl] = useState("")
+  const [analysisName, setAnalysisName] = useState("")
   const [activeTab, setActiveTab] = useState("text")
   const [isStartingAnalysis, setIsStartingAnalysis] = useState(false)
   const [renderKey, setRenderKey] = useState(0)
@@ -81,7 +83,7 @@ export function ExtractedTextPreview({
   const handleProceed = () => {
     if (onProceed && !isProcessing && !isAnalyzing && !isStartingAnalysis && jobDescriptionText.trim()) {
       setIsStartingAnalysis(true)
-      onProceed(data, jobDescriptionText)
+      onProceed(data, jobDescriptionText, analysisName.trim() || undefined)
       // Reset after a short delay to prevent multiple clicks
       setTimeout(() => setIsStartingAnalysis(false), 2000)
     }
@@ -234,6 +236,33 @@ export function ExtractedTextPreview({
                 )}
               </div>
             </ScrollArea>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Analysis Name Input */}
+      <Card className="border-purple-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-200">
+          <CardTitle className="flex items-center space-x-2 text-purple-700">
+            <FileText className="h-5 w-5" />
+            <span>Analysis Name (Optional)</span>
+          </CardTitle>
+          <CardDescription className="text-gray-600">
+            Give your analysis a custom name to easily identify it later. If left empty, we'll auto-generate one.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <Input
+            placeholder="e.g., Senior Developer at TechCorp, Marketing Manager Role, etc."
+            value={analysisName}
+            onChange={(e) => setAnalysisName(e.target.value)}
+            className="border-gray-300 focus:border-purple-500"
+            disabled={isAnalyzing}
+            maxLength={100}
+          />
+          <div className="text-sm text-gray-500 mt-2 flex justify-between">
+            <span>💡 This helps you organize multiple analyses</span>
+            <span>{analysisName.length}/100</span>
           </div>
         </CardContent>
       </Card>

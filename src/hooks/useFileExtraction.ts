@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 interface ExtractedResumeData {
   text: string
+  documentId?: string
   metadata: {
     pages: number
     wordCount: number
@@ -102,7 +103,10 @@ export function useFileExtraction() {
         throw new Error('Invalid response from extraction service')
       }
 
-      const extractedData: ExtractedResumeData = result.data
+      const extractedData: ExtractedResumeData = {
+        ...result.data,
+        documentId: result.documentId
+      }
 
       setState({
         isExtracting: false,

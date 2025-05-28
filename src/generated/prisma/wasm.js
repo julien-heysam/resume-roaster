@@ -243,6 +243,25 @@ exports.Prisma.LLMMessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AnalysisScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  documentId: 'documentId',
+  jobDescription: 'jobDescription',
+  resumeText: 'resumeText',
+  analysisData: 'analysisData',
+  overallScore: 'overallScore',
+  provider: 'provider',
+  model: 'model',
+  conversationId: 'conversationId',
+  totalTokensUsed: 'totalTokensUsed',
+  totalCost: 'totalCost',
+  processingTime: 'processingTime',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SharedAnalysisScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -292,7 +311,8 @@ exports.ConversationType = exports.$Enums.ConversationType = {
   JOB_EXTRACTION: 'JOB_EXTRACTION',
   COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION',
   PDF_EXTRACTION: 'PDF_EXTRACTION',
-  GENERAL_CHAT: 'GENERAL_CHAT'
+  GENERAL_CHAT: 'GENERAL_CHAT',
+  CHATBOT_SUPPORT: 'CHATBOT_SUPPORT'
 };
 
 exports.ConversationStatus = exports.$Enums.ConversationStatus = {
@@ -317,6 +337,7 @@ exports.Prisma.ModelName = {
   Invoice: 'Invoice',
   LLMConversation: 'LLMConversation',
   LLMMessage: 'LLMMessage',
+  Analysis: 'Analysis',
   SharedAnalysis: 'SharedAnalysis'
 };
 

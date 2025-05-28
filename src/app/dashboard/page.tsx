@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { FileText, TrendingUp, Calendar, Search, Filter, Eye, Download, ArrowLeft, Trash2, ExternalLink } from "lucide-react"
+import { FileText, TrendingUp, Calendar, Search, Filter, Eye, Download, ArrowLeft, Trash2, ExternalLink, ChevronDown, ChevronUp, MoreHorizontal, Star, Clock, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +17,9 @@ interface AnalysisResult {
   type: 'RESUME_ANALYSIS'
   createdAt: string
   overallScore?: number
+  title?: string
+  pdfImages?: string[]
+  jobDescription?: string
   data: {
     resumeData?: any
     jobDescription?: string
@@ -36,7 +39,9 @@ export default function DashboardPage() {
   const router = useRouter()
   const [analyses, setAnalyses] = useState<AnalysisResult[]>([])
   const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
     limit: 10,
@@ -67,12 +72,33 @@ export default function DashboardPage() {
 
       const response = await fetch(`/api/user/analysis-history?${params}`)
       if (response.ok) {
-        const data = await response.json()
-        setAnalyses(data.analyses || [])
-        setPagination(data.pagination || { page: 1, limit: 10, total: 0, totalPages: 0 })
+        const result = await response.json()
+        
+        // Transform the API response to match the expected format
+        const transformedAnalyses = (result.data || []).map((item: any) => ({
+          id: item.id,
+          type: 'RESUME_ANALYSIS',
+          createdAt: item.createdAt,
+          overallScore: item.overallScore,
+          title: item.title,
+          pdfImages: item.pdfImages,
+          jobDescription: item.jobDescription,
+          data: {
+            resumeData: item.document,
+            jobDescription: item.jobDescription || '',
+            analysis: item.analysisData
+          }
+        }))
+        
+        setAnalyses(transformedAnalyses)
+        setPagination(result.pagination || { page: 1, limit: 10, total: 0, totalPages: 0 })
+      } else {
+        console.error('Failed to fetch analyses:', response.status, response.statusText)
+        setAnalyses([])
       }
     } catch (error) {
       console.error('Error fetching analyses:', error)
+      setAnalyses([])
     } finally {
       setLoading(false)
     }
@@ -100,6 +126,7 @@ export default function DashboardPage() {
     if (!confirm('Are you sure you want to delete this analysis?')) return
     
     try {
+      setDeletingId(id)
       const response = await fetch(`/api/user/analysis-history/${id}`, {
         method: 'DELETE'
       })
@@ -107,9 +134,16 @@ export default function DashboardPage() {
       if (response.ok) {
         // Refresh the list
         fetchAnalyses(pagination.page, searchTerm)
+      } else {
+        const errorData = await response.json()
+        console.error('Delete failed:', errorData)
+        alert('Failed to delete analysis. Please try again.')
       }
     } catch (error) {
       console.error('Error deleting analysis:', error)
+      alert('Failed to delete analysis. Please try again.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -138,6 +172,35 @@ export default function DashboardPage() {
     if (score >= 80) return 'default'
     if (score >= 60) return 'secondary'
     return 'destructive'
+  }
+
+  // Get keyword match status
+  const getKeywordMatchStatus = (percentage?: number) => {
+    if (!percentage) return { text: 'No data available', color: 'text-gray-500' }
+    if (percentage >= 70) return { text: 'Excellent keyword optimization', color: 'text-green-600' }
+    if (percentage >= 40) return { text: 'Good match, room for improvement', color: 'text-yellow-600' }
+    return { text: 'Needs significant keyword optimization', color: 'text-red-600' }
+  }
+
+  // Format category names
+  const formatCategoryName = (category: string) => {
+    return category
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim()
+  }
+
+  // Toggle card expansion
+  const toggleCardExpansion = (cardId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(cardId)) {
+        newSet.delete(cardId)
+      } else {
+        newSet.add(cardId)
+      }
+      return newSet
+    })
   }
 
   if (status === 'loading') {
@@ -238,8 +301,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-6">
-          <div className="flex items-center space-x-4">
+        <div className="mb-8">
+          <form onSubmit={handleSearch} className="flex items-center space-x-4">
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -247,131 +310,365 @@ export default function DashboardPage() {
                   placeholder="Search analyses..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white/80 backdrop-blur-sm border-orange-200 focus:border-orange-400"
+                  className="pl-10 bg-white/90 backdrop-blur-sm border-orange-200 focus:border-orange-400 shadow-sm"
                 />
               </div>
             </div>
             <Button 
+              type="submit"
               variant="outline" 
               size="sm"
-              className="bg-white/80 backdrop-blur-sm border-orange-200 hover:bg-orange-50"
+              className="bg-white/90 backdrop-blur-sm border-orange-200 hover:bg-orange-50 shadow-sm"
+            >
+              <Search className="h-4 w-4 mr-2" />
+              Search
+            </Button>
+            <Button 
+              type="button"
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                setSearchTerm('')
+                fetchAnalyses(1, '')
+              }}
+              className="bg-white/90 backdrop-blur-sm border-orange-200 hover:bg-orange-50 shadow-sm"
             >
               <Filter className="h-4 w-4 mr-2" />
-              Filter
+              Clear
             </Button>
-          </div>
+          </form>
         </div>
 
         {/* Analysis History */}
-        <Card className="bg-white/80 backdrop-blur-sm border-orange-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>Resume Analysis History</span>
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Resume Analysis History</h2>
+              <p className="text-gray-600 mt-1">View and manage your resume analysis results</p>
+            </div>
+            <div className="flex items-center space-x-3">
+              {analyses.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (expandedCards.size === analyses.length) {
+                      setExpandedCards(new Set())
+                    } else {
+                      setExpandedCards(new Set(analyses.map(a => a.id)))
+                    }
+                  }}
+                  className="bg-white/90 backdrop-blur-sm border-gray-300 hover:bg-gray-50 shadow-sm"
+                >
+                  {expandedCards.size === analyses.length ? (
+                    <>
+                      <ChevronUp className="h-4 w-4 mr-1" />
+                      Collapse All
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-4 w-4 mr-1" />
+                      Expand All
+                    </>
+                  )}
+                </Button>
+              )}
               <Link href="/">
-                <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600">
+                <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-lg">
+                  <FileText className="h-4 w-4 mr-2" />
                   New Analysis
                 </Button>
               </Link>
-            </CardTitle>
-            <CardDescription>
-              View and manage your resume analysis results
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-              </div>
-            ) : analyses.length === 0 ? (
-              <div className="text-center py-8">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No analyses yet</h3>
-                <p className="text-gray-600 mb-4">Get started by analyzing your first resume!</p>
-                <Link href="/">
-                  <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600">
-                    Analyze Resume
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {analyses.map((analysis) => (
-                  <div key={analysis.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <Badge variant={getScoreBadgeVariant(analysis.overallScore)}>
-                            Score: {analysis.overallScore || 'N/A'}%
-                          </Badge>
-                          <span className="text-sm text-gray-500">
-                            {formatDate(analysis.createdAt)}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 line-clamp-2">
-                          {analysis.data.jobDescription ? 
-                            `Job: ${analysis.data.jobDescription.substring(0, 100)}...` : 
-                            'Resume analysis'
-                          }
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            // Store analysis data and navigate to analysis page
-                            sessionStorage.setItem('analysisResults', JSON.stringify(analysis.data.analysis))
-                            sessionStorage.setItem('resumeData', JSON.stringify(analysis.data.resumeData))
-                            sessionStorage.setItem('jobDescription', analysis.data.jobDescription || '')
-                            router.push('/analysis')
-                          }}
-                        >
-                          <Eye className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(analysis.id)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+            </div>
+          </div>
 
-                {/* Pagination */}
-                {pagination.totalPages > 1 && (
-                  <div className="flex items-center justify-between pt-4">
-                    <p className="text-sm text-gray-600">
-                      Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
-                    </p>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePageChange(pagination.page - 1)}
-                        disabled={pagination.page <= 1}
-                      >
-                        Previous
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePageChange(pagination.page + 1)}
-                        disabled={pagination.page >= pagination.totalPages}
-                      >
-                        Next
-                      </Button>
-                    </div>
+          {/* Content */}
+          {loading ? (
+            <Card className="bg-white/90 backdrop-blur-sm border-orange-200 shadow-lg">
+              <CardContent className="p-12">
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                  <span className="ml-3 text-gray-600">Loading your analyses...</span>
+                </div>
+              </CardContent>
+            </Card>
+          ) : analyses.length === 0 ? (
+            <Card className="bg-white/90 backdrop-blur-sm border-orange-200 shadow-lg">
+              <CardContent className="p-12">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FileText className="h-8 w-8 text-orange-600" />
                   </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No analyses yet</h3>
+                  <p className="text-gray-600 mb-6 max-w-md mx-auto">Get started by analyzing your first resume and see how it matches with job descriptions!</p>
+                  <Link href="/">
+                    <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-lg">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Analyze Resume
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {analyses.map((analysis) => {
+                const isExpanded = expandedCards.has(analysis.id)
+                
+                return (
+                  <Card key={analysis.id} className="bg-white/95 backdrop-blur-sm border border-gray-200/80 hover:border-orange-300 hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <CardContent className="p-0">
+                      {/* Main Content */}
+                      <div className="p-6">
+                        {/* Header Row */}
+                        <div className="flex items-start justify-between mb-6">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-3">
+                              <Badge 
+                                variant={getScoreBadgeVariant(analysis.overallScore)} 
+                                className="text-sm font-semibold px-3 py-1"
+                              >
+                                {analysis.overallScore || 'N/A'}%
+                              </Badge>
+                              <div className="flex items-center text-sm text-gray-500">
+                                <Clock className="h-4 w-4 mr-1" />
+                                {formatDate(analysis.createdAt)}
+                              </div>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                              {analysis.title || 'Resume Analysis'}
+                            </h3>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2 ml-6">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleCardExpansion(analysis.id)}
+                              className="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                            >
+                              {isExpanded ? (
+                                <ChevronUp className="h-4 w-4" />
+                              ) : (
+                                <ChevronDown className="h-4 w-4" />
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                if (!analysis.data.analysis) {
+                                  alert('Analysis data is not available for this item.')
+                                  return
+                                }
+                                sessionStorage.setItem('analysisResults', JSON.stringify(analysis.data.analysis))
+                                sessionStorage.setItem('resumeData', JSON.stringify(analysis.data.resumeData))
+                                sessionStorage.setItem('jobDescription', analysis.data.jobDescription || '')
+                                
+                                // Store PDF images if available
+                                if (analysis.pdfImages && analysis.pdfImages.length > 0) {
+                                  sessionStorage.setItem('pdfImages', JSON.stringify(analysis.pdfImages))
+                                } else {
+                                  sessionStorage.removeItem('pdfImages')
+                                }
+                                
+                                router.push('/analysis')
+                              }}
+                              className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(analysis.id)}
+                              disabled={deletingId === analysis.id}
+                              className="text-gray-400 hover:text-red-500 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Quick Stats Grid */}
+                        {analysis.data.analysis && (
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
+                              <div className="flex items-center justify-between mb-2">
+                                <Star className="h-5 w-5 text-green-600" />
+                                <span className="text-2xl font-bold text-green-700">
+                                  {analysis.data.analysis.strengths?.length || 0}
+                                </span>
+                              </div>
+                              <div className="text-sm font-medium text-green-700">Strengths</div>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl p-4 border border-red-100">
+                              <div className="flex items-center justify-between mb-2">
+                                <Target className="h-5 w-5 text-red-600" />
+                                <span className="text-2xl font-bold text-red-700">
+                                  {analysis.data.analysis.weaknesses?.length || 0}
+                                </span>
+                              </div>
+                              <div className="text-sm font-medium text-red-700">Issues</div>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                              <div className="flex items-center justify-between mb-2">
+                                <TrendingUp className="h-5 w-5 text-blue-600" />
+                                <span className="text-2xl font-bold text-blue-700">
+                                  {analysis.data.analysis.suggestions?.length || 0}
+                                </span>
+                              </div>
+                              <div className="text-sm font-medium text-blue-700">Tips</div>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-100">
+                              <div className="flex items-center justify-between mb-2">
+                                <Search className="h-5 w-5 text-orange-600" />
+                                <span className="text-2xl font-bold text-orange-700">
+                                  {analysis.data.analysis.keywordMatch?.matchPercentage || 0}%
+                                </span>
+                              </div>
+                              <div className="text-sm font-medium text-orange-700">Match</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Expandable Content */}
+                      {isExpanded && (
+                        <div className="border-t border-gray-100 bg-gray-50/50">
+                          <div className="p-6 space-y-8">
+                            {/* Detailed Score Breakdown */}
+                            {analysis.data.analysis?.scoringBreakdown ? (
+                              <div>
+                                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                  <TrendingUp className="h-5 w-5 mr-2 text-gray-600" />
+                                  Score Breakdown
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                  {Object.entries(analysis.data.analysis.scoringBreakdown).map(([category, score]) => (
+                                    <div key={category} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                                      <div className="text-sm font-medium text-gray-700 mb-3">
+                                        {formatCategoryName(category)}
+                                      </div>
+                                      <div className="text-3xl font-bold text-gray-900 mb-3">
+                                        {String(score)}%
+                                      </div>
+                                      <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div 
+                                          className={`h-2 rounded-full transition-all duration-500 ${
+                                            Number(score) >= 80 ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
+                                            Number(score) >= 60 ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : 
+                                            'bg-gradient-to-r from-red-500 to-pink-500'
+                                          }`}
+                                          style={{ width: `${score}%` }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : (
+                              <div>
+                                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                  <TrendingUp className="h-5 w-5 mr-2 text-gray-600" />
+                                  Score Breakdown
+                                </h4>
+                                <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-gray-100">
+                                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <FileText className="h-6 w-6 text-gray-400" />
+                                  </div>
+                                  <p className="text-gray-600">Detailed score breakdown not available</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Keyword Match Section */}
+                            {analysis.data.analysis?.keywordMatch ? (
+                              <div>
+                                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                  <Search className="h-5 w-5 mr-2 text-gray-600" />
+                                  Keyword Match Analysis
+                                </h4>
+                                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                  <div className="flex items-center justify-between mb-4">
+                                    <span className="text-sm font-medium text-gray-700">Resume-Job Match Rate</span>
+                                    <span className="text-lg font-bold text-gray-900">
+                                      {analysis.data.analysis.keywordMatch.matchPercentage}%
+                                    </span>
+                                  </div>
+                                  <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+                                    <div 
+                                      className="h-3 rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-700"
+                                      style={{ width: `${analysis.data.analysis.keywordMatch.matchPercentage}%` }}
+                                    ></div>
+                                  </div>
+                                  <p className={`text-sm font-medium ${getKeywordMatchStatus(analysis.data.analysis.keywordMatch.matchPercentage).color}`}>
+                                    {getKeywordMatchStatus(analysis.data.analysis.keywordMatch.matchPercentage).text}
+                                  </p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div>
+                                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                  <Search className="h-5 w-5 mr-2 text-gray-600" />
+                                  Keyword Match Analysis
+                                </h4>
+                                <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-gray-100">
+                                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <Search className="h-6 w-6 text-gray-400" />
+                                  </div>
+                                  <p className="text-gray-600">Keyword analysis not available</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )
+              })}
+
+              {/* Pagination */}
+              {pagination.totalPages > 1 && (
+                <Card className="bg-white/90 backdrop-blur-sm border-orange-200 shadow-lg">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-gray-600">
+                        Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
+                      </p>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePageChange(pagination.page - 1)}
+                          disabled={pagination.page <= 1}
+                          className="bg-white hover:bg-gray-50 border-gray-300"
+                        >
+                          Previous
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePageChange(pagination.page + 1)}
+                          disabled={pagination.page >= pagination.totalPages}
+                          className="bg-white hover:bg-gray-50 border-gray-300"
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <Footer />
     </div>

@@ -4,12 +4,15 @@ import { useState } from 'react'
 
 interface ExtractedResumeData {
   text: string
+  documentId?: string
   metadata: {
     pages: number
     wordCount: number
     fileName: string
     fileSize: number
     extractedAt: string
+    aiProvider: string
+    fromCache?: boolean
   }
 }
 

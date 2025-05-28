@@ -137,7 +137,7 @@ export default function Home() {
     setSelectedProvider('anthropic')
   }
 
-  const handleStartRoasting = async (resumeData: any, jobDescription: string) => {
+  const handleStartRoasting = async (resumeData: any, jobDescription: string, analysisName?: string) => {
     if (!resumeData) {
       showAlert({
         title: "Resume Required",
@@ -188,7 +188,8 @@ export default function Home() {
         },
         body: JSON.stringify({
           resumeData,
-          jobDescription: jobDescription.trim()
+          jobDescription: jobDescription.trim(),
+          analysisName: analysisName?.trim()
         }),
       })
 
@@ -210,6 +211,11 @@ export default function Home() {
       sessionStorage.setItem('analysisResults', JSON.stringify(result.analysis))
       sessionStorage.setItem('resumeData', JSON.stringify(resumeData))
       sessionStorage.setItem('jobDescription', jobDescription)
+      
+      // Store PDF images if available
+      if (pdfImages && pdfImages.length > 0) {
+        sessionStorage.setItem('pdfImages', JSON.stringify(pdfImages))
+      }
       
       // Small delay to show 100% completion
       setTimeout(() => {

@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { LLMLogger, ConversationType, MessageRole, ConversationStatus } from '@/lib/llm-logger'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/database'
 
 const ANALYSIS_PROMPT = `You are an expert resume reviewer and career coach. Your task is to analyze a resume against a specific job description and provide brutally honest, actionable feedback.
 
@@ -61,44 +62,6 @@ Start with 10 and deduct:
 - Use Markdown formatting for readability
   - Include relevant emojis to enhance engagement and clarity
 - Aim for a professional yet friendly tone!
-EXAMPLE OF SCORE JUSTIFICATION:
-'''
-## 🎯 Score Breakdown: 78/100 – Strong Match
-
-### **Skills (32/40)**
-
-Solid technical fit:
-
-* ✅ SQL, Python, Snowflake/Tableau
-* ❌ Missing data modeling, orchestration tools, streaming experience
-
----
-
-### **Experience (24/30)**
-
-6+ years relevant work, but some mismatch:
-
-* ✅ Strong data work at IFF
-* ❌ Title misalignment, industry gap in earlier roles
-
----
-
-### **Achievements (18/20)**
-
-Impressive metrics 📊:
-
-* 40–60% faster research planning
-* 90% faster data processing
-* IRR +12%, 98% precision – strong impact
-
----
-
-### **Presentation (4/10)**
-
-Content is good, but formatting issues:
-
-* ❌ Contact info, date formats, portfolio link, and readability
-'''
 
 ## 2. DETAILED ANALYSIS
 
@@ -190,7 +153,7 @@ export async function POST(request: NextRequest) {
   let conversationId: string | null = null
 
   try {
-    const { resumeData, jobDescription } = await request.json()
+    const { resumeData, jobDescription, analysisName } = await request.json()
 
     if (!resumeData || !jobDescription) {
       return NextResponse.json(
@@ -210,46 +173,57 @@ export async function POST(request: NextRequest) {
 
     // Get user session for logging
     const session = await getServerSession(authOptions)
-    const userId = session?.user?.id
+    const userId = session?.user?.id || null
 
-    // Create conversation record
+    // Generate analysis title
+    let analysisTitle = analysisName?.trim()
+    if (!analysisTitle) {
+      // Auto-generate title with increment
+      const userAnalysisCount = await db.analysis.count({
+        where: { userId }
+      })
+      analysisTitle = `Analysis ${userAnalysisCount + 1}`
+    }
+
+    // Initialize Anthropic client
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY
+    })
+
+    // Create conversation for logging
     conversationId = await LLMLogger.createConversation({
-      userId,
+      userId: userId ?? undefined,
       type: ConversationType.RESUME_ANALYSIS,
-      title: `Resume Analysis`,
-      documentId: resumeData.documentId, // if available
+      title: analysisTitle,
+      documentId: resumeData.documentId || null,
       provider: 'anthropic',
       model: 'claude-sonnet-4-20250514'
     })
 
-    // Log system prompt
-    await LLMLogger.logMessage({
-      conversationId,
-      role: MessageRole.SYSTEM,
-      content: ANALYSIS_PROMPT
-    })
+    // Prepare the resume text
+    const resumeText = typeof resumeData === 'string' ? resumeData : 
+                      resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
 
-    // Initialize Anthropic client
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    })
-
-    const userPrompt = `Please analyze this resume against the job description and provide detailed feedback.
-
-RESUME:
-${resumeData.text}
-
-JOB DESCRIPTION:
-${jobDescription}
-
-Provide your analysis in the specified JSON format. Be thorough and honest in your assessment.`
+    console.log('Resume analysis - documentId:', resumeData.documentId) // Debug log
 
     // Log user message
+    const userPrompt = `Please analyze this resume against the job description:
+
+**RESUME:**
+${resumeText}
+
+**JOB DESCRIPTION:**
+${jobDescription}
+
+Please provide a comprehensive analysis following the framework above.`
+
     await LLMLogger.logMessage({
       conversationId,
       role: MessageRole.USER,
       content: userPrompt
     })
+
+    console.log('Sending request to Anthropic...')
 
     const startTime = Date.now()
     
@@ -350,14 +324,38 @@ Provide your analysis in the specified JSON format. Be thorough and honest in yo
 
     console.log(`Analysis completed with score: ${analysisData.overallScore}`)
 
+    // Save analysis to the new Analysis table
+    const analysisRecord = await db.analysis.create({
+      data: {
+        userId: userId ?? undefined,
+        title: analysisTitle,
+        documentId: resumeData.documentId || null,
+        jobDescription: jobDescription.trim(),
+        resumeText,
+        analysisData: JSON.stringify(analysisData),
+        overallScore: analysisData.overallScore,
+        provider: 'anthropic',
+        model: 'claude-sonnet-4-20250514',
+        conversationId,
+        totalTokensUsed: totalTokens,
+        totalCost: totalCost,
+        processingTime
+      }
+    })
+
+    console.log(`Analysis saved with ID: ${analysisRecord.id}`)
+
     return NextResponse.json({
       success: true,
       analysis: analysisData,
+      conversationId,
+      analysisId: analysisRecord.id,
       metadata: {
-        conversationId,
-        tokensUsed: totalTokens,
-        cost: totalCost,
-        processingTime
+        totalTokens,
+        totalCost,
+        processingTime,
+        provider: 'anthropic',
+        model: 'claude-sonnet-4-20250514'
       }
     })
 

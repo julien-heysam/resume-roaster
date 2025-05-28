@@ -6,7 +6,9 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { AlertCircle, CheckCircle, XCircle, Clock, User, AlertTriangle } from 'lucide-react'
+import { AlertCircle, CheckCircle, XCircle, Clock, User, AlertTriangle, Image, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 interface SharedAnalysisData {
   analysis: {
@@ -34,6 +36,9 @@ interface SharedAnalysisData {
     }
     atsIssues: string[]
   }
+  resumeData?: any
+  jobDescription?: string
+  pdfImages?: string[]
   metadata: {
     sharedBy: string
     sharedAt: string
@@ -48,6 +53,8 @@ export default function SharedAnalysisPage() {
   const [data, setData] = useState<SharedAnalysisData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showImageModal, setShowImageModal] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     if (!shareId) return
@@ -71,6 +78,31 @@ export default function SharedAnalysisPage() {
 
     fetchSharedAnalysis()
   }, [shareId])
+
+  // Handle PDF image modal
+  const handleOpenImageModal = () => {
+    if (data?.pdfImages && data.pdfImages.length > 0) {
+      setCurrentImageIndex(0)
+      setShowImageModal(true)
+    }
+  }
+
+  const handleCloseImageModal = () => {
+    setShowImageModal(false)
+    setCurrentImageIndex(0)
+  }
+
+  const handlePreviousImage = () => {
+    if (data?.pdfImages) {
+      setCurrentImageIndex(prev => prev > 0 ? prev - 1 : data.pdfImages!.length - 1)
+    }
+  }
+
+  const handleNextImage = () => {
+    if (data?.pdfImages) {
+      setCurrentImageIndex(prev => prev < data.pdfImages!.length - 1 ? prev + 1 : 0)
+    }
+  }
 
   if (loading) {
     return (
@@ -133,6 +165,49 @@ export default function SharedAnalysisPage() {
             </div>
           </div>
         </div>
+
+        {/* PDF Images Section */}
+        {data.pdfImages && data.pdfImages.length > 0 && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Image className="h-6 w-6 text-blue-500" />
+                <span>Original Resume</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  onClick={handleOpenImageModal}
+                  className="text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 bg-blue-50 hover:bg-blue-100"
+                >
+                  <Image className="h-4 w-4 mr-2" />
+                  View Resume ({data.pdfImages.length} page{data.pdfImages.length > 1 ? 's' : ''})
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Job Description Section */}
+        {data.jobDescription && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Briefcase className="h-6 w-6 text-purple-500" />
+                <span>Target Job Description</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
+                <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap">
+                  {data.jobDescription}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Overall Score */}
         <Card className="mb-6">
@@ -328,6 +403,74 @@ export default function SharedAnalysisPage() {
           <p className="mt-1">Analysis shared on {new Date(metadata.sharedAt).toLocaleDateString()}</p>
         </div>
       </div>
+
+      {/* PDF Images Modal */}
+      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="p-6 pb-2">
+            <DialogTitle className="flex items-center justify-between">
+              <span className="flex items-center space-x-2">
+                <Image className="h-5 w-5" />
+                <span>Resume Preview - Page {currentImageIndex + 1} of {data?.pdfImages?.length || 0}</span>
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="relative flex-1 p-6 pt-2">
+            {data?.pdfImages && data.pdfImages.length > 0 && (
+              <div className="relative">
+                {/* Main Image */}
+                <div className="flex justify-center items-center bg-gray-50 rounded-lg p-4 min-h-[400px]">
+                  <img
+                    src={`data:image/png;base64,${data.pdfImages[currentImageIndex]}`}
+                    alt={`Resume Page ${currentImageIndex + 1}`}
+                    className="max-w-full max-h-[60vh] object-contain shadow-lg rounded"
+                  />
+                </div>
+                
+                {/* Navigation Arrows */}
+                {data.pdfImages.length > 1 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreviousImage}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNextImage}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+                
+                {/* Page Indicators */}
+                {data.pdfImages.length > 1 && (
+                  <div className="flex justify-center mt-4 space-x-2">
+                    {data.pdfImages.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentImageIndex 
+                            ? 'bg-blue-600' 
+                            : 'bg-gray-300 hover:bg-gray-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useAlertDialog } from "@/components/ui/alert-dialog"
 import { 
   CheckCircle, 
@@ -23,13 +24,18 @@ import {
   Flame,
   Crown,
   Star,
-  XCircle
+  XCircle,
+  Image,
+  ChevronLeft,
+  ChevronRight,
+  Briefcase
 } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Link from "next/link"
-import { ArrowLeft, ChevronDown, ChevronRight, Info } from "lucide-react"
+import { ArrowLeft, ChevronDown, Info } from "lucide-react"
 import { useAnalysisActions } from "@/hooks/useAnalysisActions"
+import { useSubscription } from "@/hooks/useSubscription"
 import { Footer } from "@/components/ui/footer"
 
 interface AnalysisData {
@@ -67,8 +73,12 @@ export default function AnalysisPage() {
   const [cachedExtractionData, setCachedExtractionData] = useState<any>(null)
   const [cacheKey, setCacheKey] = useState<string | null>(null)
   const [isDebugExpanded, setIsDebugExpanded] = useState(false)
+  const [pdfImages, setPdfImages] = useState<string[]>([])
+  const [showImageModal, setShowImageModal] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   
   const { downloadReport, shareAnalysis, isDownloading, isSharing } = useAnalysisActions()
+  const { subscription } = useSubscription()
   const router = useRouter()
   const { showAlert, AlertDialog } = useAlertDialog()
 
@@ -350,6 +360,27 @@ Note: Original resume text was not available, using analysis data for optimizati
     proceedWithExtractedData(extractedData)
   }
 
+  // Handle PDF image modal
+  const handleOpenImageModal = () => {
+    if (pdfImages.length > 0) {
+      setCurrentImageIndex(0)
+      setShowImageModal(true)
+    }
+  }
+
+  const handleCloseImageModal = () => {
+    setShowImageModal(false)
+    setCurrentImageIndex(0)
+  }
+
+  const handlePreviousImage = () => {
+    setCurrentImageIndex(prev => prev > 0 ? prev - 1 : pdfImages.length - 1)
+  }
+
+  const handleNextImage = () => {
+    setCurrentImageIndex(prev => prev < pdfImages.length - 1 ? prev + 1 : 0)
+  }
+
   useEffect(() => {
     // Clean up old cache entries first
     cleanupOldCaches()
@@ -358,6 +389,7 @@ Note: Original resume text was not available, using analysis data for optimizati
     const storedAnalysis = sessionStorage.getItem('analysisResults')
     const storedResumeData = sessionStorage.getItem('resumeData')
     const storedJobDescription = sessionStorage.getItem('jobDescription')
+    const storedPdfImages = sessionStorage.getItem('pdfImages')
     
     if (storedResumeData) {
       try {
@@ -369,6 +401,14 @@ Note: Original resume text was not available, using analysis data for optimizati
     
     if (storedJobDescription) {
       setJobDescription(storedJobDescription)
+    }
+    
+    if (storedPdfImages) {
+      try {
+        setPdfImages(JSON.parse(storedPdfImages))
+      } catch (error) {
+        console.error('Failed to parse PDF images:', error)
+      }
     }
     
     if (storedAnalysis) {
@@ -557,7 +597,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => shareAnalysis(analysisData)}
+                onClick={() => shareAnalysis(analysisData, undefined, resumeData, jobDescription, pdfImages)}
                 disabled={isSharing || !analysisData}
               >
                 <Share2 className="h-4 w-4 mr-2" />
@@ -599,8 +639,8 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
           </Card>
         </div>
 
-        {/* Scoring Breakdown */}
-        {analysisData.scoringBreakdown && (
+{/* Scoring Breakdown */}
+{analysisData.scoringBreakdown && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Score Breakdown</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -665,6 +705,55 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
               </Card>
             </div>
           </div>
+        )}
+        
+        {/* Original Resume Section */}
+        {pdfImages.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Image className="h-6 w-6 text-blue-500" />
+                <span>Original Resume</span>
+              </CardTitle>
+              <CardDescription>
+                Your uploaded resume for reference
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  onClick={handleOpenImageModal}
+                  className="text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 bg-blue-50 hover:bg-blue-100"
+                >
+                  <Image className="h-4 w-4 mr-2" />
+                  View Resume ({pdfImages.length} page{pdfImages.length > 1 ? 's' : ''})
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Job Description Section */}
+        {jobDescription && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Briefcase className="h-6 w-6 text-purple-500" />
+                <span>Target Job Description</span>
+              </CardTitle>
+              <CardDescription>
+                The job posting you're targeting with this analysis
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
+                <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap">
+                  {jobDescription}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -1040,28 +1129,124 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
             </Card>
 
             {/* Upgrade Prompt */}
-            <Card className="bg-gradient-to-b from-orange-50 to-red-50 border-orange-200">
-              <CardHeader>
-                <CardTitle className="text-orange-700">Unlock Premium Features</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                  <li>• Unlimited resume roasts</li>
-                  <li>• AI-powered rewriting</li>
-                  <li>• ATS optimization</li>
-                  <li>• Cover letter generation</li>
-                </ul>
-                <Button className="w-full" size="sm">
-                  Upgrade to Premium
-                </Button>
-              </CardContent>
-            </Card>
+            {(!subscription || subscription.tier === 'FREE' || subscription.tier === 'PRO') && (
+              <Card className="bg-gradient-to-b from-orange-50 to-red-50 border-orange-200">
+                <CardHeader>
+                  <CardTitle className="text-orange-700">
+                    {!subscription || subscription.tier === 'FREE' 
+                      ? 'Unlock Premium Features' 
+                      : 'Upgrade to Enterprise'
+                    }
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm text-gray-600 space-y-2 mb-4">
+                    {!subscription || subscription.tier === 'FREE' ? (
+                      <>
+                        <li>• Unlimited resume roasts</li>
+                        <li>• AI-powered rewriting</li>
+                        <li>• ATS optimization</li>
+                        <li>• Cover letter generation</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>• Team collaboration tools</li>
+                        <li>• API access</li>
+                        <li>• Custom branding</li>
+                        <li>• Bulk processing</li>
+                        <li>• Advanced analytics</li>
+                        <li>• Dedicated account manager</li>
+                      </>
+                    )}
+                  </ul>
+                  <Button 
+                    className="w-full" 
+                    size="sm"
+                    onClick={() => router.push('/pricing')}
+                  >
+                    {!subscription || subscription.tier === 'FREE' 
+                      ? 'Upgrade to Premium' 
+                      : 'Upgrade to Enterprise'
+                    }
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
       
       {/* Alert Dialog */}
       {AlertDialog}
+
+      {/* PDF Images Modal */}
+      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="p-6 pb-2">
+            <DialogTitle className="flex items-center justify-between">
+              <span className="flex items-center space-x-2">
+                <Image className="h-5 w-5" />
+                <span>Resume Preview - Page {currentImageIndex + 1} of {pdfImages.length}</span>
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="relative flex-1 p-6 pt-2">
+            {pdfImages.length > 0 && (
+              <div className="relative">
+                {/* Main Image */}
+                <div className="flex justify-center items-center bg-gray-50 rounded-lg p-4 min-h-[400px]">
+                  <img
+                    src={`data:image/png;base64,${pdfImages[currentImageIndex]}`}
+                    alt={`Resume Page ${currentImageIndex + 1}`}
+                    className="max-w-full max-h-[60vh] object-contain shadow-lg rounded"
+                  />
+                </div>
+                
+                {/* Navigation Arrows */}
+                {pdfImages.length > 1 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreviousImage}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNextImage}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+                
+                {/* Page Indicators */}
+                {pdfImages.length > 1 && (
+                  <div className="flex justify-center mt-4 space-x-2">
+                    {pdfImages.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentImageIndex 
+                            ? 'bg-blue-600' 
+                            : 'bg-gray-300 hover:bg-gray-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   )

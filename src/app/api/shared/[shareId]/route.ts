@@ -53,16 +53,41 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const analysisData = JSON.parse(sharedAnalysis.analysisData)
     const settings = JSON.parse(sharedAnalysis.settings || '{}')
 
-    return NextResponse.json({
-      success: true,
-      analysis: analysisData,
-      metadata: {
-        sharedBy: sharedAnalysis.user.name || 'Anonymous',
-        sharedAt: sharedAnalysis.createdAt,
-        viewCount: sharedAnalysis.viewCount + 1,
-        settings
+    // Handle both old and new data formats for backward compatibility
+    let responseData
+    if (analysisData.analysis) {
+      // New format with comprehensive data
+      responseData = {
+        success: true,
+        analysis: analysisData.analysis,
+        resumeData: analysisData.resumeData,
+        jobDescription: analysisData.jobDescription,
+        pdfImages: analysisData.pdfImages || [],
+        metadata: {
+          sharedBy: sharedAnalysis.user.name || 'Anonymous',
+          sharedAt: sharedAnalysis.createdAt,
+          viewCount: sharedAnalysis.viewCount + 1,
+          settings
+        }
       }
-    })
+    } else {
+      // Old format - just analysis data
+      responseData = {
+        success: true,
+        analysis: analysisData,
+        resumeData: null,
+        jobDescription: null,
+        pdfImages: [],
+        metadata: {
+          sharedBy: sharedAnalysis.user.name || 'Anonymous',
+          sharedAt: sharedAnalysis.createdAt,
+          viewCount: sharedAnalysis.viewCount + 1,
+          settings
+        }
+      }
+    }
+
+    return NextResponse.json(responseData)
 
   } catch (error) {
     console.error('Get shared analysis error:', error)

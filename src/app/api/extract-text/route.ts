@@ -4,6 +4,7 @@ import JSZip from 'jszip'
 
 interface ExtractedResumeData {
   text: string
+  documentId?: string
   metadata: {
     pages: number
     wordCount: number
@@ -137,6 +138,7 @@ export async function POST(request: NextRequest) {
       // Return cached result
       const extractedData: ExtractedResumeData = {
         text: existingDocument.extractedText,
+        documentId: existingDocument.id,
         metadata: {
           pages: existingDocument.pageCount,
           wordCount: existingDocument.wordCount,
@@ -259,6 +261,7 @@ export async function POST(request: NextRequest) {
 
     const resultData: ExtractedResumeData = {
       text: extractedText,
+      documentId: savedDocument.id,
       metadata: {
         pages: estimatedPages,
         wordCount,

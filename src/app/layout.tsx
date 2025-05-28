@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "@/components/providers/session-provider";
+import { ChatbotProvider } from "@/components/providers/chatbot-provider";
 import { Toaster } from "sonner";
+import { Chatbot } from "@/components/ui/chatbot";
 
 export const metadata: Metadata = {
   title: "Resume Roaster - Brutally Honest Resume Feedback",
@@ -47,7 +49,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <Providers>
-          {children}
+          <ChatbotProvider>
+            {children}
+            <Chatbot />
+          </ChatbotProvider>
         </Providers>
         <Toaster />
       </body>
