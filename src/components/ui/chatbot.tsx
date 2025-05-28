@@ -211,63 +211,42 @@ export function Chatbot({ className }: ChatbotProps) {
           </div>
 
           {!isMinimized && (
-            <>
+            <div className="flex flex-col h-[536px]">
               {showConversationList ? (
                 /* Conversation List */
-                <div className="flex-1 p-4 h-[440px]">
-                  <div className="space-y-4">
+                <>
+                  <div className="flex-shrink-0 p-4 pb-2">
                     <div className="text-center">
                       <h4 className="font-medium text-gray-800 mb-2">Resume Assistant</h4>
                       <p className="text-sm text-gray-600 mb-4">How can I help you with your resume today?</p>
                     </div>
-                    
-                    {/* Quick Actions */}
-                    <div className="space-y-2">
-                      <p className="text-xs text-gray-500 px-2">Quick actions:</p>
-                      <div className="grid grid-cols-1 gap-2">
-                        {QUICK_ACTIONS.map((action, index) => (
-                          <Button
-                            key={index}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleQuickAction(action.query)}
-                            className="justify-start gap-2 h-auto py-3 text-left hover:bg-orange-50 hover:border-orange-200 transition-all duration-200 hover:scale-[1.02]"
-                          >
-                            <action.icon className="w-4 h-4 text-orange-500" />
-                            <span className="text-sm">{action.text}</span>
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Text Input for Custom Questions */}
-                    <div className="space-y-2">
-                      <p className="text-xs text-gray-500 px-2">Or ask anything:</p>
-                      <div className="flex gap-2">
-                        <Input
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                          onKeyPress={handleKeyPress}
-                          placeholder="Ask me anything about resumes..."
-                          className="flex-1 border-gray-200 focus:border-orange-500 focus:ring-orange-500 transition-all duration-200"
-                          disabled={isTyping}
-                        />
-                        <Button
-                          onClick={() => handleSendMessage()}
-                          disabled={!inputValue.trim() || isTyping}
-                          size="icon"
-                          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-200 hover:scale-105"
-                        >
-                          <Send className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Previous Conversations */}
-                    {conversations.length > 0 && (
+                  </div>
+                  
+                  <ScrollArea className="flex-1 px-4 chatbot-scroll">
+                    <div className="space-y-4 pb-4">
+                      {/* Quick Actions */}
                       <div className="space-y-2">
-                        <p className="text-xs text-gray-500 px-2">Previous conversations:</p>
-                        <ScrollArea className="h-[200px] chatbot-scroll">
+                        <p className="text-xs text-gray-500 px-2">Quick actions:</p>
+                        <div className="grid grid-cols-1 gap-2">
+                          {QUICK_ACTIONS.map((action, index) => (
+                            <Button
+                              key={index}
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleQuickAction(action.query)}
+                              className="justify-start gap-2 h-auto py-3 text-left hover:bg-orange-50 hover:border-orange-200 transition-all duration-200 hover:scale-[1.02]"
+                            >
+                              <action.icon className="w-4 h-4 text-orange-500" />
+                              <span className="text-sm">{action.text}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Previous Conversations */}
+                      {conversations.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-xs text-gray-500 px-2">Previous conversations:</p>
                           {isLoading ? (
                             <div className="text-center py-4 text-gray-500">
                               <div className="w-6 h-6 mx-auto mb-2 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -301,15 +280,40 @@ export function Chatbot({ className }: ChatbotProps) {
                               ))}
                             </div>
                           )}
-                        </ScrollArea>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+
+                  {/* Text Input for Custom Questions - Anchored at bottom */}
+                  <div className="flex-shrink-0 p-4 bg-white border-t border-gray-100">
+                    <div className="space-y-2">
+                      <p className="text-xs text-gray-500">Or ask anything:</p>
+                      <div className="flex gap-2">
+                        <Input
+                          value={inputValue}
+                          onChange={(e) => setInputValue(e.target.value)}
+                          onKeyPress={handleKeyPress}
+                          placeholder="Ask me anything about resumes..."
+                          className="flex-1 border-gray-200 focus:border-orange-500 focus:ring-orange-500 transition-all duration-200"
+                          disabled={isTyping}
+                        />
+                        <Button
+                          onClick={() => handleSendMessage()}
+                          disabled={!inputValue.trim() || isTyping}
+                          size="icon"
+                          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-200 hover:scale-105"
+                        >
+                          <Send className="w-4 h-4" />
+                        </Button>
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
+                </>
               ) : (
                 <>
                   {/* Messages */}
-                  <ScrollArea className="flex-1 p-4 h-[440px] chatbot-scroll">
+                  <ScrollArea className="flex-1 p-4 chatbot-scroll">
                     <div className="space-y-4">
                       {currentMessages.map((message, index) => (
                         <div
@@ -387,8 +391,8 @@ export function Chatbot({ className }: ChatbotProps) {
                     <div ref={messagesEndRef} />
                   </ScrollArea>
 
-                  {/* Input */}
-                  <div className="p-4 border-t bg-gray-50/50">
+                  {/* Input - Anchored at bottom */}
+                  <div className="flex-shrink-0 p-4 bg-white border-t border-gray-100">
                     <div className="flex gap-2">
                       <Input
                         ref={inputRef}
@@ -411,7 +415,7 @@ export function Chatbot({ className }: ChatbotProps) {
                   </div>
                 </>
               )}
-            </>
+            </div>
           )}
         </Card>
       )}
