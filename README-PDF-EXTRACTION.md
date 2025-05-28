@@ -1,6 +1,6 @@
 # PDF Extraction System
 
-Resume Roaster now supports a two-tier PDF extraction system that provides different levels of service based on user registration status.
+Resume Roaster now supports a three-tier PDF extraction system that provides different levels of service based on user registration status and AI provider choice.
 
 ## Overview
 
@@ -12,7 +12,7 @@ Resume Roaster now supports a two-tier PDF extraction system that provides diffe
 - **Use Case**: Quick resume processing, simple text extraction
 
 ### For Registered Users
-Registered users can choose between two extraction methods:
+Registered users can choose between three extraction methods:
 
 #### 1. Basic Extraction (Free)
 - **Technology**: `pdf-parse` and `node-poppler`
@@ -21,27 +21,34 @@ Registered users can choose between two extraction methods:
 - **Output**: Plain text extraction
 - **Best For**: Simple resumes, quick processing, preserving credits
 
-#### 2. AI Extraction (Premium)
+#### 2. GPT-4 Mini AI Extraction (0.5 Credits)
+- **Technology**: OpenAI GPT-4 Mini with basic PDF text extraction + AI formatting
+- **Processing Time**: 10-20 seconds
+- **Cost**: 0.5 credits (~$0.01-0.025)
+- **Output**: AI-formatted markdown with smart structure
+- **Best For**: Budget-conscious users, good formatting, faster AI processing
+
+#### 3. Claude Sonnet 4 AI Extraction (1 Credit)
 - **Technology**: Anthropic Claude Sonnet 4 with direct PDF processing
 - **Processing Time**: 15-30 seconds
 - **Cost**: 1 credit (~$0.02-0.05)
-- **Output**: Formatted markdown with proper structure
-- **Best For**: Complex resumes, better formatting, professional structure
+- **Output**: Superior formatted markdown with highest accuracy
+- **Best For**: Complex resumes, highest quality, direct PDF processing
 
 ## API Endpoints
 
 ### `/api/extract-pdf-ai`
-Main endpoint that handles both basic and AI extraction based on user status and preferences.
+Main endpoint that handles basic and both AI extraction methods based on user status and preferences.
 
 **Parameters:**
 - `file`: PDF file to extract
 - `userId`: Optional user ID for registered users
 - `extractionMethod`: `'basic'`, `'ai'`, or `'auto'` (default: `'auto'`)
-- `provider`: AI provider (currently only `'anthropic'`)
+- `provider`: AI provider - `'anthropic'` (Claude Sonnet 4) or `'openai'` (GPT-4 Mini)
 
 **Logic:**
 - Non-registered users: Always use basic extraction
-- Registered users: Respect `extractionMethod` parameter
+- Registered users: Respect `extractionMethod` and `provider` parameters
 - Caching: Results are cached by file hash to avoid reprocessing
 
 ### `/api/extract-pdf-basic`
@@ -55,9 +62,21 @@ Dedicated endpoint for basic PDF extraction (legacy support).
 3. **Final Fallback**: Meaningful placeholder with file metadata
 
 ### AI Extraction Process
+
+#### Claude Sonnet 4 (Anthropic)
 1. **Direct PDF Processing**: Send PDF directly to Claude Sonnet 4
 2. **Structured Output**: JSON response with markdown, summary, and sections
 3. **Fallback Parsing**: Handle cases where JSON parsing fails
+
+#### GPT-4 Mini (OpenAI)
+1. **Two-Step Process**: First extract text using basic methods, then process with GPT-4 Mini
+2. **AI Enhancement**: GPT-4 Mini formats and structures the extracted text
+3. **Cost Efficient**: Uses cheaper model while still providing AI formatting
+
+### Credit System
+- **Basic Extraction**: 0 credits (free)
+- **GPT-4 Mini**: 0.5 credits per extraction
+- **Claude Sonnet 4**: 1 credit per extraction
 
 ### File Handling
 - **Temporary Files**: Created in system temp directory for basic extraction

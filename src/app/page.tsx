@@ -22,6 +22,7 @@ export default function Home() {
   const [step, setStep] = useState<'upload' | 'method-select' | 'extracted' | 'analyzing'>('upload')
   const [analysisProgress, setAnalysisProgress] = useState(0)
   const [selectedExtractionMethod, setSelectedExtractionMethod] = useState<'basic' | 'ai'>('basic')
+  const [selectedProvider, setSelectedProvider] = useState<'anthropic' | 'openai'>('anthropic')
   const { data: session } = useSession()
   const { showAlert, AlertDialog } = useAlertDialog()
   
@@ -40,6 +41,9 @@ export default function Home() {
     isExtracting,
     extractedData,
     error: extractionError,
+    images: pdfImages,
+    documentId,
+    fileHash,
     extractFile,
     clearExtraction,
     deleteDocument,
@@ -97,11 +101,15 @@ export default function Home() {
     }
   }
 
-  const handleExtractionMethodSelect = async (method: 'basic' | 'ai') => {
+  const handleExtractionMethodSelect = async (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai') => {
     setSelectedExtractionMethod(method)
+    if (provider) {
+      setSelectedProvider(provider)
+    }
     
     if (selectedFile) {
-      const extracted = await extractFile(selectedFile, session?.user?.id, method)
+      const extractionProvider = method === 'ai' ? (provider || 'anthropic') : 'anthropic'
+      const extracted = await extractFile(selectedFile, session?.user?.id, method, extractionProvider)
       if (extracted) {
         setStep('extracted')
       }
@@ -109,18 +117,24 @@ export default function Home() {
   }
 
   const handleFileRemove = async () => {
-    // Delete document from database if it exists
-    if (extractedData) {
-      await deleteDocument(session?.user?.id)
-    } else {
-      // If no extracted data, just clear the state
-      clearExtraction()
+    // Only try to delete document from database if it exists and has been processed
+    if (extractedData && (documentId || fileHash)) {
+      try {
+        await deleteDocument(session?.user?.id)
+      } catch (error) {
+        console.warn('Failed to delete document from database:', error)
+        // Continue with cleanup even if database deletion fails
+      }
     }
+    
+    // Always clear the extraction state
+    clearExtraction()
     
     setSelectedFile(null)
     setStep('upload')
     setAnalysisProgress(0)
     setSelectedExtractionMethod('basic')
+    setSelectedProvider('anthropic')
   }
 
   const handleStartRoasting = async (resumeData: any, jobDescription: string) => {
@@ -287,6 +301,7 @@ export default function Home() {
                     selectedFile={selectedFile}
                     onFileSelect={handleFileSelect}
                     onFileRemove={handleFileRemove}
+                    pdfImages={pdfImages || []}
                     accept={{
                       'application/pdf': ['.pdf'],
                       'application/msword': ['.doc'],
@@ -342,6 +357,7 @@ export default function Home() {
                     isRegistered={isAuthenticated}
                     onMethodSelect={handleExtractionMethodSelect}
                     selectedMethod={selectedExtractionMethod}
+                    selectedProvider={selectedProvider}
                     disabled={isExtracting}
                   />
                   
@@ -353,7 +369,9 @@ export default function Home() {
                         <span className="text-blue-700">
                           {selectedExtractionMethod === 'basic' 
                             ? 'Extracting text using basic method...' 
-                            : 'Processing with AI extraction...'
+                            : selectedProvider === 'openai'
+                            ? 'Processing with GPT-4 Mini...'
+                            : 'Processing with Claude Sonnet 4...'
                           }
                         </span>
                       </div>
@@ -392,6 +410,7 @@ export default function Home() {
                     
                     <ExtractedTextPreview 
                       data={extractedData}
+                      images={pdfImages}
                       onProceed={handleStartRoasting}
                       onClear={handleFileRemove}
                       isProcessing={isExtracting}

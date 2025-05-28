@@ -44,12 +44,14 @@ export class DocumentService {
     extractionCost?: number
     summary?: string
     sections?: string[]
+    images?: string[]
     processingTime: number
   }) {
     return await db.document.create({
       data: {
         ...data,
-        sections: data.sections || []
+        sections: data.sections || [],
+        images: data.images || []
       }
     })
   }

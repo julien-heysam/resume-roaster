@@ -10,7 +10,8 @@ import { ScrollArea } from "./scroll-area"
 import { Textarea } from "./textarea"
 import { Input } from "./input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs"
-import { Eye, EyeOff, FileText, Hash, Calendar, HardDrive, Link, Loader, Briefcase, Flame, RotateCcw, X } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog"
+import { Eye, EyeOff, FileText, Hash, Calendar, HardDrive, Link, Loader, Briefcase, Flame, RotateCcw, X, ChevronLeft, ChevronRight, Image } from "lucide-react"
 
 interface ExtractedResumeData {
   text: string
@@ -28,6 +29,7 @@ interface ExtractedResumeData {
 
 interface ExtractedTextPreviewProps {
   data: ExtractedResumeData
+  images?: string[]
   onProceed?: (resumeData: ExtractedResumeData, jobDescription: string) => void
   onClear?: () => void
   isProcessing?: boolean
@@ -36,6 +38,7 @@ interface ExtractedTextPreviewProps {
 
 export function ExtractedTextPreview({ 
   data, 
+  images = [],
   onProceed, 
   onClear,
   isProcessing = false,
@@ -47,10 +50,32 @@ export function ExtractedTextPreview({
   const [activeTab, setActiveTab] = useState("text")
   const [isStartingAnalysis, setIsStartingAnalysis] = useState(false)
   const [renderKey, setRenderKey] = useState(0)
+  const [showImageModal, setShowImageModal] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const handleToggleFullText = () => {
     setShowFullText(prev => !prev)
     setRenderKey(prev => prev + 1) // Force re-render
+  }
+
+  const handleOpenImageModal = () => {
+    if (images.length > 0) {
+      setCurrentImageIndex(0)
+      setShowImageModal(true)
+    }
+  }
+
+  const handleCloseImageModal = () => {
+    setShowImageModal(false)
+    setCurrentImageIndex(0)
+  }
+
+  const handlePreviousImage = () => {
+    setCurrentImageIndex(prev => prev > 0 ? prev - 1 : images.length - 1)
+  }
+
+  const handleNextImage = () => {
+    setCurrentImageIndex(prev => prev < images.length - 1 ? prev + 1 : 0)
   }
 
   const handleProceed = () => {
@@ -139,6 +164,20 @@ export function ExtractedTextPreview({
               </div>
             </div>
           </div>
+
+          {/* PDF Images Preview Button */}
+          {images.length > 0 && (
+            <div className="mb-6 flex justify-center">
+              <Button
+                variant="outline"
+                onClick={handleOpenImageModal}
+                className="text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 bg-blue-50 hover:bg-blue-100"
+              >
+                <Image className="h-4 w-4 mr-2" />
+                View PDF Images ({images.length})
+              </Button>
+            </div>
+          )}
 
           {/* Resume Text Preview */}
           <div className="border border-gray-200 rounded-lg p-4 bg-white">
@@ -303,6 +342,82 @@ export function ExtractedTextPreview({
           )}
         </Button>
       </div>
+
+      {/* PDF Images Modal */}
+      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="p-6 pb-2">
+            <DialogTitle className="flex items-center justify-between">
+              <span className="flex items-center space-x-2">
+                <Image className="h-5 w-5" />
+                <span>PDF Preview - Page {currentImageIndex + 1} of {images.length}</span>
+              </span>
+              {/* <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCloseImageModal}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button> */}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="relative flex-1 p-6 pt-2">
+            {images.length > 0 && (
+              <div className="relative">
+                {/* Main Image */}
+                <div className="flex justify-center items-center bg-gray-50 rounded-lg p-4 min-h-[400px]">
+                  <img
+                    src={`data:image/png;base64,${images[currentImageIndex]}`}
+                    alt={`PDF Page ${currentImageIndex + 1}`}
+                    className="max-w-full max-h-[60vh] object-contain shadow-lg rounded"
+                  />
+                </div>
+                
+                {/* Navigation Arrows */}
+                {images.length > 1 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreviousImage}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNextImage}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+                
+                {/* Page Indicators */}
+                {images.length > 1 && (
+                  <div className="flex justify-center mt-4 space-x-2">
+                    {images.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentImageIndex 
+                            ? 'bg-blue-600' 
+                            : 'bg-gray-300 hover:bg-gray-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 

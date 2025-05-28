@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useDropzone } from "react-dropzone"
 import { Upload, FileText, X } from "lucide-react"
+import { PDFPreview } from './pdf-preview'
 
 import { cn } from "@/lib/utils"
 
@@ -13,6 +14,7 @@ interface FileUploadProps {
   accept?: Record<string, string[]>
   maxSize?: number
   className?: string
+  pdfImages?: string[]
 }
 
 export function FileUpload({
@@ -26,7 +28,8 @@ export function FileUpload({
     'text/plain': ['.txt']
   },
   maxSize = 10 * 1024 * 1024, // 10MB
-  className
+  className,
+  pdfImages = []
 }: FileUploadProps) {
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     accept,
@@ -39,26 +42,38 @@ export function FileUpload({
     }
   })
 
+  const isPDF = selectedFile && (selectedFile.type.includes('pdf') || selectedFile.name.toLowerCase().endsWith('.pdf'))
+
   if (selectedFile) {
     return (
-      <div className={cn("rounded-lg border border-gray-200 p-4", className)}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <FileText className="h-8 w-8 text-orange-500" />
-            <div>
-              <p className="font-medium text-gray-900">{selectedFile.name}</p>
-              <p className="text-sm text-gray-500">
-                {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-              </p>
+      <div className={cn("space-y-4", className)}>
+        <div className="rounded-lg border border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <FileText className="h-8 w-8 text-orange-500" />
+              <div>
+                <p className="font-medium text-gray-900">{selectedFile.name}</p>
+                <p className="text-sm text-gray-500">
+                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              </div>
             </div>
+            <button
+              onClick={onFileRemove}
+              className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
-          <button
-            onClick={onFileRemove}
-            className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-          >
-            <X className="h-5 w-5" />
-          </button>
         </div>
+
+        {isPDF && pdfImages && pdfImages.length > 0 && (
+          <PDFPreview 
+            images={pdfImages} 
+            fileName={selectedFile.name}
+            className="mt-4"
+          />
+        )}
       </div>
     )
   }

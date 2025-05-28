@@ -32,14 +32,11 @@ export function usePdfExtractionAI() {
   })
 
   const extractPdf = async (file: File, provider: 'anthropic' | 'openai' = 'anthropic'): Promise<ExtractedResumeData | null> => {
-    // Force anthropic for now since it's the only one that supports direct PDF
-    const selectedProvider = 'anthropic'
-    
     setState(prev => ({ 
       ...prev, 
       isExtracting: true, 
       error: null, 
-      currentProvider: selectedProvider 
+      currentProvider: provider 
     }))
 
     try {
@@ -57,7 +54,7 @@ export function usePdfExtractionAI() {
       // Create FormData to send the file
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('provider', selectedProvider)
+      formData.append('provider', provider)
 
       // Call the AI extraction API endpoint
       const response = await fetch('/api/extract-pdf-ai', {
@@ -83,7 +80,7 @@ export function usePdfExtractionAI() {
         error: null,
         summary: result.summary,
         sections: result.sections,
-        currentProvider: selectedProvider
+        currentProvider: provider
       })
 
       return extractedData

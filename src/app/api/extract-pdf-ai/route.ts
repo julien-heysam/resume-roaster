@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import { DocumentService, UserService, UsageService, generateFileHash } from '@/lib/database'
+import { convertPDFToImages } from '@/lib/pdf-to-image'
 import fs from 'fs/promises'
 import path from 'path'
 import os from 'os'
+
+// Add canvas import for image conversion
+import { createCanvas } from 'canvas'
 
 interface ExtractedResumeData {
   text: string
@@ -17,6 +22,8 @@ interface ExtractedResumeData {
     fromCache?: boolean
   }
 }
+
+// PDF to image conversion is now handled by the imported utility function
 
 // Basic PDF text extraction using pdf-parse and node-poppler
 const extractTextFromPDFBasic = async (filePath: string, originalName?: string): Promise<string> => {
@@ -95,9 +102,14 @@ This document is now searchable by filename and basic metadata.`
 
 const SYSTEM_PROMPT = `You are an expert resume parser and markdown formatter. Your task is to extract text content from PDF documents and format it as clean, professional markdown.
 
+You will receive:
+1. The PDF document (for direct text processing)
+2. Visual images of the PDF pages (for layout and formatting context)
+
 Instructions:
 1. Extract ALL text content from the PDF document
-2. Format the content as clean markdown with proper hierarchy:
+2. Use the visual images to understand the layout, formatting, and structure
+3. Format the content as clean markdown with proper hierarchy:
    - Use # for the person's name (main header)
    - Use ## for major sections (EXPERIENCE, EDUCATION, SKILLS, etc.)
    - Use ### for job titles, company names, or subsections
@@ -106,8 +118,8 @@ Instructions:
    - Use *italic* for job descriptions or dates where appropriate
    - Preserve tables using markdown table format if present
 
-3. Maintain the logical structure and flow of the original resume
-4. Preserve all important information including:
+4. Maintain the logical structure and flow of the original resume based on visual layout
+5. Preserve all important information including:
    - Contact information (email, phone, LinkedIn, etc.)
    - Work experience with dates, companies, and descriptions
    - Education details
@@ -115,8 +127,17 @@ Instructions:
    - Any other relevant sections
    - Tables, figures, and structured data
 
-5. Make the markdown readable and professional
-6. If multiple pages are in the PDF, combine them into a single coherent document
+6. Use the visual context to:
+   - Understand column layouts and preserve them appropriately
+   - Identify headers, subheaders, and section breaks
+   - Recognize formatting emphasis (bold, italic, etc.)
+   - Maintain proper spacing and organization
+   - Handle multi-column layouts correctly
+   - Preserve visual hierarchy and design elements
+
+7. Make the markdown readable and professional
+8. If multiple pages are in the PDF, combine them into a single coherent document
+9. Use intelligent formatting to improve readability while preserving the original structure
 
 Please respond with a JSON object containing:
 - "markdown": the extracted content formatted as clean markdown
@@ -124,6 +145,12 @@ Please respond with a JSON object containing:
 - "sections": an array of main sections found in the resume
 
 Output the content as clean, well-formatted markdown that would look professional when rendered.`
+
+// Credit costs for different AI providers
+const AI_PROVIDER_COSTS = {
+  'anthropic': 1.0,    // Claude Sonnet 4 - 1 credit
+  'openai': 0.5        // GPT-4 Mini - 0.5 credits
+} as const
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now()
@@ -205,6 +232,7 @@ export async function POST(request: NextRequest) {
         data: extractedData,
         summary: existingDocument.summary || "Resume content extracted from cache",
         sections: existingDocument.sections || ["Resume Content"],
+        images: existingDocument.images || [],
         fromCache: true,
         documentId: existingDocument.id,
         fileHash: fileHash
@@ -244,6 +272,7 @@ export async function POST(request: NextRequest) {
     let extractedText: string
     let extractedData: any = {}
     let estimatedCost = 0
+    let pdfImages: string[] = [] // Store images for frontend display
 
     if (useBasicExtraction) {
       // Use basic extraction method
@@ -259,6 +288,10 @@ export async function POST(request: NextRequest) {
         
         // Extract text using basic methods
         extractedText = await extractTextFromPDFBasic(tempFilePath, file.name)
+        
+        // For basic extraction, still generate images for preview
+        console.log('🖼️ Generating PDF preview images...')
+        pdfImages = await convertPDFToImages(buffer)
         
         extractedData = {
           markdown: extractedText,
@@ -278,95 +311,266 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // Use AI extraction method
-      if (provider !== 'anthropic') {
+      console.log(`Using AI PDF extraction with provider: ${provider}`)
+
+      if (provider === 'anthropic') {
+        // Check for API key
+        if (!process.env.ANTHROPIC_API_KEY) {
+          return NextResponse.json(
+            { error: 'ANTHROPIC_API_KEY not found in environment variables.' },
+            { status: 500 }
+          )
+        }
+
+        console.log('Using Anthropic Claude Sonnet 4 for PDF extraction...')
+
+        // Initialize Anthropic client
+        const anthropic = new Anthropic({
+          apiKey: process.env.ANTHROPIC_API_KEY,
+        })
+
+        const base64Data = buffer.toString('base64')
+
+        // Convert PDF to images for visual context
+        console.log('🖼️ Converting PDF to images for visual context...')
+        pdfImages = await convertPDFToImages(buffer)
+
+        console.log('📤 Sending PDF and images to Claude for enhanced extraction...')
+        
+        // Build the content array with PDF and images
+        const messageContent: any[] = [
+          {
+            type: "text",
+            text: `Extract the resume content from this PDF and format it as clean, professional markdown. I'm providing both the PDF document and visual images of the pages for better context understanding.
+
+🎯 Use the visual images to understand:
+- Layout and formatting structure (columns, spacing, alignment)
+- Headers, subheaders, and section breaks
+- Visual emphasis (bold, italic, underlined text)
+- Tables, figures, and structured data
+- Professional formatting and design elements
+
+📋 Focus on maintaining the original structure and hierarchy while making it readable and well-formatted. Respond with JSON containing markdown, summary, and sections fields.`
+          },
+          {
+            type: "document",
+            source: {
+              type: "base64",
+              media_type: "application/pdf",
+              data: base64Data
+            }
+          }
+        ]
+
+        // Add images if available
+        if (pdfImages.length > 0) {
+          console.log(`📸 Adding ${pdfImages.length} page images for visual context`)
+          pdfImages.forEach((imageBase64, index) => {
+            messageContent.push({
+              type: "image",
+              source: {
+                type: "base64",
+                media_type: "image/png",
+                data: imageBase64
+              }
+            })
+          })
+        } else {
+          console.log('⚠️ No images generated, proceeding with PDF only')
+        }
+        
+        const message = await anthropic.messages.create({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 8000,
+          temperature: 0.1,
+          system: SYSTEM_PROMPT,
+          messages: [
+            {
+              role: "user",
+              content: messageContent
+            }
+          ]
+        })
+
+        // Extract text content from the response
+        const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
+        
+        try {
+          // Claude might wrap JSON in code blocks, so let's handle that
+          let jsonText = responseText.trim()
+          
+          // Remove markdown code blocks if present
+          if (jsonText.startsWith('```json')) {
+            jsonText = jsonText.replace(/^```json\s*/, '').replace(/```\s*$/, '')
+          } else if (jsonText.startsWith('```')) {
+            jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '')
+          }
+          
+          // Try to parse as JSON
+          extractedData = JSON.parse(jsonText)
+          
+          // Extract only the markdown content
+          extractedText = extractedData.markdown?.trim() || ''
+          
+          if (!extractedText) {
+            throw new Error('No markdown content found in response')
+          }
+          
+        } catch (parseError) {
+          console.log('Failed to parse JSON response, treating entire response as markdown')
+          
+          // If JSON parsing fails, use the entire response as markdown
+          extractedText = responseText.trim()
+          extractedData = {
+            markdown: extractedText,
+            summary: "Resume content extracted and formatted as markdown using Claude",
+            sections: ["Resume Content"]
+          }
+        }
+
+      } else if (provider === 'openai') {
+        // Check for API key
+        if (!process.env.OPENAI_API_KEY) {
+          return NextResponse.json(
+            { error: 'OPENAI_API_KEY not found in environment variables.' },
+            { status: 500 }
+          )
+        }
+
+        console.log('Using OpenAI GPT-4 Mini for PDF extraction...')
+
+        // For OpenAI, we need to first extract text using basic method, then process with GPT-4 Mini
+        // since OpenAI doesn't support direct PDF processing like Claude
+        const tempDir = os.tmpdir()
+        const tempFilePath = path.join(tempDir, `pdf_${Date.now()}_${Math.random().toString(36).substring(7)}.pdf`)
+        
+        try {
+          // Write buffer to temporary file
+          await fs.writeFile(tempFilePath, buffer)
+          
+          // Extract text using basic methods first
+          const rawText = await extractTextFromPDFBasic(tempFilePath, file.name)
+          
+          // Convert PDF to images for visual context
+          console.log('🖼️ Converting PDF to images for visual context...')
+          const pdfImagesOpenAI = await convertPDFToImages(buffer)
+          pdfImages = pdfImagesOpenAI // Store for frontend display
+          
+          // Initialize OpenAI client
+          const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+          })
+
+          console.log('📤 Processing extracted text and images with GPT-4 Mini for enhanced formatting...')
+          
+          // Build the messages array with text and images
+          const messages: any[] = [
+            {
+              role: "system",
+              content: SYSTEM_PROMPT
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: `Please process this extracted resume text and format it as clean, professional markdown. I'm providing both the raw extracted text and visual images of the PDF pages for better context understanding.
+
+🎯 Use the visual images to understand:
+- Layout and formatting structure (columns, spacing, alignment)
+- Headers, subheaders, and section breaks  
+- Visual emphasis (bold, italic, underlined text)
+- Tables, figures, and structured data
+- Professional formatting and design elements
+
+Here is the raw text extracted from the PDF resume:
+
+${rawText}
+
+📋 Please format this content according to the guidelines in the system prompt and return a JSON object with:
+- "markdown": the formatted content as clean markdown
+- "summary": a brief summary of the resume content  
+- "sections": an array of main sections found in the resume`
+                }
+              ]
+            }
+          ]
+
+          // Add images if available
+          if (pdfImages.length > 0) {
+            console.log(`📸 Adding ${pdfImages.length} page images for visual context`)
+            pdfImages.forEach((imageBase64, index) => {
+              messages[1].content.push({
+                type: "image_url",
+                image_url: {
+                  url: `data:image/png;base64,${imageBase64}`,
+                  detail: "high"
+                }
+              })
+            })
+          } else {
+            console.log('⚠️ No images generated, proceeding with text only')
+          }
+          
+          const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: messages,
+            temperature: 0.1,
+            max_tokens: 4000
+          })
+
+          const responseText = completion.choices[0]?.message?.content || ''
+          
+          try {
+            // GPT-4 might wrap JSON in code blocks, so let's handle that
+            let jsonText = responseText.trim()
+            
+            // Remove markdown code blocks if present
+            if (jsonText.startsWith('```json')) {
+              jsonText = jsonText.replace(/^```json\s*/, '').replace(/```\s*$/, '')
+            } else if (jsonText.startsWith('```')) {
+              jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '')
+            }
+            
+            // Try to parse as JSON
+            extractedData = JSON.parse(jsonText)
+            
+            // Extract only the markdown content
+            extractedText = extractedData.markdown?.trim() || ''
+            
+            if (!extractedText) {
+              throw new Error('No markdown content found in response')
+            }
+            
+          } catch (parseError) {
+            console.log('Failed to parse JSON response, treating entire response as markdown')
+            
+            // If JSON parsing fails, use the entire response as markdown
+            extractedText = responseText.trim()
+            extractedData = {
+              markdown: extractedText,
+              summary: "Resume content extracted and formatted as markdown using GPT-4 Mini",
+              sections: ["Resume Content"]
+            }
+          }
+          
+        } finally {
+          // Clean up temporary file
+          try {
+            await fs.unlink(tempFilePath)
+          } catch (cleanupError) {
+            console.warn('Failed to clean up temporary file:', cleanupError)
+          }
+        }
+
+      } else {
         return NextResponse.json(
-          { error: 'Only Anthropic Claude provider supports direct PDF processing.' },
+          { error: `Unsupported AI provider: ${provider}. Supported providers: anthropic, openai` },
           { status: 400 }
         )
       }
 
-      // Check for API key
-      if (!process.env.ANTHROPIC_API_KEY) {
-        return NextResponse.json(
-          { error: 'ANTHROPIC_API_KEY not found in environment variables.' },
-          { status: 500 }
-        )
-      }
-
-      console.log('Using AI PDF extraction...')
-
-      // Initialize Anthropic client
-      const anthropic = new Anthropic({
-        apiKey: process.env.ANTHROPIC_API_KEY,
-      })
-
-      const base64Data = buffer.toString('base64')
-
-      console.log('Sending PDF directly to LLM...')
-      
-      const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 8000,
-        temperature: 0.1,
-        system: SYSTEM_PROMPT,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Extract the resume content from this PDF and format it as clean markdown. Keep the original formatting and structure and sections of the resume. Make sure to capture all text and maintain the professional structure, including any tables or figures. Respond with JSON containing markdown, summary, and sections fields."
-              },
-              {
-                type: "document",
-                source: {
-                  type: "base64",
-                  media_type: "application/pdf",
-                  data: base64Data
-                }
-              }
-            ]
-          }
-        ]
-      })
-
-      // Extract text content from the response
-      const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
-      
-      try {
-        // Claude might wrap JSON in code blocks, so let's handle that
-        let jsonText = responseText.trim()
-        
-        // Remove markdown code blocks if present
-        if (jsonText.startsWith('```json')) {
-          jsonText = jsonText.replace(/^```json\s*/, '').replace(/```\s*$/, '')
-        } else if (jsonText.startsWith('```')) {
-          jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '')
-        }
-        
-        // Try to parse as JSON
-        extractedData = JSON.parse(jsonText)
-        
-        // Extract only the markdown content
-        extractedText = extractedData.markdown?.trim() || ''
-        
-        if (!extractedText) {
-          throw new Error('No markdown content found in response')
-        }
-        
-      } catch (parseError) {
-        console.log('Failed to parse JSON response, treating entire response as markdown')
-        
-        // If JSON parsing fails, use the entire response as markdown
-        extractedText = responseText.trim()
-        extractedData = {
-          markdown: extractedText,
-          summary: "Resume content extracted and formatted as markdown",
-          sections: ["Resume Content"]
-        }
-      }
-
-      // Estimate pages and calculate cost for AI extraction
+      // Calculate cost based on provider
       const wordCount = extractedText.split(/\s+/).filter((word: string) => word.length > 0).length
       const estimatedPages = Math.ceil(wordCount / 500)
       estimatedCost = estimatedPages * 0.02 // $0.02 per page
@@ -394,12 +598,13 @@ export async function POST(request: NextRequest) {
       extractionCost: estimatedCost,
       summary: extractedData.summary,
       sections: extractedData.sections,
+      images: pdfImages,
       processingTime
     })
 
     // Record usage and increment roast count if user is provided
     if (userId) {
-      const creditsUsed = useBasicExtraction ? 0 : 1
+      const creditsUsed = useBasicExtraction ? 0 : AI_PROVIDER_COSTS[provider as keyof typeof AI_PROVIDER_COSTS] || 1
       await Promise.all([
         UsageService.recordUsage({
           userId,
@@ -433,6 +638,7 @@ export async function POST(request: NextRequest) {
       data: resultData,
       summary: extractedData.summary || "Resume content extracted successfully",
       sections: extractedData.sections || ["Resume Content"],
+      images: pdfImages,
       fromCache: false,
       extractionMethod: useBasicExtraction ? 'basic' : 'ai',
       documentId: savedDocument.id,

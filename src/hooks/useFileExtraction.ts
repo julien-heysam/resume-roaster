@@ -10,7 +10,7 @@ interface ExtractedResumeData {
     fileName: string
     fileSize: number
     extractedAt: string
-    aiProvider: string
+    aiProvider?: string
     fromCache?: boolean
   }
 }
@@ -19,6 +19,7 @@ interface FileExtractionState {
   isExtracting: boolean
   extractedData: ExtractedResumeData | null
   error: string | null
+  images?: string[]
   summary?: string
   sections?: string[]
   extractionMethod?: 'basic' | 'ai' | 'auto'
@@ -30,13 +31,15 @@ export function useFileExtraction() {
   const [state, setState] = useState<FileExtractionState>({
     isExtracting: false,
     extractedData: null,
-    error: null
+    error: null,
+    images: []
   })
 
   const extractFile = async (
     file: File, 
     userId?: string, 
-    extractionMethod: 'basic' | 'ai' | 'auto' = 'auto'
+    extractionMethod: 'basic' | 'ai' | 'auto' = 'auto',
+    provider: 'anthropic' | 'openai' = 'anthropic'
   ): Promise<ExtractedResumeData | null> => {
     setState(prev => ({ 
       ...prev, 
@@ -80,7 +83,7 @@ export function useFileExtraction() {
       // For PDF files, add extraction method and provider parameters
       if (apiEndpoint === '/api/extract-pdf-ai') {
         formData.append('extractionMethod', extractionMethod)
-        formData.append('provider', 'anthropic')
+        formData.append('provider', provider)
       }
 
       // Call the appropriate API endpoint
@@ -105,6 +108,7 @@ export function useFileExtraction() {
         isExtracting: false,
         extractedData,
         error: null,
+        images: result.images,
         summary: result.summary,
         sections: result.sections,
         extractionMethod: result.extractionMethod,
@@ -147,7 +151,8 @@ export function useFileExtraction() {
     setState({
       isExtracting: false,
       extractedData: null,
-      error: null
+      error: null,
+      images: []
     })
   }
 

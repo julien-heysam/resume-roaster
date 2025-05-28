@@ -1,4 +1,4 @@
-import { ResumeOptimizer } from "@/components/ui/resume-optimizer"
+import ResumeOptimizer from "@/components/ui/resume-optimizer"
 import { Footer } from "@/components/ui/footer"
 import { Navigation } from "@/components/ui/navigation"
 

@@ -103,6 +103,7 @@ model Document {
   // Metadata from AI
   summary         String?  @db.Text
   sections        String[] // JSON array of sections
+  images          String[] @default([]) // Base64 encoded PDF page images
   
   // Processing info
   processedAt     DateTime @default(now())

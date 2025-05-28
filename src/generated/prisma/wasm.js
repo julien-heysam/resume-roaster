@@ -178,6 +178,7 @@ exports.Prisma.DocumentScalarFieldEnum = {
   extractionCost: 'extractionCost',
   summary: 'summary',
   sections: 'sections',
+  images: 'images',
   processedAt: 'processedAt',
   processingTime: 'processingTime'
 };

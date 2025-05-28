@@ -5601,6 +5601,7 @@ export namespace Prisma {
     extractionCost: number
     summary: number
     sections: number
+    images: number
     processedAt: number
     processingTime: number
     _all: number
@@ -5671,6 +5672,7 @@ export namespace Prisma {
     extractionCost?: true
     summary?: true
     sections?: true
+    images?: true
     processedAt?: true
     processingTime?: true
     _all?: true
@@ -5776,6 +5778,7 @@ export namespace Prisma {
     extractionCost: number
     summary: string | null
     sections: string[]
+    images: string[]
     processedAt: Date
     processingTime: number
     _count: DocumentCountAggregateOutputType | null
@@ -5813,6 +5816,7 @@ export namespace Prisma {
     extractionCost?: boolean
     summary?: boolean
     sections?: boolean
+    images?: boolean
     processedAt?: boolean
     processingTime?: boolean
     user?: boolean | Document$userArgs<ExtArgs>
@@ -5835,6 +5839,7 @@ export namespace Prisma {
     extractionCost?: boolean
     summary?: boolean
     sections?: boolean
+    images?: boolean
     processedAt?: boolean
     processingTime?: boolean
     user?: boolean | Document$userArgs<ExtArgs>
@@ -5854,6 +5859,7 @@ export namespace Prisma {
     extractionCost?: boolean
     summary?: boolean
     sections?: boolean
+    images?: boolean
     processedAt?: boolean
     processingTime?: boolean
     user?: boolean | Document$userArgs<ExtArgs>
@@ -5873,11 +5879,12 @@ export namespace Prisma {
     extractionCost?: boolean
     summary?: boolean
     sections?: boolean
+    images?: boolean
     processedAt?: boolean
     processingTime?: boolean
   }
 
-  export type DocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "filename" | "originalSize" | "fileHash" | "mimeType" | "extractedText" | "wordCount" | "pageCount" | "aiProvider" | "extractionCost" | "summary" | "sections" | "processedAt" | "processingTime", ExtArgs["result"]["document"]>
+  export type DocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "filename" | "originalSize" | "fileHash" | "mimeType" | "extractedText" | "wordCount" | "pageCount" | "aiProvider" | "extractionCost" | "summary" | "sections" | "images" | "processedAt" | "processingTime", ExtArgs["result"]["document"]>
   export type DocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Document$userArgs<ExtArgs>
     usageRecords?: boolean | Document$usageRecordsArgs<ExtArgs>
@@ -5912,6 +5919,7 @@ export namespace Prisma {
       extractionCost: number
       summary: string | null
       sections: string[]
+      images: string[]
       processedAt: Date
       processingTime: number
     }, ExtArgs["result"]["document"]>
@@ -6353,6 +6361,7 @@ export namespace Prisma {
     readonly extractionCost: FieldRef<"Document", 'Float'>
     readonly summary: FieldRef<"Document", 'String'>
     readonly sections: FieldRef<"Document", 'String[]'>
+    readonly images: FieldRef<"Document", 'String[]'>
     readonly processedAt: FieldRef<"Document", 'DateTime'>
     readonly processingTime: FieldRef<"Document", 'Int'>
   }
@@ -12904,6 +12913,7 @@ export namespace Prisma {
     extractionCost: 'extractionCost',
     summary: 'summary',
     sections: 'sections',
+    images: 'images',
     processedAt: 'processedAt',
     processingTime: 'processingTime'
   };
@@ -13474,6 +13484,7 @@ export namespace Prisma {
     extractionCost?: FloatFilter<"Document"> | number
     summary?: StringNullableFilter<"Document"> | string | null
     sections?: StringNullableListFilter<"Document">
+    images?: StringNullableListFilter<"Document">
     processedAt?: DateTimeFilter<"Document"> | Date | string
     processingTime?: IntFilter<"Document"> | number
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -13495,6 +13506,7 @@ export namespace Prisma {
     extractionCost?: SortOrder
     summary?: SortOrderInput | SortOrder
     sections?: SortOrder
+    images?: SortOrder
     processedAt?: SortOrder
     processingTime?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -13519,6 +13531,7 @@ export namespace Prisma {
     extractionCost?: FloatFilter<"Document"> | number
     summary?: StringNullableFilter<"Document"> | string | null
     sections?: StringNullableListFilter<"Document">
+    images?: StringNullableListFilter<"Document">
     processedAt?: DateTimeFilter<"Document"> | Date | string
     processingTime?: IntFilter<"Document"> | number
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -13540,6 +13553,7 @@ export namespace Prisma {
     extractionCost?: SortOrder
     summary?: SortOrderInput | SortOrder
     sections?: SortOrder
+    images?: SortOrder
     processedAt?: SortOrder
     processingTime?: SortOrder
     _count?: DocumentCountOrderByAggregateInput
@@ -13566,6 +13580,7 @@ export namespace Prisma {
     extractionCost?: FloatWithAggregatesFilter<"Document"> | number
     summary?: StringNullableWithAggregatesFilter<"Document"> | string | null
     sections?: StringNullableListFilter<"Document">
+    images?: StringNullableListFilter<"Document">
     processedAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
     processingTime?: IntWithAggregatesFilter<"Document"> | number
   }
@@ -14367,6 +14382,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     user?: UserCreateNestedOneWithoutDocumentsInput
@@ -14388,6 +14404,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
@@ -14407,6 +14424,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneWithoutDocumentsNestedInput
@@ -14428,6 +14446,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
@@ -14448,6 +14467,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
   }
@@ -14465,6 +14485,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
   }
@@ -14483,6 +14504,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
   }
@@ -15441,6 +15463,7 @@ export namespace Prisma {
     extractionCost?: SortOrder
     summary?: SortOrder
     sections?: SortOrder
+    images?: SortOrder
     processedAt?: SortOrder
     processingTime?: SortOrder
   }
@@ -16288,6 +16311,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type DocumentCreateimagesInput = {
+    set: string[]
+  }
+
   export type UserCreateNestedOneWithoutDocumentsInput = {
     create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
     connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
@@ -16331,6 +16358,11 @@ export namespace Prisma {
   }
 
   export type DocumentUpdatesectionsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type DocumentUpdateimagesInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -16976,6 +17008,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
@@ -16995,6 +17028,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
@@ -17250,6 +17284,7 @@ export namespace Prisma {
     extractionCost?: FloatFilter<"Document"> | number
     summary?: StringNullableFilter<"Document"> | string | null
     sections?: StringNullableListFilter<"Document">
+    images?: StringNullableListFilter<"Document">
     processedAt?: DateTimeFilter<"Document"> | Date | string
     processingTime?: IntFilter<"Document"> | number
   }
@@ -17892,6 +17927,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     user?: UserCreateNestedOneWithoutDocumentsInput
@@ -17912,6 +17948,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
@@ -18005,6 +18042,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneWithoutDocumentsNestedInput
@@ -18025,6 +18063,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
@@ -18208,6 +18247,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     user?: UserCreateNestedOneWithoutDocumentsInput
@@ -18228,6 +18268,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
@@ -18363,6 +18404,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneWithoutDocumentsNestedInput
@@ -18383,6 +18425,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
@@ -18657,6 +18700,7 @@ export namespace Prisma {
     extractionCost?: number
     summary?: string | null
     sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
     processedAt?: Date | string
     processingTime: number
   }
@@ -18796,6 +18840,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
@@ -18815,6 +18860,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
@@ -18834,6 +18880,7 @@ export namespace Prisma {
     extractionCost?: FloatFieldUpdateOperationsInput | number
     summary?: NullableStringFieldUpdateOperationsInput | string | null
     sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     processingTime?: IntFieldUpdateOperationsInput | number
   }
