@@ -727,161 +727,1243 @@ export default function ResumeOptimizer() {
   // Rest of the component implementation would go here...
   // This includes the JSX return statement with all the form fields
   
+  // Template selection and optimization logic
+  const templates = [
+    {
+      id: 'your-resume-style',
+      name: 'Classic Professional',
+      description: 'Clean, professional academic-style resume with precise formatting',
+      category: 'classic' as const,
+      atsOptimized: true
+    },
+    {
+      id: 'modern-tech',
+      name: 'Modern Tech',
+      description: 'Tech-focused design with code-style formatting',
+      category: 'tech' as const,
+      atsOptimized: true
+    },
+    {
+      id: 'executive-leadership',
+      name: 'Executive Leadership',
+      description: 'Professional executive-level presentation',
+      category: 'executive' as const,
+      atsOptimized: true
+    }
+  ]
+
+  // Template preview functionality
+  const [previewTemplate, setPreviewTemplate] = useState<string | null>(null)
+  const [templatePreview, setTemplatePreview] = useState<string>('')
+
+  // Auto-generate preview when template is selected
+  useEffect(() => {
+    if (selectedTemplate && selectedTemplate !== previewTemplate) {
+      generateTemplatePreview(selectedTemplate)
+    }
+  }, [selectedTemplate])
+
+  const generateTemplatePreview = async (templateId: string) => {
+    try {
+      const response = await fetch('/api/generate-optimized-resume', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resumeData: sampleResumeData,
+          jobDescription: 'Sample job description for preview',
+          templateId: templateId,
+          format: 'html'
+        }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success && result.data) {
+          setTemplatePreview(result.data.resume)
+          setPreviewTemplate(templateId)
+        }
+      }
+    } catch (error) {
+      console.error('Error generating preview:', error)
+    }
+  }
+
+  const handleOptimizeResume = async () => {
+    if (!jobDescription.trim()) {
+      showAlert({
+        title: "Missing Job Description",
+        description: "Please enter a job description to optimize your resume.",
+        type: "warning",
+        confirmText: "OK"
+      })
+      return
+    }
+
+    if (!resumeData.personalInfo.name || !resumeData.personalInfo.email) {
+      showAlert({
+        title: "Missing Information",
+        description: "Please fill in at least your name and email.",
+        type: "warning",
+        confirmText: "OK"
+      })
+      return
+    }
+
+    setIsOptimizing(true)
+    
+    try {
+      const response = await fetch('/api/generate-optimized-resume', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resumeData: {
+            ...resumeData,
+            personalInfo: {
+              ...resumeData.personalInfo,
+              jobDescription: jobDescription
+            }
+          },
+          jobDescription,
+          templateId: selectedTemplate,
+          format: 'html'
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to optimize resume')
+      }
+
+      const result = await response.json()
+      if (result.success && result.data) {
+        setOptimizedResult(result.data)
+      } else {
+        throw new Error(result.error || 'Failed to optimize resume')
+      }
+    } catch (error) {
+      console.error('Error optimizing resume:', error)
+      showAlert({
+        title: "Optimization Failed",
+        description: "Failed to optimize resume. Please try again.",
+        type: "error",
+        confirmText: "OK"
+      })
+    } finally {
+      setIsOptimizing(false)
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    if (!optimizedResult) return
+    
+    try {
+      const blob = await generatePDF(resumeData, optimizedResult.resume)
+      downloadBlob(blob, `${resumeData.personalInfo.name}_Resume.pdf`)
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+      showAlert({
+        title: "PDF Generation Failed",
+        description: "Failed to generate PDF. Please try again.",
+        type: "error",
+        confirmText: "OK"
+      })
+    }
+  }
+
+  const handleDownloadDOCX = async () => {
+    if (!optimizedResult) return
+    
+    try {
+      const blob = await generateDOCX(resumeData)
+      downloadBlob(blob, `${resumeData.personalInfo.name}_Resume.docx`)
+    } catch (error) {
+      console.error('Error generating DOCX:', error)
+      showAlert({
+        title: "DOCX Generation Failed", 
+        description: "Failed to generate DOCX. Please try again.",
+        type: "error",
+        confirmText: "OK"
+      })
+    }
+  }
+
+  if (isOptimizing) {
+    return <ResumeOptimizationLoading />
+  }
+
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Profile Data Status */}
-      {profileDataLoaded && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              <span className="text-green-800 font-medium">Profile Data Loaded</span>
-              <span className="text-green-600 text-sm">
-                Your personal information and resume details have been restored
-              </span>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearProfileData}
-              className="text-red-600 border-red-300 hover:bg-red-50"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Clear Data
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Job Description Section - Always starts empty */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Target className="h-5 w-5 text-blue-600" />
-            <span>Target Job Description</span>
-          </CardTitle>
-          <CardDescription>
-            Paste the job description you're applying for. This will not be saved to your profile.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Textarea
-            placeholder="Paste the job description here..."
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            className="min-h-[150px]"
-          />
-        </CardContent>
-      </Card>
-
-      {/* Personal Information Section */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <User className="h-5 w-5 text-blue-600" />
-            <span>Personal Information</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                value={resumeData.personalInfo.name}
-                onChange={(e) => updatePersonalInfo('name', e.target.value)}
-                placeholder="John Doe"
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={resumeData.personalInfo.email}
-                onChange={(e) => updatePersonalInfo('email', e.target.value)}
-                placeholder="john.doe@email.com"
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone *</Label>
-              <Input
-                id="phone"
-                value={resumeData.personalInfo.phone}
-                onChange={(e) => updatePersonalInfo('phone', e.target.value)}
-                placeholder="+1 (555) 123-4567"
-              />
-            </div>
-            <div>
-              <Label htmlFor="location">Location *</Label>
-              <Input
-                id="location"
-                value={resumeData.personalInfo.location}
-                onChange={(e) => updatePersonalInfo('location', e.target.value)}
-                placeholder="San Francisco, CA"
-              />
-            </div>
-            <div>
-              <Label htmlFor="jobTitle">Job Title *</Label>
-              <Input
-                id="jobTitle"
-                value={resumeData.personalInfo.jobTitle}
-                onChange={(e) => updatePersonalInfo('jobTitle', e.target.value)}
-                placeholder="Software Engineer"
-              />
-            </div>
-            <div>
-              <Label htmlFor="linkedin">LinkedIn</Label>
-              <Input
-                id="linkedin"
-                value={resumeData.personalInfo.linkedin}
-                onChange={(e) => updatePersonalInfo('linkedin', e.target.value)}
-                placeholder="https://linkedin.com/in/johndoe"
-              />
-            </div>
-            <div>
-              <Label htmlFor="github">GitHub</Label>
-              <Input
-                id="github"
-                value={resumeData.personalInfo.github}
-                onChange={(e) => updatePersonalInfo('github', e.target.value)}
-                placeholder="https://github.com/johndoe"
-              />
-            </div>
-            <div>
-              <Label htmlFor="portfolio">Portfolio</Label>
-              <Input
-                id="portfolio"
-                value={resumeData.personalInfo.portfolio}
-                onChange={(e) => updatePersonalInfo('portfolio', e.target.value)}
-                placeholder="https://johndoe.dev"
-              />
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Profile Data Status */}
+        {profileDataLoaded && (
+          <div className="mb-8 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <span className="text-green-800 font-semibold">Profile Data Loaded</span>
+                  <p className="text-green-600 text-sm">
+                    Your personal information and resume details have been restored
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearProfileData}
+                className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Clear Data
+              </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        )}
 
-      {/* Professional Summary Section */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Professional Summary</CardTitle>
-          <CardDescription>
-            A brief overview of your professional background and key achievements
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Textarea
-            placeholder="Experienced software engineer with 5+ years developing scalable web applications..."
-            value={resumeData.summary}
-            onChange={(e) => updateSummary(e.target.value)}
-            className="min-h-[100px]"
-          />
-        </CardContent>
-      </Card>
+        {optimizedResult ? (
+          // Show optimized result with beautiful design
+          <div className="space-y-8">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full mb-6 shadow-lg">
+                <CheckCircle className="h-8 w-8 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+                Resume Optimized Successfully!
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Your resume has been optimized for the target job with an ATS Score of {optimizedResult.optimizations.atsScore}%
+              </p>
+            </div>
 
-      {/* The rest of the form sections would continue here... */}
-      {/* Experience, Education, Skills, Projects sections */}
-      
+            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+              <CardContent className="p-8">
+                <div className="flex flex-wrap gap-4 mb-8 justify-center">
+                  <Button 
+                    onClick={handleDownloadPDF} 
+                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                    size="lg"
+                  >
+                    <Download className="h-5 w-5 mr-2" />
+                    Download PDF
+                  </Button>
+                  <Button 
+                    onClick={handleDownloadDOCX} 
+                    variant="outline" 
+                    className="border-orange-300 text-orange-600 hover:bg-orange-50 shadow-lg"
+                    size="lg"
+                  >
+                    <Download className="h-5 w-5 mr-2" />
+                    Download DOCX
+                  </Button>
+                  <Button 
+                    onClick={() => setOptimizedResult(null)} 
+                    variant="outline"
+                    className="border-gray-300 text-gray-600 hover:bg-gray-50 shadow-lg"
+                    size="lg"
+                  >
+                    <Edit3 className="h-5 w-5 mr-2" />
+                    Edit Resume
+                  </Button>
+                </div>
+                
+                {/* Optimization suggestions */}
+                {optimizedResult.optimizations.suggestions.length > 0 && (
+                  <div className="mb-8 p-6 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border border-yellow-200">
+                    <h3 className="font-semibold mb-4 text-amber-800 flex items-center">
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      Optimization Suggestions
+                    </h3>
+                    <ul className="space-y-3">
+                      {optimizedResult.optimizations.suggestions.map((suggestion, index) => (
+                        <li key={index} className="flex items-start space-x-3">
+                          <div className="w-6 h-6 bg-yellow-200 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-xs font-semibold text-yellow-800">{index + 1}</span>
+                          </div>
+                          <span className="text-sm text-gray-700">{suggestion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Resume preview */}
+                <div className="border rounded-xl p-8 bg-white shadow-inner">
+                  <div dangerouslySetInnerHTML={{ __html: optimizedResult.resume }} />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          // Show form with modern design
+          <div className="grid lg:grid-cols-12 gap-8">
+            {/* Main Form */}
+            <div className="lg:col-span-8">
+              <Tabs defaultValue="basic" className="space-y-8">
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border-0">
+                  <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-lg">
+                    <TabsTrigger value="basic" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                      <User className="h-4 w-4 mr-2" />
+                      Basic Info
+                    </TabsTrigger>
+                    <TabsTrigger value="experience" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                      <Briefcase className="h-4 w-4 mr-2" />
+                      Experience
+                    </TabsTrigger>
+                    <TabsTrigger value="education" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Education
+                    </TabsTrigger>
+                    <TabsTrigger value="optimize" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                      <Zap className="h-4 w-4 mr-2" />
+                      Optimize
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <TabsContent value="basic" className="space-y-6">
+                  {/* Job Description Section */}
+                  <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+                      <CardTitle className="flex items-center space-x-2">
+                        <Target className="h-5 w-5 text-blue-600" />
+                        <span>Target Job Description</span>
+                      </CardTitle>
+                      <CardDescription>
+                        Paste the job description you're applying for. This will not be saved to your profile.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <Textarea
+                        placeholder="Paste the job description here..."
+                        value={jobDescription}
+                        onChange={(e) => setJobDescription(e.target.value)}
+                        className="min-h-[150px] border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                      />
+                    </CardContent>
+                  </Card>
+
+                  {/* Personal Information Section */}
+                  <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
+                      <CardTitle className="flex items-center space-x-2">
+                        <User className="h-5 w-5 text-purple-600" />
+                        <span>Personal Information</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="name" className="text-sm font-medium text-gray-700">Full Name *</Label>
+                          <Input
+                            id="name"
+                            value={resumeData.personalInfo.name}
+                            onChange={(e) => updatePersonalInfo('name', e.target.value)}
+                            placeholder="John Doe"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email *</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={resumeData.personalInfo.email}
+                            onChange={(e) => updatePersonalInfo('email', e.target.value)}
+                            placeholder="john.doe@email.com"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone *</Label>
+                          <Input
+                            id="phone"
+                            value={resumeData.personalInfo.phone}
+                            onChange={(e) => updatePersonalInfo('phone', e.target.value)}
+                            placeholder="+1 (555) 123-4567"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="location" className="text-sm font-medium text-gray-700">Location *</Label>
+                          <Input
+                            id="location"
+                            value={resumeData.personalInfo.location}
+                            onChange={(e) => updatePersonalInfo('location', e.target.value)}
+                            placeholder="San Francisco, CA"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="jobTitle" className="text-sm font-medium text-gray-700">Job Title *</Label>
+                          <Input
+                            id="jobTitle"
+                            value={resumeData.personalInfo.jobTitle}
+                            onChange={(e) => updatePersonalInfo('jobTitle', e.target.value)}
+                            placeholder="Software Engineer"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="linkedin" className="text-sm font-medium text-gray-700">LinkedIn</Label>
+                          <Input
+                            id="linkedin"
+                            value={resumeData.personalInfo.linkedin}
+                            onChange={(e) => updatePersonalInfo('linkedin', e.target.value)}
+                            placeholder="https://linkedin.com/in/johndoe"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="github" className="text-sm font-medium text-gray-700">GitHub</Label>
+                          <Input
+                            id="github"
+                            value={resumeData.personalInfo.github}
+                            onChange={(e) => updatePersonalInfo('github', e.target.value)}
+                            placeholder="https://github.com/johndoe"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="portfolio" className="text-sm font-medium text-gray-700">Portfolio</Label>
+                          <Input
+                            id="portfolio"
+                            value={resumeData.personalInfo.portfolio}
+                            onChange={(e) => updatePersonalInfo('portfolio', e.target.value)}
+                            placeholder="https://johndoe.dev"
+                            className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Professional Summary Section */}
+                  <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-xl">
+                      <CardTitle>Professional Summary</CardTitle>
+                      <CardDescription>
+                        A brief overview of your professional background and key achievements
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <Textarea
+                        placeholder="Experienced software engineer with 5+ years developing scalable web applications..."
+                        value={resumeData.summary}
+                        onChange={(e) => updateSummary(e.target.value)}
+                        className="min-h-[100px] border-gray-200 focus:border-green-400 focus:ring-green-400"
+                      />
+                    </CardContent>
+                  </Card>
+
+                  {/* Skills Section */}
+                  <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 rounded-t-xl">
+                      <CardTitle>Skills</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-4">
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Technical Skills</Label>
+                        <Input
+                          placeholder="JavaScript, Python, React, Node.js (comma separated)"
+                          value={resumeData.skills.technical.join(', ')}
+                          onChange={(e) => updateSkills('technical', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                          className="mt-1 border-gray-200 focus:border-orange-400 focus:ring-orange-400"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Soft Skills</Label>
+                        <Input
+                          placeholder="Leadership, Communication, Problem-solving (comma separated)"
+                          value={resumeData.skills.soft.join(', ')}
+                          onChange={(e) => updateSkills('soft', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                          className="mt-1 border-gray-200 focus:border-orange-400 focus:ring-orange-400"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Languages</Label>
+                        <Input
+                          placeholder="English, Spanish, French (comma separated)"
+                          value={(resumeData.skills.languages || []).join(', ')}
+                          onChange={(e) => updateSkills('languages', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                          className="mt-1 border-gray-200 focus:border-orange-400 focus:ring-orange-400"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Certifications</Label>
+                        <Input
+                          placeholder="AWS Certified, Google Cloud Professional (comma separated)"
+                          value={(resumeData.skills.certifications || []).join(', ')}
+                          onChange={(e) => updateSkills('certifications', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                          className="mt-1 border-gray-200 focus:border-orange-400 focus:ring-orange-400"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="experience" className="space-y-6">
+                  <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center space-x-2">
+                          <Briefcase className="h-5 w-5 text-blue-600" />
+                          <span>Work Experience</span>
+                        </CardTitle>
+                        <Button 
+                          onClick={addExperience} 
+                          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                          size="sm"
+                        >
+                          <Briefcase className="h-4 w-4 mr-2" />
+                          Add Experience
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                      {resumeData.experience.map((exp, index) => (
+                        <div key={index} className="bg-gradient-to-r from-gray-50 to-slate-50 border border-gray-200 rounded-xl p-6 space-y-4">
+                          <div className="flex justify-between items-start">
+                            <h3 className="font-semibold text-gray-900 flex items-center">
+                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <span className="text-sm font-bold text-blue-600">{index + 1}</span>
+                              </div>
+                              Experience {index + 1}
+                            </h3>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeExperience(index)}
+                              className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
+                            >
+                              <span className="mr-2">✕</span>
+                              Remove
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Job Title</Label>
+                              <Input
+                                value={exp.title}
+                                onChange={(e) => updateExperience(index, 'title', e.target.value)}
+                                placeholder="Software Engineer"
+                                className="mt-1 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Company</Label>
+                              <Input
+                                value={exp.company}
+                                onChange={(e) => updateExperience(index, 'company', e.target.value)}
+                                placeholder="TechCorp Inc."
+                                className="mt-1 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Location</Label>
+                              <Input
+                                value={exp.location}
+                                onChange={(e) => updateExperience(index, 'location', e.target.value)}
+                                placeholder="San Francisco, CA"
+                                className="mt-1 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <Label className="text-sm font-medium text-gray-700">Start Date</Label>
+                                <Input
+                                  value={exp.startDate}
+                                  onChange={(e) => updateExperience(index, 'startDate', e.target.value)}
+                                  placeholder="2022"
+                                  className="mt-1 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                                />
+                              </div>
+                              <div>
+                                <Label className="text-sm font-medium text-gray-700">End Date</Label>
+                                <Input
+                                  value={exp.endDate}
+                                  onChange={(e) => updateExperience(index, 'endDate', e.target.value)}
+                                  placeholder="Present"
+                                  className="mt-1 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">Job Description (one per line)</Label>
+                            <Textarea
+                              value={exp.description.join('\n')}
+                              onChange={(e) => updateExperience(index, 'description', e.target.value.split('\n').filter(line => line.trim()))}
+                              placeholder="• Led development of microservices architecture&#10;• Mentored junior developers"
+                              className="mt-1 min-h-[100px] border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">Key Achievements (one per line)</Label>
+                            <Textarea
+                              value={exp.achievements.join('\n')}
+                              onChange={(e) => updateExperience(index, 'achievements', e.target.value.split('\n').filter(line => line.trim()))}
+                              placeholder="• Reduced system latency by 40%&#10;• Increased team productivity by 25%"
+                              className="mt-1 min-h-[80px] border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      {resumeData.experience.length === 0 && (
+                        <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Briefcase className="h-8 w-8 text-blue-600" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">No work experience added yet</h3>
+                          <p className="text-gray-600 mb-4">Add your professional experience to showcase your career journey</p>
+                          <Button 
+                            onClick={addExperience}
+                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
+                          >
+                            <Briefcase className="h-4 w-4 mr-2" />
+                            Add Your First Experience
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="education" className="space-y-6">
+                  <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-xl">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center space-x-2">
+                          <FileText className="h-5 w-5 text-green-600" />
+                          <span>Education</span>
+                        </CardTitle>
+                        <Button 
+                          onClick={addEducation} 
+                          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                          size="sm"
+                        >
+                          <FileText className="h-4 w-4 mr-2" />
+                          Add Education
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                      {resumeData.education.map((edu, index) => (
+                        <div key={index} className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 space-y-4">
+                          <div className="flex justify-between items-start">
+                            <h3 className="font-semibold text-gray-900 flex items-center">
+                              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <span className="text-sm font-bold text-green-600">{index + 1}</span>
+                              </div>
+                              Education {index + 1}
+                            </h3>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeEducation(index)}
+                              className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
+                            >
+                              <span className="mr-2">✕</span>
+                              Remove
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Degree</Label>
+                              <Input
+                                value={edu.degree}
+                                onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+                                placeholder="Bachelor of Science in Computer Science"
+                                className="mt-1 border-gray-200 focus:border-green-400 focus:ring-green-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">School</Label>
+                              <Input
+                                value={edu.school}
+                                onChange={(e) => updateEducation(index, 'school', e.target.value)}
+                                placeholder="University of California"
+                                className="mt-1 border-gray-200 focus:border-green-400 focus:ring-green-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Location</Label>
+                              <Input
+                                value={edu.location}
+                                onChange={(e) => updateEducation(index, 'location', e.target.value)}
+                                placeholder="Berkeley, CA"
+                                className="mt-1 border-gray-200 focus:border-green-400 focus:ring-green-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Graduation Date</Label>
+                              <Input
+                                value={edu.graduationDate}
+                                onChange={(e) => updateEducation(index, 'graduationDate', e.target.value)}
+                                placeholder="2019"
+                                className="mt-1 border-gray-200 focus:border-green-400 focus:ring-green-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">GPA (optional)</Label>
+                              <Input
+                                value={edu.gpa || ''}
+                                onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
+                                placeholder="3.8"
+                                className="mt-1 border-gray-200 focus:border-green-400 focus:ring-green-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Honors/Coursework (comma separated)</Label>
+                              <Input
+                                value={(edu.honors || []).join(', ')}
+                                onChange={(e) => updateEducation(index, 'honors', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                                placeholder="Magna Cum Laude, Dean's List"
+                                className="mt-1 border-gray-200 focus:border-green-400 focus:ring-green-400"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {resumeData.education.length === 0 && (
+                        <div className="text-center py-12 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <FileText className="h-8 w-8 text-green-600" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">No education added yet</h3>
+                          <p className="text-gray-600 mb-4">Add your educational background to highlight your qualifications</p>
+                          <Button 
+                            onClick={addEducation}
+                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
+                          >
+                            <FileText className="h-4 w-4 mr-2" />
+                            Add Your First Education
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Projects Section */}
+                  <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center space-x-2">
+                          <Code className="h-5 w-5 text-purple-600" />
+                          <span>Projects</span>
+                        </CardTitle>
+                        <Button 
+                          onClick={addProject} 
+                          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                          size="sm"
+                        >
+                          <Code className="h-4 w-4 mr-2" />
+                          Add Project
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                      {(resumeData.projects || []).map((project, index) => (
+                        <div key={index} className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 space-y-4">
+                          <div className="flex justify-between items-start">
+                            <h3 className="font-semibold text-gray-900 flex items-center">
+                              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                <span className="text-sm font-bold text-purple-600">{index + 1}</span>
+                              </div>
+                              Project {index + 1}
+                            </h3>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeProject(index)}
+                              className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
+                            >
+                              <span className="mr-2">✕</span>
+                              Remove
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-1 gap-4">
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Project Name</Label>
+                              <Input
+                                value={project.name}
+                                onChange={(e) => updateProject(index, 'name', e.target.value)}
+                                placeholder="E-commerce Platform"
+                                className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Description</Label>
+                              <Textarea
+                                value={project.description}
+                                onChange={(e) => updateProject(index, 'description', e.target.value)}
+                                placeholder="Built a full-stack e-commerce platform with React and Node.js"
+                                className="mt-1 min-h-[80px] border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Technologies (comma separated)</Label>
+                              <Input
+                                value={project.technologies.join(', ')}
+                                onChange={(e) => updateProject(index, 'technologies', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                                placeholder="React, Node.js, MongoDB, Stripe"
+                                className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700">Link (optional)</Label>
+                              <Input
+                                value={project.link || ''}
+                                onChange={(e) => updateProject(index, 'link', e.target.value)}
+                                placeholder="https://github.com/username/project"
+                                className="mt-1 border-gray-200 focus:border-purple-400 focus:ring-purple-400"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {(!resumeData.projects || resumeData.projects.length === 0) && (
+                        <div className="text-center py-12 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                          <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Code className="h-8 w-8 text-purple-600" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">No projects added yet</h3>
+                          <p className="text-gray-600 mb-4">Showcase your technical projects and achievements</p>
+                          <Button 
+                            onClick={addProject}
+                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
+                          >
+                            <Code className="h-4 w-4 mr-2" />
+                            Add Your First Project
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="optimize" className="space-y-8">
+                  {/* Template Selection */}
+                  <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 rounded-t-xl">
+                      <CardTitle className="flex items-center space-x-2">
+                        <Palette className="h-5 w-5 text-orange-600" />
+                        <span>Choose Your Template</span>
+                      </CardTitle>
+                      <CardDescription>
+                        Select a professional template optimized for ATS and tailored to your industry
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-8">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {templates.map((template) => (
+                          <div
+                            key={template.id}
+                            className={`group relative border-2 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:shadow-xl ${
+                              selectedTemplate === template.id
+                                ? 'border-orange-400 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg'
+                                : 'border-gray-200 hover:border-orange-300 bg-white hover:bg-gradient-to-br hover:from-orange-25 hover:to-red-25'
+                            }`}
+                            onClick={() => setSelectedTemplate(template.id)}
+                          >
+                            {/* Template Header */}
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center space-x-2">
+                                {categoryIcons[template.category]}
+                                <h3 className="font-semibold text-gray-900">{template.name}</h3>
+                              </div>
+                              {template.atsOptimized && (
+                                <Badge className="bg-green-100 text-green-800 border-green-200">
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  ATS
+                                </Badge>
+                              )}
+                            </div>
+
+                            {/* Template Description */}
+                            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                              {template.description}
+                            </p>
+
+                            {/* Template Category Badge */}
+                            <div className="flex items-center justify-between">
+                              <Badge className={`${categoryColors[template.category]} capitalize`}>
+                                {template.category}
+                              </Badge>
+                            </div>
+
+                            {/* Selection Indicator */}
+                            {selectedTemplate === template.id && (
+                              <div className="absolute top-3 right-3">
+                                <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                                  <CheckCircle className="h-4 w-4 text-white" />
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Hover Effect */}
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-orange-400/5 to-red-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Template Preview Section */}
+                      {previewTemplate && templatePreview && (
+                        <div className="mt-8 p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="font-semibold text-gray-900 flex items-center">
+                              <Eye className="h-4 w-4 mr-2 text-blue-600" />
+                              Template Preview: {templates.find(t => t.id === previewTemplate)?.name}
+                            </h4>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setPreviewTemplate(null)
+                                setTemplatePreview('')
+                              }}
+                            >
+                              ✕
+                            </Button>
+                          </div>
+                          <div className="bg-white rounded-lg shadow-inner border overflow-hidden" style={{ height: '480px' }}>
+                            <iframe
+                              srcDoc={templatePreview}
+                              className="w-full border-0"
+                              style={{ 
+                                height: '600px',
+                                transform: 'scale(0.8)',
+                                transformOrigin: 'top left',
+                                width: '125%'
+                              }}
+                              sandbox="allow-same-origin"
+                              title="Resume Preview"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Optimization Button */}
+                  <Card className="shadow-xl border-0 bg-gradient-to-br from-orange-50 via-red-50 to-pink-50">
+                    <CardHeader className="text-center">
+                      <CardTitle className="flex items-center justify-center space-x-2 text-2xl">
+                        <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                          <Zap className="h-6 w-6 text-white" />
+                        </div>
+                        <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                          Generate Your Optimized Resume
+                        </span>
+                      </CardTitle>
+                      <CardDescription className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Create an ATS-optimized resume tailored specifically to your target job using AI-powered optimization
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-8">
+                      <div className="text-center space-y-6">
+                        {/* Progress Indicators */}
+                        <div className="flex items-center justify-center space-x-4 mb-6">
+                          <div className={`flex items-center space-x-2 ${jobDescription.trim() ? 'text-green-600' : 'text-gray-400'}`}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${jobDescription.trim() ? 'bg-green-100' : 'bg-gray-100'}`}>
+                              {jobDescription.trim() ? <CheckCircle className="h-4 w-4" /> : <span className="text-xs">1</span>}
+                            </div>
+                            <span className="text-sm font-medium">Job Description</span>
+                          </div>
+                          <div className="w-8 h-0.5 bg-gray-200"></div>
+                          <div className={`flex items-center space-x-2 ${resumeData.personalInfo.name && resumeData.personalInfo.email ? 'text-green-600' : 'text-gray-400'}`}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${resumeData.personalInfo.name && resumeData.personalInfo.email ? 'bg-green-100' : 'bg-gray-100'}`}>
+                              {resumeData.personalInfo.name && resumeData.personalInfo.email ? <CheckCircle className="h-4 w-4" /> : <span className="text-xs">2</span>}
+                            </div>
+                            <span className="text-sm font-medium">Personal Info</span>
+                          </div>
+                          <div className="w-8 h-0.5 bg-gray-200"></div>
+                          <div className={`flex items-center space-x-2 ${selectedTemplate ? 'text-green-600' : 'text-gray-400'}`}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${selectedTemplate ? 'bg-green-100' : 'bg-gray-100'}`}>
+                              {selectedTemplate ? <CheckCircle className="h-4 w-4" /> : <span className="text-xs">3</span>}
+                            </div>
+                            <span className="text-sm font-medium">Template</span>
+                          </div>
+                        </div>
+
+                        <Button
+                          onClick={handleOptimizeResume}
+                          disabled={isOptimizing || !jobDescription.trim() || !resumeData.personalInfo.name || !resumeData.personalInfo.email}
+                          className="w-full max-w-md bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                          size="lg"
+                        >
+                          <Zap className="h-5 w-5 mr-2" />
+                          {isOptimizing ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                              Optimizing Your Resume...
+                            </>
+                          ) : (
+                            'Generate Optimized Resume'
+                          )}
+                        </Button>
+
+                        {(!jobDescription.trim() || !resumeData.personalInfo.name || !resumeData.personalInfo.email) && (
+                          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p className="text-sm text-yellow-800 flex items-center">
+                              <AlertCircle className="h-4 w-4 mr-2" />
+                              Please complete the following steps:
+                            </p>
+                            <ul className="text-sm text-yellow-700 mt-2 space-y-1">
+                              {!jobDescription.trim() && <li>• Add a job description in the Basic Info tab</li>}
+                              {!resumeData.personalInfo.name && <li>• Enter your full name</li>}
+                              {!resumeData.personalInfo.email && <li>• Enter your email address</li>}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Features List */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                          <div className="text-center p-4">
+                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                              <Target className="h-6 w-6 text-blue-600" />
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">ATS Optimized</h4>
+                            <p className="text-sm text-gray-600">Optimized to pass Applicant Tracking Systems</p>
+                          </div>
+                          <div className="text-center p-4">
+                            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                              <Sparkles className="h-6 w-6 text-purple-600" />
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">AI-Powered</h4>
+                            <p className="text-sm text-gray-600">Smart keyword matching and content optimization</p>
+                          </div>
+                          <div className="text-center p-4">
+                            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                              <TrendingUp className="h-6 w-6 text-green-600" />
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Higher Success</h4>
+                            <p className="text-sm text-gray-600">Increase your chances of landing interviews</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-4">
+              <div className="sticky top-8 space-y-6">
+                {/* Quick Tips Card */}
+                <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-50 to-indigo-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2 text-blue-800">
+                      <Sparkles className="h-5 w-5" />
+                      <span>Pro Tips</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-semibold text-blue-600">1</span>
+                      </div>
+                      <p className="text-sm text-blue-700">Use action verbs to start bullet points</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-semibold text-blue-600">2</span>
+                      </div>
+                      <p className="text-sm text-blue-700">Quantify achievements with numbers</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-semibold text-blue-600">3</span>
+                      </div>
+                      <p className="text-sm text-blue-700">Match keywords from job description</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-semibold text-blue-600">4</span>
+                      </div>
+                      <p className="text-sm text-blue-700">Keep it concise and relevant</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Progress Card */}
+                <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-emerald-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2 text-green-800">
+                      <TrendingUp className="h-5 w-5" />
+                      <span>Your Progress</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-green-700">Job Description</span>
+                        {jobDescription.trim() ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-green-700">Personal Info</span>
+                        {resumeData.personalInfo.name && resumeData.personalInfo.email ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-green-700">Experience</span>
+                        {resumeData.experience.length > 0 ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-green-700">Template Selected</span>
+                        {selectedTemplate ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="mt-4">
+                      <div className="flex justify-between text-sm text-green-700 mb-2">
+                        <span>Completion</span>
+                        <span>
+                          {Math.round(
+                            ((jobDescription.trim() ? 1 : 0) +
+                            (resumeData.personalInfo.name && resumeData.personalInfo.email ? 1 : 0) +
+                            (resumeData.experience.length > 0 ? 1 : 0) +
+                            (selectedTemplate ? 1 : 0)) / 4 * 100
+                          )}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-green-200 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
+                          style={{ 
+                            width: `${Math.round(
+                              ((jobDescription.trim() ? 1 : 0) +
+                              (resumeData.personalInfo.name && resumeData.personalInfo.email ? 1 : 0) +
+                              (resumeData.experience.length > 0 ? 1 : 0) +
+                              (selectedTemplate ? 1 : 0)) / 4 * 100
+                            )}%` 
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* ATS Score Info */}
+                <Card className="shadow-lg border-0 bg-gradient-to-br from-purple-50 to-pink-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2 text-purple-800">
+                      <Target className="h-5 w-5" />
+                      <span>ATS Optimization</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-purple-700">
+                      Our AI analyzes your resume against the job description to ensure maximum ATS compatibility.
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-purple-700">Keyword optimization</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-purple-700">Format compatibility</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-purple-700">Content structure</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Resume Optimization Tips Card */}
+                <Card className="shadow-xl border-0 bg-gradient-to-br from-yellow-50 to-amber-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2 text-amber-800">
+                      <Sparkles className="h-5 w-5" />
+                      <span>Optimization Tips</span>
+                    </CardTitle>
+                    <CardDescription className="text-amber-700">
+                      Make your resume stand out with these proven strategies
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3 p-3 bg-white/60 rounded-lg">
+                        <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Target className="h-3 w-3 text-amber-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-amber-800">Use Keywords</p>
+                          <p className="text-xs text-amber-700">Match 60-80% of job description keywords</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3 p-3 bg-white/60 rounded-lg">
+                        <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <TrendingUp className="h-3 w-3 text-amber-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-amber-800">Quantify Results</p>
+                          <p className="text-xs text-amber-700">Include numbers, percentages, and metrics</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3 p-3 bg-white/60 rounded-lg">
+                        <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Zap className="h-3 w-3 text-amber-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-amber-800">Action Verbs</p>
+                          <p className="text-xs text-amber-700">Start bullets with strong action words</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3 p-3 bg-white/60 rounded-lg">
+                        <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <CheckCircle className="h-3 w-3 text-amber-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-amber-800">ATS Friendly</p>
+                          <p className="text-xs text-amber-700">Use standard fonts and clear formatting</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Quick Stats */}
+                    <div className="mt-4 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-200">
+                      <div className="text-center">
+                        <p className="text-xs text-amber-700 mb-1">Optimized resumes get</p>
+                        <p className="text-lg font-bold text-amber-800">3x more</p>
+                        <p className="text-xs text-amber-700">interview callbacks</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {AlertDialog}
     </div>
   )
