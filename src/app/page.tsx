@@ -10,6 +10,7 @@ import { ExtractedTextPreview } from "@/components/ui/extracted-text-preview"
 import { AnalysisLoading } from "@/components/ui/analysis-loading"
 import { Navigation } from "@/components/ui/navigation"
 import { useAlertDialog } from "@/components/ui/alert-dialog"
+import { ExtractionMethodSelector } from "@/components/ExtractionMethodSelector"
 import { useRoastLimit } from "@/hooks/useRoastLimit"
 import { useFileExtraction } from "@/hooks/useFileExtraction"
 import { useRouter } from "next/navigation"
@@ -18,8 +19,9 @@ import { Footer } from "@/components/ui/footer"
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [step, setStep] = useState<'upload' | 'extracted' | 'analyzing'>('upload')
+  const [step, setStep] = useState<'upload' | 'method-select' | 'extracted' | 'analyzing'>('upload')
   const [analysisProgress, setAnalysisProgress] = useState(0)
+  const [selectedExtractionMethod, setSelectedExtractionMethod] = useState<'basic' | 'ai'>('basic')
   const { data: session } = useSession()
   const { showAlert, AlertDialog } = useAlertDialog()
   
@@ -40,8 +42,10 @@ export default function Home() {
     error: extractionError,
     extractFile,
     clearExtraction,
+    deleteDocument,
     retryExtraction,
-    getFileTypeInfo
+    getFileTypeInfo,
+    extractionMethod: currentExtractionMethod
   } = useFileExtraction()
   
   const router = useRouter()
@@ -77,18 +81,46 @@ export default function Home() {
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file)
     
-    // Extract all supported file types automatically
-    const extracted = await extractFile(file, session?.user?.id)
-    if (extracted) {
-      setStep('extracted')
+    // Check if it's a PDF file and user is registered
+    const isPDF = file.type.includes('pdf') || file.name.toLowerCase().endsWith('.pdf')
+    
+    if (isPDF && isAuthenticated) {
+      // Show method selection for registered users with PDF files
+      setStep('method-select')
+    } else {
+      // For non-PDF files or non-registered users, extract immediately
+      const extractionMethod = isPDF ? 'basic' : 'auto' // Non-registered users get basic for PDF
+      const extracted = await extractFile(file, session?.user?.id, extractionMethod)
+      if (extracted) {
+        setStep('extracted')
+      }
     }
   }
 
-  const handleFileRemove = () => {
+  const handleExtractionMethodSelect = async (method: 'basic' | 'ai') => {
+    setSelectedExtractionMethod(method)
+    
+    if (selectedFile) {
+      const extracted = await extractFile(selectedFile, session?.user?.id, method)
+      if (extracted) {
+        setStep('extracted')
+      }
+    }
+  }
+
+  const handleFileRemove = async () => {
+    // Delete document from database if it exists
+    if (extractedData) {
+      await deleteDocument(session?.user?.id)
+    } else {
+      // If no extracted data, just clear the state
+      clearExtraction()
+    }
+    
     setSelectedFile(null)
     setStep('upload')
     setAnalysisProgress(0)
-    clearExtraction()
+    setSelectedExtractionMethod('basic')
   }
 
   const handleStartRoasting = async (resumeData: any, jobDescription: string) => {
@@ -103,8 +135,8 @@ export default function Home() {
 
     if (!canRoast) {
       showAlert({
-        title: "Roast Limit Reached",
-        description: "You've reached your free roast limit. Please upgrade to continue!",
+        title: "Credit Limit Reached",
+        description: "You've reached your free credit limit. Please upgrade to continue!",
         type: "warning",
         confirmText: "Upgrade Now",
         onConfirm: () => router.push('/pricing')
@@ -190,8 +222,15 @@ export default function Home() {
 
   const handleRetryExtraction = async () => {
     if (selectedFile) {
-      await retryExtraction(selectedFile, session?.user?.id)
+      const method = step === 'method-select' ? selectedExtractionMethod : 'auto'
+      await retryExtraction(selectedFile, session?.user?.id, method)
     }
+  }
+
+  const handleBackToUpload = () => {
+    setStep('upload')
+    setSelectedFile(null)
+    clearExtraction()
   }
 
   if (isLoading) {
@@ -240,7 +279,7 @@ export default function Home() {
               />
             </div>
 
-            {/* File Upload or Extracted Preview */}
+            {/* File Upload, Method Selection, or Extracted Preview */}
             <div className="max-w-2xl mx-auto mb-8">
               {step === 'upload' ? (
                 <div>
@@ -285,14 +324,80 @@ export default function Home() {
                     </div>
                   )}
                 </div>
+              ) : step === 'method-select' ? (
+                <div>
+                  <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Selected File:</h3>
+                        <p className="text-sm text-gray-600">{selectedFile?.name}</p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={handleBackToUpload}>
+                        Change File
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <ExtractionMethodSelector
+                    isRegistered={isAuthenticated}
+                    onMethodSelect={handleExtractionMethodSelect}
+                    selectedMethod={selectedExtractionMethod}
+                    disabled={isExtracting}
+                  />
+                  
+                  {/* Extraction Loading */}
+                  {isExtracting && (
+                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center justify-center space-x-3">
+                        <Loader className="h-5 w-5 animate-spin text-blue-500" />
+                        <span className="text-blue-700">
+                          {selectedExtractionMethod === 'basic' 
+                            ? 'Extracting text using basic method...' 
+                            : 'Processing with AI extraction...'
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Extraction Error */}
+                  {extractionError && (
+                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-red-700 text-sm">{extractionError}</span>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={handleRetryExtraction}
+                          disabled={!selectedFile}
+                        >
+                          Retry Extraction
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ) : (
                 extractedData && (
-                  <ExtractedTextPreview 
-                    data={extractedData}
-                    onProceed={handleStartRoasting}
-                    isProcessing={isExtracting}
-                    isAnalyzing={false}
-                  />
+                  <div>
+                    {/* Show extraction method used */}
+                    {currentExtractionMethod && (
+                      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p className="text-sm text-gray-600">
+                          <strong>Extraction Method:</strong> {currentExtractionMethod === 'basic' ? 'Basic Text Extraction' : 'AI-Powered Extraction'}
+                          {extractedData.metadata.fromCache && ' (from cache)'}
+                        </p>
+                      </div>
+                    )}
+                    
+                    <ExtractedTextPreview 
+                      data={extractedData}
+                      onProceed={handleStartRoasting}
+                      onClear={handleFileRemove}
+                      isProcessing={isExtracting}
+                      isAnalyzing={false}
+                    />
+                  </div>
                 )
               )}
             </div>
@@ -338,7 +443,7 @@ export default function Home() {
                 See Our Resume Template in Action
               </h4>
               <p className="text-gray-600 mb-6">
-                Check out our professional resume template based on Julien Wuthrich's design - clean, ATS-optimized, and interview-ready.
+                Check out our professional resume template - clean, ATS-optimized, and interview-ready.
               </p>
               <Button 
                 size="lg" 

@@ -91,7 +91,7 @@ export default function DemoPage() {
               Resume Template Demo
             </h1>
             <p className="text-xl text-gray-600 mb-6">
-              Julien Wuthrich Resume Style - Clean, Professional, ATS-Optimized
+              Classic Resume Style - Clean, Professional, ATS-Optimized
             </p>
             
             <div className="flex justify-center items-center gap-4 mb-8">

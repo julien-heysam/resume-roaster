@@ -55,7 +55,7 @@ export interface ResumeTemplate {
 // Your Resume Template (Based on the image you showed me)
 export const yourResumeTemplate: ResumeTemplate = {
   id: 'your-resume-style',
-  name: 'Julien Wuthrich Resume Style',
+  name: 'Classic Resume Style',
   description: 'Clean, professional academic-style resume with precise formatting and typography',
   category: 'classic',
   atsOptimized: true,
@@ -400,11 +400,38 @@ ${edu.honors && edu.honors.length > 0 ? `• **Coursework:** ${edu.honors.join('
 ## Experience
 
 ${data.experience.map(job => `
-**${job.title}** *${job.location}*
-${job.company} *${job.startDate} – ${job.endDate}*
+### \`${job.title}\` @ **${job.company}**
+\`\`\`
+${job.startDate} - ${job.endDate} | ${job.location}
+\`\`\`
 
-${job.description.map(item => `• ${item}`).join('\n')}
-${job.achievements.map(achievement => `• ${achievement}`).join('\n')}
+${job.description.map(item => `- ${item}`).join('\n')}
+
+${job.achievements.length > 0 ? `
+**🏆 Key Achievements:**
+${job.achievements.map(achievement => `- ✨ ${achievement}`).join('\n')}
+` : ''}
+`).join('\n')}
+
+${data.projects && data.projects.length > 0 ? `
+## Projects
+
+${data.projects.map(project => `
+### \`${project.name}\`
+${project.description}
+
+**🔧 Technologies:** \`${project.technologies.join('`, `')}\`
+${project.link ? `**🔗 Link:** ${project.link}` : ''}
+`).join('\n')}
+` : ''}
+
+## Education
+
+${data.education.map(edu => `
+### **${edu.degree}**
+\`${edu.school}\` | ${edu.location} | ${edu.graduationDate}
+${edu.gpa ? `📊 **GPA:** ${edu.gpa}` : ''}
+${edu.honors ? `🏅 **Honors:** ${edu.honors.join(', ')}` : ''}
 `).join('\n')}
 
 `
@@ -832,446 +859,6 @@ ${edu.honors ? `🏅 **Honors:** ${edu.honors.join(', ')}` : ''}
   }
 }
 
-// Creative Portfolio Template (Clean and modern creative design)
-export const creativePortfolioTemplate: ResumeTemplate = {
-  id: 'creative-portfolio',
-  name: 'Creative Portfolio',
-  description: 'Clean, modern creative design perfect for designers, artists, and creative professionals',
-  category: 'creative',
-  atsOptimized: false,
-  
-  generateHTML: (data: ResumeData, jobDescription?: string) => {
-    return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${data.personalInfo.name} - Creative Resume</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', 'Helvetica Neue', 'Arial', sans-serif; 
-            line-height: 1.6; 
-            color: #1a202c; 
-            background: #f7fafc;
-            min-height: 100vh;
-            padding: 20px;
-            font-size: 11pt;
-        }
-        
-        .resume-container {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.1);
-            max-width: 8.5in;
-            margin: 0 auto;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            position: relative;
-        }
-        
-        .name {
-            font-size: 28pt;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        
-        .title {
-            font-size: 14pt;
-            opacity: 0.9;
-            margin-bottom: 20px;
-            font-weight: 400;
-        }
-        
-        .contact-creative {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            font-size: 11pt;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,0.15);
-            padding: 6px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .contact-item a {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .content {
-            padding: 40px 30px;
-        }
-        
-        .section {
-            margin-bottom: 35px;
-        }
-        
-        .section-title {
-            font-size: 16pt;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 8px;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 2px;
-        }
-        
-        .summary-creative {
-            font-size: 12pt;
-            line-height: 1.7;
-            color: #4a5568;
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .job-creative {
-            background: white;
-            border: 1px solid #e2e8f0;
-            padding: 24px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: box-shadow 0.2s ease;
-        }
-        
-        .job-creative:hover {
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .job-title-creative {
-            font-size: 14pt;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 4px;
-        }
-        
-        .company-creative {
-            font-size: 12pt;
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .job-meta-creative {
-            font-size: 10pt;
-            color: #718096;
-            margin-bottom: 15px;
-        }
-        
-        .achievements-creative {
-            list-style: none;
-        }
-        
-        .achievements-creative li {
-            margin-bottom: 8px;
-            position: relative;
-            padding-left: 20px;
-            color: #4a5568;
-        }
-        
-        .achievements-creative li::before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-            font-size: 14pt;
-        }
-        
-        .skills-creative {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .skill-group-creative {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .skill-group-creative h4 {
-            color: #2d3748;
-            margin-bottom: 12px;
-            font-weight: 600;
-            font-size: 12pt;
-        }
-        
-        .skill-items-creative {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        
-        .skill-tag-creative {
-            background: white;
-            color: #4a5568;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 9pt;
-            border: 1px solid #e2e8f0;
-            font-weight: 500;
-        }
-        
-        .education-creative {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #667eea;
-        }
-        
-        .degree-creative {
-            font-weight: 700;
-            color: #2d3748;
-            font-size: 12pt;
-            margin-bottom: 4px;
-        }
-        
-        .school-creative {
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .edu-details-creative {
-            font-size: 10pt;
-            color: #718096;
-        }
-        
-        .project-creative {
-            background: white;
-            border: 1px solid #e2e8f0;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .project-name-creative {
-            font-weight: 700;
-            margin-bottom: 8px;
-            font-size: 12pt;
-            color: #2d3748;
-        }
-        
-        .project-desc-creative {
-            font-size: 10pt;
-            margin-bottom: 12px;
-            color: #4a5568;
-            line-height: 1.5;
-        }
-        
-        .project-tech-creative {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        
-        .tech-badge-creative {
-            background: #edf2f7;
-            color: #4a5568;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 8pt;
-            font-weight: 500;
-            border: 1px solid #e2e8f0;
-        }
-        
-        @media print {
-            body { background: white; padding: 0; }
-            .resume-container { box-shadow: none; }
-        }
-    </style>
-</head>
-<body>
-    <div class="resume-container">
-        <div class="header">
-            <div class="name">${data.personalInfo.name}</div>
-            <div class="title">${data.personalInfo.jobTitle}</div>
-            <div class="contact-creative">
-                <div class="contact-item">📧 ${data.personalInfo.email}</div>
-                <div class="contact-item">📱 ${data.personalInfo.phone}</div>
-                <div class="contact-item">📍 ${data.personalInfo.location}</div>
-                ${data.personalInfo.portfolio ? `<div class="contact-item">🌐 <a href="${data.personalInfo.portfolio}">Portfolio</a></div>` : ''}
-                ${data.personalInfo.linkedin ? `<div class="contact-item">💼 <a href="${data.personalInfo.linkedin}">LinkedIn</a></div>` : ''}
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="section">
-                <div class="section-title">Professional Summary</div>
-                <div class="summary-creative">${data.summary}</div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">Skills & Expertise</div>
-                <div class="skills-creative">
-                    <div class="skill-group-creative">
-                        <h4>Technical Skills</h4>
-                        <div class="skill-items-creative">
-                            ${data.skills.technical.map(skill => `<span class="skill-tag-creative">${skill}</span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="skill-group-creative">
-                        <h4>Core Competencies</h4>
-                        <div class="skill-items-creative">
-                            ${data.skills.soft.map(skill => `<span class="skill-tag-creative">${skill}</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">Professional Experience</div>
-                ${data.experience.map(job => `
-                    <div class="job-creative">
-                        <div class="job-title-creative">${job.title}</div>
-                        <div class="company-creative">${job.company}</div>
-                        <div class="job-meta-creative">${job.startDate} - ${job.endDate} • ${job.location}</div>
-                        <ul class="achievements-creative">
-                            ${job.description.map(item => `<li>${item}</li>`).join('')}
-                            ${job.achievements.map(achievement => `<li><strong>Achievement:</strong> ${achievement}</li>`).join('')}
-                        </ul>
-                    </div>
-                `).join('')}
-            </div>
-
-            ${data.projects && data.projects.length > 0 ? `
-            <div class="section">
-                <div class="section-title">Featured Projects</div>
-                ${data.projects.map(project => `
-                    <div class="project-creative">
-                        <div class="project-name-creative">${project.name} ${project.link ? `<a href="${project.link}" style="color: #667eea;">🔗</a>` : ''}</div>
-                        <div class="project-desc-creative">${project.description}</div>
-                        <div class="project-tech-creative">
-                            ${project.technologies.map(tech => `<span class="tech-badge-creative">${tech}</span>`).join('')}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-            ` : ''}
-
-            <div class="section">
-                <div class="section-title">Education</div>
-                ${data.education.map(edu => `
-                    <div class="education-creative">
-                        <div class="degree-creative">${edu.degree}</div>
-                        <div class="school-creative">${edu.school}, ${edu.location}</div>
-                        <div class="edu-details-creative">${edu.graduationDate} ${edu.gpa ? `• GPA: ${edu.gpa}` : ''}</div>
-                        ${edu.honors ? `<div class="edu-details-creative">${edu.honors.join(', ')}</div>` : ''}
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-    `
-  },
-
-  generateMarkdown: (data: ResumeData, jobDescription?: string) => {
-    return `# 🎨 ${data.personalInfo.name}
-## ✨ Creative Professional
-
----
-
-📧 **${data.personalInfo.email}** | 📱 **${data.personalInfo.phone}** | 📍 **${data.personalInfo.location}**
-
-${data.personalInfo.portfolio ? `🌐 [Portfolio](${data.personalInfo.portfolio})` : ''} ${data.personalInfo.linkedin ? `| 💼 [LinkedIn](${data.personalInfo.linkedin})` : ''} ${data.personalInfo.github ? `| 💻 [GitHub](${data.personalInfo.github})` : ''}
-
----
-
-## 🌟 About Me
-
-> ${data.summary}
-
----
-
-## 🎯 Skills & Expertise
-
-### 🛠️ Technical Skills
-${data.skills.technical.map(skill => `- **${skill}**`).join('\n')}
-
-### 🧠 Soft Skills  
-${data.skills.soft.map(skill => `- **${skill}**`).join('\n')}
-
----
-
-## 💼 Professional Experience
-
-${data.experience.map(job => `
-### 🏢 **${job.title}** at *${job.company}*
-📅 ${job.startDate} - ${job.endDate} | 📍 ${job.location}
-
-${job.description.map(item => `🔹 ${item}`).join('\n')}
-
-${job.achievements.length > 0 ? `
-**🏆 Key Achievements:**
-${job.achievements.map(achievement => `◆ ${achievement}`).join('\n')}
-` : ''}
-`).join('\n')}
-
----
-
-${data.projects && data.projects.length > 0 ? `
-## 🚀 Featured Projects
-
-${data.projects.map(project => `
-### 🎨 **${project.name}**
-${project.description}
-
-**🔧 Technologies:** \`${project.technologies.join('`, `')}\`
-${project.link ? `**🔗 Link:** ${project.link}` : ''}
-`).join('\n')}
-
----
-` : ''}
-
-## 🎓 Education
-
-${data.education.map(edu => `
-### **${edu.degree}**
-\`${edu.school}\` | ${edu.location} | ${edu.graduationDate}
-${edu.gpa ? `📊 **GPA:** ${edu.gpa}` : ''}
-${edu.honors ? `🏅 **Honors:** ${edu.honors.join(', ')}` : ''}
-`).join('\n')}
-
----
-
-*Thank you for considering my application! 🙏*
-`
-  }
-}
-
 // Executive Leadership Template (Sophisticated and formal)
 export const executiveLeadershipTemplate: ResumeTemplate = {
   id: 'executive-leadership',
@@ -1292,7 +879,7 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Georgia', 'Times New Roman', serif; 
-            line-height: 1.5; 
+            line-height: 1.6; 
             color: #2c3e50; 
             max-width: 8.5in; 
             margin: 0 auto; 
@@ -1305,20 +892,20 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             text-align: center;
             margin-bottom: 40px;
             padding: 30px 0;
-            border-top: 4px solid #34495e;
-            border-bottom: 2px solid #bdc3c7;
+            border-top: 3px solid #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
             position: relative;
         }
         
         .letterhead::before {
             content: '';
             position: absolute;
-            top: -4px;
+            top: -3px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: #e74c3c;
+            width: 60px;
+            height: 3px;
+            background: #3498db;
         }
         
         .name-executive { 
@@ -1326,7 +913,7 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             font-weight: normal; 
             color: #2c3e50; 
             margin-bottom: 10px;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
         }
         
@@ -1364,6 +951,8 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             text-align: center;
             position: relative;
             padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .section-title-executive::after {
@@ -1372,7 +961,7 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
+            width: 80px;
             height: 1px;
             background: #34495e;
         }
@@ -1383,8 +972,10 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             text-align: justify;
             font-style: italic;
             color: #34495e;
-            padding: 0 30px;
+            padding: 0 40px;
             margin-bottom: 20px;
+            border-left: 3px solid #3498db;
+            padding-left: 30px;
         }
         
         .job-executive { 
@@ -1406,8 +997,8 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
         
         .company-executive { 
             font-size: 12pt;
-            color: #7f8c8d; 
-            font-weight: normal;
+            color: #3498db; 
+            font-weight: 600;
             margin-bottom: 5px;
         }
         
@@ -1432,19 +1023,18 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
         }
         
         .achievements-executive li::before {
-            content: '◆';
+            content: '▸';
             position: absolute;
             left: 0;
             color: #3498db;
             font-size: 12pt;
+            font-weight: bold;
         }
         
         .key-accomplishments {
-            background: #f8f9fa;
-            padding: 20px;
-            border-left: 4px solid #e74c3c;
             margin: 20px 0;
-            border-radius: 4px;
+            padding-left: 20px;
+            border-left: 3px solid #e74c3c;
         }
         
         .key-accomplishments h4 {
@@ -1452,55 +1042,48 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             margin-bottom: 12px;
             font-size: 12pt;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .skills-executive {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
+            gap: 40px;
+            margin-top: 20px;
         }
         
         .skill-category-executive {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 8px;
-            border-top: 4px solid #34495e;
+            padding: 0;
         }
         
         .skill-category-executive h4 {
             color: #2c3e50;
             margin-bottom: 15px;
             font-size: 13pt;
-            text-align: center;
+            text-align: left;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
         }
         
         .skill-list-executive {
             color: #34495e;
             font-size: 11pt;
             line-height: 1.8;
-            text-align: center;
+            text-align: left;
         }
         
         .education-executive {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 2px solid #ecf0f1;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            position: relative;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
         }
         
-        .education-executive::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            border-radius: 8px 8px 0 0;
+        .education-executive:last-child {
+            border-bottom: none;
         }
         
         .degree-executive {
@@ -1529,6 +1112,7 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             font-size: 11pt;
             color: #34495e;
             line-height: 1.6;
+            padding-left: 20px;
         }
         
         .edu-details-executive .gpa {
@@ -1547,7 +1131,6 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
             body { padding: 0.5in; }
             .name-executive { font-size: 24pt; }
             .section-title-executive { font-size: 14pt; }
-            .education-executive { box-shadow: none; }
         }
     </style>
 </head>
@@ -1685,7 +1268,6 @@ ${edu.honors ? `🏅 **Honors:** ${edu.honors.join(', ')}` : ''}
 export const allTemplates: ResumeTemplate[] = [
   yourResumeTemplate,
   modernTechTemplate,
-  creativePortfolioTemplate,
   executiveLeadershipTemplate
 ]
 
@@ -1703,8 +1285,23 @@ export const optimizeResumeForJob = (
   jobDescription: string, 
   templateId: string = 'your-resume-style'
 ): { optimizedData: ResumeData; suggestions: string[] } => {
-  const template = getTemplateById(templateId)
-  if (!template) {
+  // Check both HTML and LaTeX templates
+  const htmlTemplate = getTemplateById(templateId)
+  
+  // Import LaTeX templates to check if it's a LaTeX template
+  let isLatexTemplate = false
+  try {
+    const { getLatexTemplate } = require('./latex-templates')
+    const latexTemplate = getLatexTemplate(templateId)
+    if (latexTemplate) {
+      isLatexTemplate = true
+    }
+  } catch (error) {
+    // LaTeX templates module might not be available, continue with HTML templates only
+  }
+  
+  // If neither HTML nor LaTeX template found, throw error
+  if (!htmlTemplate && !isLatexTemplate) {
     throw new Error(`Template with id ${templateId} not found`)
   }
 

@@ -185,7 +185,7 @@ export default function SettingsPage() {
                   <div className="space-y-6">
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">Resume Roasts This Month</span>
+                        <span className="text-sm font-medium text-gray-700">Resume Credits This Month</span>
                         <span className="text-sm text-gray-600">
                           {subscription?.monthlyRoasts || 0} / {
                             subscription?.tier === 'FREE' ? '3' :
@@ -214,7 +214,7 @@ export default function SettingsPage() {
 
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-700">Total Roasts</span>
+                        <span className="text-sm font-medium text-gray-700">Total Credits</span>
                         <span className="text-sm text-gray-600">{subscription?.totalRoasts || 0}</span>
                       </div>
                     </div>
@@ -226,8 +226,8 @@ export default function SettingsPage() {
                           <div>
                             <p className="text-sm font-medium text-orange-800">Usage Limit Warning</p>
                             <p className="text-sm text-orange-600">
-                              You have {remainingUsage} roast{remainingUsage !== 1 ? 's' : ''} remaining this month. 
-                              Consider upgrading to Pro for unlimited roasts.
+                              You have {remainingUsage} credit{remainingUsage !== 1 ? 's' : ''} remaining this month. 
+                              Consider upgrading to Pro for unlimited credits.
                             </p>
                           </div>
                         </div>

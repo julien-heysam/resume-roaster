@@ -44,7 +44,7 @@ export function RoastLimitBanner({
           <div className="flex items-center space-x-2">
             <Crown className="h-4 w-4 text-purple-500" />
             <span className="text-purple-700 font-medium">
-              Enterprise Plan - Unlimited Roasts
+              Enterprise Plan - Unlimited Credits
             </span>
           </div>
           <div className="text-purple-600 text-xs">
@@ -63,7 +63,7 @@ export function RoastLimitBanner({
           <div className="flex items-center space-x-2">
             <Crown className="h-4 w-4 text-blue-500" />
             <span className="text-blue-700 font-medium">
-              Pro Plan - {remainingRoasts} roasts remaining
+              Pro Plan - {remainingRoasts} credits remaining
             </span>
           </div>
           <div className="text-blue-600 text-xs">
@@ -75,14 +75,14 @@ export function RoastLimitBanner({
   }
 
   if (canRoast && remainingRoasts > 1) {
-    // Show subtle indicator when user still has roasts left
+    // Show subtle indicator when user still has credits left
     return (
       <div className={`mb-4 p-3 ${tierDisplay.bgColor} border border-gray-200 rounded-lg`}>
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center space-x-2">
             <Flame className="h-4 w-4 text-orange-500" />
             <span className={tierDisplay.color}>
-              {isAuthenticated ? `${tierDisplay.name} Plan - ` : ''}{remainingRoasts} roasts remaining
+              {isAuthenticated ? `${tierDisplay.name} Plan - ` : ''}{remainingRoasts} credits remaining
             </span>
           </div>
           <Button variant="link" size="sm" onClick={onUpgrade} className="text-orange-600 p-0 h-auto">
@@ -94,7 +94,7 @@ export function RoastLimitBanner({
   }
 
   if (canRoast && remainingRoasts === 1) {
-    // Show warning when on last roast
+    // Show warning when on last credit
     return (
       <Card className="mb-4 border-yellow-200 bg-yellow-50">
         <CardContent className="p-4">
@@ -102,11 +102,11 @@ export function RoastLimitBanner({
             <AlertTriangle className="h-5 w-5 text-yellow-600" />
             <div className="flex-1">
               <p className="text-sm font-medium text-yellow-800">
-                {tier === 'FREE' ? 'This is your last free roast!' : 'Last roast remaining!'}
+                {tier === 'FREE' ? 'This is your last free credit!' : 'Last credit remaining!'}
               </p>
               <p className="text-xs text-yellow-700 mt-1">
                 {tier === 'FREE' 
-                  ? 'Upgrade to Pro for 100 roasts/month' 
+                  ? 'Upgrade to Pro for 100 credits/month' 
                   : 'Your plan resets monthly'
                 }
               </p>
@@ -128,14 +128,14 @@ export function RoastLimitBanner({
           <Crown className="h-12 w-12 text-orange-500 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             {tier === 'FREE' 
-              ? "You've Used All Your Free Roasts! 🔥" 
+              ? "You've Used All Your Free Credits! 🔥" 
               : `${tierDisplay.name} Plan Limit Reached`
             }
           </h3>
           <p className="text-gray-600 mb-4">
             {tier === 'FREE' 
-              ? `You've used all ${maxRoasts} free roasts. Upgrade to get unlimited resume analysis, AI rewriting, and premium features.`
-              : `You've used all ${maxRoasts} roasts for this month. Your limit resets monthly.`
+              ? `You've used all ${maxRoasts} free credits. Upgrade to get unlimited resume analysis, AI rewriting, and premium features.`
+              : `You've used all ${maxRoasts} credits for this month. Your limit resets monthly.`
             }
           </p>
           <div className="space-y-3">
@@ -150,7 +150,7 @@ export function RoastLimitBanner({
             </Button>
             {tier === 'FREE' && (
               <p className="text-xs text-gray-500">
-                Or wait until next month for your roasts to reset
+                Or wait until next month for your credits to reset
               </p>
             )}
           </div>

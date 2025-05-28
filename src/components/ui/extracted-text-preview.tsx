@@ -10,7 +10,7 @@ import { ScrollArea } from "./scroll-area"
 import { Textarea } from "./textarea"
 import { Input } from "./input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs"
-import { Eye, EyeOff, FileText, Hash, Calendar, HardDrive, Link, Loader, Briefcase, Flame } from "lucide-react"
+import { Eye, EyeOff, FileText, Hash, Calendar, HardDrive, Link, Loader, Briefcase, Flame, RotateCcw, X } from "lucide-react"
 
 interface ExtractedResumeData {
   text: string
@@ -29,6 +29,7 @@ interface ExtractedResumeData {
 interface ExtractedTextPreviewProps {
   data: ExtractedResumeData
   onProceed?: (resumeData: ExtractedResumeData, jobDescription: string) => void
+  onClear?: () => void
   isProcessing?: boolean
   isAnalyzing?: boolean
 }
@@ -36,6 +37,7 @@ interface ExtractedTextPreviewProps {
 export function ExtractedTextPreview({ 
   data, 
   onProceed, 
+  onClear,
   isProcessing = false,
   isAnalyzing = false 
 }: ExtractedTextPreviewProps) {
@@ -60,6 +62,12 @@ export function ExtractedTextPreview({
     }
   }
 
+  const handleClear = () => {
+    if (onClear && !isProcessing && !isAnalyzing && !isStartingAnalysis) {
+      onClear()
+    }
+  }
+
   const displayText = showFullText ? data.text : data.text.slice(0, 1000) + (data.text.length > 1000 ? "..." : "")
 
   return (
@@ -77,9 +85,24 @@ export function ExtractedTextPreview({
                 Your resume has been processed and is ready for roasting
               </CardDescription>
             </div>
-            <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-300">
-              ✓ Ready
-            </Badge>
+            <div className="flex items-center space-x-2">
+              <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-300">
+                ✓ Ready
+              </Badge>
+              {onClear && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClear}
+                  disabled={isProcessing || isAnalyzing || isStartingAnalysis}
+                  className="text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-300"
+                  title="Clear extraction and upload a new file"
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Clear
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-6">
@@ -236,8 +259,21 @@ export function ExtractedTextPreview({
         </CardContent>
       </Card>
 
-      {/* Action Button */}
-      <div className="flex justify-center pt-4">
+      {/* Action Buttons */}
+      <div className="flex justify-center items-center space-x-4 pt-4">
+        {onClear && (
+          <Button 
+            variant="outline"
+            onClick={handleClear}
+            disabled={isProcessing || isAnalyzing || isStartingAnalysis}
+            size="lg"
+            className="px-6 text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-300"
+          >
+            <RotateCcw className="mr-2 h-5 w-5" />
+            Start Over
+          </Button>
+        )}
+        
         <Button 
           onClick={handleProceed}
           disabled={isProcessing || isAnalyzing || isStartingAnalysis || !jobDescriptionText.trim()}

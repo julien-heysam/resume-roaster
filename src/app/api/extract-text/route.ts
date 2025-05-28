@@ -164,7 +164,9 @@ export async function POST(request: NextRequest) {
         data: extractedData,
         summary: existingDocument.summary || `${extractionMethod.toUpperCase()} content extracted from cache`,
         sections: existingDocument.sections || ["Resume Content"],
-        fromCache: true
+        fromCache: true,
+        documentId: existingDocument.id,
+        fileHash: fileHash
       })
     }
 
@@ -275,7 +277,9 @@ export async function POST(request: NextRequest) {
       data: resultData,
       summary,
       sections,
-      fromCache: false
+      fromCache: false,
+      documentId: savedDocument.id,
+      fileHash: fileHash
     })
 
   } catch (error) {

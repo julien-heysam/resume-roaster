@@ -33,6 +33,8 @@ import {
 } from "lucide-react"
 import { ResumeData } from "@/lib/resume-templates"
 import { generatePDF, generateDOCX, downloadBlob } from "@/lib/document-generators"
+import { latexTemplates } from "@/lib/latex-templates"
+import { compileLatexToPDF, downloadLatexSource } from "@/lib/latex-compiler"
 
 interface Template {
   id: string
@@ -40,6 +42,7 @@ interface Template {
   description: string
   category: 'modern' | 'classic' | 'tech' | 'creative' | 'executive'
   atsOptimized: boolean
+  type?: 'html' | 'latex' // Add type to distinguish template types
 }
 
 interface OptimizedResumeResponse {
@@ -532,29 +535,42 @@ export function ResumeOptimizer() {
       name: 'Your Resume Style',
       description: 'Based on your beautiful resume design - clean, professional, and perfectly formatted',
       category: 'classic',
-      atsOptimized: true
+      atsOptimized: true,
+      type: 'html'
     },
     {
       id: 'modern-tech',
       name: 'Modern Tech',
       description: 'Dark theme with code-style formatting, perfect for developers and tech professionals',
       category: 'tech',
-      atsOptimized: true
+      atsOptimized: true,
+      type: 'html'
     },
     {
       id: 'creative-portfolio',
       name: 'Creative Portfolio',
       description: 'Vibrant, visual design perfect for designers, artists, and creative professionals',
       category: 'creative',
-      atsOptimized: false
+      atsOptimized: false,
+      type: 'html'
     },
     {
       id: 'executive-leadership',
       name: 'Executive Leadership',
       description: 'Sophisticated, formal design for C-level executives and senior leadership positions',
       category: 'executive',
-      atsOptimized: true
-    }
+      atsOptimized: true,
+      type: 'html'
+    },
+    // Add LaTeX templates
+    ...latexTemplates.map(template => ({
+      id: template.id,
+      name: `${template.name} (LaTeX)`,
+      description: `${template.description} - Professional LaTeX typesetting`,
+      category: template.category,
+      atsOptimized: template.atsOptimized,
+      type: 'latex' as const
+    }))
   ]
 
   const generateOptimizedResume = async () => {
@@ -572,6 +588,18 @@ export function ResumeOptimizer() {
       showAlert({
         title: "Personal Information Required",
         description: "Please fill in at least your name and email address to generate your resume.",
+        type: "warning",
+        confirmText: "OK"
+      })
+      return
+    }
+
+    // Check if LaTeX template is selected
+    const selectedTemplateObj = getSelectedTemplate()
+    if (selectedTemplateObj?.type === 'latex') {
+      showAlert({
+        title: "LaTeX Templates Temporarily Unavailable",
+        description: "LaTeX templates are currently under maintenance. Please go back to templates and select an HTML template.",
         type: "warning",
         confirmText: "OK"
       })
@@ -697,6 +725,117 @@ export function ResumeOptimizer() {
         description: "Failed to generate DOCX. Please try again.",
         type: "error",
         confirmText: "OK"
+      })
+    }
+  }
+
+  const downloadAsLatex = () => {
+    try {
+      downloadLatexSource(selectedTemplate, resumeData)
+    } catch (error) {
+      console.error('Error generating LaTeX:', error)
+      showAlert({
+        title: "LaTeX Generation Failed",
+        description: "Failed to generate LaTeX source. Please try again.",
+        type: "error",
+        confirmText: "OK"
+      })
+    }
+  }
+
+  const downloadLatexAsPDF = async () => {
+    try {
+      // Show loading state
+      showAlert({
+        title: "Compiling LaTeX to PDF",
+        description: "Attempting online compilation... This may take a few moments.",
+        type: "info",
+        confirmText: "Cancel"
+      })
+
+      const result = await compileLatexToPDF(selectedTemplate, resumeData)
+      
+      if (result.success && result.pdfBuffer) {
+        const fileName = resumeData.personalInfo.name 
+          ? `${resumeData.personalInfo.name.replace(/\s+/g, '_')}_Resume_LaTeX.pdf`
+          : 'Resume_LaTeX.pdf'
+        
+        const blob = new Blob([result.pdfBuffer], { type: 'application/pdf' })
+        downloadBlob(blob, fileName)
+        
+        showAlert({
+          title: "🎉 PDF Generated Successfully!",
+          description: "Your LaTeX resume has been compiled and downloaded as a PDF with professional typesetting.",
+          type: "success",
+          confirmText: "Excellent!"
+        })
+      } else {
+        // Online compilation failed - provide immediate fallback
+        showAlert({
+          title: "📄 Online Compilation Unavailable",
+          description: "No worries! I'll download your LaTeX source file instead. You can compile it to PDF in seconds using Overleaf (free online LaTeX editor).",
+          type: "info",
+          confirmText: "Download .tex File",
+          cancelText: "Cancel",
+          onConfirm: () => {
+            // Automatically download the LaTeX source
+            try {
+              downloadLatexSource(selectedTemplate, resumeData)
+              
+              // Show helpful instructions
+              setTimeout(() => {
+                showAlert({
+                  title: "✅ LaTeX Source Downloaded!",
+                  description: "Quick Compilation Guide:\n\n1. Go to overleaf.com (free account)\n2. Click 'New Project' → 'Upload Project'\n3. Upload your downloaded .tex file\n4. Click 'Recompile' - your PDF will appear instantly!\n\n✨ Result: Professional publication-quality resume PDF",
+                  type: "success",
+                  confirmText: "Got it!",
+                  cancelText: "Open Overleaf",
+                  onCancel: () => {
+                    window.open('https://overleaf.com', '_blank')
+                  }
+                })
+              }, 500)
+            } catch (error) {
+              console.error('Error downloading LaTeX source:', error)
+              showAlert({
+                title: "Download Error",
+                description: "There was an error downloading the LaTeX file. Please try again.",
+                type: "error",
+                confirmText: "OK"
+              })
+            }
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Error in LaTeX compilation process:', error)
+      
+      // Provide helpful fallback even on errors
+      showAlert({
+        title: "📄 Let's Use Manual Compilation",
+        description: "Online compilation encountered an issue, but manual compilation always works perfectly! Would you like to download the LaTeX source file?",
+        type: "warning",
+        confirmText: "Yes, Download .tex",
+        cancelText: "Cancel",
+        onConfirm: () => {
+          try {
+            downloadLatexSource(selectedTemplate, resumeData)
+            showAlert({
+              title: "🚀 Alternative Solution",
+              description: "LaTeX source downloaded! Visit overleaf.com, create a free account, upload this .tex file, and click 'Recompile' to get your professional PDF resume. This method always works and produces the same high-quality results!",
+              type: "success",
+              confirmText: "Perfect!"
+            })
+          } catch (error) {
+            console.error('Error downloading LaTeX source:', error)
+            showAlert({
+              title: "Technical Issue",
+              description: "There was a technical issue. Please try refreshing the page and generating your resume again.",
+              type: "error",
+              confirmText: "OK"
+            })
+          }
+        }
       })
     }
   }
@@ -1611,7 +1750,108 @@ Leadership, Communication, Problem-solving, Team Management
     const template = getSelectedTemplate()
     if (!template) return ""
     
-    // Import the actual template from resume-templates
+    // Handle LaTeX templates with visual previews
+    if (template.type === 'latex') {
+      const latexTemplate = latexTemplates.find(t => t.id === template.id)
+      if (latexTemplate) {
+        return `
+          <html>
+            <head>
+              <style>
+                body { 
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+                  padding: 20px; 
+                  background: #f8f9fa; 
+                  margin: 0;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  min-height: 100vh;
+                }
+                .latex-preview-container {
+                  background: white;
+                  padding: 20px;
+                  border-radius: 12px;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                  max-width: 500px;
+                  width: 100%;
+                  text-align: center;
+                }
+                .preview-image {
+                  width: 100%;
+                  max-width: 400px;
+                  height: auto;
+                  border: 1px solid #e0e0e0;
+                  border-radius: 8px;
+                  margin-bottom: 20px;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                }
+                .template-info {
+                  background: #6366f1;
+                  color: white;
+                  padding: 15px;
+                  border-radius: 8px;
+                  margin-bottom: 15px;
+                }
+                .template-title {
+                  font-size: 18px;
+                  font-weight: 600;
+                  margin-bottom: 5px;
+                }
+                .template-description {
+                  font-size: 14px;
+                  opacity: 0.9;
+                  line-height: 1.4;
+                }
+                .features {
+                  background: #f0f9ff;
+                  border: 1px solid #bae6fd;
+                  border-radius: 8px;
+                  padding: 15px;
+                  margin-top: 15px;
+                  text-align: left;
+                }
+                .features h4 {
+                  color: #0369a1;
+                  margin: 0 0 10px 0;
+                  font-size: 14px;
+                  font-weight: 600;
+                }
+                .features ul {
+                  margin: 0;
+                  padding-left: 20px;
+                  color: #0c4a6e;
+                  font-size: 13px;
+                  line-height: 1.5;
+                }
+                .overleaf-link {
+                  display: inline-block;
+                  background: #22c55e;
+                  color: white;
+                  padding: 8px 16px;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  font-size: 12px;
+                  font-weight: 500;
+                  margin-top: 10px;
+                  transition: background-color 0.2s;
+                }
+                .overleaf-link:hover {
+                  background: #16a34a;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="latex-preview-container">
+                <img src="${latexTemplate.previewImage}" alt="${latexTemplate.name} Preview" class="preview-image" />
+              </div>
+            </body>
+          </html>
+        `
+      }
+    }
+    
+    // Handle HTML templates (existing logic)
     if (template.id === 'your-resume-style') {
       // Use the actual template with sample data
       const { yourResumeTemplate } = require('@/lib/resume-templates')
@@ -1716,21 +1956,35 @@ Leadership, Communication, Problem-solving, Team Management
                       selectedTemplate === template.id 
                         ? 'ring-2 ring-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg' 
                         : 'hover:bg-gradient-to-br hover:from-gray-50 hover:to-orange-50'
-                    }`}
+                    } ${template.type === 'latex' ? 'opacity-75 relative' : ''}`}
                     onClick={() => setSelectedTemplate(template.id)}
                   >
+                    {template.type === 'latex' && (
+                      <div className="absolute inset-0 bg-gray-900 bg-opacity-10 rounded-lg flex items-center justify-center z-10">
+                        <div className="bg-yellow-100 border border-yellow-300 rounded-lg px-3 py-2 text-xs font-medium text-yellow-800">
+                          Temporarily Unavailable
+                        </div>
+                      </div>
+                    )}
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center space-x-2">
                           {categoryIcons[template.category]}
                           <h3 className="font-semibold">{template.name}</h3>
                         </div>
-                        {template.atsOptimized && (
-                          <Badge variant="secondary" className="text-xs">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            ATS
-                          </Badge>
-                        )}
+                        <div className="flex flex-col space-y-1">
+                          {template.atsOptimized && (
+                            <Badge variant="secondary" className="text-xs">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              ATS
+                            </Badge>
+                          )}
+                          {template.type === 'latex' && (
+                            <Badge variant="outline" className="text-xs border-purple-200 text-purple-600">
+                              LaTeX
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                       <p className="text-sm text-gray-600 mb-3">
                         {template.description}
@@ -1790,7 +2044,19 @@ Leadership, Communication, Problem-solving, Team Management
               
               <div className="mt-6 flex justify-end">
                 <Button 
-                  onClick={() => setActiveTab('data')}
+                  onClick={() => {
+                    const selectedTemplateObj = getSelectedTemplate()
+                    if (selectedTemplateObj?.type === 'latex') {
+                      showAlert({
+                        title: "LaTeX Templates Temporarily Unavailable",
+                        description: "LaTeX templates are currently under maintenance. Please select an HTML template for now. We'll have LaTeX templates back online soon!",
+                        type: "warning",
+                        confirmText: "OK"
+                      })
+                      return
+                    }
+                    setActiveTab('data')
+                  }}
                   className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
                 >
                   Next: Enter Details
@@ -1858,7 +2124,7 @@ Leadership, Communication, Problem-solving, Team Management
           )}
 
           {/* Hero Section for Enter Details */}
-          <div className="text-center mb-8">
+          {/* <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full mb-4 shadow-lg">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -1870,7 +2136,7 @@ Leadership, Communication, Problem-solving, Team Management
             <p className="text-gray-600 max-w-2xl mx-auto">
               Fill in your details and job description to create an ATS-optimized resume tailored for your target role
             </p>
-          </div>
+          </div> */}
 
           {/* Job Description Section - Now at the top */}
           <Card className="border-2 border-orange-100 shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
@@ -2451,7 +2717,7 @@ Leadership, Communication, Problem-solving, Team Management
                           className="flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
                         >
                           <Download className="h-4 w-4" />
-                          <span>Download HTML</span>
+                          <span>{generatedResume.template.type === 'latex' ? 'Download LaTeX' : 'Download HTML'}</span>
                         </Button>
                         {/* <Button 
                           onClick={downloadAsText}
@@ -2461,28 +2727,71 @@ Leadership, Communication, Problem-solving, Team Management
                           <Download className="h-4 w-4" />
                           <span>ATS Text</span>
                         </Button> */}
-                        <Button 
-                          onClick={downloadAsPDF}
-                          variant="outline"
-                          className="flex items-center space-x-2 border-green-200 text-green-600 hover:bg-green-50"
-                        >
-                          <Download className="h-4 w-4" />
-                          <span>Download PDF</span>
-                        </Button>
-                        <Button 
-                          onClick={downloadAsDOCX}
-                          variant="outline"
-                          className="flex items-center space-x-2 border-yellow-200 text-yellow-600 hover:bg-yellow-50"
-                        >
-                          <Download className="h-4 w-4" />
-                          <span>Download DOCX</span>
-                        </Button>
+                        {generatedResume.template.type !== 'latex' && (
+                          <Button 
+                            onClick={downloadAsPDF}
+                            variant="outline"
+                            className="flex items-center space-x-2 border-green-200 text-green-600 hover:bg-green-50"
+                          >
+                            <Download className="h-4 w-4" />
+                            <span>Download PDF</span>
+                          </Button>
+                        )}
+                        {generatedResume.template.type !== 'latex' && (
+                          <Button 
+                            onClick={downloadAsDOCX}
+                            variant="outline"
+                            className="flex items-center space-x-2 border-yellow-200 text-yellow-600 hover:bg-yellow-50"
+                          >
+                            <Download className="h-4 w-4" />
+                            <span>Download DOCX</span>
+                          </Button>
+                        )}
+                        {/* LaTeX download options - show when LaTeX template is selected */}
+                        {generatedResume.template.type === 'latex' && (
+                          <>
+                            <Button 
+                              onClick={downloadAsLatex}
+                              className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+                            >
+                              <Download className="h-4 w-4" />
+                              <span>Download LaTeX (.tex)</span>
+                            </Button>
+                            <Button 
+                              onClick={downloadLatexAsPDF}
+                              variant="outline"
+                              className="flex items-center space-x-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+                            >
+                              <Download className="h-4 w-4" />
+                              <span>Try Online Compile</span>
+                            </Button>
+                          </>
+                        )}
                       </div>
                       <Button 
                         onClick={() => {
                           const printWindow = window.open('', '_blank');
                           if (printWindow) {
-                            printWindow.document.write(generatedResume.resume);
+                            if (generatedResume.template.type === 'latex') {
+                              // For LaTeX, show the source in a new window
+                              printWindow.document.write(`
+                                <html>
+                                  <head>
+                                    <title>LaTeX Source - ${resumeData.personalInfo.name || 'Resume'}</title>
+                                    <style>
+                                      body { font-family: 'Courier New', monospace; padding: 20px; }
+                                      pre { white-space: pre-wrap; font-size: 12px; line-height: 1.4; }
+                                    </style>
+                                  </head>
+                                  <body>
+                                    <h1>LaTeX Source Code</h1>
+                                    <pre>${generatedResume.resume.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                                  </body>
+                                </html>
+                              `);
+                            } else {
+                              printWindow.document.write(generatedResume.resume);
+                            }
                             printWindow.document.close();
                             printWindow.focus();
                           }
@@ -2507,36 +2816,45 @@ Leadership, Communication, Problem-solving, Team Management
                           </div>
                           <div className="flex-1">
                             <h4 className="text-sm font-medium text-blue-900 mb-1">
-                              Edit Your Resume Content
+                              {generatedResume.template.type === 'latex' ? 'Edit LaTeX Source' : 'Edit Your Resume Content'}
                             </h4>
                             <p className="text-sm text-blue-700 mb-2">
-                              Use this simple format to edit your resume. No HTML knowledge required!
+                              {generatedResume.template.type === 'latex' 
+                                ? 'Edit the LaTeX source code directly. Make sure to maintain proper LaTeX syntax.'
+                                : 'Use this simple format to edit your resume. No HTML knowledge required!'
+                              }
                             </p>
-                            <div className="text-xs text-blue-600 space-y-1 mb-3">
-                              <div><code className="bg-blue-100 px-1 rounded"># Name</code> - Your full name</div>
-                              <div><code className="bg-blue-100 px-1 rounded">## Section Title</code> - Main sections (Experience, Education, etc.)</div>
-                              <div><code className="bg-blue-100 px-1 rounded">### Job Title</code> - Job titles, degrees, project names</div>
-                              <div><code className="bg-blue-100 px-1 rounded">**Company Name**</code> - Company names, schools</div>
-                              <div><code className="bg-blue-100 px-1 rounded">*Date Range*</code> - Dates and locations</div>
-                              <div><code className="bg-blue-100 px-1 rounded">- Bullet point</code> - Achievements and responsibilities</div>
-                            </div>
+                            {generatedResume.template.type !== 'latex' && (
+                              <div className="text-xs text-blue-600 space-y-1 mb-3">
+                                <div><code className="bg-blue-100 px-1 rounded"># Name</code> - Your full name</div>
+                                <div><code className="bg-blue-100 px-1 rounded">## Section Title</code> - Main sections (Experience, Education, etc.)</div>
+                                <div><code className="bg-blue-100 px-1 rounded">### Job Title</code> - Job titles, degrees, project names</div>
+                                <div><code className="bg-blue-100 px-1 rounded">**Company Name**</code> - Company names, schools</div>
+                                <div><code className="bg-blue-100 px-1 rounded">*Date Range*</code> - Dates and locations</div>
+                                <div><code className="bg-blue-100 px-1 rounded">- Bullet point</code> - Achievements and responsibilities</div>
+                              </div>
+                            )}
                             <div className="flex space-x-2">
-                              <Button
-                                onClick={loadSampleMarkdown}
-                                size="sm"
-                                variant="outline"
-                                className="text-xs border-blue-300 text-blue-700 hover:bg-blue-50"
-                              >
-                                Load Sample Content
-                              </Button>
-                              <Button
-                                onClick={loadSampleSkills}
-                                size="sm"
-                                variant="outline"
-                                className="text-xs border-green-300 text-green-700 hover:bg-green-50"
-                              >
-                                Load Sample Skills
-                              </Button>
+                              {generatedResume.template.type !== 'latex' && (
+                                <>
+                                  <Button
+                                    onClick={loadSampleMarkdown}
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-xs border-blue-300 text-blue-700 hover:bg-blue-50"
+                                  >
+                                    Load Sample Content
+                                  </Button>
+                                  <Button
+                                    onClick={loadSampleSkills}
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-xs border-green-300 text-green-700 hover:bg-green-50"
+                                  >
+                                    Load Sample Skills
+                                  </Button>
+                                </>
+                              )}
                               <Button
                                 onClick={() => setMarkdownContent('')}
                                 size="sm"
@@ -2550,62 +2868,86 @@ Leadership, Communication, Problem-solving, Team Management
                         </div>
                       </div>
 
-                      {/* Markdown Editor */}
+                      {/* Editor */}
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <Label className="text-sm font-medium text-gray-700">
-                              Edit Content
+                              {generatedResume.template.type === 'latex' ? 'Edit LaTeX Source' : 'Edit Content'}
                             </Label>
-                            <Button
-                              onClick={updatePreviewFromMarkdown}
-                              disabled={isUpdatingPreview}
-                              size="sm"
-                              className="flex items-center space-x-1 bg-green-600 hover:bg-green-700 text-white"
-                            >
-                              {isUpdatingPreview ? (
-                                <>
-                                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                                  <span>Updating...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <RefreshCw className="h-3 w-3" />
-                                  <span>Update Preview</span>
-                                </>
-                              )}
-                            </Button>
+                            {generatedResume.template.type !== 'latex' && (
+                              <Button
+                                onClick={updatePreviewFromMarkdown}
+                                disabled={isUpdatingPreview}
+                                size="sm"
+                                className="flex items-center space-x-1 bg-green-600 hover:bg-green-700 text-white"
+                              >
+                                {isUpdatingPreview ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                                    <span>Updating...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <RefreshCw className="h-3 w-3" />
+                                    <span>Update Preview</span>
+                                  </>
+                                )}
+                              </Button>
+                            )}
                           </div>
                           <Textarea
-                            value={markdownContent}
-                            onChange={(e) => setMarkdownContent(e.target.value)}
+                            value={generatedResume.template.type === 'latex' ? generatedResume.resume : markdownContent}
+                            onChange={(e) => {
+                              if (generatedResume.template.type === 'latex') {
+                                setGeneratedResume(prev => prev ? {
+                                  ...prev,
+                                  resume: e.target.value
+                                } : null)
+                              } else {
+                                setMarkdownContent(e.target.value)
+                              }
+                            }}
                             className="font-mono text-sm border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                             rows={25}
-                            placeholder="Your resume content will appear here..."
+                            placeholder={generatedResume.template.type === 'latex' 
+                              ? "LaTeX source code will appear here..."
+                              : "Your resume content will appear here..."
+                            }
                           />
                           <div className="mt-2 text-xs text-gray-500">
-                            {markdownContent.length} characters • Make changes and click "Update Preview" to see results
+                            {(generatedResume.template.type === 'latex' ? generatedResume.resume : markdownContent).length} characters
+                            {generatedResume.template.type === 'latex' 
+                              ? ' • LaTeX source code - compile to see final output'
+                              : ' • Make changes and click "Update Preview" to see results'
+                            }
                           </div>
                         </div>
                         
                         <div>
                           <div className="mb-2">
                             <Label className="text-sm font-medium text-gray-700">
-                              Live Preview
+                              {generatedResume.template.type === 'latex' ? 'LaTeX Source Preview' : 'Live Preview'}
                             </Label>
                           </div>
                           <div className="bg-gray-50 p-2 rounded-lg border">
                             <div className="bg-white border rounded-lg overflow-hidden shadow-sm">
-                              <iframe
-                                srcDoc={generatedResume.resume}
-                                className="w-full border-0"
-                                style={{
-                                  height: '600px',
-                                  minHeight: '600px'
-                                }}
-                                title="Resume Preview"
-                                sandbox="allow-same-origin"
-                              />
+                              {generatedResume.template.type === 'latex' ? (
+                                <div className="p-4 font-mono text-xs overflow-auto" style={{ height: '600px' }}>
+                                  <pre className="whitespace-pre-wrap">{generatedResume.resume}</pre>
+                                </div>
+                              ) : (
+                                <iframe
+                                  srcDoc={generatedResume.resume}
+                                  className="w-full border-0"
+                                  style={{
+                                    height: '600px',
+                                    minHeight: '600px'
+                                  }}
+                                  title="Resume Preview"
+                                  sandbox="allow-same-origin"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -2614,20 +2956,160 @@ Leadership, Communication, Problem-solving, Team Management
                   ) : (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <div className="bg-white border rounded-lg overflow-hidden shadow-sm">
-                        <iframe
-                          srcDoc={generatedResume.resume}
-                          className="w-full border-0"
-                          style={{
-                            height: '600px',
-                            minHeight: '600px'
-                          }}
-                          title="Resume Preview"
-                          sandbox="allow-same-origin"
-                        />
+                        {generatedResume.template.type === 'latex' ? (
+                          <div className="p-6">
+                            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-4">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <Code className="h-5 w-5 text-indigo-600" />
+                                <h3 className="font-semibold text-indigo-900">LaTeX Resume Generated</h3>
+                              </div>
+                              <p className="text-sm text-indigo-700 mb-3">
+                                Your resume has been generated using professional LaTeX typesetting. This provides publication-quality formatting that surpasses HTML/CSS approaches.
+                              </p>
+                              <div className="flex space-x-2">
+                                <Button
+                                  onClick={downloadAsLatex}
+                                  size="sm"
+                                  className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                >
+                                  <Download className="h-4 w-4 mr-1" />
+                                  Download .tex
+                                </Button>
+                                <Button
+                                  onClick={downloadLatexAsPDF}
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+                                >
+                                  <Download className="h-4 w-4 mr-1" />
+                                  Compile PDF
+                                </Button>
+                              </div>
+                            </div>
+                            
+                            {/* Show template preview image */}
+                            <div className="bg-white border rounded-lg p-4 mb-4">
+                              <h4 className="font-semibold text-gray-900 mb-3">Template Preview</h4>
+                              <div className="flex justify-center">
+                                <img 
+                                  src={latexTemplates.find(t => t.id === generatedResume.template.id)?.previewImage} 
+                                  alt={`${generatedResume.template.name} Preview`}
+                                  className="max-w-full h-auto border border-gray-200 rounded-lg shadow-sm"
+                                  style={{ maxHeight: '400px' }}
+                                />
+                              </div>
+                              <p className="text-sm text-gray-600 mt-3 text-center">
+                                Preview of the {generatedResume.template.name} template style. Your actual resume will use your personal information.
+                              </p>
+                            </div>
+                            
+                            {/* LaTeX Compilation Options */}
+                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 mb-4">
+                              <div className="flex items-start space-x-3">
+                                <div className="flex-shrink-0">
+                                  <svg className="h-5 w-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="text-sm font-medium text-blue-900 mb-2">🚀 Get Your Professional PDF Resume</h4>
+                                  <div className="text-sm text-blue-800 space-y-3">
+                                    <div className="bg-white rounded-lg p-3 border border-blue-200">
+                                      <div className="flex items-center space-x-2 mb-2">
+                                        <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded font-medium">RECOMMENDED</span>
+                                        <strong className="text-blue-900">Manual Compilation (Always Works)</strong>
+                                      </div>
+                                      <ol className="text-blue-700 text-sm space-y-1 ml-4 list-decimal">
+                                        <li>Click "Download LaTeX (.tex)" above</li>
+                                        <li>Go to <a href="https://overleaf.com" target="_blank" className="underline font-medium text-blue-600 hover:text-blue-800">overleaf.com</a> (free account)</li>
+                                        <li>Click "New Project" → "Upload Project"</li>
+                                        <li>Upload your .tex file and click "Recompile"</li>
+                                        <li>Download your professional PDF! ✨</li>
+                                      </ol>
+                                      <div className="mt-2 flex space-x-2">
+                                        <Button
+                                          onClick={downloadAsLatex}
+                                          size="sm"
+                                          className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                                        >
+                                          <Download className="h-3 w-3 mr-1" />
+                                          Download .tex
+                                        </Button>
+                                        <Button
+                                          onClick={() => window.open('https://overleaf.com', '_blank')}
+                                          size="sm"
+                                          variant="outline"
+                                          className="border-blue-300 text-blue-700 hover:bg-blue-50 text-xs"
+                                        >
+                                          Open Overleaf
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                                      <div className="flex items-center space-x-2 mb-2">
+                                        <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded font-medium">ALTERNATIVE</span>
+                                        <strong className="text-gray-700">Online Compilation (May Fail)</strong>
+                                      </div>
+                                      <p className="text-gray-600 text-sm mb-2">
+                                        Try automatic online compilation, but manual compilation is more reliable.
+                                      </p>
+                                      <Button
+                                        onClick={downloadLatexAsPDF}
+                                        size="sm"
+                                        variant="outline"
+                                        className="border-gray-300 text-gray-700 hover:bg-gray-100 text-xs"
+                                      >
+                                        <Download className="h-3 w-3 mr-1" />
+                                        Try Online Compile
+                                      </Button>
+                                    </div>
+                                    
+                                    <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                                      <div className="flex items-center space-x-2 mb-1">
+                                        <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <strong className="text-green-800">Why LaTeX?</strong>
+                                      </div>
+                                      <p className="text-green-700 text-sm">
+                                        LaTeX produces publication-quality documents with perfect typography, mathematical symbols, and professional formatting that surpasses HTML/CSS. Used by academics and professionals worldwide.
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* LaTeX source code in collapsible section */}
+                            <details className="bg-gray-50 border rounded-lg">
+                              <summary className="p-4 cursor-pointer font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+                                📄 View LaTeX Source Code
+                              </summary>
+                              <div className="p-4 border-t bg-gray-900 text-gray-100 rounded-b-lg">
+                                <pre className="text-xs whitespace-pre-wrap overflow-auto max-h-96">{generatedResume.resume}</pre>
+                              </div>
+                            </details>
+                          </div>
+                        ) : (
+                          <iframe
+                            srcDoc={generatedResume.resume}
+                            className="w-full border-0"
+                            style={{
+                              height: '600px',
+                              minHeight: '600px'
+                            }}
+                            title="Resume Preview"
+                            sandbox="allow-same-origin"
+                          />
+                        )}
                       </div>
                       <div className="mt-4 text-center">
                         <p className="text-sm text-gray-600">
-                          Preview of your optimized resume. Use "Edit Mode" to make changes, "Open Full View" to see it in a new tab, or "Download HTML" to save the file.
+                          {generatedResume.template.type === 'latex' 
+                            ? 'LaTeX source code preview. Download the .tex file to compile with your preferred LaTeX editor, or use "Compile PDF" for online compilation.'
+                            : 'Preview of your optimized resume. Use "Edit Mode" to make changes, "Open Full View" to see it in a new tab, or "Download HTML" to save the file.'
+                          }
                         </p>
                       </div>
                     </div>

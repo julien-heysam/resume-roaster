@@ -40,7 +40,7 @@ export const SUBSCRIPTION_TIERS = {
     name: 'Free',
     monthlyRoasts: 3,
     features: [
-      '3 resume roasts per month',
+      '3 credits per month',
       'AI-powered PDF extraction',
       'Basic markdown formatting',
       'Claude 4 Sonnet analysis',

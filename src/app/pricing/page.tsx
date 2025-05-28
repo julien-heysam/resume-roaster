@@ -24,7 +24,7 @@ export default function PricingPage() {
       price: { monthly: 0, yearly: 0 },
       description: "Perfect for trying out Resume Roaster",
       features: [
-        "3 resume roasts per month",
+        "3 credits per month",
         "Basic AI feedback",
         "PDF/DOCX upload support",
         "Markdown export",
@@ -44,7 +44,7 @@ export default function PricingPage() {
       price: { monthly: 9.99, yearly: 99.99 },
       description: "For serious job seekers who want the best",
       features: [
-        "Unlimited resume roasts",
+        "100 credits per month",
         "Advanced AI analysis",
         "Job-specific optimization",
         "ATS compatibility check",
@@ -64,6 +64,7 @@ export default function PricingPage() {
       description: "For teams and organizations",
       features: [
         "Everything in Pro",
+        "Unlimited credits per month",
         "Team management",
         "Bulk resume processing",
         "Custom branding",

@@ -7,6 +7,7 @@ import {
   optimizeResumeForJob,
   allTemplates 
 } from '@/lib/resume-templates'
+import { latexTemplates, getLatexTemplate } from '@/lib/latex-templates'
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,7 +41,50 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get the selected template
+    // Check if it's a LaTeX template
+    const latexTemplate = getLatexTemplate(templateId)
+    if (latexTemplate) {
+      // Handle LaTeX template
+      const { optimizedData, suggestions } = optimizeResumeForJob(
+        resumeData, 
+        jobDescription, 
+        templateId
+      )
+
+      // Generate LaTeX source
+      const generatedLatex = latexTemplate.generateLaTeX(optimizedData)
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          resume: generatedLatex,
+          format: 'latex',
+          template: {
+            id: latexTemplate.id,
+            name: latexTemplate.name,
+            description: latexTemplate.description,
+            category: latexTemplate.category,
+            atsOptimized: latexTemplate.atsOptimized,
+            type: 'latex'
+          },
+          optimizations: {
+            suggestions,
+            keywordsFound: extractJobKeywords(jobDescription).filter(keyword =>
+              resumeData.summary.toLowerCase().includes(keyword.toLowerCase()) ||
+              resumeData.skills.technical.some(skill => 
+                skill.toLowerCase().includes(keyword.toLowerCase())
+              ) ||
+              resumeData.skills.soft.some(skill => 
+                skill.toLowerCase().includes(keyword.toLowerCase())
+              )
+            ),
+            atsScore: calculateATSScore(optimizedData, jobDescription)
+          }
+        }
+      })
+    }
+
+    // Handle HTML template (existing logic)
     const template = getTemplateById(templateId)
     if (!template) {
       return NextResponse.json(
@@ -72,7 +116,8 @@ export async function POST(request: NextRequest) {
           name: template.name,
           description: template.description,
           category: template.category,
-          atsOptimized: template.atsOptimized
+          atsOptimized: template.atsOptimized,
+          type: 'html'
         },
         optimizations: {
           suggestions,
@@ -102,16 +147,31 @@ export async function POST(request: NextRequest) {
 // GET endpoint to fetch available templates
 export async function GET() {
   try {
+    // Combine HTML templates with LaTeX templates
+    const htmlTemplates = allTemplates.map(template => ({
+      id: template.id,
+      name: template.name,
+      description: template.description,
+      category: template.category,
+      atsOptimized: template.atsOptimized,
+      type: 'html' as const
+    }))
+
+    const latexTemplatesFormatted = latexTemplates.map(template => ({
+      id: template.id,
+      name: `${template.name} (LaTeX)`,
+      description: `${template.description} - Professional LaTeX typesetting`,
+      category: template.category,
+      atsOptimized: template.atsOptimized,
+      type: 'latex' as const
+    }))
+
+    const allAvailableTemplates = [...htmlTemplates, ...latexTemplatesFormatted]
+
     return NextResponse.json({
       success: true,
       data: {
-        templates: allTemplates.map(template => ({
-          id: template.id,
-          name: template.name,
-          description: template.description,
-          category: template.category,
-          atsOptimized: template.atsOptimized
-        }))
+        templates: allAvailableTemplates
       }
     })
   } catch (error) {

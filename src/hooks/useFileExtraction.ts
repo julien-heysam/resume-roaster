@@ -10,8 +10,7 @@ interface ExtractedResumeData {
     fileName: string
     fileSize: number
     extractedAt: string
-    fileType?: string
-    aiProvider?: string
+    aiProvider: string
     fromCache?: boolean
   }
 }
@@ -22,6 +21,9 @@ interface FileExtractionState {
   error: string | null
   summary?: string
   sections?: string[]
+  extractionMethod?: 'basic' | 'ai' | 'auto'
+  documentId?: string
+  fileHash?: string
 }
 
 export function useFileExtraction() {
@@ -31,7 +33,11 @@ export function useFileExtraction() {
     error: null
   })
 
-  const extractFile = async (file: File, userId?: string): Promise<ExtractedResumeData | null> => {
+  const extractFile = async (
+    file: File, 
+    userId?: string, 
+    extractionMethod: 'basic' | 'ai' | 'auto' = 'auto'
+  ): Promise<ExtractedResumeData | null> => {
     setState(prev => ({ 
       ...prev, 
       isExtracting: true, 
@@ -51,7 +57,7 @@ export function useFileExtraction() {
       let apiEndpoint: string
 
       if (fileType === 'application/pdf' || fileName.endsWith('.pdf')) {
-        // Use AI extraction for PDF files
+        // Use AI extraction endpoint for PDF files (supports both basic and AI)
         apiEndpoint = '/api/extract-pdf-ai'
       } else if (
         fileType === 'text/plain' || fileName.endsWith('.txt') ||
@@ -71,8 +77,9 @@ export function useFileExtraction() {
         formData.append('userId', userId)
       }
       
-      // For PDF files, also add provider parameter
+      // For PDF files, add extraction method and provider parameters
       if (apiEndpoint === '/api/extract-pdf-ai') {
+        formData.append('extractionMethod', extractionMethod)
         formData.append('provider', 'anthropic')
       }
 
@@ -85,7 +92,7 @@ export function useFileExtraction() {
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to extract text from file')
+        throw new Error(result.error || 'Failed to extract file content')
       }
 
       if (!result.success || !result.data) {
@@ -99,14 +106,17 @@ export function useFileExtraction() {
         extractedData,
         error: null,
         summary: result.summary,
-        sections: result.sections
+        sections: result.sections,
+        extractionMethod: result.extractionMethod,
+        documentId: result.documentId,
+        fileHash: result.fileHash
       })
 
       return extractedData
     } catch (error) {
       console.error('File extraction error:', error)
       
-      let errorMessage = 'Failed to extract text from file.'
+      let errorMessage = 'Failed to extract file content.'
       
       if (error instanceof Error) {
         if (error.message.includes('API key') || error.message.includes('configuration')) {
@@ -117,6 +127,8 @@ export function useFileExtraction() {
           errorMessage = 'File size too large. Maximum 10MB allowed.'
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
           errorMessage = 'Network error. Please check your connection and try again.'
+        } else if (error.message.includes('limit exceeded')) {
+          errorMessage = error.message // Pass through limit exceeded messages
         } else {
           errorMessage = error.message
         }
@@ -139,8 +151,44 @@ export function useFileExtraction() {
     })
   }
 
-  const retryExtraction = async (file: File, userId?: string) => {
-    return await extractFile(file, userId)
+  const deleteDocument = async (userId?: string): Promise<boolean> => {
+    const { documentId, fileHash } = state
+    
+    if (!documentId && !fileHash) {
+      console.warn('No document ID or file hash available for deletion')
+      return false
+    }
+
+    try {
+      const params = new URLSearchParams()
+      if (documentId) params.append('id', documentId)
+      if (fileHash) params.append('fileHash', fileHash)
+      if (userId) params.append('userId', userId)
+
+      const response = await fetch(`/api/delete-document?${params.toString()}`, {
+        method: 'DELETE'
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete document')
+      }
+
+      console.log('Document deleted successfully:', result.deletedDocument)
+      
+      // Clear the extraction state after successful deletion
+      clearExtraction()
+      
+      return true
+    } catch (error) {
+      console.error('Document deletion error:', error)
+      return false
+    }
+  }
+
+  const retryExtraction = async (file: File, userId?: string, extractionMethod?: 'basic' | 'ai' | 'auto') => {
+    return await extractFile(file, userId, extractionMethod)
   }
 
   const getFileTypeInfo = (file: File) => {
@@ -150,7 +198,7 @@ export function useFileExtraction() {
     if (fileType === 'application/pdf' || fileName.endsWith('.pdf')) {
       return {
         type: 'PDF',
-        description: 'Will use AI extraction',
+        description: 'Supports both basic and AI extraction',
         icon: '📄',
         color: 'text-red-600'
       }
@@ -189,6 +237,7 @@ export function useFileExtraction() {
     ...state,
     extractFile,
     clearExtraction,
+    deleteDocument,
     retryExtraction,
     getFileTypeInfo
   }

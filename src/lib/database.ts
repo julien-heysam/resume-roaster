@@ -86,6 +86,32 @@ export class DocumentService {
       }
     })
   }
+
+  // Delete document by ID
+  static async deleteById(documentId: string) {
+    return await db.document.delete({
+      where: { id: documentId }
+    })
+  }
+
+  // Delete document by file hash
+  static async deleteByHash(fileHash: string) {
+    return await db.document.delete({
+      where: { fileHash }
+    })
+  }
+
+  // Find document by ID
+  static async findById(documentId: string) {
+    return await db.document.findUnique({
+      where: { id: documentId },
+      include: {
+        user: {
+          select: { id: true, email: true, name: true }
+        }
+      }
+    })
+  }
 }
 
 // User management
