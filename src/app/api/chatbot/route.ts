@@ -64,8 +64,8 @@ async function generateAIResponse(userMessage: string, conversationHistory: Chat
     const completion = await openai.chat.completions.create({
       model: 'gpt-4.1-nano',
       messages,
-      max_tokens: 500,
-      temperature: 0.7,
+      max_tokens: 1000,
+      temperature: 0.5,
       presence_penalty: 0.1,
       frequency_penalty: 0.1,
     });

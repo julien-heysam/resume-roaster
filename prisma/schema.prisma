@@ -46,6 +46,9 @@ model User {
   sharedAnalyses    SharedAnalysis[]
   analyses          Analysis[]
   resumeOptimizations ResumeOptimization[]
+  coverLetters      CoverLetter[]
+  optimizedResumes  OptimizedResume[]
+  extractedResumes  ExtractedResume[]
 
   @@map("users")
 }
@@ -117,6 +120,9 @@ model Document {
   llmConversations LLMConversation[]
   analyses        Analysis[]
   resumeOptimizations ResumeOptimization[]
+  coverLetters    CoverLetter[]
+  optimizedResumes OptimizedResume[]
+  extractedResumes ExtractedResume[]
 
   @@index([fileHash])
   @@index([userId])
@@ -206,6 +212,9 @@ model LLMConversation {
   messages        LLMMessage[]
   analyses        Analysis[]
   resumeOptimizations ResumeOptimization[]
+  coverLetters    CoverLetter[]
+  optimizedResumes OptimizedResume[]
+  extractedResumes ExtractedResume[]
 
   @@index([userId])
   @@index([type])
@@ -259,7 +268,8 @@ model Analysis {
   documentId      String?  // Related document if applicable
   
   // Input data
-  jobDescription  String   @db.Text // The job description used for analysis
+  jobDescription  String   @db.Text // The job description used for analysis (kept for backward compatibility)
+  jobSummaryId    String?  // Reference to summarized job description
   resumeText      String   @db.Text // The resume text that was analyzed
   
   // Analysis results
@@ -284,11 +294,16 @@ model Analysis {
   user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
   conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
   resumeOptimizations ResumeOptimization[]
+  coverLetters    CoverLetter[]
+  optimizedResumes OptimizedResume[]
+  extractedResumes ExtractedResume[]
 
   @@index([userId])
   @@index([createdAt])
   @@index([overallScore])
+  @@index([jobSummaryId])
   @@map("analyses")
 }
 
@@ -301,7 +316,8 @@ model ResumeOptimization {
   documentId      String?  // Reference to the original document
   
   // Input data
-  jobDescription  String   @db.Text // The job description used for optimization
+  jobDescription  String   @db.Text // The job description used for optimization (kept for backward compatibility)
+  jobSummaryId    String?  // Reference to summarized job description
   resumeText      String   @db.Text // The original resume text
   templateId      String   // Template used for optimization
   
@@ -331,11 +347,13 @@ model ResumeOptimization {
   analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
   document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
   conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([analysisId])
   @@index([createdAt])
   @@index([atsScore])
+  @@index([jobSummaryId])
   @@map("resume_optimizations")
 }
 
@@ -361,6 +379,210 @@ model SharedAnalysis {
   @@map("shared_analyses")
 }
 
+model JobDescriptionSummary {
+  id              String   @id @default(cuid())
+  
+  // Content hashing for deduplication
+  contentHash     String   @unique // SHA-256 hash of the original job description
+  originalText    String   @db.Text // Original job description
+  
+  // Summary data
+  summary         String   @db.Text // Summarized version
+  keyRequirements String[] // Extracted key requirements
+  companyName     String?  // Extracted company name
+  jobTitle        String?  // Extracted job title
+  location        String?  // Extracted location
+  salaryRange     String?  // Extracted salary range if mentioned
+  
+  // AI metadata
+  provider        String   // "openai", "anthropic", etc.
+  model           String   // Model used for summarization
+  
+  // Usage tracking
+  usageCount      Int      @default(1) // How many times this summary has been used
+  
+  // Costs and performance
+  totalTokensUsed Int      @default(0)
+  totalCost       Float    @default(0) // Cost in USD
+  processingTime  Int?     // Processing time in milliseconds
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUsedAt      DateTime @default(now())
+  
+  // Relations
+  analyses        Analysis[]
+  resumeOptimizations ResumeOptimization[]
+  coverLetters    CoverLetter[]
+  optimizedResumes OptimizedResume[]
+
+  @@index([contentHash])
+  @@index([createdAt])
+  @@index([usageCount])
+  @@map("job_description_summaries")
+}
+
+model CoverLetter {
+  id              String   @id @default(cuid())
+  userId          String?  // Null for anonymous users
+  
+  // Content and metadata
+  content         String   @db.Text // The generated cover letter content
+  tone            String   @default("professional") // professional, enthusiastic, conversational
+  wordCount       Int      @default(0)
+  
+  // Input references
+  analysisId      String?  // Reference to the analysis that triggered this
+  documentId      String?  // Reference to the resume document
+  jobSummaryId    String?  // Reference to the job description summary
+  
+  // Content hashing for deduplication (based on resume + job + tone)
+  contentHash     String   @unique // SHA-256 hash for deduplication
+  
+  // AI metadata
+  provider        String   // "openai", "anthropic", etc.
+  model           String   // Model used for generation
+  conversationId  String?  // Link to LLM conversation if available
+  
+  // Costs and performance
+  totalTokensUsed Int      @default(0)
+  totalCost       Float    @default(0) // Cost in USD
+  processingTime  Int?     // Processing time in milliseconds
+  
+  // Usage tracking
+  usageCount      Int      @default(1) // How many times this has been accessed
+  lastUsedAt      DateTime @default(now())
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
+  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([analysisId])
+  @@index([documentId])
+  @@index([jobSummaryId])
+  @@index([contentHash])
+  @@index([createdAt])
+  @@index([usageCount])
+  @@map("cover_letters")
+}
+
+model OptimizedResume {
+  id              String   @id @default(cuid())
+  userId          String?  // Null for anonymous users
+  
+  // Content and metadata
+  content         String   @db.Text // The optimized resume content (HTML/markdown)
+  extractedData   String   @db.Text // JSON string of structured resume data
+  templateId      String   // Template used for optimization
+  atsScore        Int?     // ATS compatibility score
+  keywordsMatched String[] // Keywords that were successfully matched
+  optimizationSuggestions String[] // Array of optimization suggestions applied
+  
+  // Input references
+  analysisId      String?  // Reference to the analysis that triggered this
+  documentId      String?  // Reference to the original resume document
+  jobSummaryId    String?  // Reference to the job description summary
+  extractedResumeId String? // Reference to the extracted resume data
+  
+  // Content hashing for deduplication (based on resume + job + template)
+  contentHash     String   @unique // SHA-256 hash for deduplication
+  
+  // AI metadata
+  provider        String   // "openai", "anthropic", etc.
+  model           String   // Model used for optimization
+  conversationId  String?  // Link to LLM conversation if available
+  
+  // Costs and performance
+  totalTokensUsed Int      @default(0)
+  totalCost       Float    @default(0) // Cost in USD
+  processingTime  Int?     // Processing time in milliseconds
+  
+  // Usage tracking
+  usageCount      Int      @default(1) // How many times this has been accessed
+  lastUsedAt      DateTime @default(now())
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
+  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  extractedResume ExtractedResume? @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([analysisId])
+  @@index([documentId])
+  @@index([jobSummaryId])
+  @@index([extractedResumeId])
+  @@index([contentHash])
+  @@index([createdAt])
+  @@index([usageCount])
+  @@index([atsScore])
+  @@map("optimized_resumes")
+}
+
+model ExtractedResume {
+  id              String   @id @default(cuid())
+  userId          String?  // Null for anonymous users
+  
+  // Input references
+  documentId      String?  // Reference to the original resume document
+  analysisId      String?  // Reference to the analysis that triggered this extraction
+  
+  // Content hashing for deduplication (based on resume text)
+  contentHash     String   @unique // SHA-256 hash of the resume text for deduplication
+  resumeText      String   @db.Text // The original resume text that was extracted
+  
+  // Extracted data
+  extractedData   String   @db.Text // JSON string of the structured resume data
+  
+  // AI metadata
+  provider        String   // "anthropic", "openai", etc.
+  model           String   // Model used for extraction
+  conversationId  String?  // Link to LLM conversation if available
+  
+  // Costs and performance
+  totalTokensUsed Int      @default(0)
+  totalCost       Float    @default(0) // Cost in USD
+  processingTime  Int?     // Processing time in milliseconds
+  
+  // Usage tracking
+  usageCount      Int      @default(1) // How many times this has been accessed
+  lastUsedAt      DateTime @default(now())
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  optimizedResumes OptimizedResume[] // Optimized resumes based on this extraction
+
+  @@index([userId])
+  @@index([documentId])
+  @@index([analysisId])
+  @@index([contentHash])
+  @@index([createdAt])
+  @@index([usageCount])
+  @@map("extracted_resumes")
+}
+
 // Enums
 enum SubscriptionTier {
   FREE
@@ -373,6 +595,7 @@ enum UsageAction {
   ROAST_ANALYSIS
   COVER_LETTER_GENERATION
   RESUME_OPTIMIZATION
+  RESUME_EXTRACTION
 }
 
 enum InvoiceStatus {

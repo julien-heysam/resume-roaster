@@ -19,6 +19,7 @@ interface AnalysisResult {
   createdAt: string
   overallScore?: number
   title?: string
+  documentId?: string
   pdfImages?: string[]
   jobDescription?: string
   data: {
@@ -487,6 +488,14 @@ function DashboardContent() {
                                 sessionStorage.setItem('analysisResults', JSON.stringify(analysis.data.analysis))
                                 sessionStorage.setItem('resumeData', JSON.stringify(analysis.data.resumeData))
                                 sessionStorage.setItem('jobDescription', analysis.data.jobDescription || '')
+                                
+                                // Store analysis ID and document ID for proper caching
+                                sessionStorage.setItem('analysisId', analysis.id)
+                                if (analysis.documentId) {
+                                  sessionStorage.setItem('documentId', analysis.documentId)
+                                } else {
+                                  sessionStorage.removeItem('documentId')
+                                }
                                 
                                 // Store PDF images if available
                                 if (analysis.pdfImages && analysis.pdfImages.length > 0) {

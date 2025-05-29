@@ -29,15 +29,18 @@ import {
   Image,
   ChevronLeft,
   ChevronRight,
-  Briefcase
+  Briefcase,
+  Info,
+  RefreshCw
 } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Link from "next/link"
-import { ArrowLeft, ChevronDown, Info } from "lucide-react"
+import { ArrowLeft, ChevronDown } from "lucide-react"
 import { useAnalysisActions } from "@/hooks/useAnalysisActions"
 import { useSubscription } from "@/hooks/useSubscription"
 import { Footer } from "@/components/ui/footer"
+import { CoverLetterModal } from "@/components/ui/cover-letter-modal"
 
 interface AnalysisData {
   overallScore: number
@@ -70,13 +73,18 @@ export default function AnalysisPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [resumeData, setResumeData] = useState<any>(null)
   const [jobDescription, setJobDescription] = useState<string | undefined>(undefined)
+  const [analysisId, setAnalysisId] = useState<string | undefined>(undefined)
+  const [documentId, setDocumentId] = useState<string | undefined>(undefined)
   const [isGeneratingOptimized, setIsGeneratingOptimized] = useState(false)
   const [cachedExtractionData, setCachedExtractionData] = useState<any>(null)
+  const [cachedOptimizedResume, setCachedOptimizedResume] = useState<any>(null)
+  const [cachedCoverLetter, setCachedCoverLetter] = useState<any>(null)
   const [cacheKey, setCacheKey] = useState<string | null>(null)
   const [isDebugExpanded, setIsDebugExpanded] = useState(false)
   const [pdfImages, setPdfImages] = useState<string[]>([])
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [showCoverLetterModal, setShowCoverLetterModal] = useState(false)
   
   const { downloadReport, shareAnalysis, isDownloading, isSharing } = useAnalysisActions()
   const { subscription } = useSubscription()
@@ -200,7 +208,7 @@ export default function AnalysisPage() {
   }
 
   // Handle generating optimized version
-  const handleGenerateOptimized = async () => {
+  const handleGenerateOptimized = async (bypassCache: boolean = false) => {
     // Check if we have analysis data
     if (!analysisData) {
       showAlert({
@@ -256,11 +264,16 @@ Note: Original resume text was not available, using analysis data for optimizati
       const currentCacheKey = generateCacheKey(analysisData, resumeData, jobDescription || '', false) // Use consistent key for checking
       console.log('Checking cache with key:', currentCacheKey)
       
-      // Check if we have cached data for this exact combination
-      let extractedData = loadCachedExtraction(currentCacheKey)
-      console.log('Cache lookup result:', extractedData ? 'Found' : 'Not found')
+      // Check if we have cached data for this exact combination (unless bypassing cache)
+      let extractedData = null
+      if (!bypassCache) {
+        extractedData = loadCachedExtraction(currentCacheKey)
+        console.log('Cache lookup result:', extractedData ? 'Found' : 'Not found')
+      } else {
+        console.log('🚀 BYPASSING CACHE - Force regenerating with fresh AI processing')
+      }
       
-      if (extractedData) {
+      if (extractedData && !bypassCache) {
         console.log('Using cached extraction data - skipping AI processing')
         
         // Show user that we're using cached data
@@ -279,14 +292,14 @@ Note: Original resume text was not available, using analysis data for optimizati
             // User wants fresh processing, remove cache and continue
             localStorage.removeItem(currentCacheKey)
             setCachedExtractionData(null) // Update the state to reflect cache removal
-            proceedWithFreshExtraction(resumeText, currentCacheKey)
+            proceedWithFreshExtraction(resumeText, currentCacheKey, true) // Pass bypassCache=true
           }
         })
         return
       }
       
-      // No cached data, proceed with fresh extraction
-      await proceedWithFreshExtraction(resumeText, currentCacheKey)
+      // No cached data or bypassing cache, proceed with fresh extraction
+      await proceedWithFreshExtraction(resumeText, currentCacheKey, bypassCache)
       
     } catch (error) {
       console.error('Error generating optimized version:', error)
@@ -337,8 +350,12 @@ Note: Original resume text was not available, using analysis data for optimizati
   }
 
   // Helper function to proceed with fresh extraction
-  const proceedWithFreshExtraction = async (resumeText: string, currentCacheKey: string) => {
-    console.log('No cached data found - running AI extraction...')
+  const proceedWithFreshExtraction = async (resumeText: string, currentCacheKey: string, bypassCache: boolean = false) => {
+    if (bypassCache) {
+      console.log('🔄 FORCE REGENERATION: Running fresh AI extraction (bypassing all caches)...')
+    } else {
+      console.log('No cached data found - running AI extraction...')
+    }
     
     // Get stored document and analysis IDs from session storage
     const storedDocumentId = sessionStorage.getItem('documentId')
@@ -355,7 +372,8 @@ Note: Original resume text was not available, using analysis data for optimizati
         analysisData: analysisData,
         jobDescription: jobDescription || '',
         documentId: storedDocumentId || null,
-        analysisId: storedAnalysisId || null
+        analysisId: storedAnalysisId || null,
+        bypassCache: bypassCache
       }),
     })
 
@@ -367,10 +385,14 @@ Note: Original resume text was not available, using analysis data for optimizati
 
     const extractedData = result.data
     
-    // Cache the result for future use
-    saveCachedExtraction(currentCacheKey, extractedData)
-    setCachedExtractionData(extractedData) // Update the state to reflect new cached data
-    console.log('Extraction completed and cached for future use')
+    // Cache the result for future use (unless we're bypassing cache)
+    if (!bypassCache) {
+      saveCachedExtraction(currentCacheKey, extractedData)
+      setCachedExtractionData(extractedData) // Update the state to reflect new cached data
+      console.log('Extraction completed and cached for future use')
+    } else {
+      console.log('Extraction completed but not cached due to bypass flag')
+    }
     
     // Proceed with the extracted data
     proceedWithExtractedData(extractedData)
@@ -397,6 +419,15 @@ Note: Original resume text was not available, using analysis data for optimizati
     setCurrentImageIndex(prev => prev < pdfImages.length - 1 ? prev + 1 : 0)
   }
 
+  const handleCoverLetterGenerated = (cached: boolean, usageCount: number) => {
+    if (cached) {
+      setCachedCoverLetter({ cached: true, usageCount })
+    } else {
+      // If a new cover letter was generated, it means there's now a cached version
+      setCachedCoverLetter({ cached: false, usageCount: 1 })
+    }
+  }
+
   useEffect(() => {
     // Clean up old cache entries first
     cleanupOldCaches()
@@ -405,11 +436,18 @@ Note: Original resume text was not available, using analysis data for optimizati
     const storedAnalysis = sessionStorage.getItem('analysisResults')
     const storedResumeData = sessionStorage.getItem('resumeData')
     const storedJobDescription = sessionStorage.getItem('jobDescription')
+    const storedAnalysisId = sessionStorage.getItem('analysisId')
     const storedPdfImages = sessionStorage.getItem('pdfImages')
+    const storedDocumentId = sessionStorage.getItem('documentId')
     
     if (storedResumeData) {
       try {
-        setResumeData(JSON.parse(storedResumeData))
+        const parsedResumeData = JSON.parse(storedResumeData)
+        // Ensure documentId is included in resumeData
+        if (storedDocumentId && !parsedResumeData.documentId) {
+          parsedResumeData.documentId = storedDocumentId
+        }
+        setResumeData(parsedResumeData)
       } catch (error) {
         console.error('Failed to parse resume data:', error)
       }
@@ -417,6 +455,10 @@ Note: Original resume text was not available, using analysis data for optimizati
     
     if (storedJobDescription) {
       setJobDescription(storedJobDescription)
+    }
+
+    if (storedAnalysisId) {
+      setAnalysisId(storedAnalysisId)
     }
     
     if (storedPdfImages) {
@@ -447,6 +489,10 @@ Note: Original resume text was not available, using analysis data for optimizati
       if (!storedResumeData) {
         setResumeData(getMockResumeData())
       }
+    }
+    
+    if (storedDocumentId) {
+      setDocumentId(storedDocumentId)
     }
     
     setIsLoading(false)
@@ -1014,58 +1060,36 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button 
-                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium" 
-                    size="sm" 
-                    onClick={handleGenerateOptimized}
-                    disabled={isGeneratingOptimized}
-                  >
-                    {isGeneratingOptimized ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Generating...
-                      </>
-                    ) : cachedExtractionData ? (
-                      <>
-                        <Zap className="h-4 w-4 mr-2" />
-                        Generate Optimized Version (Instant)
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="h-4 w-4 mr-2" />
-                        Generate Optimized Version
-                      </>
-                    )}
-                  </Button>
-                  
-                  {/* Debug Panel */}
+                  {/* Consolidated Cache & System Status */}
                   <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
                     <button
                       onClick={() => setIsDebugExpanded(!isDebugExpanded)}
-                      className="w-full px-3 py-2 flex items-center justify-between text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                      className="w-full px-3 py-2 flex items-center justify-between text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-center space-x-2">
-                        <Info className="h-3 w-3" />
-                        <span>System Status</span>
+                        <Info className="h-4 w-4" />
+                        <span>Cache Status</span>
                         <div className="flex items-center space-x-1">
                           <div className={`w-2 h-2 rounded-full ${
-                            analysisData && resumeData ? 'bg-green-500' : 'bg-yellow-500'
+                            cachedExtractionData && cachedCoverLetter ? 'bg-green-500' : 
+                            cachedExtractionData || cachedCoverLetter ? 'bg-yellow-500' : 'bg-gray-300'
                           }`}></div>
-                          <span className="text-gray-500">
-                            {cachedExtractionData ? 'Cached' : 'Ready'}
+                          <span className="text-xs text-gray-600">
+                            {cachedExtractionData && cachedCoverLetter ? 'Fully Cached' :
+                             cachedExtractionData || cachedCoverLetter ? 'Partially Cached' : 'Not Cached'}
                           </span>
                         </div>
                       </div>
                       {isDebugExpanded ? (
-                        <ChevronDown className="h-3 w-3" />
+                        <ChevronDown className="h-4 w-4" />
                       ) : (
-                        <ChevronRight className="h-3 w-3" />
+                        <ChevronRight className="h-4 w-4" />
                       )}
                     </button>
                     
                     {isDebugExpanded && (
-                      <div className="px-3 py-2 border-t border-gray-100 bg-gray-50/50">
-                        <div className="space-y-2">
+                      <div className="px-3 py-3 border-t border-gray-100 bg-gray-50/50">
+                        <div className="space-y-3">
                           {/* Data Status Grid */}
                           <div className="grid grid-cols-2 gap-2 text-xs">
                             <div className="flex items-center justify-between">
@@ -1087,22 +1111,38 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span className="text-gray-600">Cache</span>
+                              <span className="text-gray-600">Optimized Resume</span>
                               <span className={`font-medium ${cachedExtractionData ? 'text-blue-600' : 'text-gray-400'}`}>
                                 {cachedExtractionData ? '⚡' : '○'}
                               </span>
                             </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Cover Letter</span>
+                              <span className={`font-medium ${cachedCoverLetter ? 'text-purple-600' : 'text-gray-400'}`}>
+                                {cachedCoverLetter ? '💾' : '○'}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Resume Format</span>
+                              <span className="text-gray-500 text-xs">
+                                {resumeData ? (
+                                  typeof resumeData === 'string' ? 'Text' : 
+                                  resumeData.text ? 'Structured' : 
+                                  resumeData.extractedText ? 'Extracted' : 'Unknown'
+                                ) : 'N/A'}
+                              </span>
+                            </div>
                           </div>
                           
-                          {/* Resume Type */}
+                          {/* Additional Details */}
                           {resumeData && (
                             <div className="pt-2 border-t border-gray-200">
                               <div className="text-xs text-gray-500">
-                                <span className="font-medium">Format:</span> {
+                                <span className="font-medium">Resume Type:</span> {
                                   typeof resumeData === 'string' ? 'Plain Text' : 
-                                  resumeData.text ? 'Structured (text)' : 
-                                  resumeData.extractedText ? 'Structured (extracted)' : 
-                                  'Unknown'
+                                  resumeData.text ? 'Structured Data (text field)' : 
+                                  resumeData.extractedText ? 'Structured Data (extracted field)' : 
+                                  'Unknown Structure'
                                 }
                               </div>
                             </div>
@@ -1115,7 +1155,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                                 onClick={() => {
                                   if (cacheKey) {
                                     showAlert({
-                                      title: "Clear Cache",
+                                      title: "Clear Local Cache",
                                       description: "Clear cached extraction data? Next optimization will be slower but fresh.",
                                       type: "warning",
                                       confirmText: "Clear Cache",
@@ -1130,7 +1170,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                                 }}
                                 className="text-xs text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1 rounded transition-colors"
                               >
-                                Clear Cache
+                                Clear Local Cache
                               </button>
                             </div>
                           )}
@@ -1138,10 +1178,74 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                       </div>
                     )}
                   </div>
+
+                  <Button 
+                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium" 
+                    size="sm" 
+                    onClick={() => handleGenerateOptimized(false)}
+                    disabled={isGeneratingOptimized}
+                  >
+                    {isGeneratingOptimized ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Generating...
+                      </>
+                    ) : cachedExtractionData ? (
+                      <>
+                        <Zap className="h-4 w-4 mr-2" />
+                        Generate Optimized Version (Fast)
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="h-4 w-4 mr-2" />
+                        Generate Optimized Version
+                      </>
+                    )}
+                  </Button>
                   
-                  <Button variant="outline" className="w-full" size="sm">
+                  {/* Force Regenerate Button - only show if we have cached data */}
+                  {cachedExtractionData && (
+                    <Button 
+                      variant="outline"
+                      className="w-full border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700" 
+                      size="sm" 
+                      onClick={() => {
+                        showAlert({
+                          title: "Force Regenerate",
+                          description: "This will bypass all caches and generate a completely fresh optimized version using AI. This may take longer but ensures the latest optimization techniques are applied.",
+                          type: "info",
+                          confirmText: "Force Regenerate",
+                          cancelText: "Cancel",
+                          showCancel: true,
+                          onConfirm: () => handleGenerateOptimized(true)
+                        })
+                      }}
+                      disabled={isGeneratingOptimized}
+                    >
+                      {isGeneratingOptimized ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600 mr-2"></div>
+                          Force Regenerating...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          Force Regenerate (Bypass Cache)
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    size="sm"
+                    onClick={() => setShowCoverLetterModal(true)}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
                     Get Cover Letter
                   </Button>
+                  
                   <Button variant="outline" className="w-full" size="sm">
                     LinkedIn Optimization
                   </Button>
@@ -1202,6 +1306,17 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
       
       {/* Alert Dialog */}
       {AlertDialog}
+
+      {/* Cover Letter Modal */}
+      <CoverLetterModal
+        isOpen={showCoverLetterModal}
+        onClose={() => setShowCoverLetterModal(false)}
+        resumeData={resumeData}
+        jobDescription={jobDescription}
+        analysisData={analysisData}
+        analysisId={analysisId}
+        onCoverLetterGenerated={handleCoverLetterGenerated}
+      />
 
       {/* PDF Images Modal */}
       <Dialog open={showImageModal} onOpenChange={setShowImageModal}>

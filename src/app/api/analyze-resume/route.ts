@@ -4,6 +4,7 @@ import { LLMLogger, ConversationType, MessageRole, ConversationStatus } from '@/
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
+import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
 
 const ANALYSIS_PROMPT = `You are an expert resume reviewer and career coach. Your task is to analyze a resume against a specific job description and provide brutally honest, actionable feedback.
 
@@ -185,6 +186,48 @@ export async function POST(request: NextRequest) {
       analysisTitle = `Analysis ${userAnalysisCount + 1}`
     }
 
+    // Prepare the resume text
+    const resumeText = typeof resumeData === 'string' ? resumeData : 
+                      resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
+
+    console.log('Resume analysis - documentId:', resumeData.documentId) // Debug log
+    console.log('Job description length:', jobDescription.length)
+
+    // STEP 1: Extract resume data first (new step)
+    console.log('Extracting resume data...')
+    let extractedResumeId = null
+    let extractedResumeData = null
+
+    try {
+      const extractResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/extract-resume`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': request.headers.get('cookie') || '', // Forward cookies for auth
+        },
+        body: JSON.stringify({
+          resumeText,
+          documentId: resumeData.documentId || null,
+          bypassCache: false // Use cache if available
+        }),
+      })
+
+      if (extractResponse.ok) {
+        const extractResult = await extractResponse.json()
+        if (extractResult.success) {
+          extractedResumeId = extractResult.extractedResumeId
+          extractedResumeData = extractResult.data
+          console.log('Resume extraction successful:', extractResult.cached ? 'from cache' : 'newly extracted')
+        } else {
+          console.warn('Resume extraction failed, continuing with original text:', extractResult.error)
+        }
+      } else {
+        console.warn('Resume extraction API call failed, continuing with original text')
+      }
+    } catch (extractError) {
+      console.warn('Resume extraction error, continuing with original text:', extractError)
+    }
+
     // Initialize Anthropic client
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY
@@ -200,11 +243,24 @@ export async function POST(request: NextRequest) {
       model: 'claude-sonnet-4-20250514'
     })
 
-    // Prepare the resume text
-    const resumeText = typeof resumeData === 'string' ? resumeData : 
-                      resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
+    // Get or create job description summary if the job description is long
+    let jobSummaryData = null
+    let effectiveJobDescription = jobDescription
 
-    console.log('Resume analysis - documentId:', resumeData.documentId) // Debug log
+    if (shouldSummarizeJobDescription(jobDescription, 3000)) { // Use higher threshold for analysis since Claude can handle more
+      console.log('Job description is long, getting/creating summary...')
+      
+      try {
+        jobSummaryData = await getOrCreateJobSummary(jobDescription)
+        effectiveJobDescription = jobSummaryData.summary
+        console.log('Using job summary for analysis:', jobSummaryData.cached ? 'cached' : 'newly generated')
+        console.log('Summary length:', effectiveJobDescription.length)
+      } catch (error) {
+        console.error('Error getting job summary:', error)
+        // Fallback to truncation if summarization fails
+        effectiveJobDescription = jobDescription.substring(0, 3000) + '\n\n[Job description truncated for length...]'
+      }
+    }
 
     // Log user message
     const userPrompt = `Please analyze this resume against the job description:
@@ -213,7 +269,26 @@ export async function POST(request: NextRequest) {
 ${resumeText}
 
 **JOB DESCRIPTION:**
-${jobDescription}
+${effectiveJobDescription}
+
+${jobSummaryData ? `
+**EXTRACTED JOB DETAILS:**
+- Company: ${jobSummaryData.companyName || 'Not specified'}
+- Position: ${jobSummaryData.jobTitle || 'Not specified'}
+- Location: ${jobSummaryData.location || 'Not specified'}
+- Key Requirements: ${jobSummaryData.keyRequirements?.slice(0, 8).join(', ') || 'See job description'}
+` : ''}
+
+${extractedResumeData ? `
+**STRUCTURED RESUME DATA:**
+The resume has been parsed into structured data for better analysis:
+- Name: ${extractedResumeData.personalInfo?.name || 'Not specified'}
+- Current Role: ${extractedResumeData.personalInfo?.jobTitle || 'Not specified'}
+- Experience Entries: ${extractedResumeData.experience?.length || 0}
+- Education Entries: ${extractedResumeData.education?.length || 0}
+- Technical Skills: ${extractedResumeData.skills?.technical?.length || 0}
+- Projects: ${extractedResumeData.projects?.length || 0}
+` : ''}
 
 Please provide a comprehensive analysis following the framework above.`
 
@@ -380,6 +455,7 @@ Please provide a comprehensive analysis following the framework above.`
         title: analysisTitle,
         documentId: resumeData.documentId || null,
         jobDescription: jobDescription.trim(),
+        jobSummaryId: jobSummaryData?.id || null, // Reference to job summary if used
         resumeText,
         analysisData: JSON.stringify(analysisData),
         overallScore: analysisData.overallScore,
@@ -394,17 +470,32 @@ Please provide a comprehensive analysis following the framework above.`
 
     console.log(`Analysis saved with ID: ${analysisRecord.id}`)
 
+    // Update the extracted resume with the analysis ID if we have one
+    if (extractedResumeId) {
+      try {
+        await db.extractedResume.update({
+          where: { id: extractedResumeId },
+          data: { analysisId: analysisRecord.id }
+        })
+        console.log(`Updated extracted resume ${extractedResumeId} with analysis ID ${analysisRecord.id}`)
+      } catch (updateError) {
+        console.warn('Failed to update extracted resume with analysis ID:', updateError)
+      }
+    }
+
     return NextResponse.json({
       success: true,
       analysis: analysisData,
       conversationId,
       analysisId: analysisRecord.id,
+      extractedResumeId, // Include this for future optimization calls
       metadata: {
         totalTokens,
         totalCost,
         processingTime,
         provider: 'anthropic',
-        model: 'claude-sonnet-4-20250514'
+        model: 'claude-sonnet-4-20250514',
+        extractedResumeData: extractedResumeData ? 'available' : 'not_extracted'
       }
     })
 

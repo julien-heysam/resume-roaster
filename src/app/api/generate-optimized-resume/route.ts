@@ -47,13 +47,14 @@ export async function POST(request: NextRequest) {
       format = 'html',
       documentId = null,
       analysisId = null,
-      isPreview = false
+      isPreview = false,
+      skipOptimization = false
     } = requestBody
 
-    // Validate required fields
-    if (!resumeData || !jobDescription) {
+    // Validate required fields - job description is optional if skipOptimization is true
+    if (!resumeData || (!jobDescription && !skipOptimization)) {
       return NextResponse.json(
-        { error: 'Resume data and job description are required' },
+        { error: 'Resume data is required. Job description is required unless skipOptimization is true.' },
         { status: 400 }
       )
     }
@@ -100,7 +101,7 @@ export async function POST(request: NextRequest) {
                 userId: user.id,
                 analysisId: analysisId || null,
                 documentId: documentId || null,
-                jobDescription: jobDescription,
+                jobDescription: jobDescription || 'No job description (template generation)',
                 resumeText: JSON.stringify(resumeData),
                 templateId: templateId,
                 extractedData: JSON.stringify(optimizedData),
@@ -108,8 +109,8 @@ export async function POST(request: NextRequest) {
                 optimizationSuggestions: suggestions,
                 atsScore: atsScore,
                 keywordsMatched: keywordsFound,
-                provider: 'local', // LaTeX generation is local
-                model: 'latex-template',
+                provider: skipOptimization ? 'local' : 'local',
+                model: skipOptimization ? 'template-only' : 'template-optimization',
                 totalTokensUsed: 0,
                 totalCost: 0,
                 processingTime: processingTime
@@ -156,20 +157,34 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Optimize resume for the job
-    const { optimizedData, suggestions } = optimizeResumeForJob(
-      resumeData, 
-      jobDescription, 
-      templateId
-    )
+    // Optimize resume for the job or use original data if skipping optimization
+    let optimizedData, suggestions
+    if (skipOptimization) {
+      // Use original resume data without optimization
+      optimizedData = resumeData
+      suggestions = [
+        "Resume generated with selected template",
+        "Consider adding a job description for AI optimization",
+        "Template formatting applied"
+      ]
+    } else {
+      // Optimize resume for the job
+      const optimizationResult = optimizeResumeForJob(
+        resumeData, 
+        jobDescription, 
+        templateId
+      )
+      optimizedData = optimizationResult.optimizedData
+      suggestions = optimizationResult.suggestions
+    }
 
     // Generate the resume
     const generatedResume = format === 'html' 
-      ? template.generateHTML(optimizedData, jobDescription)
-      : template.generateMarkdown(optimizedData, jobDescription)
+      ? template.generateHTML(optimizedData, jobDescription || '')
+      : template.generateMarkdown(optimizedData, jobDescription || '')
 
-    const atsScore = calculateATSScore(optimizedData, jobDescription)
-    const keywordsFound = extractJobKeywords(jobDescription).filter(keyword =>
+    const atsScore = skipOptimization ? 0 : calculateATSScore(optimizedData, jobDescription)
+    const keywordsFound = skipOptimization ? [] : extractJobKeywords(jobDescription).filter(keyword =>
       resumeData.summary.toLowerCase().includes(keyword.toLowerCase()) ||
       (resumeData.skills.technical || []).some((skill: string) => 
         skill.toLowerCase().includes(keyword.toLowerCase())
@@ -194,7 +209,7 @@ export async function POST(request: NextRequest) {
               userId: user.id,
               analysisId: analysisId || null,
               documentId: documentId || null,
-              jobDescription: jobDescription,
+              jobDescription: jobDescription || 'No job description (template generation)',
               resumeText: JSON.stringify(resumeData),
               templateId: templateId,
               extractedData: JSON.stringify(optimizedData),
@@ -202,8 +217,8 @@ export async function POST(request: NextRequest) {
               optimizationSuggestions: suggestions,
               atsScore: atsScore,
               keywordsMatched: keywordsFound,
-              provider: 'local', // HTML generation is local
-              model: 'html-template',
+              provider: skipOptimization ? 'local' : 'local',
+              model: skipOptimization ? 'template-only' : 'template-optimization',
               totalTokensUsed: 0,
               totalCost: 0,
               processingTime: processingTime

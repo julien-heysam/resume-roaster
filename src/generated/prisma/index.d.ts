@@ -68,6 +68,26 @@ export type ResumeOptimization = $Result.DefaultSelection<Prisma.$ResumeOptimiza
  * 
  */
 export type SharedAnalysis = $Result.DefaultSelection<Prisma.$SharedAnalysisPayload>
+/**
+ * Model JobDescriptionSummary
+ * 
+ */
+export type JobDescriptionSummary = $Result.DefaultSelection<Prisma.$JobDescriptionSummaryPayload>
+/**
+ * Model CoverLetter
+ * 
+ */
+export type CoverLetter = $Result.DefaultSelection<Prisma.$CoverLetterPayload>
+/**
+ * Model OptimizedResume
+ * 
+ */
+export type OptimizedResume = $Result.DefaultSelection<Prisma.$OptimizedResumePayload>
+/**
+ * Model ExtractedResume
+ * 
+ */
+export type ExtractedResume = $Result.DefaultSelection<Prisma.$ExtractedResumePayload>
 
 /**
  * Enums
@@ -86,7 +106,8 @@ export const UsageAction: {
   EXTRACT_PDF: 'EXTRACT_PDF',
   ROAST_ANALYSIS: 'ROAST_ANALYSIS',
   COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION',
-  RESUME_OPTIMIZATION: 'RESUME_OPTIMIZATION'
+  RESUME_OPTIMIZATION: 'RESUME_OPTIMIZATION',
+  RESUME_EXTRACTION: 'RESUME_EXTRACTION'
 };
 
 export type UsageAction = (typeof UsageAction)[keyof typeof UsageAction]
@@ -393,6 +414,46 @@ export class PrismaClient<
     * ```
     */
   get sharedAnalysis(): Prisma.SharedAnalysisDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.jobDescriptionSummary`: Exposes CRUD operations for the **JobDescriptionSummary** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JobDescriptionSummaries
+    * const jobDescriptionSummaries = await prisma.jobDescriptionSummary.findMany()
+    * ```
+    */
+  get jobDescriptionSummary(): Prisma.JobDescriptionSummaryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.coverLetter`: Exposes CRUD operations for the **CoverLetter** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CoverLetters
+    * const coverLetters = await prisma.coverLetter.findMany()
+    * ```
+    */
+  get coverLetter(): Prisma.CoverLetterDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.optimizedResume`: Exposes CRUD operations for the **OptimizedResume** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OptimizedResumes
+    * const optimizedResumes = await prisma.optimizedResume.findMany()
+    * ```
+    */
+  get optimizedResume(): Prisma.OptimizedResumeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.extractedResume`: Exposes CRUD operations for the **ExtractedResume** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ExtractedResumes
+    * const extractedResumes = await prisma.extractedResume.findMany()
+    * ```
+    */
+  get extractedResume(): Prisma.ExtractedResumeDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -843,7 +904,11 @@ export namespace Prisma {
     LLMMessage: 'LLMMessage',
     Analysis: 'Analysis',
     ResumeOptimization: 'ResumeOptimization',
-    SharedAnalysis: 'SharedAnalysis'
+    SharedAnalysis: 'SharedAnalysis',
+    JobDescriptionSummary: 'JobDescriptionSummary',
+    CoverLetter: 'CoverLetter',
+    OptimizedResume: 'OptimizedResume',
+    ExtractedResume: 'ExtractedResume'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -862,7 +927,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "document" | "usageRecord" | "invoice" | "lLMConversation" | "lLMMessage" | "analysis" | "resumeOptimization" | "sharedAnalysis"
+      modelProps: "user" | "account" | "session" | "document" | "usageRecord" | "invoice" | "lLMConversation" | "lLMMessage" | "analysis" | "resumeOptimization" | "sharedAnalysis" | "jobDescriptionSummary" | "coverLetter" | "optimizedResume" | "extractedResume"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1680,6 +1745,302 @@ export namespace Prisma {
           }
         }
       }
+      JobDescriptionSummary: {
+        payload: Prisma.$JobDescriptionSummaryPayload<ExtArgs>
+        fields: Prisma.JobDescriptionSummaryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JobDescriptionSummaryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JobDescriptionSummaryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>
+          }
+          findFirst: {
+            args: Prisma.JobDescriptionSummaryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JobDescriptionSummaryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>
+          }
+          findMany: {
+            args: Prisma.JobDescriptionSummaryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>[]
+          }
+          create: {
+            args: Prisma.JobDescriptionSummaryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>
+          }
+          createMany: {
+            args: Prisma.JobDescriptionSummaryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JobDescriptionSummaryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>[]
+          }
+          delete: {
+            args: Prisma.JobDescriptionSummaryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>
+          }
+          update: {
+            args: Prisma.JobDescriptionSummaryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>
+          }
+          deleteMany: {
+            args: Prisma.JobDescriptionSummaryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JobDescriptionSummaryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JobDescriptionSummaryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>[]
+          }
+          upsert: {
+            args: Prisma.JobDescriptionSummaryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDescriptionSummaryPayload>
+          }
+          aggregate: {
+            args: Prisma.JobDescriptionSummaryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJobDescriptionSummary>
+          }
+          groupBy: {
+            args: Prisma.JobDescriptionSummaryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JobDescriptionSummaryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JobDescriptionSummaryCountArgs<ExtArgs>
+            result: $Utils.Optional<JobDescriptionSummaryCountAggregateOutputType> | number
+          }
+        }
+      }
+      CoverLetter: {
+        payload: Prisma.$CoverLetterPayload<ExtArgs>
+        fields: Prisma.CoverLetterFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CoverLetterFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CoverLetterFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+          }
+          findFirst: {
+            args: Prisma.CoverLetterFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CoverLetterFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+          }
+          findMany: {
+            args: Prisma.CoverLetterFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>[]
+          }
+          create: {
+            args: Prisma.CoverLetterCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+          }
+          createMany: {
+            args: Prisma.CoverLetterCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CoverLetterCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>[]
+          }
+          delete: {
+            args: Prisma.CoverLetterDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+          }
+          update: {
+            args: Prisma.CoverLetterUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+          }
+          deleteMany: {
+            args: Prisma.CoverLetterDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CoverLetterUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CoverLetterUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>[]
+          }
+          upsert: {
+            args: Prisma.CoverLetterUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+          }
+          aggregate: {
+            args: Prisma.CoverLetterAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCoverLetter>
+          }
+          groupBy: {
+            args: Prisma.CoverLetterGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CoverLetterGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CoverLetterCountArgs<ExtArgs>
+            result: $Utils.Optional<CoverLetterCountAggregateOutputType> | number
+          }
+        }
+      }
+      OptimizedResume: {
+        payload: Prisma.$OptimizedResumePayload<ExtArgs>
+        fields: Prisma.OptimizedResumeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OptimizedResumeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OptimizedResumeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>
+          }
+          findFirst: {
+            args: Prisma.OptimizedResumeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OptimizedResumeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>
+          }
+          findMany: {
+            args: Prisma.OptimizedResumeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>[]
+          }
+          create: {
+            args: Prisma.OptimizedResumeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>
+          }
+          createMany: {
+            args: Prisma.OptimizedResumeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OptimizedResumeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>[]
+          }
+          delete: {
+            args: Prisma.OptimizedResumeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>
+          }
+          update: {
+            args: Prisma.OptimizedResumeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>
+          }
+          deleteMany: {
+            args: Prisma.OptimizedResumeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OptimizedResumeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OptimizedResumeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>[]
+          }
+          upsert: {
+            args: Prisma.OptimizedResumeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OptimizedResumePayload>
+          }
+          aggregate: {
+            args: Prisma.OptimizedResumeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOptimizedResume>
+          }
+          groupBy: {
+            args: Prisma.OptimizedResumeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OptimizedResumeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OptimizedResumeCountArgs<ExtArgs>
+            result: $Utils.Optional<OptimizedResumeCountAggregateOutputType> | number
+          }
+        }
+      }
+      ExtractedResume: {
+        payload: Prisma.$ExtractedResumePayload<ExtArgs>
+        fields: Prisma.ExtractedResumeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExtractedResumeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExtractedResumeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>
+          }
+          findFirst: {
+            args: Prisma.ExtractedResumeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExtractedResumeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>
+          }
+          findMany: {
+            args: Prisma.ExtractedResumeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>[]
+          }
+          create: {
+            args: Prisma.ExtractedResumeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>
+          }
+          createMany: {
+            args: Prisma.ExtractedResumeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExtractedResumeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>[]
+          }
+          delete: {
+            args: Prisma.ExtractedResumeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>
+          }
+          update: {
+            args: Prisma.ExtractedResumeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>
+          }
+          deleteMany: {
+            args: Prisma.ExtractedResumeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExtractedResumeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ExtractedResumeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>[]
+          }
+          upsert: {
+            args: Prisma.ExtractedResumeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExtractedResumePayload>
+          }
+          aggregate: {
+            args: Prisma.ExtractedResumeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExtractedResume>
+          }
+          groupBy: {
+            args: Prisma.ExtractedResumeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExtractedResumeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExtractedResumeCountArgs<ExtArgs>
+            result: $Utils.Optional<ExtractedResumeCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1775,6 +2136,10 @@ export namespace Prisma {
     analysis?: AnalysisOmit
     resumeOptimization?: ResumeOptimizationOmit
     sharedAnalysis?: SharedAnalysisOmit
+    jobDescriptionSummary?: JobDescriptionSummaryOmit
+    coverLetter?: CoverLetterOmit
+    optimizedResume?: OptimizedResumeOmit
+    extractedResume?: ExtractedResumeOmit
   }
 
   /* Types for Logging */
@@ -1878,6 +2243,9 @@ export namespace Prisma {
     sharedAnalyses: number
     analyses: number
     resumeOptimizations: number
+    coverLetters: number
+    optimizedResumes: number
+    extractedResumes: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1890,6 +2258,9 @@ export namespace Prisma {
     sharedAnalyses?: boolean | UserCountOutputTypeCountSharedAnalysesArgs
     analyses?: boolean | UserCountOutputTypeCountAnalysesArgs
     resumeOptimizations?: boolean | UserCountOutputTypeCountResumeOptimizationsArgs
+    coverLetters?: boolean | UserCountOutputTypeCountCoverLettersArgs
+    optimizedResumes?: boolean | UserCountOutputTypeCountOptimizedResumesArgs
+    extractedResumes?: boolean | UserCountOutputTypeCountExtractedResumesArgs
   }
 
   // Custom InputTypes
@@ -1966,6 +2337,27 @@ export namespace Prisma {
     where?: ResumeOptimizationWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCoverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CoverLetterWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountOptimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OptimizedResumeWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountExtractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExtractedResumeWhereInput
+  }
+
 
   /**
    * Count Type DocumentCountOutputType
@@ -1976,6 +2368,9 @@ export namespace Prisma {
     llmConversations: number
     analyses: number
     resumeOptimizations: number
+    coverLetters: number
+    optimizedResumes: number
+    extractedResumes: number
   }
 
   export type DocumentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1983,6 +2378,9 @@ export namespace Prisma {
     llmConversations?: boolean | DocumentCountOutputTypeCountLlmConversationsArgs
     analyses?: boolean | DocumentCountOutputTypeCountAnalysesArgs
     resumeOptimizations?: boolean | DocumentCountOutputTypeCountResumeOptimizationsArgs
+    coverLetters?: boolean | DocumentCountOutputTypeCountCoverLettersArgs
+    optimizedResumes?: boolean | DocumentCountOutputTypeCountOptimizedResumesArgs
+    extractedResumes?: boolean | DocumentCountOutputTypeCountExtractedResumesArgs
   }
 
   // Custom InputTypes
@@ -2024,6 +2422,27 @@ export namespace Prisma {
     where?: ResumeOptimizationWhereInput
   }
 
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountCoverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CoverLetterWhereInput
+  }
+
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountOptimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OptimizedResumeWhereInput
+  }
+
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountExtractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExtractedResumeWhereInput
+  }
+
 
   /**
    * Count Type LLMConversationCountOutputType
@@ -2033,12 +2452,18 @@ export namespace Prisma {
     messages: number
     analyses: number
     resumeOptimizations: number
+    coverLetters: number
+    optimizedResumes: number
+    extractedResumes: number
   }
 
   export type LLMConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | LLMConversationCountOutputTypeCountMessagesArgs
     analyses?: boolean | LLMConversationCountOutputTypeCountAnalysesArgs
     resumeOptimizations?: boolean | LLMConversationCountOutputTypeCountResumeOptimizationsArgs
+    coverLetters?: boolean | LLMConversationCountOutputTypeCountCoverLettersArgs
+    optimizedResumes?: boolean | LLMConversationCountOutputTypeCountOptimizedResumesArgs
+    extractedResumes?: boolean | LLMConversationCountOutputTypeCountExtractedResumesArgs
   }
 
   // Custom InputTypes
@@ -2073,6 +2498,27 @@ export namespace Prisma {
     where?: ResumeOptimizationWhereInput
   }
 
+  /**
+   * LLMConversationCountOutputType without action
+   */
+  export type LLMConversationCountOutputTypeCountCoverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CoverLetterWhereInput
+  }
+
+  /**
+   * LLMConversationCountOutputType without action
+   */
+  export type LLMConversationCountOutputTypeCountOptimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OptimizedResumeWhereInput
+  }
+
+  /**
+   * LLMConversationCountOutputType without action
+   */
+  export type LLMConversationCountOutputTypeCountExtractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExtractedResumeWhereInput
+  }
+
 
   /**
    * Count Type AnalysisCountOutputType
@@ -2080,10 +2526,16 @@ export namespace Prisma {
 
   export type AnalysisCountOutputType = {
     resumeOptimizations: number
+    coverLetters: number
+    optimizedResumes: number
+    extractedResumes: number
   }
 
   export type AnalysisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resumeOptimizations?: boolean | AnalysisCountOutputTypeCountResumeOptimizationsArgs
+    coverLetters?: boolean | AnalysisCountOutputTypeCountCoverLettersArgs
+    optimizedResumes?: boolean | AnalysisCountOutputTypeCountOptimizedResumesArgs
+    extractedResumes?: boolean | AnalysisCountOutputTypeCountExtractedResumesArgs
   }
 
   // Custom InputTypes
@@ -2102,6 +2554,116 @@ export namespace Prisma {
    */
   export type AnalysisCountOutputTypeCountResumeOptimizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ResumeOptimizationWhereInput
+  }
+
+  /**
+   * AnalysisCountOutputType without action
+   */
+  export type AnalysisCountOutputTypeCountCoverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CoverLetterWhereInput
+  }
+
+  /**
+   * AnalysisCountOutputType without action
+   */
+  export type AnalysisCountOutputTypeCountOptimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OptimizedResumeWhereInput
+  }
+
+  /**
+   * AnalysisCountOutputType without action
+   */
+  export type AnalysisCountOutputTypeCountExtractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExtractedResumeWhereInput
+  }
+
+
+  /**
+   * Count Type JobDescriptionSummaryCountOutputType
+   */
+
+  export type JobDescriptionSummaryCountOutputType = {
+    analyses: number
+    resumeOptimizations: number
+    coverLetters: number
+    optimizedResumes: number
+  }
+
+  export type JobDescriptionSummaryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    analyses?: boolean | JobDescriptionSummaryCountOutputTypeCountAnalysesArgs
+    resumeOptimizations?: boolean | JobDescriptionSummaryCountOutputTypeCountResumeOptimizationsArgs
+    coverLetters?: boolean | JobDescriptionSummaryCountOutputTypeCountCoverLettersArgs
+    optimizedResumes?: boolean | JobDescriptionSummaryCountOutputTypeCountOptimizedResumesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobDescriptionSummaryCountOutputType without action
+   */
+  export type JobDescriptionSummaryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummaryCountOutputType
+     */
+    select?: JobDescriptionSummaryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobDescriptionSummaryCountOutputType without action
+   */
+  export type JobDescriptionSummaryCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisWhereInput
+  }
+
+  /**
+   * JobDescriptionSummaryCountOutputType without action
+   */
+  export type JobDescriptionSummaryCountOutputTypeCountResumeOptimizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ResumeOptimizationWhereInput
+  }
+
+  /**
+   * JobDescriptionSummaryCountOutputType without action
+   */
+  export type JobDescriptionSummaryCountOutputTypeCountCoverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CoverLetterWhereInput
+  }
+
+  /**
+   * JobDescriptionSummaryCountOutputType without action
+   */
+  export type JobDescriptionSummaryCountOutputTypeCountOptimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OptimizedResumeWhereInput
+  }
+
+
+  /**
+   * Count Type ExtractedResumeCountOutputType
+   */
+
+  export type ExtractedResumeCountOutputType = {
+    optimizedResumes: number
+  }
+
+  export type ExtractedResumeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    optimizedResumes?: boolean | ExtractedResumeCountOutputTypeCountOptimizedResumesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ExtractedResumeCountOutputType without action
+   */
+  export type ExtractedResumeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResumeCountOutputType
+     */
+    select?: ExtractedResumeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ExtractedResumeCountOutputType without action
+   */
+  export type ExtractedResumeCountOutputTypeCountOptimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OptimizedResumeWhereInput
   }
 
 
@@ -2400,6 +2962,9 @@ export namespace Prisma {
     sharedAnalyses?: boolean | User$sharedAnalysesArgs<ExtArgs>
     analyses?: boolean | User$analysesArgs<ExtArgs>
     resumeOptimizations?: boolean | User$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | User$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | User$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | User$extractedResumesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2468,6 +3033,9 @@ export namespace Prisma {
     sharedAnalyses?: boolean | User$sharedAnalysesArgs<ExtArgs>
     analyses?: boolean | User$analysesArgs<ExtArgs>
     resumeOptimizations?: boolean | User$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | User$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | User$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | User$extractedResumesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2485,6 +3053,9 @@ export namespace Prisma {
       sharedAnalyses: Prisma.$SharedAnalysisPayload<ExtArgs>[]
       analyses: Prisma.$AnalysisPayload<ExtArgs>[]
       resumeOptimizations: Prisma.$ResumeOptimizationPayload<ExtArgs>[]
+      coverLetters: Prisma.$CoverLetterPayload<ExtArgs>[]
+      optimizedResumes: Prisma.$OptimizedResumePayload<ExtArgs>[]
+      extractedResumes: Prisma.$ExtractedResumePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2905,6 +3476,9 @@ export namespace Prisma {
     sharedAnalyses<T extends User$sharedAnalysesArgs<ExtArgs> = {}>(args?: Subset<T, User$sharedAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharedAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     analyses<T extends User$analysesArgs<ExtArgs> = {}>(args?: Subset<T, User$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     resumeOptimizations<T extends User$resumeOptimizationsArgs<ExtArgs> = {}>(args?: Subset<T, User$resumeOptimizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumeOptimizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    coverLetters<T extends User$coverLettersArgs<ExtArgs> = {}>(args?: Subset<T, User$coverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    optimizedResumes<T extends User$optimizedResumesArgs<ExtArgs> = {}>(args?: Subset<T, User$optimizedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    extractedResumes<T extends User$extractedResumesArgs<ExtArgs> = {}>(args?: Subset<T, User$extractedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3550,6 +4124,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ResumeOptimizationScalarFieldEnum | ResumeOptimizationScalarFieldEnum[]
+  }
+
+  /**
+   * User.coverLetters
+   */
+  export type User$coverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    where?: CoverLetterWhereInput
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    cursor?: CoverLetterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * User.optimizedResumes
+   */
+  export type User$optimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    where?: OptimizedResumeWhereInput
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    cursor?: OptimizedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * User.extractedResumes
+   */
+  export type User$extractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    where?: ExtractedResumeWhereInput
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    cursor?: ExtractedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExtractedResumeScalarFieldEnum | ExtractedResumeScalarFieldEnum[]
   }
 
   /**
@@ -6150,6 +6796,9 @@ export namespace Prisma {
     llmConversations?: boolean | Document$llmConversationsArgs<ExtArgs>
     analyses?: boolean | Document$analysesArgs<ExtArgs>
     resumeOptimizations?: boolean | Document$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | Document$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | Document$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | Document$extractedResumesArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
 
@@ -6219,6 +6868,9 @@ export namespace Prisma {
     llmConversations?: boolean | Document$llmConversationsArgs<ExtArgs>
     analyses?: boolean | Document$analysesArgs<ExtArgs>
     resumeOptimizations?: boolean | Document$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | Document$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | Document$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | Document$extractedResumesArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6236,6 +6888,9 @@ export namespace Prisma {
       llmConversations: Prisma.$LLMConversationPayload<ExtArgs>[]
       analyses: Prisma.$AnalysisPayload<ExtArgs>[]
       resumeOptimizations: Prisma.$ResumeOptimizationPayload<ExtArgs>[]
+      coverLetters: Prisma.$CoverLetterPayload<ExtArgs>[]
+      optimizedResumes: Prisma.$OptimizedResumePayload<ExtArgs>[]
+      extractedResumes: Prisma.$ExtractedResumePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6653,6 +7308,9 @@ export namespace Prisma {
     llmConversations<T extends Document$llmConversationsArgs<ExtArgs> = {}>(args?: Subset<T, Document$llmConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     analyses<T extends Document$analysesArgs<ExtArgs> = {}>(args?: Subset<T, Document$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     resumeOptimizations<T extends Document$resumeOptimizationsArgs<ExtArgs> = {}>(args?: Subset<T, Document$resumeOptimizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumeOptimizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    coverLetters<T extends Document$coverLettersArgs<ExtArgs> = {}>(args?: Subset<T, Document$coverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    optimizedResumes<T extends Document$optimizedResumesArgs<ExtArgs> = {}>(args?: Subset<T, Document$optimizedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    extractedResumes<T extends Document$extractedResumesArgs<ExtArgs> = {}>(args?: Subset<T, Document$extractedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7206,6 +7864,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ResumeOptimizationScalarFieldEnum | ResumeOptimizationScalarFieldEnum[]
+  }
+
+  /**
+   * Document.coverLetters
+   */
+  export type Document$coverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    where?: CoverLetterWhereInput
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    cursor?: CoverLetterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * Document.optimizedResumes
+   */
+  export type Document$optimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    where?: OptimizedResumeWhereInput
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    cursor?: OptimizedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * Document.extractedResumes
+   */
+  export type Document$extractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    where?: ExtractedResumeWhereInput
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    cursor?: ExtractedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExtractedResumeScalarFieldEnum | ExtractedResumeScalarFieldEnum[]
   }
 
   /**
@@ -9836,6 +10566,9 @@ export namespace Prisma {
     messages?: boolean | LLMConversation$messagesArgs<ExtArgs>
     analyses?: boolean | LLMConversation$analysesArgs<ExtArgs>
     resumeOptimizations?: boolean | LLMConversation$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | LLMConversation$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | LLMConversation$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | LLMConversation$extractedResumesArgs<ExtArgs>
     _count?: boolean | LLMConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lLMConversation"]>
 
@@ -9901,6 +10634,9 @@ export namespace Prisma {
     messages?: boolean | LLMConversation$messagesArgs<ExtArgs>
     analyses?: boolean | LLMConversation$analysesArgs<ExtArgs>
     resumeOptimizations?: boolean | LLMConversation$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | LLMConversation$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | LLMConversation$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | LLMConversation$extractedResumesArgs<ExtArgs>
     _count?: boolean | LLMConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LLMConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9920,6 +10656,9 @@ export namespace Prisma {
       messages: Prisma.$LLMMessagePayload<ExtArgs>[]
       analyses: Prisma.$AnalysisPayload<ExtArgs>[]
       resumeOptimizations: Prisma.$ResumeOptimizationPayload<ExtArgs>[]
+      coverLetters: Prisma.$CoverLetterPayload<ExtArgs>[]
+      optimizedResumes: Prisma.$OptimizedResumePayload<ExtArgs>[]
+      extractedResumes: Prisma.$ExtractedResumePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10335,6 +11074,9 @@ export namespace Prisma {
     messages<T extends LLMConversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LLMMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     analyses<T extends LLMConversation$analysesArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     resumeOptimizations<T extends LLMConversation$resumeOptimizationsArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$resumeOptimizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumeOptimizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    coverLetters<T extends LLMConversation$coverLettersArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$coverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    optimizedResumes<T extends LLMConversation$optimizedResumesArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$optimizedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    extractedResumes<T extends LLMConversation$extractedResumesArgs<ExtArgs> = {}>(args?: Subset<T, LLMConversation$extractedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10881,6 +11623,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ResumeOptimizationScalarFieldEnum | ResumeOptimizationScalarFieldEnum[]
+  }
+
+  /**
+   * LLMConversation.coverLetters
+   */
+  export type LLMConversation$coverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    where?: CoverLetterWhereInput
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    cursor?: CoverLetterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * LLMConversation.optimizedResumes
+   */
+  export type LLMConversation$optimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    where?: OptimizedResumeWhereInput
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    cursor?: OptimizedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * LLMConversation.extractedResumes
+   */
+  export type LLMConversation$extractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    where?: ExtractedResumeWhereInput
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    cursor?: ExtractedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExtractedResumeScalarFieldEnum | ExtractedResumeScalarFieldEnum[]
   }
 
   /**
@@ -12171,6 +12985,7 @@ export namespace Prisma {
     title: string | null
     documentId: string | null
     jobDescription: string | null
+    jobSummaryId: string | null
     resumeText: string | null
     analysisData: string | null
     overallScore: number | null
@@ -12190,6 +13005,7 @@ export namespace Prisma {
     title: string | null
     documentId: string | null
     jobDescription: string | null
+    jobSummaryId: string | null
     resumeText: string | null
     analysisData: string | null
     overallScore: number | null
@@ -12209,6 +13025,7 @@ export namespace Prisma {
     title: number
     documentId: number
     jobDescription: number
+    jobSummaryId: number
     resumeText: number
     analysisData: number
     overallScore: number
@@ -12244,6 +13061,7 @@ export namespace Prisma {
     title?: true
     documentId?: true
     jobDescription?: true
+    jobSummaryId?: true
     resumeText?: true
     analysisData?: true
     overallScore?: true
@@ -12263,6 +13081,7 @@ export namespace Prisma {
     title?: true
     documentId?: true
     jobDescription?: true
+    jobSummaryId?: true
     resumeText?: true
     analysisData?: true
     overallScore?: true
@@ -12282,6 +13101,7 @@ export namespace Prisma {
     title?: true
     documentId?: true
     jobDescription?: true
+    jobSummaryId?: true
     resumeText?: true
     analysisData?: true
     overallScore?: true
@@ -12388,6 +13208,7 @@ export namespace Prisma {
     title: string
     documentId: string | null
     jobDescription: string
+    jobSummaryId: string | null
     resumeText: string
     analysisData: string
     overallScore: number | null
@@ -12426,6 +13247,7 @@ export namespace Prisma {
     title?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     analysisData?: boolean
     overallScore?: boolean
@@ -12440,7 +13262,11 @@ export namespace Prisma {
     user?: boolean | Analysis$userArgs<ExtArgs>
     document?: boolean | Analysis$documentArgs<ExtArgs>
     conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+    jobSummary?: boolean | Analysis$jobSummaryArgs<ExtArgs>
     resumeOptimizations?: boolean | Analysis$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | Analysis$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | Analysis$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | Analysis$extractedResumesArgs<ExtArgs>
     _count?: boolean | AnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
 
@@ -12450,6 +13276,7 @@ export namespace Prisma {
     title?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     analysisData?: boolean
     overallScore?: boolean
@@ -12464,6 +13291,7 @@ export namespace Prisma {
     user?: boolean | Analysis$userArgs<ExtArgs>
     document?: boolean | Analysis$documentArgs<ExtArgs>
     conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+    jobSummary?: boolean | Analysis$jobSummaryArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
 
   export type AnalysisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12472,6 +13300,7 @@ export namespace Prisma {
     title?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     analysisData?: boolean
     overallScore?: boolean
@@ -12486,6 +13315,7 @@ export namespace Prisma {
     user?: boolean | Analysis$userArgs<ExtArgs>
     document?: boolean | Analysis$documentArgs<ExtArgs>
     conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+    jobSummary?: boolean | Analysis$jobSummaryArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
 
   export type AnalysisSelectScalar = {
@@ -12494,6 +13324,7 @@ export namespace Prisma {
     title?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     analysisData?: boolean
     overallScore?: boolean
@@ -12507,23 +13338,29 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "documentId" | "jobDescription" | "resumeText" | "analysisData" | "overallScore" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "createdAt" | "updatedAt", ExtArgs["result"]["analysis"]>
+  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "documentId" | "jobDescription" | "jobSummaryId" | "resumeText" | "analysisData" | "overallScore" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "createdAt" | "updatedAt", ExtArgs["result"]["analysis"]>
   export type AnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Analysis$userArgs<ExtArgs>
     document?: boolean | Analysis$documentArgs<ExtArgs>
     conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+    jobSummary?: boolean | Analysis$jobSummaryArgs<ExtArgs>
     resumeOptimizations?: boolean | Analysis$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | Analysis$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | Analysis$optimizedResumesArgs<ExtArgs>
+    extractedResumes?: boolean | Analysis$extractedResumesArgs<ExtArgs>
     _count?: boolean | AnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AnalysisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Analysis$userArgs<ExtArgs>
     document?: boolean | Analysis$documentArgs<ExtArgs>
     conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+    jobSummary?: boolean | Analysis$jobSummaryArgs<ExtArgs>
   }
   export type AnalysisIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Analysis$userArgs<ExtArgs>
     document?: boolean | Analysis$documentArgs<ExtArgs>
     conversation?: boolean | Analysis$conversationArgs<ExtArgs>
+    jobSummary?: boolean | Analysis$jobSummaryArgs<ExtArgs>
   }
 
   export type $AnalysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12532,7 +13369,11 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs> | null
       document: Prisma.$DocumentPayload<ExtArgs> | null
       conversation: Prisma.$LLMConversationPayload<ExtArgs> | null
+      jobSummary: Prisma.$JobDescriptionSummaryPayload<ExtArgs> | null
       resumeOptimizations: Prisma.$ResumeOptimizationPayload<ExtArgs>[]
+      coverLetters: Prisma.$CoverLetterPayload<ExtArgs>[]
+      optimizedResumes: Prisma.$OptimizedResumePayload<ExtArgs>[]
+      extractedResumes: Prisma.$ExtractedResumePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12540,6 +13381,7 @@ export namespace Prisma {
       title: string
       documentId: string | null
       jobDescription: string
+      jobSummaryId: string | null
       resumeText: string
       analysisData: string
       overallScore: number | null
@@ -12948,7 +13790,11 @@ export namespace Prisma {
     user<T extends Analysis$userArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     document<T extends Analysis$documentArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     conversation<T extends Analysis$conversationArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$conversationArgs<ExtArgs>>): Prisma__LLMConversationClient<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    jobSummary<T extends Analysis$jobSummaryArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$jobSummaryArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     resumeOptimizations<T extends Analysis$resumeOptimizationsArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$resumeOptimizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumeOptimizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    coverLetters<T extends Analysis$coverLettersArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$coverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    optimizedResumes<T extends Analysis$optimizedResumesArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$optimizedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    extractedResumes<T extends Analysis$extractedResumesArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$extractedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12983,6 +13829,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Analysis", 'String'>
     readonly documentId: FieldRef<"Analysis", 'String'>
     readonly jobDescription: FieldRef<"Analysis", 'String'>
+    readonly jobSummaryId: FieldRef<"Analysis", 'String'>
     readonly resumeText: FieldRef<"Analysis", 'String'>
     readonly analysisData: FieldRef<"Analysis", 'String'>
     readonly overallScore: FieldRef<"Analysis", 'Int'>
@@ -13447,6 +14294,25 @@ export namespace Prisma {
   }
 
   /**
+   * Analysis.jobSummary
+   */
+  export type Analysis$jobSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    where?: JobDescriptionSummaryWhereInput
+  }
+
+  /**
    * Analysis.resumeOptimizations
    */
   export type Analysis$resumeOptimizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13468,6 +14334,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ResumeOptimizationScalarFieldEnum | ResumeOptimizationScalarFieldEnum[]
+  }
+
+  /**
+   * Analysis.coverLetters
+   */
+  export type Analysis$coverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    where?: CoverLetterWhereInput
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    cursor?: CoverLetterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * Analysis.optimizedResumes
+   */
+  export type Analysis$optimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    where?: OptimizedResumeWhereInput
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    cursor?: OptimizedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * Analysis.extractedResumes
+   */
+  export type Analysis$extractedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    where?: ExtractedResumeWhereInput
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    cursor?: ExtractedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExtractedResumeScalarFieldEnum | ExtractedResumeScalarFieldEnum[]
   }
 
   /**
@@ -13521,6 +14459,7 @@ export namespace Prisma {
     analysisId: string | null
     documentId: string | null
     jobDescription: string | null
+    jobSummaryId: string | null
     resumeText: string | null
     templateId: string | null
     extractedData: string | null
@@ -13542,6 +14481,7 @@ export namespace Prisma {
     analysisId: string | null
     documentId: string | null
     jobDescription: string | null
+    jobSummaryId: string | null
     resumeText: string | null
     templateId: string | null
     extractedData: string | null
@@ -13563,6 +14503,7 @@ export namespace Prisma {
     analysisId: number
     documentId: number
     jobDescription: number
+    jobSummaryId: number
     resumeText: number
     templateId: number
     extractedData: number
@@ -13602,6 +14543,7 @@ export namespace Prisma {
     analysisId?: true
     documentId?: true
     jobDescription?: true
+    jobSummaryId?: true
     resumeText?: true
     templateId?: true
     extractedData?: true
@@ -13623,6 +14565,7 @@ export namespace Prisma {
     analysisId?: true
     documentId?: true
     jobDescription?: true
+    jobSummaryId?: true
     resumeText?: true
     templateId?: true
     extractedData?: true
@@ -13644,6 +14587,7 @@ export namespace Prisma {
     analysisId?: true
     documentId?: true
     jobDescription?: true
+    jobSummaryId?: true
     resumeText?: true
     templateId?: true
     extractedData?: true
@@ -13754,6 +14698,7 @@ export namespace Prisma {
     analysisId: string | null
     documentId: string | null
     jobDescription: string
+    jobSummaryId: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -13796,6 +14741,7 @@ export namespace Prisma {
     analysisId?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     templateId?: boolean
     extractedData?: boolean
@@ -13815,6 +14761,7 @@ export namespace Prisma {
     analysis?: boolean | ResumeOptimization$analysisArgs<ExtArgs>
     document?: boolean | ResumeOptimization$documentArgs<ExtArgs>
     conversation?: boolean | ResumeOptimization$conversationArgs<ExtArgs>
+    jobSummary?: boolean | ResumeOptimization$jobSummaryArgs<ExtArgs>
   }, ExtArgs["result"]["resumeOptimization"]>
 
   export type ResumeOptimizationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13823,6 +14770,7 @@ export namespace Prisma {
     analysisId?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     templateId?: boolean
     extractedData?: boolean
@@ -13842,6 +14790,7 @@ export namespace Prisma {
     analysis?: boolean | ResumeOptimization$analysisArgs<ExtArgs>
     document?: boolean | ResumeOptimization$documentArgs<ExtArgs>
     conversation?: boolean | ResumeOptimization$conversationArgs<ExtArgs>
+    jobSummary?: boolean | ResumeOptimization$jobSummaryArgs<ExtArgs>
   }, ExtArgs["result"]["resumeOptimization"]>
 
   export type ResumeOptimizationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13850,6 +14799,7 @@ export namespace Prisma {
     analysisId?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     templateId?: boolean
     extractedData?: boolean
@@ -13869,6 +14819,7 @@ export namespace Prisma {
     analysis?: boolean | ResumeOptimization$analysisArgs<ExtArgs>
     document?: boolean | ResumeOptimization$documentArgs<ExtArgs>
     conversation?: boolean | ResumeOptimization$conversationArgs<ExtArgs>
+    jobSummary?: boolean | ResumeOptimization$jobSummaryArgs<ExtArgs>
   }, ExtArgs["result"]["resumeOptimization"]>
 
   export type ResumeOptimizationSelectScalar = {
@@ -13877,6 +14828,7 @@ export namespace Prisma {
     analysisId?: boolean
     documentId?: boolean
     jobDescription?: boolean
+    jobSummaryId?: boolean
     resumeText?: boolean
     templateId?: boolean
     extractedData?: boolean
@@ -13894,24 +14846,27 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ResumeOptimizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "analysisId" | "documentId" | "jobDescription" | "resumeText" | "templateId" | "extractedData" | "optimizedResume" | "optimizationSuggestions" | "atsScore" | "keywordsMatched" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "createdAt" | "updatedAt", ExtArgs["result"]["resumeOptimization"]>
+  export type ResumeOptimizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "analysisId" | "documentId" | "jobDescription" | "jobSummaryId" | "resumeText" | "templateId" | "extractedData" | "optimizedResume" | "optimizationSuggestions" | "atsScore" | "keywordsMatched" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "createdAt" | "updatedAt", ExtArgs["result"]["resumeOptimization"]>
   export type ResumeOptimizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | ResumeOptimization$userArgs<ExtArgs>
     analysis?: boolean | ResumeOptimization$analysisArgs<ExtArgs>
     document?: boolean | ResumeOptimization$documentArgs<ExtArgs>
     conversation?: boolean | ResumeOptimization$conversationArgs<ExtArgs>
+    jobSummary?: boolean | ResumeOptimization$jobSummaryArgs<ExtArgs>
   }
   export type ResumeOptimizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | ResumeOptimization$userArgs<ExtArgs>
     analysis?: boolean | ResumeOptimization$analysisArgs<ExtArgs>
     document?: boolean | ResumeOptimization$documentArgs<ExtArgs>
     conversation?: boolean | ResumeOptimization$conversationArgs<ExtArgs>
+    jobSummary?: boolean | ResumeOptimization$jobSummaryArgs<ExtArgs>
   }
   export type ResumeOptimizationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | ResumeOptimization$userArgs<ExtArgs>
     analysis?: boolean | ResumeOptimization$analysisArgs<ExtArgs>
     document?: boolean | ResumeOptimization$documentArgs<ExtArgs>
     conversation?: boolean | ResumeOptimization$conversationArgs<ExtArgs>
+    jobSummary?: boolean | ResumeOptimization$jobSummaryArgs<ExtArgs>
   }
 
   export type $ResumeOptimizationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13921,6 +14876,7 @@ export namespace Prisma {
       analysis: Prisma.$AnalysisPayload<ExtArgs> | null
       document: Prisma.$DocumentPayload<ExtArgs> | null
       conversation: Prisma.$LLMConversationPayload<ExtArgs> | null
+      jobSummary: Prisma.$JobDescriptionSummaryPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -13928,6 +14884,7 @@ export namespace Prisma {
       analysisId: string | null
       documentId: string | null
       jobDescription: string
+      jobSummaryId: string | null
       resumeText: string
       templateId: string
       extractedData: string
@@ -14341,6 +15298,7 @@ export namespace Prisma {
     analysis<T extends ResumeOptimization$analysisArgs<ExtArgs> = {}>(args?: Subset<T, ResumeOptimization$analysisArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     document<T extends ResumeOptimization$documentArgs<ExtArgs> = {}>(args?: Subset<T, ResumeOptimization$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     conversation<T extends ResumeOptimization$conversationArgs<ExtArgs> = {}>(args?: Subset<T, ResumeOptimization$conversationArgs<ExtArgs>>): Prisma__LLMConversationClient<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    jobSummary<T extends ResumeOptimization$jobSummaryArgs<ExtArgs> = {}>(args?: Subset<T, ResumeOptimization$jobSummaryArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14375,6 +15333,7 @@ export namespace Prisma {
     readonly analysisId: FieldRef<"ResumeOptimization", 'String'>
     readonly documentId: FieldRef<"ResumeOptimization", 'String'>
     readonly jobDescription: FieldRef<"ResumeOptimization", 'String'>
+    readonly jobSummaryId: FieldRef<"ResumeOptimization", 'String'>
     readonly resumeText: FieldRef<"ResumeOptimization", 'String'>
     readonly templateId: FieldRef<"ResumeOptimization", 'String'>
     readonly extractedData: FieldRef<"ResumeOptimization", 'String'>
@@ -14859,6 +15818,25 @@ export namespace Prisma {
      */
     include?: LLMConversationInclude<ExtArgs> | null
     where?: LLMConversationWhereInput
+  }
+
+  /**
+   * ResumeOptimization.jobSummary
+   */
+  export type ResumeOptimization$jobSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    where?: JobDescriptionSummaryWhereInput
   }
 
   /**
@@ -16012,6 +16990,5666 @@ export namespace Prisma {
 
 
   /**
+   * Model JobDescriptionSummary
+   */
+
+  export type AggregateJobDescriptionSummary = {
+    _count: JobDescriptionSummaryCountAggregateOutputType | null
+    _avg: JobDescriptionSummaryAvgAggregateOutputType | null
+    _sum: JobDescriptionSummarySumAggregateOutputType | null
+    _min: JobDescriptionSummaryMinAggregateOutputType | null
+    _max: JobDescriptionSummaryMaxAggregateOutputType | null
+  }
+
+  export type JobDescriptionSummaryAvgAggregateOutputType = {
+    usageCount: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+  }
+
+  export type JobDescriptionSummarySumAggregateOutputType = {
+    usageCount: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+  }
+
+  export type JobDescriptionSummaryMinAggregateOutputType = {
+    id: string | null
+    contentHash: string | null
+    originalText: string | null
+    summary: string | null
+    companyName: string | null
+    jobTitle: string | null
+    location: string | null
+    salaryRange: string | null
+    provider: string | null
+    model: string | null
+    usageCount: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    lastUsedAt: Date | null
+  }
+
+  export type JobDescriptionSummaryMaxAggregateOutputType = {
+    id: string | null
+    contentHash: string | null
+    originalText: string | null
+    summary: string | null
+    companyName: string | null
+    jobTitle: string | null
+    location: string | null
+    salaryRange: string | null
+    provider: string | null
+    model: string | null
+    usageCount: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    lastUsedAt: Date | null
+  }
+
+  export type JobDescriptionSummaryCountAggregateOutputType = {
+    id: number
+    contentHash: number
+    originalText: number
+    summary: number
+    keyRequirements: number
+    companyName: number
+    jobTitle: number
+    location: number
+    salaryRange: number
+    provider: number
+    model: number
+    usageCount: number
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number
+    createdAt: number
+    updatedAt: number
+    lastUsedAt: number
+    _all: number
+  }
+
+
+  export type JobDescriptionSummaryAvgAggregateInputType = {
+    usageCount?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+  }
+
+  export type JobDescriptionSummarySumAggregateInputType = {
+    usageCount?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+  }
+
+  export type JobDescriptionSummaryMinAggregateInputType = {
+    id?: true
+    contentHash?: true
+    originalText?: true
+    summary?: true
+    companyName?: true
+    jobTitle?: true
+    location?: true
+    salaryRange?: true
+    provider?: true
+    model?: true
+    usageCount?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    createdAt?: true
+    updatedAt?: true
+    lastUsedAt?: true
+  }
+
+  export type JobDescriptionSummaryMaxAggregateInputType = {
+    id?: true
+    contentHash?: true
+    originalText?: true
+    summary?: true
+    companyName?: true
+    jobTitle?: true
+    location?: true
+    salaryRange?: true
+    provider?: true
+    model?: true
+    usageCount?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    createdAt?: true
+    updatedAt?: true
+    lastUsedAt?: true
+  }
+
+  export type JobDescriptionSummaryCountAggregateInputType = {
+    id?: true
+    contentHash?: true
+    originalText?: true
+    summary?: true
+    keyRequirements?: true
+    companyName?: true
+    jobTitle?: true
+    location?: true
+    salaryRange?: true
+    provider?: true
+    model?: true
+    usageCount?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    createdAt?: true
+    updatedAt?: true
+    lastUsedAt?: true
+    _all?: true
+  }
+
+  export type JobDescriptionSummaryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobDescriptionSummary to aggregate.
+     */
+    where?: JobDescriptionSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDescriptionSummaries to fetch.
+     */
+    orderBy?: JobDescriptionSummaryOrderByWithRelationInput | JobDescriptionSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JobDescriptionSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDescriptionSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDescriptionSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JobDescriptionSummaries
+    **/
+    _count?: true | JobDescriptionSummaryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: JobDescriptionSummaryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: JobDescriptionSummarySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JobDescriptionSummaryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JobDescriptionSummaryMaxAggregateInputType
+  }
+
+  export type GetJobDescriptionSummaryAggregateType<T extends JobDescriptionSummaryAggregateArgs> = {
+        [P in keyof T & keyof AggregateJobDescriptionSummary]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJobDescriptionSummary[P]>
+      : GetScalarType<T[P], AggregateJobDescriptionSummary[P]>
+  }
+
+
+
+
+  export type JobDescriptionSummaryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobDescriptionSummaryWhereInput
+    orderBy?: JobDescriptionSummaryOrderByWithAggregationInput | JobDescriptionSummaryOrderByWithAggregationInput[]
+    by: JobDescriptionSummaryScalarFieldEnum[] | JobDescriptionSummaryScalarFieldEnum
+    having?: JobDescriptionSummaryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JobDescriptionSummaryCountAggregateInputType | true
+    _avg?: JobDescriptionSummaryAvgAggregateInputType
+    _sum?: JobDescriptionSummarySumAggregateInputType
+    _min?: JobDescriptionSummaryMinAggregateInputType
+    _max?: JobDescriptionSummaryMaxAggregateInputType
+  }
+
+  export type JobDescriptionSummaryGroupByOutputType = {
+    id: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements: string[]
+    companyName: string | null
+    jobTitle: string | null
+    location: string | null
+    salaryRange: string | null
+    provider: string
+    model: string
+    usageCount: number
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number | null
+    createdAt: Date
+    updatedAt: Date
+    lastUsedAt: Date
+    _count: JobDescriptionSummaryCountAggregateOutputType | null
+    _avg: JobDescriptionSummaryAvgAggregateOutputType | null
+    _sum: JobDescriptionSummarySumAggregateOutputType | null
+    _min: JobDescriptionSummaryMinAggregateOutputType | null
+    _max: JobDescriptionSummaryMaxAggregateOutputType | null
+  }
+
+  type GetJobDescriptionSummaryGroupByPayload<T extends JobDescriptionSummaryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JobDescriptionSummaryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JobDescriptionSummaryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JobDescriptionSummaryGroupByOutputType[P]>
+            : GetScalarType<T[P], JobDescriptionSummaryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JobDescriptionSummarySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contentHash?: boolean
+    originalText?: boolean
+    summary?: boolean
+    keyRequirements?: boolean
+    companyName?: boolean
+    jobTitle?: boolean
+    location?: boolean
+    salaryRange?: boolean
+    provider?: boolean
+    model?: boolean
+    usageCount?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lastUsedAt?: boolean
+    analyses?: boolean | JobDescriptionSummary$analysesArgs<ExtArgs>
+    resumeOptimizations?: boolean | JobDescriptionSummary$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | JobDescriptionSummary$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | JobDescriptionSummary$optimizedResumesArgs<ExtArgs>
+    _count?: boolean | JobDescriptionSummaryCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobDescriptionSummary"]>
+
+  export type JobDescriptionSummarySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contentHash?: boolean
+    originalText?: boolean
+    summary?: boolean
+    keyRequirements?: boolean
+    companyName?: boolean
+    jobTitle?: boolean
+    location?: boolean
+    salaryRange?: boolean
+    provider?: boolean
+    model?: boolean
+    usageCount?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lastUsedAt?: boolean
+  }, ExtArgs["result"]["jobDescriptionSummary"]>
+
+  export type JobDescriptionSummarySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contentHash?: boolean
+    originalText?: boolean
+    summary?: boolean
+    keyRequirements?: boolean
+    companyName?: boolean
+    jobTitle?: boolean
+    location?: boolean
+    salaryRange?: boolean
+    provider?: boolean
+    model?: boolean
+    usageCount?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lastUsedAt?: boolean
+  }, ExtArgs["result"]["jobDescriptionSummary"]>
+
+  export type JobDescriptionSummarySelectScalar = {
+    id?: boolean
+    contentHash?: boolean
+    originalText?: boolean
+    summary?: boolean
+    keyRequirements?: boolean
+    companyName?: boolean
+    jobTitle?: boolean
+    location?: boolean
+    salaryRange?: boolean
+    provider?: boolean
+    model?: boolean
+    usageCount?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lastUsedAt?: boolean
+  }
+
+  export type JobDescriptionSummaryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contentHash" | "originalText" | "summary" | "keyRequirements" | "companyName" | "jobTitle" | "location" | "salaryRange" | "provider" | "model" | "usageCount" | "totalTokensUsed" | "totalCost" | "processingTime" | "createdAt" | "updatedAt" | "lastUsedAt", ExtArgs["result"]["jobDescriptionSummary"]>
+  export type JobDescriptionSummaryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    analyses?: boolean | JobDescriptionSummary$analysesArgs<ExtArgs>
+    resumeOptimizations?: boolean | JobDescriptionSummary$resumeOptimizationsArgs<ExtArgs>
+    coverLetters?: boolean | JobDescriptionSummary$coverLettersArgs<ExtArgs>
+    optimizedResumes?: boolean | JobDescriptionSummary$optimizedResumesArgs<ExtArgs>
+    _count?: boolean | JobDescriptionSummaryCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type JobDescriptionSummaryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type JobDescriptionSummaryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $JobDescriptionSummaryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JobDescriptionSummary"
+    objects: {
+      analyses: Prisma.$AnalysisPayload<ExtArgs>[]
+      resumeOptimizations: Prisma.$ResumeOptimizationPayload<ExtArgs>[]
+      coverLetters: Prisma.$CoverLetterPayload<ExtArgs>[]
+      optimizedResumes: Prisma.$OptimizedResumePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contentHash: string
+      originalText: string
+      summary: string
+      keyRequirements: string[]
+      companyName: string | null
+      jobTitle: string | null
+      location: string | null
+      salaryRange: string | null
+      provider: string
+      model: string
+      usageCount: number
+      totalTokensUsed: number
+      totalCost: number
+      processingTime: number | null
+      createdAt: Date
+      updatedAt: Date
+      lastUsedAt: Date
+    }, ExtArgs["result"]["jobDescriptionSummary"]>
+    composites: {}
+  }
+
+  type JobDescriptionSummaryGetPayload<S extends boolean | null | undefined | JobDescriptionSummaryDefaultArgs> = $Result.GetResult<Prisma.$JobDescriptionSummaryPayload, S>
+
+  type JobDescriptionSummaryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JobDescriptionSummaryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JobDescriptionSummaryCountAggregateInputType | true
+    }
+
+  export interface JobDescriptionSummaryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JobDescriptionSummary'], meta: { name: 'JobDescriptionSummary' } }
+    /**
+     * Find zero or one JobDescriptionSummary that matches the filter.
+     * @param {JobDescriptionSummaryFindUniqueArgs} args - Arguments to find a JobDescriptionSummary
+     * @example
+     * // Get one JobDescriptionSummary
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JobDescriptionSummaryFindUniqueArgs>(args: SelectSubset<T, JobDescriptionSummaryFindUniqueArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JobDescriptionSummary that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JobDescriptionSummaryFindUniqueOrThrowArgs} args - Arguments to find a JobDescriptionSummary
+     * @example
+     * // Get one JobDescriptionSummary
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JobDescriptionSummaryFindUniqueOrThrowArgs>(args: SelectSubset<T, JobDescriptionSummaryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobDescriptionSummary that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDescriptionSummaryFindFirstArgs} args - Arguments to find a JobDescriptionSummary
+     * @example
+     * // Get one JobDescriptionSummary
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JobDescriptionSummaryFindFirstArgs>(args?: SelectSubset<T, JobDescriptionSummaryFindFirstArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobDescriptionSummary that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDescriptionSummaryFindFirstOrThrowArgs} args - Arguments to find a JobDescriptionSummary
+     * @example
+     * // Get one JobDescriptionSummary
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JobDescriptionSummaryFindFirstOrThrowArgs>(args?: SelectSubset<T, JobDescriptionSummaryFindFirstOrThrowArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JobDescriptionSummaries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDescriptionSummaryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JobDescriptionSummaries
+     * const jobDescriptionSummaries = await prisma.jobDescriptionSummary.findMany()
+     * 
+     * // Get first 10 JobDescriptionSummaries
+     * const jobDescriptionSummaries = await prisma.jobDescriptionSummary.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const jobDescriptionSummaryWithIdOnly = await prisma.jobDescriptionSummary.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JobDescriptionSummaryFindManyArgs>(args?: SelectSubset<T, JobDescriptionSummaryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JobDescriptionSummary.
+     * @param {JobDescriptionSummaryCreateArgs} args - Arguments to create a JobDescriptionSummary.
+     * @example
+     * // Create one JobDescriptionSummary
+     * const JobDescriptionSummary = await prisma.jobDescriptionSummary.create({
+     *   data: {
+     *     // ... data to create a JobDescriptionSummary
+     *   }
+     * })
+     * 
+     */
+    create<T extends JobDescriptionSummaryCreateArgs>(args: SelectSubset<T, JobDescriptionSummaryCreateArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JobDescriptionSummaries.
+     * @param {JobDescriptionSummaryCreateManyArgs} args - Arguments to create many JobDescriptionSummaries.
+     * @example
+     * // Create many JobDescriptionSummaries
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JobDescriptionSummaryCreateManyArgs>(args?: SelectSubset<T, JobDescriptionSummaryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JobDescriptionSummaries and returns the data saved in the database.
+     * @param {JobDescriptionSummaryCreateManyAndReturnArgs} args - Arguments to create many JobDescriptionSummaries.
+     * @example
+     * // Create many JobDescriptionSummaries
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JobDescriptionSummaries and only return the `id`
+     * const jobDescriptionSummaryWithIdOnly = await prisma.jobDescriptionSummary.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JobDescriptionSummaryCreateManyAndReturnArgs>(args?: SelectSubset<T, JobDescriptionSummaryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JobDescriptionSummary.
+     * @param {JobDescriptionSummaryDeleteArgs} args - Arguments to delete one JobDescriptionSummary.
+     * @example
+     * // Delete one JobDescriptionSummary
+     * const JobDescriptionSummary = await prisma.jobDescriptionSummary.delete({
+     *   where: {
+     *     // ... filter to delete one JobDescriptionSummary
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JobDescriptionSummaryDeleteArgs>(args: SelectSubset<T, JobDescriptionSummaryDeleteArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JobDescriptionSummary.
+     * @param {JobDescriptionSummaryUpdateArgs} args - Arguments to update one JobDescriptionSummary.
+     * @example
+     * // Update one JobDescriptionSummary
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JobDescriptionSummaryUpdateArgs>(args: SelectSubset<T, JobDescriptionSummaryUpdateArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JobDescriptionSummaries.
+     * @param {JobDescriptionSummaryDeleteManyArgs} args - Arguments to filter JobDescriptionSummaries to delete.
+     * @example
+     * // Delete a few JobDescriptionSummaries
+     * const { count } = await prisma.jobDescriptionSummary.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JobDescriptionSummaryDeleteManyArgs>(args?: SelectSubset<T, JobDescriptionSummaryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobDescriptionSummaries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDescriptionSummaryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JobDescriptionSummaries
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JobDescriptionSummaryUpdateManyArgs>(args: SelectSubset<T, JobDescriptionSummaryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobDescriptionSummaries and returns the data updated in the database.
+     * @param {JobDescriptionSummaryUpdateManyAndReturnArgs} args - Arguments to update many JobDescriptionSummaries.
+     * @example
+     * // Update many JobDescriptionSummaries
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JobDescriptionSummaries and only return the `id`
+     * const jobDescriptionSummaryWithIdOnly = await prisma.jobDescriptionSummary.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JobDescriptionSummaryUpdateManyAndReturnArgs>(args: SelectSubset<T, JobDescriptionSummaryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JobDescriptionSummary.
+     * @param {JobDescriptionSummaryUpsertArgs} args - Arguments to update or create a JobDescriptionSummary.
+     * @example
+     * // Update or create a JobDescriptionSummary
+     * const jobDescriptionSummary = await prisma.jobDescriptionSummary.upsert({
+     *   create: {
+     *     // ... data to create a JobDescriptionSummary
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JobDescriptionSummary we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JobDescriptionSummaryUpsertArgs>(args: SelectSubset<T, JobDescriptionSummaryUpsertArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JobDescriptionSummaries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDescriptionSummaryCountArgs} args - Arguments to filter JobDescriptionSummaries to count.
+     * @example
+     * // Count the number of JobDescriptionSummaries
+     * const count = await prisma.jobDescriptionSummary.count({
+     *   where: {
+     *     // ... the filter for the JobDescriptionSummaries we want to count
+     *   }
+     * })
+    **/
+    count<T extends JobDescriptionSummaryCountArgs>(
+      args?: Subset<T, JobDescriptionSummaryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JobDescriptionSummaryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JobDescriptionSummary.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDescriptionSummaryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JobDescriptionSummaryAggregateArgs>(args: Subset<T, JobDescriptionSummaryAggregateArgs>): Prisma.PrismaPromise<GetJobDescriptionSummaryAggregateType<T>>
+
+    /**
+     * Group by JobDescriptionSummary.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDescriptionSummaryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JobDescriptionSummaryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JobDescriptionSummaryGroupByArgs['orderBy'] }
+        : { orderBy?: JobDescriptionSummaryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JobDescriptionSummaryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJobDescriptionSummaryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JobDescriptionSummary model
+   */
+  readonly fields: JobDescriptionSummaryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JobDescriptionSummary.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JobDescriptionSummaryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    analyses<T extends JobDescriptionSummary$analysesArgs<ExtArgs> = {}>(args?: Subset<T, JobDescriptionSummary$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    resumeOptimizations<T extends JobDescriptionSummary$resumeOptimizationsArgs<ExtArgs> = {}>(args?: Subset<T, JobDescriptionSummary$resumeOptimizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumeOptimizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    coverLetters<T extends JobDescriptionSummary$coverLettersArgs<ExtArgs> = {}>(args?: Subset<T, JobDescriptionSummary$coverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    optimizedResumes<T extends JobDescriptionSummary$optimizedResumesArgs<ExtArgs> = {}>(args?: Subset<T, JobDescriptionSummary$optimizedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JobDescriptionSummary model
+   */
+  interface JobDescriptionSummaryFieldRefs {
+    readonly id: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly contentHash: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly originalText: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly summary: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly keyRequirements: FieldRef<"JobDescriptionSummary", 'String[]'>
+    readonly companyName: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly jobTitle: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly location: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly salaryRange: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly provider: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly model: FieldRef<"JobDescriptionSummary", 'String'>
+    readonly usageCount: FieldRef<"JobDescriptionSummary", 'Int'>
+    readonly totalTokensUsed: FieldRef<"JobDescriptionSummary", 'Int'>
+    readonly totalCost: FieldRef<"JobDescriptionSummary", 'Float'>
+    readonly processingTime: FieldRef<"JobDescriptionSummary", 'Int'>
+    readonly createdAt: FieldRef<"JobDescriptionSummary", 'DateTime'>
+    readonly updatedAt: FieldRef<"JobDescriptionSummary", 'DateTime'>
+    readonly lastUsedAt: FieldRef<"JobDescriptionSummary", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JobDescriptionSummary findUnique
+   */
+  export type JobDescriptionSummaryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDescriptionSummary to fetch.
+     */
+    where: JobDescriptionSummaryWhereUniqueInput
+  }
+
+  /**
+   * JobDescriptionSummary findUniqueOrThrow
+   */
+  export type JobDescriptionSummaryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDescriptionSummary to fetch.
+     */
+    where: JobDescriptionSummaryWhereUniqueInput
+  }
+
+  /**
+   * JobDescriptionSummary findFirst
+   */
+  export type JobDescriptionSummaryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDescriptionSummary to fetch.
+     */
+    where?: JobDescriptionSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDescriptionSummaries to fetch.
+     */
+    orderBy?: JobDescriptionSummaryOrderByWithRelationInput | JobDescriptionSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobDescriptionSummaries.
+     */
+    cursor?: JobDescriptionSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDescriptionSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDescriptionSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDescriptionSummaries.
+     */
+    distinct?: JobDescriptionSummaryScalarFieldEnum | JobDescriptionSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * JobDescriptionSummary findFirstOrThrow
+   */
+  export type JobDescriptionSummaryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDescriptionSummary to fetch.
+     */
+    where?: JobDescriptionSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDescriptionSummaries to fetch.
+     */
+    orderBy?: JobDescriptionSummaryOrderByWithRelationInput | JobDescriptionSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobDescriptionSummaries.
+     */
+    cursor?: JobDescriptionSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDescriptionSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDescriptionSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDescriptionSummaries.
+     */
+    distinct?: JobDescriptionSummaryScalarFieldEnum | JobDescriptionSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * JobDescriptionSummary findMany
+   */
+  export type JobDescriptionSummaryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDescriptionSummaries to fetch.
+     */
+    where?: JobDescriptionSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDescriptionSummaries to fetch.
+     */
+    orderBy?: JobDescriptionSummaryOrderByWithRelationInput | JobDescriptionSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JobDescriptionSummaries.
+     */
+    cursor?: JobDescriptionSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDescriptionSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDescriptionSummaries.
+     */
+    skip?: number
+    distinct?: JobDescriptionSummaryScalarFieldEnum | JobDescriptionSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * JobDescriptionSummary create
+   */
+  export type JobDescriptionSummaryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JobDescriptionSummary.
+     */
+    data: XOR<JobDescriptionSummaryCreateInput, JobDescriptionSummaryUncheckedCreateInput>
+  }
+
+  /**
+   * JobDescriptionSummary createMany
+   */
+  export type JobDescriptionSummaryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JobDescriptionSummaries.
+     */
+    data: JobDescriptionSummaryCreateManyInput | JobDescriptionSummaryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobDescriptionSummary createManyAndReturn
+   */
+  export type JobDescriptionSummaryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * The data used to create many JobDescriptionSummaries.
+     */
+    data: JobDescriptionSummaryCreateManyInput | JobDescriptionSummaryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobDescriptionSummary update
+   */
+  export type JobDescriptionSummaryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JobDescriptionSummary.
+     */
+    data: XOR<JobDescriptionSummaryUpdateInput, JobDescriptionSummaryUncheckedUpdateInput>
+    /**
+     * Choose, which JobDescriptionSummary to update.
+     */
+    where: JobDescriptionSummaryWhereUniqueInput
+  }
+
+  /**
+   * JobDescriptionSummary updateMany
+   */
+  export type JobDescriptionSummaryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JobDescriptionSummaries.
+     */
+    data: XOR<JobDescriptionSummaryUpdateManyMutationInput, JobDescriptionSummaryUncheckedUpdateManyInput>
+    /**
+     * Filter which JobDescriptionSummaries to update
+     */
+    where?: JobDescriptionSummaryWhereInput
+    /**
+     * Limit how many JobDescriptionSummaries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobDescriptionSummary updateManyAndReturn
+   */
+  export type JobDescriptionSummaryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * The data used to update JobDescriptionSummaries.
+     */
+    data: XOR<JobDescriptionSummaryUpdateManyMutationInput, JobDescriptionSummaryUncheckedUpdateManyInput>
+    /**
+     * Filter which JobDescriptionSummaries to update
+     */
+    where?: JobDescriptionSummaryWhereInput
+    /**
+     * Limit how many JobDescriptionSummaries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobDescriptionSummary upsert
+   */
+  export type JobDescriptionSummaryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JobDescriptionSummary to update in case it exists.
+     */
+    where: JobDescriptionSummaryWhereUniqueInput
+    /**
+     * In case the JobDescriptionSummary found by the `where` argument doesn't exist, create a new JobDescriptionSummary with this data.
+     */
+    create: XOR<JobDescriptionSummaryCreateInput, JobDescriptionSummaryUncheckedCreateInput>
+    /**
+     * In case the JobDescriptionSummary was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JobDescriptionSummaryUpdateInput, JobDescriptionSummaryUncheckedUpdateInput>
+  }
+
+  /**
+   * JobDescriptionSummary delete
+   */
+  export type JobDescriptionSummaryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    /**
+     * Filter which JobDescriptionSummary to delete.
+     */
+    where: JobDescriptionSummaryWhereUniqueInput
+  }
+
+  /**
+   * JobDescriptionSummary deleteMany
+   */
+  export type JobDescriptionSummaryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobDescriptionSummaries to delete
+     */
+    where?: JobDescriptionSummaryWhereInput
+    /**
+     * Limit how many JobDescriptionSummaries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobDescriptionSummary.analyses
+   */
+  export type JobDescriptionSummary$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    cursor?: AnalysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * JobDescriptionSummary.resumeOptimizations
+   */
+  export type JobDescriptionSummary$resumeOptimizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumeOptimization
+     */
+    select?: ResumeOptimizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumeOptimization
+     */
+    omit?: ResumeOptimizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumeOptimizationInclude<ExtArgs> | null
+    where?: ResumeOptimizationWhereInput
+    orderBy?: ResumeOptimizationOrderByWithRelationInput | ResumeOptimizationOrderByWithRelationInput[]
+    cursor?: ResumeOptimizationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ResumeOptimizationScalarFieldEnum | ResumeOptimizationScalarFieldEnum[]
+  }
+
+  /**
+   * JobDescriptionSummary.coverLetters
+   */
+  export type JobDescriptionSummary$coverLettersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    where?: CoverLetterWhereInput
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    cursor?: CoverLetterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * JobDescriptionSummary.optimizedResumes
+   */
+  export type JobDescriptionSummary$optimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    where?: OptimizedResumeWhereInput
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    cursor?: OptimizedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * JobDescriptionSummary without action
+   */
+  export type JobDescriptionSummaryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CoverLetter
+   */
+
+  export type AggregateCoverLetter = {
+    _count: CoverLetterCountAggregateOutputType | null
+    _avg: CoverLetterAvgAggregateOutputType | null
+    _sum: CoverLetterSumAggregateOutputType | null
+    _min: CoverLetterMinAggregateOutputType | null
+    _max: CoverLetterMaxAggregateOutputType | null
+  }
+
+  export type CoverLetterAvgAggregateOutputType = {
+    wordCount: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+  }
+
+  export type CoverLetterSumAggregateOutputType = {
+    wordCount: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+  }
+
+  export type CoverLetterMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    content: string | null
+    tone: string | null
+    wordCount: number | null
+    analysisId: string | null
+    documentId: string | null
+    jobSummaryId: string | null
+    contentHash: string | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CoverLetterMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    content: string | null
+    tone: string | null
+    wordCount: number | null
+    analysisId: string | null
+    documentId: string | null
+    jobSummaryId: string | null
+    contentHash: string | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CoverLetterCountAggregateOutputType = {
+    id: number
+    userId: number
+    content: number
+    tone: number
+    wordCount: number
+    analysisId: number
+    documentId: number
+    jobSummaryId: number
+    contentHash: number
+    provider: number
+    model: number
+    conversationId: number
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number
+    usageCount: number
+    lastUsedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CoverLetterAvgAggregateInputType = {
+    wordCount?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+  }
+
+  export type CoverLetterSumAggregateInputType = {
+    wordCount?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+  }
+
+  export type CoverLetterMinAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    tone?: true
+    wordCount?: true
+    analysisId?: true
+    documentId?: true
+    jobSummaryId?: true
+    contentHash?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CoverLetterMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    tone?: true
+    wordCount?: true
+    analysisId?: true
+    documentId?: true
+    jobSummaryId?: true
+    contentHash?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CoverLetterCountAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    tone?: true
+    wordCount?: true
+    analysisId?: true
+    documentId?: true
+    jobSummaryId?: true
+    contentHash?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CoverLetterAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CoverLetter to aggregate.
+     */
+    where?: CoverLetterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CoverLetters to fetch.
+     */
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CoverLetterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CoverLetters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CoverLetters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CoverLetters
+    **/
+    _count?: true | CoverLetterCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CoverLetterAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CoverLetterSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CoverLetterMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CoverLetterMaxAggregateInputType
+  }
+
+  export type GetCoverLetterAggregateType<T extends CoverLetterAggregateArgs> = {
+        [P in keyof T & keyof AggregateCoverLetter]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCoverLetter[P]>
+      : GetScalarType<T[P], AggregateCoverLetter[P]>
+  }
+
+
+
+
+  export type CoverLetterGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CoverLetterWhereInput
+    orderBy?: CoverLetterOrderByWithAggregationInput | CoverLetterOrderByWithAggregationInput[]
+    by: CoverLetterScalarFieldEnum[] | CoverLetterScalarFieldEnum
+    having?: CoverLetterScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CoverLetterCountAggregateInputType | true
+    _avg?: CoverLetterAvgAggregateInputType
+    _sum?: CoverLetterSumAggregateInputType
+    _min?: CoverLetterMinAggregateInputType
+    _max?: CoverLetterMaxAggregateInputType
+  }
+
+  export type CoverLetterGroupByOutputType = {
+    id: string
+    userId: string | null
+    content: string
+    tone: string
+    wordCount: number
+    analysisId: string | null
+    documentId: string | null
+    jobSummaryId: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId: string | null
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number | null
+    usageCount: number
+    lastUsedAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: CoverLetterCountAggregateOutputType | null
+    _avg: CoverLetterAvgAggregateOutputType | null
+    _sum: CoverLetterSumAggregateOutputType | null
+    _min: CoverLetterMinAggregateOutputType | null
+    _max: CoverLetterMaxAggregateOutputType | null
+  }
+
+  type GetCoverLetterGroupByPayload<T extends CoverLetterGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CoverLetterGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CoverLetterGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CoverLetterGroupByOutputType[P]>
+            : GetScalarType<T[P], CoverLetterGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CoverLetterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    tone?: boolean
+    wordCount?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | CoverLetter$userArgs<ExtArgs>
+    analysis?: boolean | CoverLetter$analysisArgs<ExtArgs>
+    document?: boolean | CoverLetter$documentArgs<ExtArgs>
+    jobSummary?: boolean | CoverLetter$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | CoverLetter$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["coverLetter"]>
+
+  export type CoverLetterSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    tone?: boolean
+    wordCount?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | CoverLetter$userArgs<ExtArgs>
+    analysis?: boolean | CoverLetter$analysisArgs<ExtArgs>
+    document?: boolean | CoverLetter$documentArgs<ExtArgs>
+    jobSummary?: boolean | CoverLetter$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | CoverLetter$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["coverLetter"]>
+
+  export type CoverLetterSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    tone?: boolean
+    wordCount?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | CoverLetter$userArgs<ExtArgs>
+    analysis?: boolean | CoverLetter$analysisArgs<ExtArgs>
+    document?: boolean | CoverLetter$documentArgs<ExtArgs>
+    jobSummary?: boolean | CoverLetter$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | CoverLetter$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["coverLetter"]>
+
+  export type CoverLetterSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    tone?: boolean
+    wordCount?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CoverLetterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "content" | "tone" | "wordCount" | "analysisId" | "documentId" | "jobSummaryId" | "contentHash" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "usageCount" | "lastUsedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["coverLetter"]>
+  export type CoverLetterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | CoverLetter$userArgs<ExtArgs>
+    analysis?: boolean | CoverLetter$analysisArgs<ExtArgs>
+    document?: boolean | CoverLetter$documentArgs<ExtArgs>
+    jobSummary?: boolean | CoverLetter$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | CoverLetter$conversationArgs<ExtArgs>
+  }
+  export type CoverLetterIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | CoverLetter$userArgs<ExtArgs>
+    analysis?: boolean | CoverLetter$analysisArgs<ExtArgs>
+    document?: boolean | CoverLetter$documentArgs<ExtArgs>
+    jobSummary?: boolean | CoverLetter$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | CoverLetter$conversationArgs<ExtArgs>
+  }
+  export type CoverLetterIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | CoverLetter$userArgs<ExtArgs>
+    analysis?: boolean | CoverLetter$analysisArgs<ExtArgs>
+    document?: boolean | CoverLetter$documentArgs<ExtArgs>
+    jobSummary?: boolean | CoverLetter$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | CoverLetter$conversationArgs<ExtArgs>
+  }
+
+  export type $CoverLetterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CoverLetter"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      analysis: Prisma.$AnalysisPayload<ExtArgs> | null
+      document: Prisma.$DocumentPayload<ExtArgs> | null
+      jobSummary: Prisma.$JobDescriptionSummaryPayload<ExtArgs> | null
+      conversation: Prisma.$LLMConversationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      content: string
+      tone: string
+      wordCount: number
+      analysisId: string | null
+      documentId: string | null
+      jobSummaryId: string | null
+      contentHash: string
+      provider: string
+      model: string
+      conversationId: string | null
+      totalTokensUsed: number
+      totalCost: number
+      processingTime: number | null
+      usageCount: number
+      lastUsedAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["coverLetter"]>
+    composites: {}
+  }
+
+  type CoverLetterGetPayload<S extends boolean | null | undefined | CoverLetterDefaultArgs> = $Result.GetResult<Prisma.$CoverLetterPayload, S>
+
+  type CoverLetterCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CoverLetterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CoverLetterCountAggregateInputType | true
+    }
+
+  export interface CoverLetterDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CoverLetter'], meta: { name: 'CoverLetter' } }
+    /**
+     * Find zero or one CoverLetter that matches the filter.
+     * @param {CoverLetterFindUniqueArgs} args - Arguments to find a CoverLetter
+     * @example
+     * // Get one CoverLetter
+     * const coverLetter = await prisma.coverLetter.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CoverLetterFindUniqueArgs>(args: SelectSubset<T, CoverLetterFindUniqueArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CoverLetter that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CoverLetterFindUniqueOrThrowArgs} args - Arguments to find a CoverLetter
+     * @example
+     * // Get one CoverLetter
+     * const coverLetter = await prisma.coverLetter.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CoverLetterFindUniqueOrThrowArgs>(args: SelectSubset<T, CoverLetterFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CoverLetter that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CoverLetterFindFirstArgs} args - Arguments to find a CoverLetter
+     * @example
+     * // Get one CoverLetter
+     * const coverLetter = await prisma.coverLetter.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CoverLetterFindFirstArgs>(args?: SelectSubset<T, CoverLetterFindFirstArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CoverLetter that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CoverLetterFindFirstOrThrowArgs} args - Arguments to find a CoverLetter
+     * @example
+     * // Get one CoverLetter
+     * const coverLetter = await prisma.coverLetter.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CoverLetterFindFirstOrThrowArgs>(args?: SelectSubset<T, CoverLetterFindFirstOrThrowArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CoverLetters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CoverLetterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CoverLetters
+     * const coverLetters = await prisma.coverLetter.findMany()
+     * 
+     * // Get first 10 CoverLetters
+     * const coverLetters = await prisma.coverLetter.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const coverLetterWithIdOnly = await prisma.coverLetter.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CoverLetterFindManyArgs>(args?: SelectSubset<T, CoverLetterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CoverLetter.
+     * @param {CoverLetterCreateArgs} args - Arguments to create a CoverLetter.
+     * @example
+     * // Create one CoverLetter
+     * const CoverLetter = await prisma.coverLetter.create({
+     *   data: {
+     *     // ... data to create a CoverLetter
+     *   }
+     * })
+     * 
+     */
+    create<T extends CoverLetterCreateArgs>(args: SelectSubset<T, CoverLetterCreateArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CoverLetters.
+     * @param {CoverLetterCreateManyArgs} args - Arguments to create many CoverLetters.
+     * @example
+     * // Create many CoverLetters
+     * const coverLetter = await prisma.coverLetter.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CoverLetterCreateManyArgs>(args?: SelectSubset<T, CoverLetterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CoverLetters and returns the data saved in the database.
+     * @param {CoverLetterCreateManyAndReturnArgs} args - Arguments to create many CoverLetters.
+     * @example
+     * // Create many CoverLetters
+     * const coverLetter = await prisma.coverLetter.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CoverLetters and only return the `id`
+     * const coverLetterWithIdOnly = await prisma.coverLetter.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CoverLetterCreateManyAndReturnArgs>(args?: SelectSubset<T, CoverLetterCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CoverLetter.
+     * @param {CoverLetterDeleteArgs} args - Arguments to delete one CoverLetter.
+     * @example
+     * // Delete one CoverLetter
+     * const CoverLetter = await prisma.coverLetter.delete({
+     *   where: {
+     *     // ... filter to delete one CoverLetter
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CoverLetterDeleteArgs>(args: SelectSubset<T, CoverLetterDeleteArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CoverLetter.
+     * @param {CoverLetterUpdateArgs} args - Arguments to update one CoverLetter.
+     * @example
+     * // Update one CoverLetter
+     * const coverLetter = await prisma.coverLetter.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CoverLetterUpdateArgs>(args: SelectSubset<T, CoverLetterUpdateArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CoverLetters.
+     * @param {CoverLetterDeleteManyArgs} args - Arguments to filter CoverLetters to delete.
+     * @example
+     * // Delete a few CoverLetters
+     * const { count } = await prisma.coverLetter.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CoverLetterDeleteManyArgs>(args?: SelectSubset<T, CoverLetterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CoverLetters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CoverLetterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CoverLetters
+     * const coverLetter = await prisma.coverLetter.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CoverLetterUpdateManyArgs>(args: SelectSubset<T, CoverLetterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CoverLetters and returns the data updated in the database.
+     * @param {CoverLetterUpdateManyAndReturnArgs} args - Arguments to update many CoverLetters.
+     * @example
+     * // Update many CoverLetters
+     * const coverLetter = await prisma.coverLetter.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CoverLetters and only return the `id`
+     * const coverLetterWithIdOnly = await prisma.coverLetter.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CoverLetterUpdateManyAndReturnArgs>(args: SelectSubset<T, CoverLetterUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CoverLetter.
+     * @param {CoverLetterUpsertArgs} args - Arguments to update or create a CoverLetter.
+     * @example
+     * // Update or create a CoverLetter
+     * const coverLetter = await prisma.coverLetter.upsert({
+     *   create: {
+     *     // ... data to create a CoverLetter
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CoverLetter we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CoverLetterUpsertArgs>(args: SelectSubset<T, CoverLetterUpsertArgs<ExtArgs>>): Prisma__CoverLetterClient<$Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CoverLetters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CoverLetterCountArgs} args - Arguments to filter CoverLetters to count.
+     * @example
+     * // Count the number of CoverLetters
+     * const count = await prisma.coverLetter.count({
+     *   where: {
+     *     // ... the filter for the CoverLetters we want to count
+     *   }
+     * })
+    **/
+    count<T extends CoverLetterCountArgs>(
+      args?: Subset<T, CoverLetterCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CoverLetterCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CoverLetter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CoverLetterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CoverLetterAggregateArgs>(args: Subset<T, CoverLetterAggregateArgs>): Prisma.PrismaPromise<GetCoverLetterAggregateType<T>>
+
+    /**
+     * Group by CoverLetter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CoverLetterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CoverLetterGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CoverLetterGroupByArgs['orderBy'] }
+        : { orderBy?: CoverLetterGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CoverLetterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCoverLetterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CoverLetter model
+   */
+  readonly fields: CoverLetterFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CoverLetter.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CoverLetterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends CoverLetter$userArgs<ExtArgs> = {}>(args?: Subset<T, CoverLetter$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    analysis<T extends CoverLetter$analysisArgs<ExtArgs> = {}>(args?: Subset<T, CoverLetter$analysisArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    document<T extends CoverLetter$documentArgs<ExtArgs> = {}>(args?: Subset<T, CoverLetter$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    jobSummary<T extends CoverLetter$jobSummaryArgs<ExtArgs> = {}>(args?: Subset<T, CoverLetter$jobSummaryArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends CoverLetter$conversationArgs<ExtArgs> = {}>(args?: Subset<T, CoverLetter$conversationArgs<ExtArgs>>): Prisma__LLMConversationClient<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CoverLetter model
+   */
+  interface CoverLetterFieldRefs {
+    readonly id: FieldRef<"CoverLetter", 'String'>
+    readonly userId: FieldRef<"CoverLetter", 'String'>
+    readonly content: FieldRef<"CoverLetter", 'String'>
+    readonly tone: FieldRef<"CoverLetter", 'String'>
+    readonly wordCount: FieldRef<"CoverLetter", 'Int'>
+    readonly analysisId: FieldRef<"CoverLetter", 'String'>
+    readonly documentId: FieldRef<"CoverLetter", 'String'>
+    readonly jobSummaryId: FieldRef<"CoverLetter", 'String'>
+    readonly contentHash: FieldRef<"CoverLetter", 'String'>
+    readonly provider: FieldRef<"CoverLetter", 'String'>
+    readonly model: FieldRef<"CoverLetter", 'String'>
+    readonly conversationId: FieldRef<"CoverLetter", 'String'>
+    readonly totalTokensUsed: FieldRef<"CoverLetter", 'Int'>
+    readonly totalCost: FieldRef<"CoverLetter", 'Float'>
+    readonly processingTime: FieldRef<"CoverLetter", 'Int'>
+    readonly usageCount: FieldRef<"CoverLetter", 'Int'>
+    readonly lastUsedAt: FieldRef<"CoverLetter", 'DateTime'>
+    readonly createdAt: FieldRef<"CoverLetter", 'DateTime'>
+    readonly updatedAt: FieldRef<"CoverLetter", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CoverLetter findUnique
+   */
+  export type CoverLetterFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * Filter, which CoverLetter to fetch.
+     */
+    where: CoverLetterWhereUniqueInput
+  }
+
+  /**
+   * CoverLetter findUniqueOrThrow
+   */
+  export type CoverLetterFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * Filter, which CoverLetter to fetch.
+     */
+    where: CoverLetterWhereUniqueInput
+  }
+
+  /**
+   * CoverLetter findFirst
+   */
+  export type CoverLetterFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * Filter, which CoverLetter to fetch.
+     */
+    where?: CoverLetterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CoverLetters to fetch.
+     */
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CoverLetters.
+     */
+    cursor?: CoverLetterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CoverLetters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CoverLetters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CoverLetters.
+     */
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * CoverLetter findFirstOrThrow
+   */
+  export type CoverLetterFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * Filter, which CoverLetter to fetch.
+     */
+    where?: CoverLetterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CoverLetters to fetch.
+     */
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CoverLetters.
+     */
+    cursor?: CoverLetterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CoverLetters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CoverLetters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CoverLetters.
+     */
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * CoverLetter findMany
+   */
+  export type CoverLetterFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * Filter, which CoverLetters to fetch.
+     */
+    where?: CoverLetterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CoverLetters to fetch.
+     */
+    orderBy?: CoverLetterOrderByWithRelationInput | CoverLetterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CoverLetters.
+     */
+    cursor?: CoverLetterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CoverLetters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CoverLetters.
+     */
+    skip?: number
+    distinct?: CoverLetterScalarFieldEnum | CoverLetterScalarFieldEnum[]
+  }
+
+  /**
+   * CoverLetter create
+   */
+  export type CoverLetterCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CoverLetter.
+     */
+    data: XOR<CoverLetterCreateInput, CoverLetterUncheckedCreateInput>
+  }
+
+  /**
+   * CoverLetter createMany
+   */
+  export type CoverLetterCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CoverLetters.
+     */
+    data: CoverLetterCreateManyInput | CoverLetterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CoverLetter createManyAndReturn
+   */
+  export type CoverLetterCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * The data used to create many CoverLetters.
+     */
+    data: CoverLetterCreateManyInput | CoverLetterCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CoverLetter update
+   */
+  export type CoverLetterUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CoverLetter.
+     */
+    data: XOR<CoverLetterUpdateInput, CoverLetterUncheckedUpdateInput>
+    /**
+     * Choose, which CoverLetter to update.
+     */
+    where: CoverLetterWhereUniqueInput
+  }
+
+  /**
+   * CoverLetter updateMany
+   */
+  export type CoverLetterUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CoverLetters.
+     */
+    data: XOR<CoverLetterUpdateManyMutationInput, CoverLetterUncheckedUpdateManyInput>
+    /**
+     * Filter which CoverLetters to update
+     */
+    where?: CoverLetterWhereInput
+    /**
+     * Limit how many CoverLetters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CoverLetter updateManyAndReturn
+   */
+  export type CoverLetterUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * The data used to update CoverLetters.
+     */
+    data: XOR<CoverLetterUpdateManyMutationInput, CoverLetterUncheckedUpdateManyInput>
+    /**
+     * Filter which CoverLetters to update
+     */
+    where?: CoverLetterWhereInput
+    /**
+     * Limit how many CoverLetters to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CoverLetter upsert
+   */
+  export type CoverLetterUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CoverLetter to update in case it exists.
+     */
+    where: CoverLetterWhereUniqueInput
+    /**
+     * In case the CoverLetter found by the `where` argument doesn't exist, create a new CoverLetter with this data.
+     */
+    create: XOR<CoverLetterCreateInput, CoverLetterUncheckedCreateInput>
+    /**
+     * In case the CoverLetter was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CoverLetterUpdateInput, CoverLetterUncheckedUpdateInput>
+  }
+
+  /**
+   * CoverLetter delete
+   */
+  export type CoverLetterDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+    /**
+     * Filter which CoverLetter to delete.
+     */
+    where: CoverLetterWhereUniqueInput
+  }
+
+  /**
+   * CoverLetter deleteMany
+   */
+  export type CoverLetterDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CoverLetters to delete
+     */
+    where?: CoverLetterWhereInput
+    /**
+     * Limit how many CoverLetters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CoverLetter.user
+   */
+  export type CoverLetter$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CoverLetter.analysis
+   */
+  export type CoverLetter$analysisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+  }
+
+  /**
+   * CoverLetter.document
+   */
+  export type CoverLetter$documentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+  }
+
+  /**
+   * CoverLetter.jobSummary
+   */
+  export type CoverLetter$jobSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    where?: JobDescriptionSummaryWhereInput
+  }
+
+  /**
+   * CoverLetter.conversation
+   */
+  export type CoverLetter$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LLMConversation
+     */
+    select?: LLMConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LLMConversation
+     */
+    omit?: LLMConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LLMConversationInclude<ExtArgs> | null
+    where?: LLMConversationWhereInput
+  }
+
+  /**
+   * CoverLetter without action
+   */
+  export type CoverLetterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CoverLetter
+     */
+    select?: CoverLetterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CoverLetter
+     */
+    omit?: CoverLetterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CoverLetterInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OptimizedResume
+   */
+
+  export type AggregateOptimizedResume = {
+    _count: OptimizedResumeCountAggregateOutputType | null
+    _avg: OptimizedResumeAvgAggregateOutputType | null
+    _sum: OptimizedResumeSumAggregateOutputType | null
+    _min: OptimizedResumeMinAggregateOutputType | null
+    _max: OptimizedResumeMaxAggregateOutputType | null
+  }
+
+  export type OptimizedResumeAvgAggregateOutputType = {
+    atsScore: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+  }
+
+  export type OptimizedResumeSumAggregateOutputType = {
+    atsScore: number | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+  }
+
+  export type OptimizedResumeMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    content: string | null
+    extractedData: string | null
+    templateId: string | null
+    atsScore: number | null
+    analysisId: string | null
+    documentId: string | null
+    jobSummaryId: string | null
+    extractedResumeId: string | null
+    contentHash: string | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OptimizedResumeMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    content: string | null
+    extractedData: string | null
+    templateId: string | null
+    atsScore: number | null
+    analysisId: string | null
+    documentId: string | null
+    jobSummaryId: string | null
+    extractedResumeId: string | null
+    contentHash: string | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OptimizedResumeCountAggregateOutputType = {
+    id: number
+    userId: number
+    content: number
+    extractedData: number
+    templateId: number
+    atsScore: number
+    keywordsMatched: number
+    optimizationSuggestions: number
+    analysisId: number
+    documentId: number
+    jobSummaryId: number
+    extractedResumeId: number
+    contentHash: number
+    provider: number
+    model: number
+    conversationId: number
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number
+    usageCount: number
+    lastUsedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type OptimizedResumeAvgAggregateInputType = {
+    atsScore?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+  }
+
+  export type OptimizedResumeSumAggregateInputType = {
+    atsScore?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+  }
+
+  export type OptimizedResumeMinAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    extractedData?: true
+    templateId?: true
+    atsScore?: true
+    analysisId?: true
+    documentId?: true
+    jobSummaryId?: true
+    extractedResumeId?: true
+    contentHash?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OptimizedResumeMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    extractedData?: true
+    templateId?: true
+    atsScore?: true
+    analysisId?: true
+    documentId?: true
+    jobSummaryId?: true
+    extractedResumeId?: true
+    contentHash?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OptimizedResumeCountAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    extractedData?: true
+    templateId?: true
+    atsScore?: true
+    keywordsMatched?: true
+    optimizationSuggestions?: true
+    analysisId?: true
+    documentId?: true
+    jobSummaryId?: true
+    extractedResumeId?: true
+    contentHash?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type OptimizedResumeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OptimizedResume to aggregate.
+     */
+    where?: OptimizedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OptimizedResumes to fetch.
+     */
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OptimizedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OptimizedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OptimizedResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OptimizedResumes
+    **/
+    _count?: true | OptimizedResumeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OptimizedResumeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OptimizedResumeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OptimizedResumeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OptimizedResumeMaxAggregateInputType
+  }
+
+  export type GetOptimizedResumeAggregateType<T extends OptimizedResumeAggregateArgs> = {
+        [P in keyof T & keyof AggregateOptimizedResume]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOptimizedResume[P]>
+      : GetScalarType<T[P], AggregateOptimizedResume[P]>
+  }
+
+
+
+
+  export type OptimizedResumeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OptimizedResumeWhereInput
+    orderBy?: OptimizedResumeOrderByWithAggregationInput | OptimizedResumeOrderByWithAggregationInput[]
+    by: OptimizedResumeScalarFieldEnum[] | OptimizedResumeScalarFieldEnum
+    having?: OptimizedResumeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OptimizedResumeCountAggregateInputType | true
+    _avg?: OptimizedResumeAvgAggregateInputType
+    _sum?: OptimizedResumeSumAggregateInputType
+    _min?: OptimizedResumeMinAggregateInputType
+    _max?: OptimizedResumeMaxAggregateInputType
+  }
+
+  export type OptimizedResumeGroupByOutputType = {
+    id: string
+    userId: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore: number | null
+    keywordsMatched: string[]
+    optimizationSuggestions: string[]
+    analysisId: string | null
+    documentId: string | null
+    jobSummaryId: string | null
+    extractedResumeId: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId: string | null
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number | null
+    usageCount: number
+    lastUsedAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: OptimizedResumeCountAggregateOutputType | null
+    _avg: OptimizedResumeAvgAggregateOutputType | null
+    _sum: OptimizedResumeSumAggregateOutputType | null
+    _min: OptimizedResumeMinAggregateOutputType | null
+    _max: OptimizedResumeMaxAggregateOutputType | null
+  }
+
+  type GetOptimizedResumeGroupByPayload<T extends OptimizedResumeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OptimizedResumeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OptimizedResumeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OptimizedResumeGroupByOutputType[P]>
+            : GetScalarType<T[P], OptimizedResumeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OptimizedResumeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    extractedData?: boolean
+    templateId?: boolean
+    atsScore?: boolean
+    keywordsMatched?: boolean
+    optimizationSuggestions?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    extractedResumeId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | OptimizedResume$userArgs<ExtArgs>
+    analysis?: boolean | OptimizedResume$analysisArgs<ExtArgs>
+    document?: boolean | OptimizedResume$documentArgs<ExtArgs>
+    jobSummary?: boolean | OptimizedResume$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | OptimizedResume$conversationArgs<ExtArgs>
+    extractedResume?: boolean | OptimizedResume$extractedResumeArgs<ExtArgs>
+  }, ExtArgs["result"]["optimizedResume"]>
+
+  export type OptimizedResumeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    extractedData?: boolean
+    templateId?: boolean
+    atsScore?: boolean
+    keywordsMatched?: boolean
+    optimizationSuggestions?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    extractedResumeId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | OptimizedResume$userArgs<ExtArgs>
+    analysis?: boolean | OptimizedResume$analysisArgs<ExtArgs>
+    document?: boolean | OptimizedResume$documentArgs<ExtArgs>
+    jobSummary?: boolean | OptimizedResume$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | OptimizedResume$conversationArgs<ExtArgs>
+    extractedResume?: boolean | OptimizedResume$extractedResumeArgs<ExtArgs>
+  }, ExtArgs["result"]["optimizedResume"]>
+
+  export type OptimizedResumeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    extractedData?: boolean
+    templateId?: boolean
+    atsScore?: boolean
+    keywordsMatched?: boolean
+    optimizationSuggestions?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    extractedResumeId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | OptimizedResume$userArgs<ExtArgs>
+    analysis?: boolean | OptimizedResume$analysisArgs<ExtArgs>
+    document?: boolean | OptimizedResume$documentArgs<ExtArgs>
+    jobSummary?: boolean | OptimizedResume$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | OptimizedResume$conversationArgs<ExtArgs>
+    extractedResume?: boolean | OptimizedResume$extractedResumeArgs<ExtArgs>
+  }, ExtArgs["result"]["optimizedResume"]>
+
+  export type OptimizedResumeSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    extractedData?: boolean
+    templateId?: boolean
+    atsScore?: boolean
+    keywordsMatched?: boolean
+    optimizationSuggestions?: boolean
+    analysisId?: boolean
+    documentId?: boolean
+    jobSummaryId?: boolean
+    extractedResumeId?: boolean
+    contentHash?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type OptimizedResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "content" | "extractedData" | "templateId" | "atsScore" | "keywordsMatched" | "optimizationSuggestions" | "analysisId" | "documentId" | "jobSummaryId" | "extractedResumeId" | "contentHash" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "usageCount" | "lastUsedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["optimizedResume"]>
+  export type OptimizedResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | OptimizedResume$userArgs<ExtArgs>
+    analysis?: boolean | OptimizedResume$analysisArgs<ExtArgs>
+    document?: boolean | OptimizedResume$documentArgs<ExtArgs>
+    jobSummary?: boolean | OptimizedResume$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | OptimizedResume$conversationArgs<ExtArgs>
+    extractedResume?: boolean | OptimizedResume$extractedResumeArgs<ExtArgs>
+  }
+  export type OptimizedResumeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | OptimizedResume$userArgs<ExtArgs>
+    analysis?: boolean | OptimizedResume$analysisArgs<ExtArgs>
+    document?: boolean | OptimizedResume$documentArgs<ExtArgs>
+    jobSummary?: boolean | OptimizedResume$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | OptimizedResume$conversationArgs<ExtArgs>
+    extractedResume?: boolean | OptimizedResume$extractedResumeArgs<ExtArgs>
+  }
+  export type OptimizedResumeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | OptimizedResume$userArgs<ExtArgs>
+    analysis?: boolean | OptimizedResume$analysisArgs<ExtArgs>
+    document?: boolean | OptimizedResume$documentArgs<ExtArgs>
+    jobSummary?: boolean | OptimizedResume$jobSummaryArgs<ExtArgs>
+    conversation?: boolean | OptimizedResume$conversationArgs<ExtArgs>
+    extractedResume?: boolean | OptimizedResume$extractedResumeArgs<ExtArgs>
+  }
+
+  export type $OptimizedResumePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OptimizedResume"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      analysis: Prisma.$AnalysisPayload<ExtArgs> | null
+      document: Prisma.$DocumentPayload<ExtArgs> | null
+      jobSummary: Prisma.$JobDescriptionSummaryPayload<ExtArgs> | null
+      conversation: Prisma.$LLMConversationPayload<ExtArgs> | null
+      extractedResume: Prisma.$ExtractedResumePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      content: string
+      extractedData: string
+      templateId: string
+      atsScore: number | null
+      keywordsMatched: string[]
+      optimizationSuggestions: string[]
+      analysisId: string | null
+      documentId: string | null
+      jobSummaryId: string | null
+      extractedResumeId: string | null
+      contentHash: string
+      provider: string
+      model: string
+      conversationId: string | null
+      totalTokensUsed: number
+      totalCost: number
+      processingTime: number | null
+      usageCount: number
+      lastUsedAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["optimizedResume"]>
+    composites: {}
+  }
+
+  type OptimizedResumeGetPayload<S extends boolean | null | undefined | OptimizedResumeDefaultArgs> = $Result.GetResult<Prisma.$OptimizedResumePayload, S>
+
+  type OptimizedResumeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OptimizedResumeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OptimizedResumeCountAggregateInputType | true
+    }
+
+  export interface OptimizedResumeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OptimizedResume'], meta: { name: 'OptimizedResume' } }
+    /**
+     * Find zero or one OptimizedResume that matches the filter.
+     * @param {OptimizedResumeFindUniqueArgs} args - Arguments to find a OptimizedResume
+     * @example
+     * // Get one OptimizedResume
+     * const optimizedResume = await prisma.optimizedResume.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OptimizedResumeFindUniqueArgs>(args: SelectSubset<T, OptimizedResumeFindUniqueArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OptimizedResume that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OptimizedResumeFindUniqueOrThrowArgs} args - Arguments to find a OptimizedResume
+     * @example
+     * // Get one OptimizedResume
+     * const optimizedResume = await prisma.optimizedResume.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OptimizedResumeFindUniqueOrThrowArgs>(args: SelectSubset<T, OptimizedResumeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OptimizedResume that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OptimizedResumeFindFirstArgs} args - Arguments to find a OptimizedResume
+     * @example
+     * // Get one OptimizedResume
+     * const optimizedResume = await prisma.optimizedResume.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OptimizedResumeFindFirstArgs>(args?: SelectSubset<T, OptimizedResumeFindFirstArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OptimizedResume that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OptimizedResumeFindFirstOrThrowArgs} args - Arguments to find a OptimizedResume
+     * @example
+     * // Get one OptimizedResume
+     * const optimizedResume = await prisma.optimizedResume.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OptimizedResumeFindFirstOrThrowArgs>(args?: SelectSubset<T, OptimizedResumeFindFirstOrThrowArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OptimizedResumes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OptimizedResumeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OptimizedResumes
+     * const optimizedResumes = await prisma.optimizedResume.findMany()
+     * 
+     * // Get first 10 OptimizedResumes
+     * const optimizedResumes = await prisma.optimizedResume.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const optimizedResumeWithIdOnly = await prisma.optimizedResume.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OptimizedResumeFindManyArgs>(args?: SelectSubset<T, OptimizedResumeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OptimizedResume.
+     * @param {OptimizedResumeCreateArgs} args - Arguments to create a OptimizedResume.
+     * @example
+     * // Create one OptimizedResume
+     * const OptimizedResume = await prisma.optimizedResume.create({
+     *   data: {
+     *     // ... data to create a OptimizedResume
+     *   }
+     * })
+     * 
+     */
+    create<T extends OptimizedResumeCreateArgs>(args: SelectSubset<T, OptimizedResumeCreateArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OptimizedResumes.
+     * @param {OptimizedResumeCreateManyArgs} args - Arguments to create many OptimizedResumes.
+     * @example
+     * // Create many OptimizedResumes
+     * const optimizedResume = await prisma.optimizedResume.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OptimizedResumeCreateManyArgs>(args?: SelectSubset<T, OptimizedResumeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OptimizedResumes and returns the data saved in the database.
+     * @param {OptimizedResumeCreateManyAndReturnArgs} args - Arguments to create many OptimizedResumes.
+     * @example
+     * // Create many OptimizedResumes
+     * const optimizedResume = await prisma.optimizedResume.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OptimizedResumes and only return the `id`
+     * const optimizedResumeWithIdOnly = await prisma.optimizedResume.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OptimizedResumeCreateManyAndReturnArgs>(args?: SelectSubset<T, OptimizedResumeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OptimizedResume.
+     * @param {OptimizedResumeDeleteArgs} args - Arguments to delete one OptimizedResume.
+     * @example
+     * // Delete one OptimizedResume
+     * const OptimizedResume = await prisma.optimizedResume.delete({
+     *   where: {
+     *     // ... filter to delete one OptimizedResume
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OptimizedResumeDeleteArgs>(args: SelectSubset<T, OptimizedResumeDeleteArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OptimizedResume.
+     * @param {OptimizedResumeUpdateArgs} args - Arguments to update one OptimizedResume.
+     * @example
+     * // Update one OptimizedResume
+     * const optimizedResume = await prisma.optimizedResume.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OptimizedResumeUpdateArgs>(args: SelectSubset<T, OptimizedResumeUpdateArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OptimizedResumes.
+     * @param {OptimizedResumeDeleteManyArgs} args - Arguments to filter OptimizedResumes to delete.
+     * @example
+     * // Delete a few OptimizedResumes
+     * const { count } = await prisma.optimizedResume.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OptimizedResumeDeleteManyArgs>(args?: SelectSubset<T, OptimizedResumeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OptimizedResumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OptimizedResumeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OptimizedResumes
+     * const optimizedResume = await prisma.optimizedResume.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OptimizedResumeUpdateManyArgs>(args: SelectSubset<T, OptimizedResumeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OptimizedResumes and returns the data updated in the database.
+     * @param {OptimizedResumeUpdateManyAndReturnArgs} args - Arguments to update many OptimizedResumes.
+     * @example
+     * // Update many OptimizedResumes
+     * const optimizedResume = await prisma.optimizedResume.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OptimizedResumes and only return the `id`
+     * const optimizedResumeWithIdOnly = await prisma.optimizedResume.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OptimizedResumeUpdateManyAndReturnArgs>(args: SelectSubset<T, OptimizedResumeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OptimizedResume.
+     * @param {OptimizedResumeUpsertArgs} args - Arguments to update or create a OptimizedResume.
+     * @example
+     * // Update or create a OptimizedResume
+     * const optimizedResume = await prisma.optimizedResume.upsert({
+     *   create: {
+     *     // ... data to create a OptimizedResume
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OptimizedResume we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OptimizedResumeUpsertArgs>(args: SelectSubset<T, OptimizedResumeUpsertArgs<ExtArgs>>): Prisma__OptimizedResumeClient<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OptimizedResumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OptimizedResumeCountArgs} args - Arguments to filter OptimizedResumes to count.
+     * @example
+     * // Count the number of OptimizedResumes
+     * const count = await prisma.optimizedResume.count({
+     *   where: {
+     *     // ... the filter for the OptimizedResumes we want to count
+     *   }
+     * })
+    **/
+    count<T extends OptimizedResumeCountArgs>(
+      args?: Subset<T, OptimizedResumeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OptimizedResumeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OptimizedResume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OptimizedResumeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OptimizedResumeAggregateArgs>(args: Subset<T, OptimizedResumeAggregateArgs>): Prisma.PrismaPromise<GetOptimizedResumeAggregateType<T>>
+
+    /**
+     * Group by OptimizedResume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OptimizedResumeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OptimizedResumeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OptimizedResumeGroupByArgs['orderBy'] }
+        : { orderBy?: OptimizedResumeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OptimizedResumeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOptimizedResumeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OptimizedResume model
+   */
+  readonly fields: OptimizedResumeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OptimizedResume.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OptimizedResumeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends OptimizedResume$userArgs<ExtArgs> = {}>(args?: Subset<T, OptimizedResume$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    analysis<T extends OptimizedResume$analysisArgs<ExtArgs> = {}>(args?: Subset<T, OptimizedResume$analysisArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    document<T extends OptimizedResume$documentArgs<ExtArgs> = {}>(args?: Subset<T, OptimizedResume$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    jobSummary<T extends OptimizedResume$jobSummaryArgs<ExtArgs> = {}>(args?: Subset<T, OptimizedResume$jobSummaryArgs<ExtArgs>>): Prisma__JobDescriptionSummaryClient<$Result.GetResult<Prisma.$JobDescriptionSummaryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends OptimizedResume$conversationArgs<ExtArgs> = {}>(args?: Subset<T, OptimizedResume$conversationArgs<ExtArgs>>): Prisma__LLMConversationClient<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    extractedResume<T extends OptimizedResume$extractedResumeArgs<ExtArgs> = {}>(args?: Subset<T, OptimizedResume$extractedResumeArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OptimizedResume model
+   */
+  interface OptimizedResumeFieldRefs {
+    readonly id: FieldRef<"OptimizedResume", 'String'>
+    readonly userId: FieldRef<"OptimizedResume", 'String'>
+    readonly content: FieldRef<"OptimizedResume", 'String'>
+    readonly extractedData: FieldRef<"OptimizedResume", 'String'>
+    readonly templateId: FieldRef<"OptimizedResume", 'String'>
+    readonly atsScore: FieldRef<"OptimizedResume", 'Int'>
+    readonly keywordsMatched: FieldRef<"OptimizedResume", 'String[]'>
+    readonly optimizationSuggestions: FieldRef<"OptimizedResume", 'String[]'>
+    readonly analysisId: FieldRef<"OptimizedResume", 'String'>
+    readonly documentId: FieldRef<"OptimizedResume", 'String'>
+    readonly jobSummaryId: FieldRef<"OptimizedResume", 'String'>
+    readonly extractedResumeId: FieldRef<"OptimizedResume", 'String'>
+    readonly contentHash: FieldRef<"OptimizedResume", 'String'>
+    readonly provider: FieldRef<"OptimizedResume", 'String'>
+    readonly model: FieldRef<"OptimizedResume", 'String'>
+    readonly conversationId: FieldRef<"OptimizedResume", 'String'>
+    readonly totalTokensUsed: FieldRef<"OptimizedResume", 'Int'>
+    readonly totalCost: FieldRef<"OptimizedResume", 'Float'>
+    readonly processingTime: FieldRef<"OptimizedResume", 'Int'>
+    readonly usageCount: FieldRef<"OptimizedResume", 'Int'>
+    readonly lastUsedAt: FieldRef<"OptimizedResume", 'DateTime'>
+    readonly createdAt: FieldRef<"OptimizedResume", 'DateTime'>
+    readonly updatedAt: FieldRef<"OptimizedResume", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OptimizedResume findUnique
+   */
+  export type OptimizedResumeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which OptimizedResume to fetch.
+     */
+    where: OptimizedResumeWhereUniqueInput
+  }
+
+  /**
+   * OptimizedResume findUniqueOrThrow
+   */
+  export type OptimizedResumeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which OptimizedResume to fetch.
+     */
+    where: OptimizedResumeWhereUniqueInput
+  }
+
+  /**
+   * OptimizedResume findFirst
+   */
+  export type OptimizedResumeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which OptimizedResume to fetch.
+     */
+    where?: OptimizedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OptimizedResumes to fetch.
+     */
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OptimizedResumes.
+     */
+    cursor?: OptimizedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OptimizedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OptimizedResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OptimizedResumes.
+     */
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * OptimizedResume findFirstOrThrow
+   */
+  export type OptimizedResumeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which OptimizedResume to fetch.
+     */
+    where?: OptimizedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OptimizedResumes to fetch.
+     */
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OptimizedResumes.
+     */
+    cursor?: OptimizedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OptimizedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OptimizedResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OptimizedResumes.
+     */
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * OptimizedResume findMany
+   */
+  export type OptimizedResumeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which OptimizedResumes to fetch.
+     */
+    where?: OptimizedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OptimizedResumes to fetch.
+     */
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OptimizedResumes.
+     */
+    cursor?: OptimizedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OptimizedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OptimizedResumes.
+     */
+    skip?: number
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * OptimizedResume create
+   */
+  export type OptimizedResumeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OptimizedResume.
+     */
+    data: XOR<OptimizedResumeCreateInput, OptimizedResumeUncheckedCreateInput>
+  }
+
+  /**
+   * OptimizedResume createMany
+   */
+  export type OptimizedResumeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OptimizedResumes.
+     */
+    data: OptimizedResumeCreateManyInput | OptimizedResumeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OptimizedResume createManyAndReturn
+   */
+  export type OptimizedResumeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * The data used to create many OptimizedResumes.
+     */
+    data: OptimizedResumeCreateManyInput | OptimizedResumeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OptimizedResume update
+   */
+  export type OptimizedResumeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OptimizedResume.
+     */
+    data: XOR<OptimizedResumeUpdateInput, OptimizedResumeUncheckedUpdateInput>
+    /**
+     * Choose, which OptimizedResume to update.
+     */
+    where: OptimizedResumeWhereUniqueInput
+  }
+
+  /**
+   * OptimizedResume updateMany
+   */
+  export type OptimizedResumeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OptimizedResumes.
+     */
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyInput>
+    /**
+     * Filter which OptimizedResumes to update
+     */
+    where?: OptimizedResumeWhereInput
+    /**
+     * Limit how many OptimizedResumes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OptimizedResume updateManyAndReturn
+   */
+  export type OptimizedResumeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * The data used to update OptimizedResumes.
+     */
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyInput>
+    /**
+     * Filter which OptimizedResumes to update
+     */
+    where?: OptimizedResumeWhereInput
+    /**
+     * Limit how many OptimizedResumes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OptimizedResume upsert
+   */
+  export type OptimizedResumeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OptimizedResume to update in case it exists.
+     */
+    where: OptimizedResumeWhereUniqueInput
+    /**
+     * In case the OptimizedResume found by the `where` argument doesn't exist, create a new OptimizedResume with this data.
+     */
+    create: XOR<OptimizedResumeCreateInput, OptimizedResumeUncheckedCreateInput>
+    /**
+     * In case the OptimizedResume was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OptimizedResumeUpdateInput, OptimizedResumeUncheckedUpdateInput>
+  }
+
+  /**
+   * OptimizedResume delete
+   */
+  export type OptimizedResumeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    /**
+     * Filter which OptimizedResume to delete.
+     */
+    where: OptimizedResumeWhereUniqueInput
+  }
+
+  /**
+   * OptimizedResume deleteMany
+   */
+  export type OptimizedResumeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OptimizedResumes to delete
+     */
+    where?: OptimizedResumeWhereInput
+    /**
+     * Limit how many OptimizedResumes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OptimizedResume.user
+   */
+  export type OptimizedResume$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * OptimizedResume.analysis
+   */
+  export type OptimizedResume$analysisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+  }
+
+  /**
+   * OptimizedResume.document
+   */
+  export type OptimizedResume$documentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+  }
+
+  /**
+   * OptimizedResume.jobSummary
+   */
+  export type OptimizedResume$jobSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDescriptionSummary
+     */
+    select?: JobDescriptionSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDescriptionSummary
+     */
+    omit?: JobDescriptionSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDescriptionSummaryInclude<ExtArgs> | null
+    where?: JobDescriptionSummaryWhereInput
+  }
+
+  /**
+   * OptimizedResume.conversation
+   */
+  export type OptimizedResume$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LLMConversation
+     */
+    select?: LLMConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LLMConversation
+     */
+    omit?: LLMConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LLMConversationInclude<ExtArgs> | null
+    where?: LLMConversationWhereInput
+  }
+
+  /**
+   * OptimizedResume.extractedResume
+   */
+  export type OptimizedResume$extractedResumeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    where?: ExtractedResumeWhereInput
+  }
+
+  /**
+   * OptimizedResume without action
+   */
+  export type OptimizedResumeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ExtractedResume
+   */
+
+  export type AggregateExtractedResume = {
+    _count: ExtractedResumeCountAggregateOutputType | null
+    _avg: ExtractedResumeAvgAggregateOutputType | null
+    _sum: ExtractedResumeSumAggregateOutputType | null
+    _min: ExtractedResumeMinAggregateOutputType | null
+    _max: ExtractedResumeMaxAggregateOutputType | null
+  }
+
+  export type ExtractedResumeAvgAggregateOutputType = {
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+  }
+
+  export type ExtractedResumeSumAggregateOutputType = {
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+  }
+
+  export type ExtractedResumeMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    documentId: string | null
+    analysisId: string | null
+    contentHash: string | null
+    resumeText: string | null
+    extractedData: string | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExtractedResumeMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    documentId: string | null
+    analysisId: string | null
+    contentHash: string | null
+    resumeText: string | null
+    extractedData: string | null
+    provider: string | null
+    model: string | null
+    conversationId: string | null
+    totalTokensUsed: number | null
+    totalCost: number | null
+    processingTime: number | null
+    usageCount: number | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExtractedResumeCountAggregateOutputType = {
+    id: number
+    userId: number
+    documentId: number
+    analysisId: number
+    contentHash: number
+    resumeText: number
+    extractedData: number
+    provider: number
+    model: number
+    conversationId: number
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number
+    usageCount: number
+    lastUsedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ExtractedResumeAvgAggregateInputType = {
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+  }
+
+  export type ExtractedResumeSumAggregateInputType = {
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+  }
+
+  export type ExtractedResumeMinAggregateInputType = {
+    id?: true
+    userId?: true
+    documentId?: true
+    analysisId?: true
+    contentHash?: true
+    resumeText?: true
+    extractedData?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExtractedResumeMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    documentId?: true
+    analysisId?: true
+    contentHash?: true
+    resumeText?: true
+    extractedData?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExtractedResumeCountAggregateInputType = {
+    id?: true
+    userId?: true
+    documentId?: true
+    analysisId?: true
+    contentHash?: true
+    resumeText?: true
+    extractedData?: true
+    provider?: true
+    model?: true
+    conversationId?: true
+    totalTokensUsed?: true
+    totalCost?: true
+    processingTime?: true
+    usageCount?: true
+    lastUsedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ExtractedResumeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExtractedResume to aggregate.
+     */
+    where?: ExtractedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExtractedResumes to fetch.
+     */
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExtractedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExtractedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExtractedResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ExtractedResumes
+    **/
+    _count?: true | ExtractedResumeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ExtractedResumeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ExtractedResumeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExtractedResumeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExtractedResumeMaxAggregateInputType
+  }
+
+  export type GetExtractedResumeAggregateType<T extends ExtractedResumeAggregateArgs> = {
+        [P in keyof T & keyof AggregateExtractedResume]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExtractedResume[P]>
+      : GetScalarType<T[P], AggregateExtractedResume[P]>
+  }
+
+
+
+
+  export type ExtractedResumeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExtractedResumeWhereInput
+    orderBy?: ExtractedResumeOrderByWithAggregationInput | ExtractedResumeOrderByWithAggregationInput[]
+    by: ExtractedResumeScalarFieldEnum[] | ExtractedResumeScalarFieldEnum
+    having?: ExtractedResumeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExtractedResumeCountAggregateInputType | true
+    _avg?: ExtractedResumeAvgAggregateInputType
+    _sum?: ExtractedResumeSumAggregateInputType
+    _min?: ExtractedResumeMinAggregateInputType
+    _max?: ExtractedResumeMaxAggregateInputType
+  }
+
+  export type ExtractedResumeGroupByOutputType = {
+    id: string
+    userId: string | null
+    documentId: string | null
+    analysisId: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId: string | null
+    totalTokensUsed: number
+    totalCost: number
+    processingTime: number | null
+    usageCount: number
+    lastUsedAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: ExtractedResumeCountAggregateOutputType | null
+    _avg: ExtractedResumeAvgAggregateOutputType | null
+    _sum: ExtractedResumeSumAggregateOutputType | null
+    _min: ExtractedResumeMinAggregateOutputType | null
+    _max: ExtractedResumeMaxAggregateOutputType | null
+  }
+
+  type GetExtractedResumeGroupByPayload<T extends ExtractedResumeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExtractedResumeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExtractedResumeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExtractedResumeGroupByOutputType[P]>
+            : GetScalarType<T[P], ExtractedResumeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExtractedResumeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    documentId?: boolean
+    analysisId?: boolean
+    contentHash?: boolean
+    resumeText?: boolean
+    extractedData?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | ExtractedResume$userArgs<ExtArgs>
+    document?: boolean | ExtractedResume$documentArgs<ExtArgs>
+    analysis?: boolean | ExtractedResume$analysisArgs<ExtArgs>
+    conversation?: boolean | ExtractedResume$conversationArgs<ExtArgs>
+    optimizedResumes?: boolean | ExtractedResume$optimizedResumesArgs<ExtArgs>
+    _count?: boolean | ExtractedResumeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["extractedResume"]>
+
+  export type ExtractedResumeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    documentId?: boolean
+    analysisId?: boolean
+    contentHash?: boolean
+    resumeText?: boolean
+    extractedData?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | ExtractedResume$userArgs<ExtArgs>
+    document?: boolean | ExtractedResume$documentArgs<ExtArgs>
+    analysis?: boolean | ExtractedResume$analysisArgs<ExtArgs>
+    conversation?: boolean | ExtractedResume$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["extractedResume"]>
+
+  export type ExtractedResumeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    documentId?: boolean
+    analysisId?: boolean
+    contentHash?: boolean
+    resumeText?: boolean
+    extractedData?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | ExtractedResume$userArgs<ExtArgs>
+    document?: boolean | ExtractedResume$documentArgs<ExtArgs>
+    analysis?: boolean | ExtractedResume$analysisArgs<ExtArgs>
+    conversation?: boolean | ExtractedResume$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["extractedResume"]>
+
+  export type ExtractedResumeSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    documentId?: boolean
+    analysisId?: boolean
+    contentHash?: boolean
+    resumeText?: boolean
+    extractedData?: boolean
+    provider?: boolean
+    model?: boolean
+    conversationId?: boolean
+    totalTokensUsed?: boolean
+    totalCost?: boolean
+    processingTime?: boolean
+    usageCount?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ExtractedResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "documentId" | "analysisId" | "contentHash" | "resumeText" | "extractedData" | "provider" | "model" | "conversationId" | "totalTokensUsed" | "totalCost" | "processingTime" | "usageCount" | "lastUsedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["extractedResume"]>
+  export type ExtractedResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | ExtractedResume$userArgs<ExtArgs>
+    document?: boolean | ExtractedResume$documentArgs<ExtArgs>
+    analysis?: boolean | ExtractedResume$analysisArgs<ExtArgs>
+    conversation?: boolean | ExtractedResume$conversationArgs<ExtArgs>
+    optimizedResumes?: boolean | ExtractedResume$optimizedResumesArgs<ExtArgs>
+    _count?: boolean | ExtractedResumeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ExtractedResumeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | ExtractedResume$userArgs<ExtArgs>
+    document?: boolean | ExtractedResume$documentArgs<ExtArgs>
+    analysis?: boolean | ExtractedResume$analysisArgs<ExtArgs>
+    conversation?: boolean | ExtractedResume$conversationArgs<ExtArgs>
+  }
+  export type ExtractedResumeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | ExtractedResume$userArgs<ExtArgs>
+    document?: boolean | ExtractedResume$documentArgs<ExtArgs>
+    analysis?: boolean | ExtractedResume$analysisArgs<ExtArgs>
+    conversation?: boolean | ExtractedResume$conversationArgs<ExtArgs>
+  }
+
+  export type $ExtractedResumePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ExtractedResume"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      document: Prisma.$DocumentPayload<ExtArgs> | null
+      analysis: Prisma.$AnalysisPayload<ExtArgs> | null
+      conversation: Prisma.$LLMConversationPayload<ExtArgs> | null
+      optimizedResumes: Prisma.$OptimizedResumePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      documentId: string | null
+      analysisId: string | null
+      contentHash: string
+      resumeText: string
+      extractedData: string
+      provider: string
+      model: string
+      conversationId: string | null
+      totalTokensUsed: number
+      totalCost: number
+      processingTime: number | null
+      usageCount: number
+      lastUsedAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["extractedResume"]>
+    composites: {}
+  }
+
+  type ExtractedResumeGetPayload<S extends boolean | null | undefined | ExtractedResumeDefaultArgs> = $Result.GetResult<Prisma.$ExtractedResumePayload, S>
+
+  type ExtractedResumeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ExtractedResumeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ExtractedResumeCountAggregateInputType | true
+    }
+
+  export interface ExtractedResumeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ExtractedResume'], meta: { name: 'ExtractedResume' } }
+    /**
+     * Find zero or one ExtractedResume that matches the filter.
+     * @param {ExtractedResumeFindUniqueArgs} args - Arguments to find a ExtractedResume
+     * @example
+     * // Get one ExtractedResume
+     * const extractedResume = await prisma.extractedResume.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExtractedResumeFindUniqueArgs>(args: SelectSubset<T, ExtractedResumeFindUniqueArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ExtractedResume that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ExtractedResumeFindUniqueOrThrowArgs} args - Arguments to find a ExtractedResume
+     * @example
+     * // Get one ExtractedResume
+     * const extractedResume = await prisma.extractedResume.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExtractedResumeFindUniqueOrThrowArgs>(args: SelectSubset<T, ExtractedResumeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExtractedResume that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExtractedResumeFindFirstArgs} args - Arguments to find a ExtractedResume
+     * @example
+     * // Get one ExtractedResume
+     * const extractedResume = await prisma.extractedResume.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExtractedResumeFindFirstArgs>(args?: SelectSubset<T, ExtractedResumeFindFirstArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExtractedResume that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExtractedResumeFindFirstOrThrowArgs} args - Arguments to find a ExtractedResume
+     * @example
+     * // Get one ExtractedResume
+     * const extractedResume = await prisma.extractedResume.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExtractedResumeFindFirstOrThrowArgs>(args?: SelectSubset<T, ExtractedResumeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ExtractedResumes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExtractedResumeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ExtractedResumes
+     * const extractedResumes = await prisma.extractedResume.findMany()
+     * 
+     * // Get first 10 ExtractedResumes
+     * const extractedResumes = await prisma.extractedResume.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const extractedResumeWithIdOnly = await prisma.extractedResume.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExtractedResumeFindManyArgs>(args?: SelectSubset<T, ExtractedResumeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ExtractedResume.
+     * @param {ExtractedResumeCreateArgs} args - Arguments to create a ExtractedResume.
+     * @example
+     * // Create one ExtractedResume
+     * const ExtractedResume = await prisma.extractedResume.create({
+     *   data: {
+     *     // ... data to create a ExtractedResume
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExtractedResumeCreateArgs>(args: SelectSubset<T, ExtractedResumeCreateArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ExtractedResumes.
+     * @param {ExtractedResumeCreateManyArgs} args - Arguments to create many ExtractedResumes.
+     * @example
+     * // Create many ExtractedResumes
+     * const extractedResume = await prisma.extractedResume.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExtractedResumeCreateManyArgs>(args?: SelectSubset<T, ExtractedResumeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ExtractedResumes and returns the data saved in the database.
+     * @param {ExtractedResumeCreateManyAndReturnArgs} args - Arguments to create many ExtractedResumes.
+     * @example
+     * // Create many ExtractedResumes
+     * const extractedResume = await prisma.extractedResume.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ExtractedResumes and only return the `id`
+     * const extractedResumeWithIdOnly = await prisma.extractedResume.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExtractedResumeCreateManyAndReturnArgs>(args?: SelectSubset<T, ExtractedResumeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ExtractedResume.
+     * @param {ExtractedResumeDeleteArgs} args - Arguments to delete one ExtractedResume.
+     * @example
+     * // Delete one ExtractedResume
+     * const ExtractedResume = await prisma.extractedResume.delete({
+     *   where: {
+     *     // ... filter to delete one ExtractedResume
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExtractedResumeDeleteArgs>(args: SelectSubset<T, ExtractedResumeDeleteArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ExtractedResume.
+     * @param {ExtractedResumeUpdateArgs} args - Arguments to update one ExtractedResume.
+     * @example
+     * // Update one ExtractedResume
+     * const extractedResume = await prisma.extractedResume.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExtractedResumeUpdateArgs>(args: SelectSubset<T, ExtractedResumeUpdateArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ExtractedResumes.
+     * @param {ExtractedResumeDeleteManyArgs} args - Arguments to filter ExtractedResumes to delete.
+     * @example
+     * // Delete a few ExtractedResumes
+     * const { count } = await prisma.extractedResume.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExtractedResumeDeleteManyArgs>(args?: SelectSubset<T, ExtractedResumeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExtractedResumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExtractedResumeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ExtractedResumes
+     * const extractedResume = await prisma.extractedResume.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExtractedResumeUpdateManyArgs>(args: SelectSubset<T, ExtractedResumeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExtractedResumes and returns the data updated in the database.
+     * @param {ExtractedResumeUpdateManyAndReturnArgs} args - Arguments to update many ExtractedResumes.
+     * @example
+     * // Update many ExtractedResumes
+     * const extractedResume = await prisma.extractedResume.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ExtractedResumes and only return the `id`
+     * const extractedResumeWithIdOnly = await prisma.extractedResume.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ExtractedResumeUpdateManyAndReturnArgs>(args: SelectSubset<T, ExtractedResumeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ExtractedResume.
+     * @param {ExtractedResumeUpsertArgs} args - Arguments to update or create a ExtractedResume.
+     * @example
+     * // Update or create a ExtractedResume
+     * const extractedResume = await prisma.extractedResume.upsert({
+     *   create: {
+     *     // ... data to create a ExtractedResume
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ExtractedResume we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExtractedResumeUpsertArgs>(args: SelectSubset<T, ExtractedResumeUpsertArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ExtractedResumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExtractedResumeCountArgs} args - Arguments to filter ExtractedResumes to count.
+     * @example
+     * // Count the number of ExtractedResumes
+     * const count = await prisma.extractedResume.count({
+     *   where: {
+     *     // ... the filter for the ExtractedResumes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExtractedResumeCountArgs>(
+      args?: Subset<T, ExtractedResumeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExtractedResumeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ExtractedResume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExtractedResumeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExtractedResumeAggregateArgs>(args: Subset<T, ExtractedResumeAggregateArgs>): Prisma.PrismaPromise<GetExtractedResumeAggregateType<T>>
+
+    /**
+     * Group by ExtractedResume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExtractedResumeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExtractedResumeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExtractedResumeGroupByArgs['orderBy'] }
+        : { orderBy?: ExtractedResumeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExtractedResumeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExtractedResumeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ExtractedResume model
+   */
+  readonly fields: ExtractedResumeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ExtractedResume.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExtractedResumeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends ExtractedResume$userArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    document<T extends ExtractedResume$documentArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    analysis<T extends ExtractedResume$analysisArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$analysisArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends ExtractedResume$conversationArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$conversationArgs<ExtArgs>>): Prisma__LLMConversationClient<$Result.GetResult<Prisma.$LLMConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    optimizedResumes<T extends ExtractedResume$optimizedResumesArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$optimizedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OptimizedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ExtractedResume model
+   */
+  interface ExtractedResumeFieldRefs {
+    readonly id: FieldRef<"ExtractedResume", 'String'>
+    readonly userId: FieldRef<"ExtractedResume", 'String'>
+    readonly documentId: FieldRef<"ExtractedResume", 'String'>
+    readonly analysisId: FieldRef<"ExtractedResume", 'String'>
+    readonly contentHash: FieldRef<"ExtractedResume", 'String'>
+    readonly resumeText: FieldRef<"ExtractedResume", 'String'>
+    readonly extractedData: FieldRef<"ExtractedResume", 'String'>
+    readonly provider: FieldRef<"ExtractedResume", 'String'>
+    readonly model: FieldRef<"ExtractedResume", 'String'>
+    readonly conversationId: FieldRef<"ExtractedResume", 'String'>
+    readonly totalTokensUsed: FieldRef<"ExtractedResume", 'Int'>
+    readonly totalCost: FieldRef<"ExtractedResume", 'Float'>
+    readonly processingTime: FieldRef<"ExtractedResume", 'Int'>
+    readonly usageCount: FieldRef<"ExtractedResume", 'Int'>
+    readonly lastUsedAt: FieldRef<"ExtractedResume", 'DateTime'>
+    readonly createdAt: FieldRef<"ExtractedResume", 'DateTime'>
+    readonly updatedAt: FieldRef<"ExtractedResume", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ExtractedResume findUnique
+   */
+  export type ExtractedResumeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which ExtractedResume to fetch.
+     */
+    where: ExtractedResumeWhereUniqueInput
+  }
+
+  /**
+   * ExtractedResume findUniqueOrThrow
+   */
+  export type ExtractedResumeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which ExtractedResume to fetch.
+     */
+    where: ExtractedResumeWhereUniqueInput
+  }
+
+  /**
+   * ExtractedResume findFirst
+   */
+  export type ExtractedResumeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which ExtractedResume to fetch.
+     */
+    where?: ExtractedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExtractedResumes to fetch.
+     */
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExtractedResumes.
+     */
+    cursor?: ExtractedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExtractedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExtractedResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExtractedResumes.
+     */
+    distinct?: ExtractedResumeScalarFieldEnum | ExtractedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * ExtractedResume findFirstOrThrow
+   */
+  export type ExtractedResumeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which ExtractedResume to fetch.
+     */
+    where?: ExtractedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExtractedResumes to fetch.
+     */
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExtractedResumes.
+     */
+    cursor?: ExtractedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExtractedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExtractedResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExtractedResumes.
+     */
+    distinct?: ExtractedResumeScalarFieldEnum | ExtractedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * ExtractedResume findMany
+   */
+  export type ExtractedResumeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which ExtractedResumes to fetch.
+     */
+    where?: ExtractedResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExtractedResumes to fetch.
+     */
+    orderBy?: ExtractedResumeOrderByWithRelationInput | ExtractedResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ExtractedResumes.
+     */
+    cursor?: ExtractedResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExtractedResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExtractedResumes.
+     */
+    skip?: number
+    distinct?: ExtractedResumeScalarFieldEnum | ExtractedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * ExtractedResume create
+   */
+  export type ExtractedResumeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ExtractedResume.
+     */
+    data: XOR<ExtractedResumeCreateInput, ExtractedResumeUncheckedCreateInput>
+  }
+
+  /**
+   * ExtractedResume createMany
+   */
+  export type ExtractedResumeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ExtractedResumes.
+     */
+    data: ExtractedResumeCreateManyInput | ExtractedResumeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ExtractedResume createManyAndReturn
+   */
+  export type ExtractedResumeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * The data used to create many ExtractedResumes.
+     */
+    data: ExtractedResumeCreateManyInput | ExtractedResumeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExtractedResume update
+   */
+  export type ExtractedResumeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ExtractedResume.
+     */
+    data: XOR<ExtractedResumeUpdateInput, ExtractedResumeUncheckedUpdateInput>
+    /**
+     * Choose, which ExtractedResume to update.
+     */
+    where: ExtractedResumeWhereUniqueInput
+  }
+
+  /**
+   * ExtractedResume updateMany
+   */
+  export type ExtractedResumeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ExtractedResumes.
+     */
+    data: XOR<ExtractedResumeUpdateManyMutationInput, ExtractedResumeUncheckedUpdateManyInput>
+    /**
+     * Filter which ExtractedResumes to update
+     */
+    where?: ExtractedResumeWhereInput
+    /**
+     * Limit how many ExtractedResumes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExtractedResume updateManyAndReturn
+   */
+  export type ExtractedResumeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * The data used to update ExtractedResumes.
+     */
+    data: XOR<ExtractedResumeUpdateManyMutationInput, ExtractedResumeUncheckedUpdateManyInput>
+    /**
+     * Filter which ExtractedResumes to update
+     */
+    where?: ExtractedResumeWhereInput
+    /**
+     * Limit how many ExtractedResumes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExtractedResume upsert
+   */
+  export type ExtractedResumeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ExtractedResume to update in case it exists.
+     */
+    where: ExtractedResumeWhereUniqueInput
+    /**
+     * In case the ExtractedResume found by the `where` argument doesn't exist, create a new ExtractedResume with this data.
+     */
+    create: XOR<ExtractedResumeCreateInput, ExtractedResumeUncheckedCreateInput>
+    /**
+     * In case the ExtractedResume was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExtractedResumeUpdateInput, ExtractedResumeUncheckedUpdateInput>
+  }
+
+  /**
+   * ExtractedResume delete
+   */
+  export type ExtractedResumeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    /**
+     * Filter which ExtractedResume to delete.
+     */
+    where: ExtractedResumeWhereUniqueInput
+  }
+
+  /**
+   * ExtractedResume deleteMany
+   */
+  export type ExtractedResumeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExtractedResumes to delete
+     */
+    where?: ExtractedResumeWhereInput
+    /**
+     * Limit how many ExtractedResumes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExtractedResume.user
+   */
+  export type ExtractedResume$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ExtractedResume.document
+   */
+  export type ExtractedResume$documentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+  }
+
+  /**
+   * ExtractedResume.analysis
+   */
+  export type ExtractedResume$analysisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+  }
+
+  /**
+   * ExtractedResume.conversation
+   */
+  export type ExtractedResume$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LLMConversation
+     */
+    select?: LLMConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LLMConversation
+     */
+    omit?: LLMConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LLMConversationInclude<ExtArgs> | null
+    where?: LLMConversationWhereInput
+  }
+
+  /**
+   * ExtractedResume.optimizedResumes
+   */
+  export type ExtractedResume$optimizedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OptimizedResume
+     */
+    select?: OptimizedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OptimizedResume
+     */
+    omit?: OptimizedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OptimizedResumeInclude<ExtArgs> | null
+    where?: OptimizedResumeWhereInput
+    orderBy?: OptimizedResumeOrderByWithRelationInput | OptimizedResumeOrderByWithRelationInput[]
+    cursor?: OptimizedResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OptimizedResumeScalarFieldEnum | OptimizedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * ExtractedResume without action
+   */
+  export type ExtractedResumeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -16178,6 +22816,7 @@ export namespace Prisma {
     title: 'title',
     documentId: 'documentId',
     jobDescription: 'jobDescription',
+    jobSummaryId: 'jobSummaryId',
     resumeText: 'resumeText',
     analysisData: 'analysisData',
     overallScore: 'overallScore',
@@ -16200,6 +22839,7 @@ export namespace Prisma {
     analysisId: 'analysisId',
     documentId: 'documentId',
     jobDescription: 'jobDescription',
+    jobSummaryId: 'jobSummaryId',
     resumeText: 'resumeText',
     templateId: 'templateId',
     extractedData: 'extractedData',
@@ -16232,6 +22872,107 @@ export namespace Prisma {
   };
 
   export type SharedAnalysisScalarFieldEnum = (typeof SharedAnalysisScalarFieldEnum)[keyof typeof SharedAnalysisScalarFieldEnum]
+
+
+  export const JobDescriptionSummaryScalarFieldEnum: {
+    id: 'id',
+    contentHash: 'contentHash',
+    originalText: 'originalText',
+    summary: 'summary',
+    keyRequirements: 'keyRequirements',
+    companyName: 'companyName',
+    jobTitle: 'jobTitle',
+    location: 'location',
+    salaryRange: 'salaryRange',
+    provider: 'provider',
+    model: 'model',
+    usageCount: 'usageCount',
+    totalTokensUsed: 'totalTokensUsed',
+    totalCost: 'totalCost',
+    processingTime: 'processingTime',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    lastUsedAt: 'lastUsedAt'
+  };
+
+  export type JobDescriptionSummaryScalarFieldEnum = (typeof JobDescriptionSummaryScalarFieldEnum)[keyof typeof JobDescriptionSummaryScalarFieldEnum]
+
+
+  export const CoverLetterScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    content: 'content',
+    tone: 'tone',
+    wordCount: 'wordCount',
+    analysisId: 'analysisId',
+    documentId: 'documentId',
+    jobSummaryId: 'jobSummaryId',
+    contentHash: 'contentHash',
+    provider: 'provider',
+    model: 'model',
+    conversationId: 'conversationId',
+    totalTokensUsed: 'totalTokensUsed',
+    totalCost: 'totalCost',
+    processingTime: 'processingTime',
+    usageCount: 'usageCount',
+    lastUsedAt: 'lastUsedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CoverLetterScalarFieldEnum = (typeof CoverLetterScalarFieldEnum)[keyof typeof CoverLetterScalarFieldEnum]
+
+
+  export const OptimizedResumeScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    content: 'content',
+    extractedData: 'extractedData',
+    templateId: 'templateId',
+    atsScore: 'atsScore',
+    keywordsMatched: 'keywordsMatched',
+    optimizationSuggestions: 'optimizationSuggestions',
+    analysisId: 'analysisId',
+    documentId: 'documentId',
+    jobSummaryId: 'jobSummaryId',
+    extractedResumeId: 'extractedResumeId',
+    contentHash: 'contentHash',
+    provider: 'provider',
+    model: 'model',
+    conversationId: 'conversationId',
+    totalTokensUsed: 'totalTokensUsed',
+    totalCost: 'totalCost',
+    processingTime: 'processingTime',
+    usageCount: 'usageCount',
+    lastUsedAt: 'lastUsedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type OptimizedResumeScalarFieldEnum = (typeof OptimizedResumeScalarFieldEnum)[keyof typeof OptimizedResumeScalarFieldEnum]
+
+
+  export const ExtractedResumeScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    documentId: 'documentId',
+    analysisId: 'analysisId',
+    contentHash: 'contentHash',
+    resumeText: 'resumeText',
+    extractedData: 'extractedData',
+    provider: 'provider',
+    model: 'model',
+    conversationId: 'conversationId',
+    totalTokensUsed: 'totalTokensUsed',
+    totalCost: 'totalCost',
+    processingTime: 'processingTime',
+    usageCount: 'usageCount',
+    lastUsedAt: 'lastUsedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ExtractedResumeScalarFieldEnum = (typeof ExtractedResumeScalarFieldEnum)[keyof typeof ExtractedResumeScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -16434,6 +23175,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisListRelationFilter
     analyses?: AnalysisListRelationFilter
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -16461,6 +23205,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisOrderByRelationAggregateInput
     analyses?: AnalysisOrderByRelationAggregateInput
     resumeOptimizations?: ResumeOptimizationOrderByRelationAggregateInput
+    coverLetters?: CoverLetterOrderByRelationAggregateInput
+    optimizedResumes?: OptimizedResumeOrderByRelationAggregateInput
+    extractedResumes?: ExtractedResumeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -16491,6 +23238,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisListRelationFilter
     analyses?: AnalysisListRelationFilter
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -16725,6 +23475,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationListRelationFilter
     analyses?: AnalysisListRelationFilter
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }
 
   export type DocumentOrderByWithRelationInput = {
@@ -16749,6 +23502,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationOrderByRelationAggregateInput
     analyses?: AnalysisOrderByRelationAggregateInput
     resumeOptimizations?: ResumeOptimizationOrderByRelationAggregateInput
+    coverLetters?: CoverLetterOrderByRelationAggregateInput
+    optimizedResumes?: OptimizedResumeOrderByRelationAggregateInput
+    extractedResumes?: ExtractedResumeOrderByRelationAggregateInput
   }
 
   export type DocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -16776,6 +23532,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationListRelationFilter
     analyses?: AnalysisListRelationFilter
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }, "id" | "fileHash">
 
   export type DocumentOrderByWithAggregationInput = {
@@ -17014,6 +23773,9 @@ export namespace Prisma {
     messages?: LLMMessageListRelationFilter
     analyses?: AnalysisListRelationFilter
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }
 
   export type LLMConversationOrderByWithRelationInput = {
@@ -17036,6 +23798,9 @@ export namespace Prisma {
     messages?: LLMMessageOrderByRelationAggregateInput
     analyses?: AnalysisOrderByRelationAggregateInput
     resumeOptimizations?: ResumeOptimizationOrderByRelationAggregateInput
+    coverLetters?: CoverLetterOrderByRelationAggregateInput
+    optimizedResumes?: OptimizedResumeOrderByRelationAggregateInput
+    extractedResumes?: ExtractedResumeOrderByRelationAggregateInput
   }
 
   export type LLMConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -17061,6 +23826,9 @@ export namespace Prisma {
     messages?: LLMMessageListRelationFilter
     analyses?: AnalysisListRelationFilter
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }, "id">
 
   export type LLMConversationOrderByWithAggregationInput = {
@@ -17217,6 +23985,7 @@ export namespace Prisma {
     title?: StringFilter<"Analysis"> | string
     documentId?: StringNullableFilter<"Analysis"> | string | null
     jobDescription?: StringFilter<"Analysis"> | string
+    jobSummaryId?: StringNullableFilter<"Analysis"> | string | null
     resumeText?: StringFilter<"Analysis"> | string
     analysisData?: StringFilter<"Analysis"> | string
     overallScore?: IntNullableFilter<"Analysis"> | number | null
@@ -17231,7 +24000,11 @@ export namespace Prisma {
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
     conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }
 
   export type AnalysisOrderByWithRelationInput = {
@@ -17240,6 +24013,7 @@ export namespace Prisma {
     title?: SortOrder
     documentId?: SortOrderInput | SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
     resumeText?: SortOrder
     analysisData?: SortOrder
     overallScore?: SortOrderInput | SortOrder
@@ -17254,7 +24028,11 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     document?: DocumentOrderByWithRelationInput
     conversation?: LLMConversationOrderByWithRelationInput
+    jobSummary?: JobDescriptionSummaryOrderByWithRelationInput
     resumeOptimizations?: ResumeOptimizationOrderByRelationAggregateInput
+    coverLetters?: CoverLetterOrderByRelationAggregateInput
+    optimizedResumes?: OptimizedResumeOrderByRelationAggregateInput
+    extractedResumes?: ExtractedResumeOrderByRelationAggregateInput
   }
 
   export type AnalysisWhereUniqueInput = Prisma.AtLeast<{
@@ -17266,6 +24044,7 @@ export namespace Prisma {
     title?: StringFilter<"Analysis"> | string
     documentId?: StringNullableFilter<"Analysis"> | string | null
     jobDescription?: StringFilter<"Analysis"> | string
+    jobSummaryId?: StringNullableFilter<"Analysis"> | string | null
     resumeText?: StringFilter<"Analysis"> | string
     analysisData?: StringFilter<"Analysis"> | string
     overallScore?: IntNullableFilter<"Analysis"> | number | null
@@ -17280,7 +24059,11 @@ export namespace Prisma {
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
     conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
     resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+    extractedResumes?: ExtractedResumeListRelationFilter
   }, "id">
 
   export type AnalysisOrderByWithAggregationInput = {
@@ -17289,6 +24072,7 @@ export namespace Prisma {
     title?: SortOrder
     documentId?: SortOrderInput | SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
     resumeText?: SortOrder
     analysisData?: SortOrder
     overallScore?: SortOrderInput | SortOrder
@@ -17316,6 +24100,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Analysis"> | string
     documentId?: StringNullableWithAggregatesFilter<"Analysis"> | string | null
     jobDescription?: StringWithAggregatesFilter<"Analysis"> | string
+    jobSummaryId?: StringNullableWithAggregatesFilter<"Analysis"> | string | null
     resumeText?: StringWithAggregatesFilter<"Analysis"> | string
     analysisData?: StringWithAggregatesFilter<"Analysis"> | string
     overallScore?: IntNullableWithAggregatesFilter<"Analysis"> | number | null
@@ -17338,6 +24123,7 @@ export namespace Prisma {
     analysisId?: StringNullableFilter<"ResumeOptimization"> | string | null
     documentId?: StringNullableFilter<"ResumeOptimization"> | string | null
     jobDescription?: StringFilter<"ResumeOptimization"> | string
+    jobSummaryId?: StringNullableFilter<"ResumeOptimization"> | string | null
     resumeText?: StringFilter<"ResumeOptimization"> | string
     templateId?: StringFilter<"ResumeOptimization"> | string
     extractedData?: StringFilter<"ResumeOptimization"> | string
@@ -17357,6 +24143,7 @@ export namespace Prisma {
     analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
     document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
     conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
   }
 
   export type ResumeOptimizationOrderByWithRelationInput = {
@@ -17365,6 +24152,7 @@ export namespace Prisma {
     analysisId?: SortOrderInput | SortOrder
     documentId?: SortOrderInput | SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
     resumeText?: SortOrder
     templateId?: SortOrder
     extractedData?: SortOrder
@@ -17384,6 +24172,7 @@ export namespace Prisma {
     analysis?: AnalysisOrderByWithRelationInput
     document?: DocumentOrderByWithRelationInput
     conversation?: LLMConversationOrderByWithRelationInput
+    jobSummary?: JobDescriptionSummaryOrderByWithRelationInput
   }
 
   export type ResumeOptimizationWhereUniqueInput = Prisma.AtLeast<{
@@ -17395,6 +24184,7 @@ export namespace Prisma {
     analysisId?: StringNullableFilter<"ResumeOptimization"> | string | null
     documentId?: StringNullableFilter<"ResumeOptimization"> | string | null
     jobDescription?: StringFilter<"ResumeOptimization"> | string
+    jobSummaryId?: StringNullableFilter<"ResumeOptimization"> | string | null
     resumeText?: StringFilter<"ResumeOptimization"> | string
     templateId?: StringFilter<"ResumeOptimization"> | string
     extractedData?: StringFilter<"ResumeOptimization"> | string
@@ -17414,6 +24204,7 @@ export namespace Prisma {
     analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
     document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
     conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
   }, "id">
 
   export type ResumeOptimizationOrderByWithAggregationInput = {
@@ -17422,6 +24213,7 @@ export namespace Prisma {
     analysisId?: SortOrderInput | SortOrder
     documentId?: SortOrderInput | SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
     resumeText?: SortOrder
     templateId?: SortOrder
     extractedData?: SortOrder
@@ -17453,6 +24245,7 @@ export namespace Prisma {
     analysisId?: StringNullableWithAggregatesFilter<"ResumeOptimization"> | string | null
     documentId?: StringNullableWithAggregatesFilter<"ResumeOptimization"> | string | null
     jobDescription?: StringWithAggregatesFilter<"ResumeOptimization"> | string
+    jobSummaryId?: StringNullableWithAggregatesFilter<"ResumeOptimization"> | string | null
     resumeText?: StringWithAggregatesFilter<"ResumeOptimization"> | string
     templateId?: StringWithAggregatesFilter<"ResumeOptimization"> | string
     extractedData?: StringWithAggregatesFilter<"ResumeOptimization"> | string
@@ -17542,6 +24335,567 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"SharedAnalysis"> | Date | string
   }
 
+  export type JobDescriptionSummaryWhereInput = {
+    AND?: JobDescriptionSummaryWhereInput | JobDescriptionSummaryWhereInput[]
+    OR?: JobDescriptionSummaryWhereInput[]
+    NOT?: JobDescriptionSummaryWhereInput | JobDescriptionSummaryWhereInput[]
+    id?: StringFilter<"JobDescriptionSummary"> | string
+    contentHash?: StringFilter<"JobDescriptionSummary"> | string
+    originalText?: StringFilter<"JobDescriptionSummary"> | string
+    summary?: StringFilter<"JobDescriptionSummary"> | string
+    keyRequirements?: StringNullableListFilter<"JobDescriptionSummary">
+    companyName?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    jobTitle?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    location?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    salaryRange?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    provider?: StringFilter<"JobDescriptionSummary"> | string
+    model?: StringFilter<"JobDescriptionSummary"> | string
+    usageCount?: IntFilter<"JobDescriptionSummary"> | number
+    totalTokensUsed?: IntFilter<"JobDescriptionSummary"> | number
+    totalCost?: FloatFilter<"JobDescriptionSummary"> | number
+    processingTime?: IntNullableFilter<"JobDescriptionSummary"> | number | null
+    createdAt?: DateTimeFilter<"JobDescriptionSummary"> | Date | string
+    updatedAt?: DateTimeFilter<"JobDescriptionSummary"> | Date | string
+    lastUsedAt?: DateTimeFilter<"JobDescriptionSummary"> | Date | string
+    analyses?: AnalysisListRelationFilter
+    resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+  }
+
+  export type JobDescriptionSummaryOrderByWithRelationInput = {
+    id?: SortOrder
+    contentHash?: SortOrder
+    originalText?: SortOrder
+    summary?: SortOrder
+    keyRequirements?: SortOrder
+    companyName?: SortOrderInput | SortOrder
+    jobTitle?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    salaryRange?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    usageCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+    analyses?: AnalysisOrderByRelationAggregateInput
+    resumeOptimizations?: ResumeOptimizationOrderByRelationAggregateInput
+    coverLetters?: CoverLetterOrderByRelationAggregateInput
+    optimizedResumes?: OptimizedResumeOrderByRelationAggregateInput
+  }
+
+  export type JobDescriptionSummaryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contentHash?: string
+    AND?: JobDescriptionSummaryWhereInput | JobDescriptionSummaryWhereInput[]
+    OR?: JobDescriptionSummaryWhereInput[]
+    NOT?: JobDescriptionSummaryWhereInput | JobDescriptionSummaryWhereInput[]
+    originalText?: StringFilter<"JobDescriptionSummary"> | string
+    summary?: StringFilter<"JobDescriptionSummary"> | string
+    keyRequirements?: StringNullableListFilter<"JobDescriptionSummary">
+    companyName?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    jobTitle?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    location?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    salaryRange?: StringNullableFilter<"JobDescriptionSummary"> | string | null
+    provider?: StringFilter<"JobDescriptionSummary"> | string
+    model?: StringFilter<"JobDescriptionSummary"> | string
+    usageCount?: IntFilter<"JobDescriptionSummary"> | number
+    totalTokensUsed?: IntFilter<"JobDescriptionSummary"> | number
+    totalCost?: FloatFilter<"JobDescriptionSummary"> | number
+    processingTime?: IntNullableFilter<"JobDescriptionSummary"> | number | null
+    createdAt?: DateTimeFilter<"JobDescriptionSummary"> | Date | string
+    updatedAt?: DateTimeFilter<"JobDescriptionSummary"> | Date | string
+    lastUsedAt?: DateTimeFilter<"JobDescriptionSummary"> | Date | string
+    analyses?: AnalysisListRelationFilter
+    resumeOptimizations?: ResumeOptimizationListRelationFilter
+    coverLetters?: CoverLetterListRelationFilter
+    optimizedResumes?: OptimizedResumeListRelationFilter
+  }, "id" | "contentHash">
+
+  export type JobDescriptionSummaryOrderByWithAggregationInput = {
+    id?: SortOrder
+    contentHash?: SortOrder
+    originalText?: SortOrder
+    summary?: SortOrder
+    keyRequirements?: SortOrder
+    companyName?: SortOrderInput | SortOrder
+    jobTitle?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    salaryRange?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    usageCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+    _count?: JobDescriptionSummaryCountOrderByAggregateInput
+    _avg?: JobDescriptionSummaryAvgOrderByAggregateInput
+    _max?: JobDescriptionSummaryMaxOrderByAggregateInput
+    _min?: JobDescriptionSummaryMinOrderByAggregateInput
+    _sum?: JobDescriptionSummarySumOrderByAggregateInput
+  }
+
+  export type JobDescriptionSummaryScalarWhereWithAggregatesInput = {
+    AND?: JobDescriptionSummaryScalarWhereWithAggregatesInput | JobDescriptionSummaryScalarWhereWithAggregatesInput[]
+    OR?: JobDescriptionSummaryScalarWhereWithAggregatesInput[]
+    NOT?: JobDescriptionSummaryScalarWhereWithAggregatesInput | JobDescriptionSummaryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"JobDescriptionSummary"> | string
+    contentHash?: StringWithAggregatesFilter<"JobDescriptionSummary"> | string
+    originalText?: StringWithAggregatesFilter<"JobDescriptionSummary"> | string
+    summary?: StringWithAggregatesFilter<"JobDescriptionSummary"> | string
+    keyRequirements?: StringNullableListFilter<"JobDescriptionSummary">
+    companyName?: StringNullableWithAggregatesFilter<"JobDescriptionSummary"> | string | null
+    jobTitle?: StringNullableWithAggregatesFilter<"JobDescriptionSummary"> | string | null
+    location?: StringNullableWithAggregatesFilter<"JobDescriptionSummary"> | string | null
+    salaryRange?: StringNullableWithAggregatesFilter<"JobDescriptionSummary"> | string | null
+    provider?: StringWithAggregatesFilter<"JobDescriptionSummary"> | string
+    model?: StringWithAggregatesFilter<"JobDescriptionSummary"> | string
+    usageCount?: IntWithAggregatesFilter<"JobDescriptionSummary"> | number
+    totalTokensUsed?: IntWithAggregatesFilter<"JobDescriptionSummary"> | number
+    totalCost?: FloatWithAggregatesFilter<"JobDescriptionSummary"> | number
+    processingTime?: IntNullableWithAggregatesFilter<"JobDescriptionSummary"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"JobDescriptionSummary"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"JobDescriptionSummary"> | Date | string
+    lastUsedAt?: DateTimeWithAggregatesFilter<"JobDescriptionSummary"> | Date | string
+  }
+
+  export type CoverLetterWhereInput = {
+    AND?: CoverLetterWhereInput | CoverLetterWhereInput[]
+    OR?: CoverLetterWhereInput[]
+    NOT?: CoverLetterWhereInput | CoverLetterWhereInput[]
+    id?: StringFilter<"CoverLetter"> | string
+    userId?: StringNullableFilter<"CoverLetter"> | string | null
+    content?: StringFilter<"CoverLetter"> | string
+    tone?: StringFilter<"CoverLetter"> | string
+    wordCount?: IntFilter<"CoverLetter"> | number
+    analysisId?: StringNullableFilter<"CoverLetter"> | string | null
+    documentId?: StringNullableFilter<"CoverLetter"> | string | null
+    jobSummaryId?: StringNullableFilter<"CoverLetter"> | string | null
+    contentHash?: StringFilter<"CoverLetter"> | string
+    provider?: StringFilter<"CoverLetter"> | string
+    model?: StringFilter<"CoverLetter"> | string
+    conversationId?: StringNullableFilter<"CoverLetter"> | string | null
+    totalTokensUsed?: IntFilter<"CoverLetter"> | number
+    totalCost?: FloatFilter<"CoverLetter"> | number
+    processingTime?: IntNullableFilter<"CoverLetter"> | number | null
+    usageCount?: IntFilter<"CoverLetter"> | number
+    lastUsedAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    createdAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    updatedAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+  }
+
+  export type CoverLetterOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    tone?: SortOrder
+    wordCount?: SortOrder
+    analysisId?: SortOrderInput | SortOrder
+    documentId?: SortOrderInput | SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    analysis?: AnalysisOrderByWithRelationInput
+    document?: DocumentOrderByWithRelationInput
+    jobSummary?: JobDescriptionSummaryOrderByWithRelationInput
+    conversation?: LLMConversationOrderByWithRelationInput
+  }
+
+  export type CoverLetterWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contentHash?: string
+    AND?: CoverLetterWhereInput | CoverLetterWhereInput[]
+    OR?: CoverLetterWhereInput[]
+    NOT?: CoverLetterWhereInput | CoverLetterWhereInput[]
+    userId?: StringNullableFilter<"CoverLetter"> | string | null
+    content?: StringFilter<"CoverLetter"> | string
+    tone?: StringFilter<"CoverLetter"> | string
+    wordCount?: IntFilter<"CoverLetter"> | number
+    analysisId?: StringNullableFilter<"CoverLetter"> | string | null
+    documentId?: StringNullableFilter<"CoverLetter"> | string | null
+    jobSummaryId?: StringNullableFilter<"CoverLetter"> | string | null
+    provider?: StringFilter<"CoverLetter"> | string
+    model?: StringFilter<"CoverLetter"> | string
+    conversationId?: StringNullableFilter<"CoverLetter"> | string | null
+    totalTokensUsed?: IntFilter<"CoverLetter"> | number
+    totalCost?: FloatFilter<"CoverLetter"> | number
+    processingTime?: IntNullableFilter<"CoverLetter"> | number | null
+    usageCount?: IntFilter<"CoverLetter"> | number
+    lastUsedAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    createdAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    updatedAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+  }, "id" | "contentHash">
+
+  export type CoverLetterOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    tone?: SortOrder
+    wordCount?: SortOrder
+    analysisId?: SortOrderInput | SortOrder
+    documentId?: SortOrderInput | SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CoverLetterCountOrderByAggregateInput
+    _avg?: CoverLetterAvgOrderByAggregateInput
+    _max?: CoverLetterMaxOrderByAggregateInput
+    _min?: CoverLetterMinOrderByAggregateInput
+    _sum?: CoverLetterSumOrderByAggregateInput
+  }
+
+  export type CoverLetterScalarWhereWithAggregatesInput = {
+    AND?: CoverLetterScalarWhereWithAggregatesInput | CoverLetterScalarWhereWithAggregatesInput[]
+    OR?: CoverLetterScalarWhereWithAggregatesInput[]
+    NOT?: CoverLetterScalarWhereWithAggregatesInput | CoverLetterScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CoverLetter"> | string
+    userId?: StringNullableWithAggregatesFilter<"CoverLetter"> | string | null
+    content?: StringWithAggregatesFilter<"CoverLetter"> | string
+    tone?: StringWithAggregatesFilter<"CoverLetter"> | string
+    wordCount?: IntWithAggregatesFilter<"CoverLetter"> | number
+    analysisId?: StringNullableWithAggregatesFilter<"CoverLetter"> | string | null
+    documentId?: StringNullableWithAggregatesFilter<"CoverLetter"> | string | null
+    jobSummaryId?: StringNullableWithAggregatesFilter<"CoverLetter"> | string | null
+    contentHash?: StringWithAggregatesFilter<"CoverLetter"> | string
+    provider?: StringWithAggregatesFilter<"CoverLetter"> | string
+    model?: StringWithAggregatesFilter<"CoverLetter"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"CoverLetter"> | string | null
+    totalTokensUsed?: IntWithAggregatesFilter<"CoverLetter"> | number
+    totalCost?: FloatWithAggregatesFilter<"CoverLetter"> | number
+    processingTime?: IntNullableWithAggregatesFilter<"CoverLetter"> | number | null
+    usageCount?: IntWithAggregatesFilter<"CoverLetter"> | number
+    lastUsedAt?: DateTimeWithAggregatesFilter<"CoverLetter"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"CoverLetter"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CoverLetter"> | Date | string
+  }
+
+  export type OptimizedResumeWhereInput = {
+    AND?: OptimizedResumeWhereInput | OptimizedResumeWhereInput[]
+    OR?: OptimizedResumeWhereInput[]
+    NOT?: OptimizedResumeWhereInput | OptimizedResumeWhereInput[]
+    id?: StringFilter<"OptimizedResume"> | string
+    userId?: StringNullableFilter<"OptimizedResume"> | string | null
+    content?: StringFilter<"OptimizedResume"> | string
+    extractedData?: StringFilter<"OptimizedResume"> | string
+    templateId?: StringFilter<"OptimizedResume"> | string
+    atsScore?: IntNullableFilter<"OptimizedResume"> | number | null
+    keywordsMatched?: StringNullableListFilter<"OptimizedResume">
+    optimizationSuggestions?: StringNullableListFilter<"OptimizedResume">
+    analysisId?: StringNullableFilter<"OptimizedResume"> | string | null
+    documentId?: StringNullableFilter<"OptimizedResume"> | string | null
+    jobSummaryId?: StringNullableFilter<"OptimizedResume"> | string | null
+    extractedResumeId?: StringNullableFilter<"OptimizedResume"> | string | null
+    contentHash?: StringFilter<"OptimizedResume"> | string
+    provider?: StringFilter<"OptimizedResume"> | string
+    model?: StringFilter<"OptimizedResume"> | string
+    conversationId?: StringNullableFilter<"OptimizedResume"> | string | null
+    totalTokensUsed?: IntFilter<"OptimizedResume"> | number
+    totalCost?: FloatFilter<"OptimizedResume"> | number
+    processingTime?: IntNullableFilter<"OptimizedResume"> | number | null
+    usageCount?: IntFilter<"OptimizedResume"> | number
+    lastUsedAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    createdAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    updatedAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    extractedResume?: XOR<ExtractedResumeNullableScalarRelationFilter, ExtractedResumeWhereInput> | null
+  }
+
+  export type OptimizedResumeOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    extractedData?: SortOrder
+    templateId?: SortOrder
+    atsScore?: SortOrderInput | SortOrder
+    keywordsMatched?: SortOrder
+    optimizationSuggestions?: SortOrder
+    analysisId?: SortOrderInput | SortOrder
+    documentId?: SortOrderInput | SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
+    extractedResumeId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    analysis?: AnalysisOrderByWithRelationInput
+    document?: DocumentOrderByWithRelationInput
+    jobSummary?: JobDescriptionSummaryOrderByWithRelationInput
+    conversation?: LLMConversationOrderByWithRelationInput
+    extractedResume?: ExtractedResumeOrderByWithRelationInput
+  }
+
+  export type OptimizedResumeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contentHash?: string
+    AND?: OptimizedResumeWhereInput | OptimizedResumeWhereInput[]
+    OR?: OptimizedResumeWhereInput[]
+    NOT?: OptimizedResumeWhereInput | OptimizedResumeWhereInput[]
+    userId?: StringNullableFilter<"OptimizedResume"> | string | null
+    content?: StringFilter<"OptimizedResume"> | string
+    extractedData?: StringFilter<"OptimizedResume"> | string
+    templateId?: StringFilter<"OptimizedResume"> | string
+    atsScore?: IntNullableFilter<"OptimizedResume"> | number | null
+    keywordsMatched?: StringNullableListFilter<"OptimizedResume">
+    optimizationSuggestions?: StringNullableListFilter<"OptimizedResume">
+    analysisId?: StringNullableFilter<"OptimizedResume"> | string | null
+    documentId?: StringNullableFilter<"OptimizedResume"> | string | null
+    jobSummaryId?: StringNullableFilter<"OptimizedResume"> | string | null
+    extractedResumeId?: StringNullableFilter<"OptimizedResume"> | string | null
+    provider?: StringFilter<"OptimizedResume"> | string
+    model?: StringFilter<"OptimizedResume"> | string
+    conversationId?: StringNullableFilter<"OptimizedResume"> | string | null
+    totalTokensUsed?: IntFilter<"OptimizedResume"> | number
+    totalCost?: FloatFilter<"OptimizedResume"> | number
+    processingTime?: IntNullableFilter<"OptimizedResume"> | number | null
+    usageCount?: IntFilter<"OptimizedResume"> | number
+    lastUsedAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    createdAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    updatedAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    jobSummary?: XOR<JobDescriptionSummaryNullableScalarRelationFilter, JobDescriptionSummaryWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    extractedResume?: XOR<ExtractedResumeNullableScalarRelationFilter, ExtractedResumeWhereInput> | null
+  }, "id" | "contentHash">
+
+  export type OptimizedResumeOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    extractedData?: SortOrder
+    templateId?: SortOrder
+    atsScore?: SortOrderInput | SortOrder
+    keywordsMatched?: SortOrder
+    optimizationSuggestions?: SortOrder
+    analysisId?: SortOrderInput | SortOrder
+    documentId?: SortOrderInput | SortOrder
+    jobSummaryId?: SortOrderInput | SortOrder
+    extractedResumeId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: OptimizedResumeCountOrderByAggregateInput
+    _avg?: OptimizedResumeAvgOrderByAggregateInput
+    _max?: OptimizedResumeMaxOrderByAggregateInput
+    _min?: OptimizedResumeMinOrderByAggregateInput
+    _sum?: OptimizedResumeSumOrderByAggregateInput
+  }
+
+  export type OptimizedResumeScalarWhereWithAggregatesInput = {
+    AND?: OptimizedResumeScalarWhereWithAggregatesInput | OptimizedResumeScalarWhereWithAggregatesInput[]
+    OR?: OptimizedResumeScalarWhereWithAggregatesInput[]
+    NOT?: OptimizedResumeScalarWhereWithAggregatesInput | OptimizedResumeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OptimizedResume"> | string
+    userId?: StringNullableWithAggregatesFilter<"OptimizedResume"> | string | null
+    content?: StringWithAggregatesFilter<"OptimizedResume"> | string
+    extractedData?: StringWithAggregatesFilter<"OptimizedResume"> | string
+    templateId?: StringWithAggregatesFilter<"OptimizedResume"> | string
+    atsScore?: IntNullableWithAggregatesFilter<"OptimizedResume"> | number | null
+    keywordsMatched?: StringNullableListFilter<"OptimizedResume">
+    optimizationSuggestions?: StringNullableListFilter<"OptimizedResume">
+    analysisId?: StringNullableWithAggregatesFilter<"OptimizedResume"> | string | null
+    documentId?: StringNullableWithAggregatesFilter<"OptimizedResume"> | string | null
+    jobSummaryId?: StringNullableWithAggregatesFilter<"OptimizedResume"> | string | null
+    extractedResumeId?: StringNullableWithAggregatesFilter<"OptimizedResume"> | string | null
+    contentHash?: StringWithAggregatesFilter<"OptimizedResume"> | string
+    provider?: StringWithAggregatesFilter<"OptimizedResume"> | string
+    model?: StringWithAggregatesFilter<"OptimizedResume"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"OptimizedResume"> | string | null
+    totalTokensUsed?: IntWithAggregatesFilter<"OptimizedResume"> | number
+    totalCost?: FloatWithAggregatesFilter<"OptimizedResume"> | number
+    processingTime?: IntNullableWithAggregatesFilter<"OptimizedResume"> | number | null
+    usageCount?: IntWithAggregatesFilter<"OptimizedResume"> | number
+    lastUsedAt?: DateTimeWithAggregatesFilter<"OptimizedResume"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"OptimizedResume"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"OptimizedResume"> | Date | string
+  }
+
+  export type ExtractedResumeWhereInput = {
+    AND?: ExtractedResumeWhereInput | ExtractedResumeWhereInput[]
+    OR?: ExtractedResumeWhereInput[]
+    NOT?: ExtractedResumeWhereInput | ExtractedResumeWhereInput[]
+    id?: StringFilter<"ExtractedResume"> | string
+    userId?: StringNullableFilter<"ExtractedResume"> | string | null
+    documentId?: StringNullableFilter<"ExtractedResume"> | string | null
+    analysisId?: StringNullableFilter<"ExtractedResume"> | string | null
+    contentHash?: StringFilter<"ExtractedResume"> | string
+    resumeText?: StringFilter<"ExtractedResume"> | string
+    extractedData?: StringFilter<"ExtractedResume"> | string
+    provider?: StringFilter<"ExtractedResume"> | string
+    model?: StringFilter<"ExtractedResume"> | string
+    conversationId?: StringNullableFilter<"ExtractedResume"> | string | null
+    totalTokensUsed?: IntFilter<"ExtractedResume"> | number
+    totalCost?: FloatFilter<"ExtractedResume"> | number
+    processingTime?: IntNullableFilter<"ExtractedResume"> | number | null
+    usageCount?: IntFilter<"ExtractedResume"> | number
+    lastUsedAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    createdAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    updatedAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    optimizedResumes?: OptimizedResumeListRelationFilter
+  }
+
+  export type ExtractedResumeOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    documentId?: SortOrderInput | SortOrder
+    analysisId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    resumeText?: SortOrder
+    extractedData?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    document?: DocumentOrderByWithRelationInput
+    analysis?: AnalysisOrderByWithRelationInput
+    conversation?: LLMConversationOrderByWithRelationInput
+    optimizedResumes?: OptimizedResumeOrderByRelationAggregateInput
+  }
+
+  export type ExtractedResumeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contentHash?: string
+    AND?: ExtractedResumeWhereInput | ExtractedResumeWhereInput[]
+    OR?: ExtractedResumeWhereInput[]
+    NOT?: ExtractedResumeWhereInput | ExtractedResumeWhereInput[]
+    userId?: StringNullableFilter<"ExtractedResume"> | string | null
+    documentId?: StringNullableFilter<"ExtractedResume"> | string | null
+    analysisId?: StringNullableFilter<"ExtractedResume"> | string | null
+    resumeText?: StringFilter<"ExtractedResume"> | string
+    extractedData?: StringFilter<"ExtractedResume"> | string
+    provider?: StringFilter<"ExtractedResume"> | string
+    model?: StringFilter<"ExtractedResume"> | string
+    conversationId?: StringNullableFilter<"ExtractedResume"> | string | null
+    totalTokensUsed?: IntFilter<"ExtractedResume"> | number
+    totalCost?: FloatFilter<"ExtractedResume"> | number
+    processingTime?: IntNullableFilter<"ExtractedResume"> | number | null
+    usageCount?: IntFilter<"ExtractedResume"> | number
+    lastUsedAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    createdAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    updatedAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
+    analysis?: XOR<AnalysisNullableScalarRelationFilter, AnalysisWhereInput> | null
+    conversation?: XOR<LLMConversationNullableScalarRelationFilter, LLMConversationWhereInput> | null
+    optimizedResumes?: OptimizedResumeListRelationFilter
+  }, "id" | "contentHash">
+
+  export type ExtractedResumeOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    documentId?: SortOrderInput | SortOrder
+    analysisId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    resumeText?: SortOrder
+    extractedData?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrderInput | SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ExtractedResumeCountOrderByAggregateInput
+    _avg?: ExtractedResumeAvgOrderByAggregateInput
+    _max?: ExtractedResumeMaxOrderByAggregateInput
+    _min?: ExtractedResumeMinOrderByAggregateInput
+    _sum?: ExtractedResumeSumOrderByAggregateInput
+  }
+
+  export type ExtractedResumeScalarWhereWithAggregatesInput = {
+    AND?: ExtractedResumeScalarWhereWithAggregatesInput | ExtractedResumeScalarWhereWithAggregatesInput[]
+    OR?: ExtractedResumeScalarWhereWithAggregatesInput[]
+    NOT?: ExtractedResumeScalarWhereWithAggregatesInput | ExtractedResumeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ExtractedResume"> | string
+    userId?: StringNullableWithAggregatesFilter<"ExtractedResume"> | string | null
+    documentId?: StringNullableWithAggregatesFilter<"ExtractedResume"> | string | null
+    analysisId?: StringNullableWithAggregatesFilter<"ExtractedResume"> | string | null
+    contentHash?: StringWithAggregatesFilter<"ExtractedResume"> | string
+    resumeText?: StringWithAggregatesFilter<"ExtractedResume"> | string
+    extractedData?: StringWithAggregatesFilter<"ExtractedResume"> | string
+    provider?: StringWithAggregatesFilter<"ExtractedResume"> | string
+    model?: StringWithAggregatesFilter<"ExtractedResume"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"ExtractedResume"> | string | null
+    totalTokensUsed?: IntWithAggregatesFilter<"ExtractedResume"> | number
+    totalCost?: FloatWithAggregatesFilter<"ExtractedResume"> | number
+    processingTime?: IntNullableWithAggregatesFilter<"ExtractedResume"> | number | null
+    usageCount?: IntWithAggregatesFilter<"ExtractedResume"> | number
+    lastUsedAt?: DateTimeWithAggregatesFilter<"ExtractedResume"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"ExtractedResume"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ExtractedResume"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -17567,6 +24921,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -17594,6 +24951,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -17621,6 +24981,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -17648,6 +25011,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -17905,6 +25271,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateInput = {
@@ -17928,6 +25297,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUpdateInput = {
@@ -17951,6 +25323,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateInput = {
@@ -17974,6 +25349,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentCreateManyInput = {
@@ -18229,6 +25607,9 @@ export namespace Prisma {
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
     analyses?: AnalysisCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateInput = {
@@ -18249,6 +25630,9 @@ export namespace Prisma {
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUpdateInput = {
@@ -18269,6 +25653,9 @@ export namespace Prisma {
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateInput = {
@@ -18289,6 +25676,9 @@ export namespace Prisma {
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationCreateManyInput = {
@@ -18475,7 +25865,11 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutAnalysesInput
     document?: DocumentCreateNestedOneWithoutAnalysesInput
     conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUncheckedCreateInput = {
@@ -18484,6 +25878,7 @@ export namespace Prisma {
     title: string
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -18496,6 +25891,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUpdateInput = {
@@ -18515,7 +25913,11 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutAnalysesNestedInput
     document?: DocumentUpdateOneWithoutAnalysesNestedInput
     conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateInput = {
@@ -18524,6 +25926,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -18536,6 +25939,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisCreateManyInput = {
@@ -18544,6 +25950,7 @@ export namespace Prisma {
     title: string
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -18579,6 +25986,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -18613,6 +26021,7 @@ export namespace Prisma {
     analysis?: AnalysisCreateNestedOneWithoutResumeOptimizationsInput
     document?: DocumentCreateNestedOneWithoutResumeOptimizationsInput
     conversation?: LLMConversationCreateNestedOneWithoutResumeOptimizationsInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutResumeOptimizationsInput
   }
 
   export type ResumeOptimizationUncheckedCreateInput = {
@@ -18621,6 +26030,7 @@ export namespace Prisma {
     analysisId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -18659,6 +26069,7 @@ export namespace Prisma {
     analysis?: AnalysisUpdateOneWithoutResumeOptimizationsNestedInput
     document?: DocumentUpdateOneWithoutResumeOptimizationsNestedInput
     conversation?: LLMConversationUpdateOneWithoutResumeOptimizationsNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutResumeOptimizationsNestedInput
   }
 
   export type ResumeOptimizationUncheckedUpdateInput = {
@@ -18667,6 +26078,7 @@ export namespace Prisma {
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -18690,6 +26102,7 @@ export namespace Prisma {
     analysisId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -18732,6 +26145,7 @@ export namespace Prisma {
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -18821,6 +26235,634 @@ export namespace Prisma {
     settings?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobDescriptionSummaryCreateInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisCreateNestedManyWithoutJobSummaryInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryUncheckedCreateInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutJobSummaryInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUpdateManyWithoutJobSummaryNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type JobDescriptionSummaryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUncheckedUpdateManyWithoutJobSummaryNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type JobDescriptionSummaryCreateManyInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+  }
+
+  export type JobDescriptionSummaryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobDescriptionSummaryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterCreateInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCoverLettersInput
+    analysis?: AnalysisCreateNestedOneWithoutCoverLettersInput
+    document?: DocumentCreateNestedOneWithoutCoverLettersInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutCoverLettersInput
+    conversation?: LLMConversationCreateNestedOneWithoutCoverLettersInput
+  }
+
+  export type CoverLetterUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCoverLettersNestedInput
+    analysis?: AnalysisUpdateOneWithoutCoverLettersNestedInput
+    document?: DocumentUpdateOneWithoutCoverLettersNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutCoverLettersNestedInput
+    conversation?: LLMConversationUpdateOneWithoutCoverLettersNestedInput
+  }
+
+  export type CoverLetterUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterCreateManyInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeCreateInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOptimizedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutOptimizedResumesInput
+    document?: DocumentCreateNestedOneWithoutOptimizedResumesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutOptimizedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutOptimizedResumesInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutOptimizedResumesInput
+  }
+
+  export type OptimizedResumeUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOptimizedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutOptimizedResumesNestedInput
+    document?: DocumentUpdateOneWithoutOptimizedResumesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutOptimizedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutOptimizedResumesNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutOptimizedResumesNestedInput
+  }
+
+  export type OptimizedResumeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeCreateManyInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExtractedResumeCreateInput = {
+    id?: string
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutExtractedResumesInput
+    document?: DocumentCreateNestedOneWithoutExtractedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutExtractedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutExtractedResumesInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    documentId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutExtractedResumesNestedInput
+    document?: DocumentUpdateOneWithoutExtractedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutExtractedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutExtractedResumesNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeCreateManyInput = {
+    id?: string
+    userId?: string | null
+    documentId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExtractedResumeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18949,6 +26991,24 @@ export namespace Prisma {
     none?: ResumeOptimizationWhereInput
   }
 
+  export type CoverLetterListRelationFilter = {
+    every?: CoverLetterWhereInput
+    some?: CoverLetterWhereInput
+    none?: CoverLetterWhereInput
+  }
+
+  export type OptimizedResumeListRelationFilter = {
+    every?: OptimizedResumeWhereInput
+    some?: OptimizedResumeWhereInput
+    none?: OptimizedResumeWhereInput
+  }
+
+  export type ExtractedResumeListRelationFilter = {
+    every?: ExtractedResumeWhereInput
+    some?: ExtractedResumeWhereInput
+    none?: ExtractedResumeWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -18987,6 +27047,18 @@ export namespace Prisma {
   }
 
   export type ResumeOptimizationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CoverLetterOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OptimizedResumeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ExtractedResumeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19755,12 +27827,18 @@ export namespace Prisma {
     isNot?: LLMConversationWhereInput | null
   }
 
+  export type JobDescriptionSummaryNullableScalarRelationFilter = {
+    is?: JobDescriptionSummaryWhereInput | null
+    isNot?: JobDescriptionSummaryWhereInput | null
+  }
+
   export type AnalysisCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
     documentId?: SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrder
     resumeText?: SortOrder
     analysisData?: SortOrder
     overallScore?: SortOrder
@@ -19787,6 +27865,7 @@ export namespace Prisma {
     title?: SortOrder
     documentId?: SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrder
     resumeText?: SortOrder
     analysisData?: SortOrder
     overallScore?: SortOrder
@@ -19806,6 +27885,7 @@ export namespace Prisma {
     title?: SortOrder
     documentId?: SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrder
     resumeText?: SortOrder
     analysisData?: SortOrder
     overallScore?: SortOrder
@@ -19837,6 +27917,7 @@ export namespace Prisma {
     analysisId?: SortOrder
     documentId?: SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrder
     resumeText?: SortOrder
     templateId?: SortOrder
     extractedData?: SortOrder
@@ -19867,6 +27948,7 @@ export namespace Prisma {
     analysisId?: SortOrder
     documentId?: SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrder
     resumeText?: SortOrder
     templateId?: SortOrder
     extractedData?: SortOrder
@@ -19888,6 +27970,7 @@ export namespace Prisma {
     analysisId?: SortOrder
     documentId?: SortOrder
     jobDescription?: SortOrder
+    jobSummaryId?: SortOrder
     resumeText?: SortOrder
     templateId?: SortOrder
     extractedData?: SortOrder
@@ -19949,6 +28032,332 @@ export namespace Prisma {
 
   export type SharedAnalysisSumOrderByAggregateInput = {
     viewCount?: SortOrder
+  }
+
+  export type JobDescriptionSummaryCountOrderByAggregateInput = {
+    id?: SortOrder
+    contentHash?: SortOrder
+    originalText?: SortOrder
+    summary?: SortOrder
+    keyRequirements?: SortOrder
+    companyName?: SortOrder
+    jobTitle?: SortOrder
+    location?: SortOrder
+    salaryRange?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    usageCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+  }
+
+  export type JobDescriptionSummaryAvgOrderByAggregateInput = {
+    usageCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+  }
+
+  export type JobDescriptionSummaryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contentHash?: SortOrder
+    originalText?: SortOrder
+    summary?: SortOrder
+    companyName?: SortOrder
+    jobTitle?: SortOrder
+    location?: SortOrder
+    salaryRange?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    usageCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+  }
+
+  export type JobDescriptionSummaryMinOrderByAggregateInput = {
+    id?: SortOrder
+    contentHash?: SortOrder
+    originalText?: SortOrder
+    summary?: SortOrder
+    companyName?: SortOrder
+    jobTitle?: SortOrder
+    location?: SortOrder
+    salaryRange?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    usageCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lastUsedAt?: SortOrder
+  }
+
+  export type JobDescriptionSummarySumOrderByAggregateInput = {
+    usageCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+  }
+
+  export type CoverLetterCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    tone?: SortOrder
+    wordCount?: SortOrder
+    analysisId?: SortOrder
+    documentId?: SortOrder
+    jobSummaryId?: SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CoverLetterAvgOrderByAggregateInput = {
+    wordCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+  }
+
+  export type CoverLetterMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    tone?: SortOrder
+    wordCount?: SortOrder
+    analysisId?: SortOrder
+    documentId?: SortOrder
+    jobSummaryId?: SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CoverLetterMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    tone?: SortOrder
+    wordCount?: SortOrder
+    analysisId?: SortOrder
+    documentId?: SortOrder
+    jobSummaryId?: SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CoverLetterSumOrderByAggregateInput = {
+    wordCount?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+  }
+
+  export type ExtractedResumeNullableScalarRelationFilter = {
+    is?: ExtractedResumeWhereInput | null
+    isNot?: ExtractedResumeWhereInput | null
+  }
+
+  export type OptimizedResumeCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    extractedData?: SortOrder
+    templateId?: SortOrder
+    atsScore?: SortOrder
+    keywordsMatched?: SortOrder
+    optimizationSuggestions?: SortOrder
+    analysisId?: SortOrder
+    documentId?: SortOrder
+    jobSummaryId?: SortOrder
+    extractedResumeId?: SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OptimizedResumeAvgOrderByAggregateInput = {
+    atsScore?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+  }
+
+  export type OptimizedResumeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    extractedData?: SortOrder
+    templateId?: SortOrder
+    atsScore?: SortOrder
+    analysisId?: SortOrder
+    documentId?: SortOrder
+    jobSummaryId?: SortOrder
+    extractedResumeId?: SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OptimizedResumeMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    extractedData?: SortOrder
+    templateId?: SortOrder
+    atsScore?: SortOrder
+    analysisId?: SortOrder
+    documentId?: SortOrder
+    jobSummaryId?: SortOrder
+    extractedResumeId?: SortOrder
+    contentHash?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OptimizedResumeSumOrderByAggregateInput = {
+    atsScore?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+  }
+
+  export type ExtractedResumeCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentId?: SortOrder
+    analysisId?: SortOrder
+    contentHash?: SortOrder
+    resumeText?: SortOrder
+    extractedData?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExtractedResumeAvgOrderByAggregateInput = {
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+  }
+
+  export type ExtractedResumeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentId?: SortOrder
+    analysisId?: SortOrder
+    contentHash?: SortOrder
+    resumeText?: SortOrder
+    extractedData?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExtractedResumeMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentId?: SortOrder
+    analysisId?: SortOrder
+    contentHash?: SortOrder
+    resumeText?: SortOrder
+    extractedData?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    conversationId?: SortOrder
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExtractedResumeSumOrderByAggregateInput = {
+    totalTokensUsed?: SortOrder
+    totalCost?: SortOrder
+    processingTime?: SortOrder
+    usageCount?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -20014,6 +28423,27 @@ export namespace Prisma {
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
   }
 
+  export type CoverLetterCreateNestedManyWithoutUserInput = {
+    create?: XOR<CoverLetterCreateWithoutUserInput, CoverLetterUncheckedCreateWithoutUserInput> | CoverLetterCreateWithoutUserInput[] | CoverLetterUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutUserInput | CoverLetterCreateOrConnectWithoutUserInput[]
+    createMany?: CoverLetterCreateManyUserInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeCreateNestedManyWithoutUserInput = {
+    create?: XOR<OptimizedResumeCreateWithoutUserInput, OptimizedResumeUncheckedCreateWithoutUserInput> | OptimizedResumeCreateWithoutUserInput[] | OptimizedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutUserInput | OptimizedResumeCreateOrConnectWithoutUserInput[]
+    createMany?: OptimizedResumeCreateManyUserInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExtractedResumeCreateWithoutUserInput, ExtractedResumeUncheckedCreateWithoutUserInput> | ExtractedResumeCreateWithoutUserInput[] | ExtractedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutUserInput | ExtractedResumeCreateOrConnectWithoutUserInput[]
+    createMany?: ExtractedResumeCreateManyUserInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -20075,6 +28505,27 @@ export namespace Prisma {
     connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutUserInput | ResumeOptimizationCreateOrConnectWithoutUserInput[]
     createMany?: ResumeOptimizationCreateManyUserInputEnvelope
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+  }
+
+  export type CoverLetterUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CoverLetterCreateWithoutUserInput, CoverLetterUncheckedCreateWithoutUserInput> | CoverLetterCreateWithoutUserInput[] | CoverLetterUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutUserInput | CoverLetterCreateOrConnectWithoutUserInput[]
+    createMany?: CoverLetterCreateManyUserInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<OptimizedResumeCreateWithoutUserInput, OptimizedResumeUncheckedCreateWithoutUserInput> | OptimizedResumeCreateWithoutUserInput[] | OptimizedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutUserInput | OptimizedResumeCreateOrConnectWithoutUserInput[]
+    createMany?: OptimizedResumeCreateManyUserInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExtractedResumeCreateWithoutUserInput, ExtractedResumeUncheckedCreateWithoutUserInput> | ExtractedResumeCreateWithoutUserInput[] | ExtractedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutUserInput | ExtractedResumeCreateOrConnectWithoutUserInput[]
+    createMany?: ExtractedResumeCreateManyUserInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -20231,6 +28682,48 @@ export namespace Prisma {
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
   }
 
+  export type CoverLetterUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutUserInput, CoverLetterUncheckedCreateWithoutUserInput> | CoverLetterCreateWithoutUserInput[] | CoverLetterUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutUserInput | CoverLetterCreateOrConnectWithoutUserInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutUserInput | CoverLetterUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CoverLetterCreateManyUserInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutUserInput | CoverLetterUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutUserInput | CoverLetterUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutUserInput, OptimizedResumeUncheckedCreateWithoutUserInput> | OptimizedResumeCreateWithoutUserInput[] | OptimizedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutUserInput | OptimizedResumeCreateOrConnectWithoutUserInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutUserInput | OptimizedResumeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: OptimizedResumeCreateManyUserInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutUserInput | OptimizedResumeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutUserInput | OptimizedResumeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutUserInput, ExtractedResumeUncheckedCreateWithoutUserInput> | ExtractedResumeCreateWithoutUserInput[] | ExtractedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutUserInput | ExtractedResumeCreateOrConnectWithoutUserInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutUserInput | ExtractedResumeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExtractedResumeCreateManyUserInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutUserInput | ExtractedResumeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutUserInput | ExtractedResumeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -20357,6 +28850,48 @@ export namespace Prisma {
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
   }
 
+  export type CoverLetterUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutUserInput, CoverLetterUncheckedCreateWithoutUserInput> | CoverLetterCreateWithoutUserInput[] | CoverLetterUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutUserInput | CoverLetterCreateOrConnectWithoutUserInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutUserInput | CoverLetterUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CoverLetterCreateManyUserInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutUserInput | CoverLetterUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutUserInput | CoverLetterUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutUserInput, OptimizedResumeUncheckedCreateWithoutUserInput> | OptimizedResumeCreateWithoutUserInput[] | OptimizedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutUserInput | OptimizedResumeCreateOrConnectWithoutUserInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutUserInput | OptimizedResumeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: OptimizedResumeCreateManyUserInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutUserInput | OptimizedResumeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutUserInput | OptimizedResumeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutUserInput, ExtractedResumeUncheckedCreateWithoutUserInput> | ExtractedResumeCreateWithoutUserInput[] | ExtractedResumeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutUserInput | ExtractedResumeCreateOrConnectWithoutUserInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutUserInput | ExtractedResumeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExtractedResumeCreateManyUserInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutUserInput | ExtractedResumeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutUserInput | ExtractedResumeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutAccountsInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -20435,6 +28970,27 @@ export namespace Prisma {
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
   }
 
+  export type CoverLetterCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<CoverLetterCreateWithoutDocumentInput, CoverLetterUncheckedCreateWithoutDocumentInput> | CoverLetterCreateWithoutDocumentInput[] | CoverLetterUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutDocumentInput | CoverLetterCreateOrConnectWithoutDocumentInput[]
+    createMany?: CoverLetterCreateManyDocumentInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<OptimizedResumeCreateWithoutDocumentInput, OptimizedResumeUncheckedCreateWithoutDocumentInput> | OptimizedResumeCreateWithoutDocumentInput[] | OptimizedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutDocumentInput | OptimizedResumeCreateOrConnectWithoutDocumentInput[]
+    createMany?: OptimizedResumeCreateManyDocumentInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<ExtractedResumeCreateWithoutDocumentInput, ExtractedResumeUncheckedCreateWithoutDocumentInput> | ExtractedResumeCreateWithoutDocumentInput[] | ExtractedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutDocumentInput | ExtractedResumeCreateOrConnectWithoutDocumentInput[]
+    createMany?: ExtractedResumeCreateManyDocumentInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+  }
+
   export type UsageRecordUncheckedCreateNestedManyWithoutDocumentInput = {
     create?: XOR<UsageRecordCreateWithoutDocumentInput, UsageRecordUncheckedCreateWithoutDocumentInput> | UsageRecordCreateWithoutDocumentInput[] | UsageRecordUncheckedCreateWithoutDocumentInput[]
     connectOrCreate?: UsageRecordCreateOrConnectWithoutDocumentInput | UsageRecordCreateOrConnectWithoutDocumentInput[]
@@ -20461,6 +29017,27 @@ export namespace Prisma {
     connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutDocumentInput | ResumeOptimizationCreateOrConnectWithoutDocumentInput[]
     createMany?: ResumeOptimizationCreateManyDocumentInputEnvelope
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+  }
+
+  export type CoverLetterUncheckedCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<CoverLetterCreateWithoutDocumentInput, CoverLetterUncheckedCreateWithoutDocumentInput> | CoverLetterCreateWithoutDocumentInput[] | CoverLetterUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutDocumentInput | CoverLetterCreateOrConnectWithoutDocumentInput[]
+    createMany?: CoverLetterCreateManyDocumentInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<OptimizedResumeCreateWithoutDocumentInput, OptimizedResumeUncheckedCreateWithoutDocumentInput> | OptimizedResumeCreateWithoutDocumentInput[] | OptimizedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutDocumentInput | OptimizedResumeCreateOrConnectWithoutDocumentInput[]
+    createMany?: OptimizedResumeCreateManyDocumentInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<ExtractedResumeCreateWithoutDocumentInput, ExtractedResumeUncheckedCreateWithoutDocumentInput> | ExtractedResumeCreateWithoutDocumentInput[] | ExtractedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutDocumentInput | ExtractedResumeCreateOrConnectWithoutDocumentInput[]
+    createMany?: ExtractedResumeCreateManyDocumentInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -20547,6 +29124,48 @@ export namespace Prisma {
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
   }
 
+  export type CoverLetterUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutDocumentInput, CoverLetterUncheckedCreateWithoutDocumentInput> | CoverLetterCreateWithoutDocumentInput[] | CoverLetterUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutDocumentInput | CoverLetterCreateOrConnectWithoutDocumentInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutDocumentInput | CoverLetterUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: CoverLetterCreateManyDocumentInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutDocumentInput | CoverLetterUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutDocumentInput | CoverLetterUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutDocumentInput, OptimizedResumeUncheckedCreateWithoutDocumentInput> | OptimizedResumeCreateWithoutDocumentInput[] | OptimizedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutDocumentInput | OptimizedResumeCreateOrConnectWithoutDocumentInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutDocumentInput | OptimizedResumeUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: OptimizedResumeCreateManyDocumentInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutDocumentInput | OptimizedResumeUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutDocumentInput | OptimizedResumeUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutDocumentInput, ExtractedResumeUncheckedCreateWithoutDocumentInput> | ExtractedResumeCreateWithoutDocumentInput[] | ExtractedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutDocumentInput | ExtractedResumeCreateOrConnectWithoutDocumentInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutDocumentInput | ExtractedResumeUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: ExtractedResumeCreateManyDocumentInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutDocumentInput | ExtractedResumeUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutDocumentInput | ExtractedResumeUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
+  }
+
   export type UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput = {
     create?: XOR<UsageRecordCreateWithoutDocumentInput, UsageRecordUncheckedCreateWithoutDocumentInput> | UsageRecordCreateWithoutDocumentInput[] | UsageRecordUncheckedCreateWithoutDocumentInput[]
     connectOrCreate?: UsageRecordCreateOrConnectWithoutDocumentInput | UsageRecordCreateOrConnectWithoutDocumentInput[]
@@ -20601,6 +29220,48 @@ export namespace Prisma {
     update?: ResumeOptimizationUpdateWithWhereUniqueWithoutDocumentInput | ResumeOptimizationUpdateWithWhereUniqueWithoutDocumentInput[]
     updateMany?: ResumeOptimizationUpdateManyWithWhereWithoutDocumentInput | ResumeOptimizationUpdateManyWithWhereWithoutDocumentInput[]
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutDocumentInput, CoverLetterUncheckedCreateWithoutDocumentInput> | CoverLetterCreateWithoutDocumentInput[] | CoverLetterUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutDocumentInput | CoverLetterCreateOrConnectWithoutDocumentInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutDocumentInput | CoverLetterUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: CoverLetterCreateManyDocumentInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutDocumentInput | CoverLetterUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutDocumentInput | CoverLetterUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutDocumentInput, OptimizedResumeUncheckedCreateWithoutDocumentInput> | OptimizedResumeCreateWithoutDocumentInput[] | OptimizedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutDocumentInput | OptimizedResumeCreateOrConnectWithoutDocumentInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutDocumentInput | OptimizedResumeUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: OptimizedResumeCreateManyDocumentInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutDocumentInput | OptimizedResumeUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutDocumentInput | OptimizedResumeUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutDocumentInput, ExtractedResumeUncheckedCreateWithoutDocumentInput> | ExtractedResumeCreateWithoutDocumentInput[] | ExtractedResumeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutDocumentInput | ExtractedResumeCreateOrConnectWithoutDocumentInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutDocumentInput | ExtractedResumeUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: ExtractedResumeCreateManyDocumentInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutDocumentInput | ExtractedResumeUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutDocumentInput | ExtractedResumeUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutUsageRecordsInput = {
@@ -20686,6 +29347,27 @@ export namespace Prisma {
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
   }
 
+  export type CoverLetterCreateNestedManyWithoutConversationInput = {
+    create?: XOR<CoverLetterCreateWithoutConversationInput, CoverLetterUncheckedCreateWithoutConversationInput> | CoverLetterCreateWithoutConversationInput[] | CoverLetterUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutConversationInput | CoverLetterCreateOrConnectWithoutConversationInput[]
+    createMany?: CoverLetterCreateManyConversationInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeCreateNestedManyWithoutConversationInput = {
+    create?: XOR<OptimizedResumeCreateWithoutConversationInput, OptimizedResumeUncheckedCreateWithoutConversationInput> | OptimizedResumeCreateWithoutConversationInput[] | OptimizedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutConversationInput | OptimizedResumeCreateOrConnectWithoutConversationInput[]
+    createMany?: OptimizedResumeCreateManyConversationInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ExtractedResumeCreateWithoutConversationInput, ExtractedResumeUncheckedCreateWithoutConversationInput> | ExtractedResumeCreateWithoutConversationInput[] | ExtractedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutConversationInput | ExtractedResumeCreateOrConnectWithoutConversationInput[]
+    createMany?: ExtractedResumeCreateManyConversationInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+  }
+
   export type LLMMessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<LLMMessageCreateWithoutConversationInput, LLMMessageUncheckedCreateWithoutConversationInput> | LLMMessageCreateWithoutConversationInput[] | LLMMessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: LLMMessageCreateOrConnectWithoutConversationInput | LLMMessageCreateOrConnectWithoutConversationInput[]
@@ -20705,6 +29387,27 @@ export namespace Prisma {
     connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutConversationInput | ResumeOptimizationCreateOrConnectWithoutConversationInput[]
     createMany?: ResumeOptimizationCreateManyConversationInputEnvelope
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+  }
+
+  export type CoverLetterUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<CoverLetterCreateWithoutConversationInput, CoverLetterUncheckedCreateWithoutConversationInput> | CoverLetterCreateWithoutConversationInput[] | CoverLetterUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutConversationInput | CoverLetterCreateOrConnectWithoutConversationInput[]
+    createMany?: CoverLetterCreateManyConversationInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<OptimizedResumeCreateWithoutConversationInput, OptimizedResumeUncheckedCreateWithoutConversationInput> | OptimizedResumeCreateWithoutConversationInput[] | OptimizedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutConversationInput | OptimizedResumeCreateOrConnectWithoutConversationInput[]
+    createMany?: OptimizedResumeCreateManyConversationInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ExtractedResumeCreateWithoutConversationInput, ExtractedResumeUncheckedCreateWithoutConversationInput> | ExtractedResumeCreateWithoutConversationInput[] | ExtractedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutConversationInput | ExtractedResumeCreateOrConnectWithoutConversationInput[]
+    createMany?: ExtractedResumeCreateManyConversationInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
   }
 
   export type EnumConversationTypeFieldUpdateOperationsInput = {
@@ -20777,6 +29480,48 @@ export namespace Prisma {
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
   }
 
+  export type CoverLetterUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutConversationInput, CoverLetterUncheckedCreateWithoutConversationInput> | CoverLetterCreateWithoutConversationInput[] | CoverLetterUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutConversationInput | CoverLetterCreateOrConnectWithoutConversationInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutConversationInput | CoverLetterUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: CoverLetterCreateManyConversationInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutConversationInput | CoverLetterUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutConversationInput | CoverLetterUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutConversationInput, OptimizedResumeUncheckedCreateWithoutConversationInput> | OptimizedResumeCreateWithoutConversationInput[] | OptimizedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutConversationInput | OptimizedResumeCreateOrConnectWithoutConversationInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutConversationInput | OptimizedResumeUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: OptimizedResumeCreateManyConversationInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutConversationInput | OptimizedResumeUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutConversationInput | OptimizedResumeUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutConversationInput, ExtractedResumeUncheckedCreateWithoutConversationInput> | ExtractedResumeCreateWithoutConversationInput[] | ExtractedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutConversationInput | ExtractedResumeCreateOrConnectWithoutConversationInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutConversationInput | ExtractedResumeUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ExtractedResumeCreateManyConversationInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutConversationInput | ExtractedResumeUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutConversationInput | ExtractedResumeUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
+  }
+
   export type LLMMessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<LLMMessageCreateWithoutConversationInput, LLMMessageUncheckedCreateWithoutConversationInput> | LLMMessageCreateWithoutConversationInput[] | LLMMessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: LLMMessageCreateOrConnectWithoutConversationInput | LLMMessageCreateOrConnectWithoutConversationInput[]
@@ -20817,6 +29562,48 @@ export namespace Prisma {
     update?: ResumeOptimizationUpdateWithWhereUniqueWithoutConversationInput | ResumeOptimizationUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: ResumeOptimizationUpdateManyWithWhereWithoutConversationInput | ResumeOptimizationUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutConversationInput, CoverLetterUncheckedCreateWithoutConversationInput> | CoverLetterCreateWithoutConversationInput[] | CoverLetterUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutConversationInput | CoverLetterCreateOrConnectWithoutConversationInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutConversationInput | CoverLetterUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: CoverLetterCreateManyConversationInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutConversationInput | CoverLetterUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutConversationInput | CoverLetterUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutConversationInput, OptimizedResumeUncheckedCreateWithoutConversationInput> | OptimizedResumeCreateWithoutConversationInput[] | OptimizedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutConversationInput | OptimizedResumeCreateOrConnectWithoutConversationInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutConversationInput | OptimizedResumeUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: OptimizedResumeCreateManyConversationInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutConversationInput | OptimizedResumeUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutConversationInput | OptimizedResumeUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutConversationInput, ExtractedResumeUncheckedCreateWithoutConversationInput> | ExtractedResumeCreateWithoutConversationInput[] | ExtractedResumeUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutConversationInput | ExtractedResumeCreateOrConnectWithoutConversationInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutConversationInput | ExtractedResumeUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ExtractedResumeCreateManyConversationInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutConversationInput | ExtractedResumeUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutConversationInput | ExtractedResumeUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
   }
 
   export type LLMConversationCreateNestedOneWithoutMessagesInput = {
@@ -20863,6 +29650,12 @@ export namespace Prisma {
     connect?: LLMConversationWhereUniqueInput
   }
 
+  export type JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutAnalysesInput, JobDescriptionSummaryUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutAnalysesInput
+    connect?: JobDescriptionSummaryWhereUniqueInput
+  }
+
   export type ResumeOptimizationCreateNestedManyWithoutAnalysisInput = {
     create?: XOR<ResumeOptimizationCreateWithoutAnalysisInput, ResumeOptimizationUncheckedCreateWithoutAnalysisInput> | ResumeOptimizationCreateWithoutAnalysisInput[] | ResumeOptimizationUncheckedCreateWithoutAnalysisInput[]
     connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutAnalysisInput | ResumeOptimizationCreateOrConnectWithoutAnalysisInput[]
@@ -20870,11 +29663,53 @@ export namespace Prisma {
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
   }
 
+  export type CoverLetterCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<CoverLetterCreateWithoutAnalysisInput, CoverLetterUncheckedCreateWithoutAnalysisInput> | CoverLetterCreateWithoutAnalysisInput[] | CoverLetterUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutAnalysisInput | CoverLetterCreateOrConnectWithoutAnalysisInput[]
+    createMany?: CoverLetterCreateManyAnalysisInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<OptimizedResumeCreateWithoutAnalysisInput, OptimizedResumeUncheckedCreateWithoutAnalysisInput> | OptimizedResumeCreateWithoutAnalysisInput[] | OptimizedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutAnalysisInput | OptimizedResumeCreateOrConnectWithoutAnalysisInput[]
+    createMany?: OptimizedResumeCreateManyAnalysisInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<ExtractedResumeCreateWithoutAnalysisInput, ExtractedResumeUncheckedCreateWithoutAnalysisInput> | ExtractedResumeCreateWithoutAnalysisInput[] | ExtractedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutAnalysisInput | ExtractedResumeCreateOrConnectWithoutAnalysisInput[]
+    createMany?: ExtractedResumeCreateManyAnalysisInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+  }
+
   export type ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput = {
     create?: XOR<ResumeOptimizationCreateWithoutAnalysisInput, ResumeOptimizationUncheckedCreateWithoutAnalysisInput> | ResumeOptimizationCreateWithoutAnalysisInput[] | ResumeOptimizationUncheckedCreateWithoutAnalysisInput[]
     connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutAnalysisInput | ResumeOptimizationCreateOrConnectWithoutAnalysisInput[]
     createMany?: ResumeOptimizationCreateManyAnalysisInputEnvelope
     connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+  }
+
+  export type CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<CoverLetterCreateWithoutAnalysisInput, CoverLetterUncheckedCreateWithoutAnalysisInput> | CoverLetterCreateWithoutAnalysisInput[] | CoverLetterUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutAnalysisInput | CoverLetterCreateOrConnectWithoutAnalysisInput[]
+    createMany?: CoverLetterCreateManyAnalysisInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<OptimizedResumeCreateWithoutAnalysisInput, OptimizedResumeUncheckedCreateWithoutAnalysisInput> | OptimizedResumeCreateWithoutAnalysisInput[] | OptimizedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutAnalysisInput | OptimizedResumeCreateOrConnectWithoutAnalysisInput[]
+    createMany?: OptimizedResumeCreateManyAnalysisInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<ExtractedResumeCreateWithoutAnalysisInput, ExtractedResumeUncheckedCreateWithoutAnalysisInput> | ExtractedResumeCreateWithoutAnalysisInput[] | ExtractedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutAnalysisInput | ExtractedResumeCreateOrConnectWithoutAnalysisInput[]
+    createMany?: ExtractedResumeCreateManyAnalysisInputEnvelope
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
   }
 
   export type UserUpdateOneWithoutAnalysesNestedInput = {
@@ -20907,6 +29742,16 @@ export namespace Prisma {
     update?: XOR<XOR<LLMConversationUpdateToOneWithWhereWithoutAnalysesInput, LLMConversationUpdateWithoutAnalysesInput>, LLMConversationUncheckedUpdateWithoutAnalysesInput>
   }
 
+  export type JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutAnalysesInput, JobDescriptionSummaryUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutAnalysesInput
+    upsert?: JobDescriptionSummaryUpsertWithoutAnalysesInput
+    disconnect?: JobDescriptionSummaryWhereInput | boolean
+    delete?: JobDescriptionSummaryWhereInput | boolean
+    connect?: JobDescriptionSummaryWhereUniqueInput
+    update?: XOR<XOR<JobDescriptionSummaryUpdateToOneWithWhereWithoutAnalysesInput, JobDescriptionSummaryUpdateWithoutAnalysesInput>, JobDescriptionSummaryUncheckedUpdateWithoutAnalysesInput>
+  }
+
   export type ResumeOptimizationUpdateManyWithoutAnalysisNestedInput = {
     create?: XOR<ResumeOptimizationCreateWithoutAnalysisInput, ResumeOptimizationUncheckedCreateWithoutAnalysisInput> | ResumeOptimizationCreateWithoutAnalysisInput[] | ResumeOptimizationUncheckedCreateWithoutAnalysisInput[]
     connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutAnalysisInput | ResumeOptimizationCreateOrConnectWithoutAnalysisInput[]
@@ -20921,6 +29766,48 @@ export namespace Prisma {
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
   }
 
+  export type CoverLetterUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutAnalysisInput, CoverLetterUncheckedCreateWithoutAnalysisInput> | CoverLetterCreateWithoutAnalysisInput[] | CoverLetterUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutAnalysisInput | CoverLetterCreateOrConnectWithoutAnalysisInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutAnalysisInput | CoverLetterUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: CoverLetterCreateManyAnalysisInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutAnalysisInput | CoverLetterUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutAnalysisInput | CoverLetterUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutAnalysisInput, OptimizedResumeUncheckedCreateWithoutAnalysisInput> | OptimizedResumeCreateWithoutAnalysisInput[] | OptimizedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutAnalysisInput | OptimizedResumeCreateOrConnectWithoutAnalysisInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutAnalysisInput | OptimizedResumeUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: OptimizedResumeCreateManyAnalysisInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutAnalysisInput | OptimizedResumeUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutAnalysisInput | OptimizedResumeUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutAnalysisInput, ExtractedResumeUncheckedCreateWithoutAnalysisInput> | ExtractedResumeCreateWithoutAnalysisInput[] | ExtractedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutAnalysisInput | ExtractedResumeCreateOrConnectWithoutAnalysisInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutAnalysisInput | ExtractedResumeUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: ExtractedResumeCreateManyAnalysisInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutAnalysisInput | ExtractedResumeUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutAnalysisInput | ExtractedResumeUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
+  }
+
   export type ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput = {
     create?: XOR<ResumeOptimizationCreateWithoutAnalysisInput, ResumeOptimizationUncheckedCreateWithoutAnalysisInput> | ResumeOptimizationCreateWithoutAnalysisInput[] | ResumeOptimizationUncheckedCreateWithoutAnalysisInput[]
     connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutAnalysisInput | ResumeOptimizationCreateOrConnectWithoutAnalysisInput[]
@@ -20933,6 +29820,48 @@ export namespace Prisma {
     update?: ResumeOptimizationUpdateWithWhereUniqueWithoutAnalysisInput | ResumeOptimizationUpdateWithWhereUniqueWithoutAnalysisInput[]
     updateMany?: ResumeOptimizationUpdateManyWithWhereWithoutAnalysisInput | ResumeOptimizationUpdateManyWithWhereWithoutAnalysisInput[]
     deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutAnalysisInput, CoverLetterUncheckedCreateWithoutAnalysisInput> | CoverLetterCreateWithoutAnalysisInput[] | CoverLetterUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutAnalysisInput | CoverLetterCreateOrConnectWithoutAnalysisInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutAnalysisInput | CoverLetterUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: CoverLetterCreateManyAnalysisInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutAnalysisInput | CoverLetterUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutAnalysisInput | CoverLetterUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutAnalysisInput, OptimizedResumeUncheckedCreateWithoutAnalysisInput> | OptimizedResumeCreateWithoutAnalysisInput[] | OptimizedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutAnalysisInput | OptimizedResumeCreateOrConnectWithoutAnalysisInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutAnalysisInput | OptimizedResumeUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: OptimizedResumeCreateManyAnalysisInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutAnalysisInput | OptimizedResumeUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutAnalysisInput | OptimizedResumeUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutAnalysisInput, ExtractedResumeUncheckedCreateWithoutAnalysisInput> | ExtractedResumeCreateWithoutAnalysisInput[] | ExtractedResumeUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutAnalysisInput | ExtractedResumeCreateOrConnectWithoutAnalysisInput[]
+    upsert?: ExtractedResumeUpsertWithWhereUniqueWithoutAnalysisInput | ExtractedResumeUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: ExtractedResumeCreateManyAnalysisInputEnvelope
+    set?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    disconnect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    delete?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    connect?: ExtractedResumeWhereUniqueInput | ExtractedResumeWhereUniqueInput[]
+    update?: ExtractedResumeUpdateWithWhereUniqueWithoutAnalysisInput | ExtractedResumeUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: ExtractedResumeUpdateManyWithWhereWithoutAnalysisInput | ExtractedResumeUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
   }
 
   export type ResumeOptimizationCreateoptimizationSuggestionsInput = {
@@ -20965,6 +29894,12 @@ export namespace Prisma {
     create?: XOR<LLMConversationCreateWithoutResumeOptimizationsInput, LLMConversationUncheckedCreateWithoutResumeOptimizationsInput>
     connectOrCreate?: LLMConversationCreateOrConnectWithoutResumeOptimizationsInput
     connect?: LLMConversationWhereUniqueInput
+  }
+
+  export type JobDescriptionSummaryCreateNestedOneWithoutResumeOptimizationsInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutResumeOptimizationsInput, JobDescriptionSummaryUncheckedCreateWithoutResumeOptimizationsInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutResumeOptimizationsInput
+    connect?: JobDescriptionSummaryWhereUniqueInput
   }
 
   export type ResumeOptimizationUpdateoptimizationSuggestionsInput = {
@@ -21017,6 +29952,16 @@ export namespace Prisma {
     update?: XOR<XOR<LLMConversationUpdateToOneWithWhereWithoutResumeOptimizationsInput, LLMConversationUpdateWithoutResumeOptimizationsInput>, LLMConversationUncheckedUpdateWithoutResumeOptimizationsInput>
   }
 
+  export type JobDescriptionSummaryUpdateOneWithoutResumeOptimizationsNestedInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutResumeOptimizationsInput, JobDescriptionSummaryUncheckedCreateWithoutResumeOptimizationsInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutResumeOptimizationsInput
+    upsert?: JobDescriptionSummaryUpsertWithoutResumeOptimizationsInput
+    disconnect?: JobDescriptionSummaryWhereInput | boolean
+    delete?: JobDescriptionSummaryWhereInput | boolean
+    connect?: JobDescriptionSummaryWhereUniqueInput
+    update?: XOR<XOR<JobDescriptionSummaryUpdateToOneWithWhereWithoutResumeOptimizationsInput, JobDescriptionSummaryUpdateWithoutResumeOptimizationsInput>, JobDescriptionSummaryUncheckedUpdateWithoutResumeOptimizationsInput>
+  }
+
   export type UserCreateNestedOneWithoutSharedAnalysesInput = {
     create?: XOR<UserCreateWithoutSharedAnalysesInput, UserUncheckedCreateWithoutSharedAnalysesInput>
     connectOrCreate?: UserCreateOrConnectWithoutSharedAnalysesInput
@@ -21029,6 +29974,483 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSharedAnalysesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSharedAnalysesInput, UserUpdateWithoutSharedAnalysesInput>, UserUncheckedUpdateWithoutSharedAnalysesInput>
+  }
+
+  export type JobDescriptionSummaryCreatekeyRequirementsInput = {
+    set: string[]
+  }
+
+  export type AnalysisCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<AnalysisCreateWithoutJobSummaryInput, AnalysisUncheckedCreateWithoutJobSummaryInput> | AnalysisCreateWithoutJobSummaryInput[] | AnalysisUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutJobSummaryInput | AnalysisCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: AnalysisCreateManyJobSummaryInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  }
+
+  export type ResumeOptimizationCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<ResumeOptimizationCreateWithoutJobSummaryInput, ResumeOptimizationUncheckedCreateWithoutJobSummaryInput> | ResumeOptimizationCreateWithoutJobSummaryInput[] | ResumeOptimizationUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutJobSummaryInput | ResumeOptimizationCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: ResumeOptimizationCreateManyJobSummaryInputEnvelope
+    connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+  }
+
+  export type CoverLetterCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<CoverLetterCreateWithoutJobSummaryInput, CoverLetterUncheckedCreateWithoutJobSummaryInput> | CoverLetterCreateWithoutJobSummaryInput[] | CoverLetterUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutJobSummaryInput | CoverLetterCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: CoverLetterCreateManyJobSummaryInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<OptimizedResumeCreateWithoutJobSummaryInput, OptimizedResumeUncheckedCreateWithoutJobSummaryInput> | OptimizedResumeCreateWithoutJobSummaryInput[] | OptimizedResumeUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutJobSummaryInput | OptimizedResumeCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: OptimizedResumeCreateManyJobSummaryInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type AnalysisUncheckedCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<AnalysisCreateWithoutJobSummaryInput, AnalysisUncheckedCreateWithoutJobSummaryInput> | AnalysisCreateWithoutJobSummaryInput[] | AnalysisUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutJobSummaryInput | AnalysisCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: AnalysisCreateManyJobSummaryInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  }
+
+  export type ResumeOptimizationUncheckedCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<ResumeOptimizationCreateWithoutJobSummaryInput, ResumeOptimizationUncheckedCreateWithoutJobSummaryInput> | ResumeOptimizationCreateWithoutJobSummaryInput[] | ResumeOptimizationUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutJobSummaryInput | ResumeOptimizationCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: ResumeOptimizationCreateManyJobSummaryInputEnvelope
+    connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+  }
+
+  export type CoverLetterUncheckedCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<CoverLetterCreateWithoutJobSummaryInput, CoverLetterUncheckedCreateWithoutJobSummaryInput> | CoverLetterCreateWithoutJobSummaryInput[] | CoverLetterUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutJobSummaryInput | CoverLetterCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: CoverLetterCreateManyJobSummaryInputEnvelope
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeUncheckedCreateNestedManyWithoutJobSummaryInput = {
+    create?: XOR<OptimizedResumeCreateWithoutJobSummaryInput, OptimizedResumeUncheckedCreateWithoutJobSummaryInput> | OptimizedResumeCreateWithoutJobSummaryInput[] | OptimizedResumeUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutJobSummaryInput | OptimizedResumeCreateOrConnectWithoutJobSummaryInput[]
+    createMany?: OptimizedResumeCreateManyJobSummaryInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type JobDescriptionSummaryUpdatekeyRequirementsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type AnalysisUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<AnalysisCreateWithoutJobSummaryInput, AnalysisUncheckedCreateWithoutJobSummaryInput> | AnalysisCreateWithoutJobSummaryInput[] | AnalysisUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutJobSummaryInput | AnalysisCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutJobSummaryInput | AnalysisUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: AnalysisCreateManyJobSummaryInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutJobSummaryInput | AnalysisUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutJobSummaryInput | AnalysisUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  }
+
+  export type ResumeOptimizationUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<ResumeOptimizationCreateWithoutJobSummaryInput, ResumeOptimizationUncheckedCreateWithoutJobSummaryInput> | ResumeOptimizationCreateWithoutJobSummaryInput[] | ResumeOptimizationUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutJobSummaryInput | ResumeOptimizationCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: ResumeOptimizationUpsertWithWhereUniqueWithoutJobSummaryInput | ResumeOptimizationUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: ResumeOptimizationCreateManyJobSummaryInputEnvelope
+    set?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    disconnect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    delete?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    update?: ResumeOptimizationUpdateWithWhereUniqueWithoutJobSummaryInput | ResumeOptimizationUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: ResumeOptimizationUpdateManyWithWhereWithoutJobSummaryInput | ResumeOptimizationUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
+  }
+
+  export type CoverLetterUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutJobSummaryInput, CoverLetterUncheckedCreateWithoutJobSummaryInput> | CoverLetterCreateWithoutJobSummaryInput[] | CoverLetterUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutJobSummaryInput | CoverLetterCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutJobSummaryInput | CoverLetterUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: CoverLetterCreateManyJobSummaryInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutJobSummaryInput | CoverLetterUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutJobSummaryInput | CoverLetterUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutJobSummaryInput, OptimizedResumeUncheckedCreateWithoutJobSummaryInput> | OptimizedResumeCreateWithoutJobSummaryInput[] | OptimizedResumeUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutJobSummaryInput | OptimizedResumeCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutJobSummaryInput | OptimizedResumeUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: OptimizedResumeCreateManyJobSummaryInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutJobSummaryInput | OptimizedResumeUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutJobSummaryInput | OptimizedResumeUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<AnalysisCreateWithoutJobSummaryInput, AnalysisUncheckedCreateWithoutJobSummaryInput> | AnalysisCreateWithoutJobSummaryInput[] | AnalysisUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutJobSummaryInput | AnalysisCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutJobSummaryInput | AnalysisUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: AnalysisCreateManyJobSummaryInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutJobSummaryInput | AnalysisUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutJobSummaryInput | AnalysisUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  }
+
+  export type ResumeOptimizationUncheckedUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<ResumeOptimizationCreateWithoutJobSummaryInput, ResumeOptimizationUncheckedCreateWithoutJobSummaryInput> | ResumeOptimizationCreateWithoutJobSummaryInput[] | ResumeOptimizationUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: ResumeOptimizationCreateOrConnectWithoutJobSummaryInput | ResumeOptimizationCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: ResumeOptimizationUpsertWithWhereUniqueWithoutJobSummaryInput | ResumeOptimizationUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: ResumeOptimizationCreateManyJobSummaryInputEnvelope
+    set?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    disconnect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    delete?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    connect?: ResumeOptimizationWhereUniqueInput | ResumeOptimizationWhereUniqueInput[]
+    update?: ResumeOptimizationUpdateWithWhereUniqueWithoutJobSummaryInput | ResumeOptimizationUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: ResumeOptimizationUpdateManyWithWhereWithoutJobSummaryInput | ResumeOptimizationUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: ResumeOptimizationScalarWhereInput | ResumeOptimizationScalarWhereInput[]
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<CoverLetterCreateWithoutJobSummaryInput, CoverLetterUncheckedCreateWithoutJobSummaryInput> | CoverLetterCreateWithoutJobSummaryInput[] | CoverLetterUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: CoverLetterCreateOrConnectWithoutJobSummaryInput | CoverLetterCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: CoverLetterUpsertWithWhereUniqueWithoutJobSummaryInput | CoverLetterUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: CoverLetterCreateManyJobSummaryInputEnvelope
+    set?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    disconnect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    delete?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    connect?: CoverLetterWhereUniqueInput | CoverLetterWhereUniqueInput[]
+    update?: CoverLetterUpdateWithWhereUniqueWithoutJobSummaryInput | CoverLetterUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: CoverLetterUpdateManyWithWhereWithoutJobSummaryInput | CoverLetterUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutJobSummaryNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutJobSummaryInput, OptimizedResumeUncheckedCreateWithoutJobSummaryInput> | OptimizedResumeCreateWithoutJobSummaryInput[] | OptimizedResumeUncheckedCreateWithoutJobSummaryInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutJobSummaryInput | OptimizedResumeCreateOrConnectWithoutJobSummaryInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutJobSummaryInput | OptimizedResumeUpsertWithWhereUniqueWithoutJobSummaryInput[]
+    createMany?: OptimizedResumeCreateManyJobSummaryInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutJobSummaryInput | OptimizedResumeUpdateWithWhereUniqueWithoutJobSummaryInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutJobSummaryInput | OptimizedResumeUpdateManyWithWhereWithoutJobSummaryInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutCoverLettersInput = {
+    create?: XOR<UserCreateWithoutCoverLettersInput, UserUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCoverLettersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AnalysisCreateNestedOneWithoutCoverLettersInput = {
+    create?: XOR<AnalysisCreateWithoutCoverLettersInput, AnalysisUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutCoverLettersInput
+    connect?: AnalysisWhereUniqueInput
+  }
+
+  export type DocumentCreateNestedOneWithoutCoverLettersInput = {
+    create?: XOR<DocumentCreateWithoutCoverLettersInput, DocumentUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutCoverLettersInput
+    connect?: DocumentWhereUniqueInput
+  }
+
+  export type JobDescriptionSummaryCreateNestedOneWithoutCoverLettersInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutCoverLettersInput, JobDescriptionSummaryUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutCoverLettersInput
+    connect?: JobDescriptionSummaryWhereUniqueInput
+  }
+
+  export type LLMConversationCreateNestedOneWithoutCoverLettersInput = {
+    create?: XOR<LLMConversationCreateWithoutCoverLettersInput, LLMConversationUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutCoverLettersInput
+    connect?: LLMConversationWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutCoverLettersNestedInput = {
+    create?: XOR<UserCreateWithoutCoverLettersInput, UserUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCoverLettersInput
+    upsert?: UserUpsertWithoutCoverLettersInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCoverLettersInput, UserUpdateWithoutCoverLettersInput>, UserUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type AnalysisUpdateOneWithoutCoverLettersNestedInput = {
+    create?: XOR<AnalysisCreateWithoutCoverLettersInput, AnalysisUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutCoverLettersInput
+    upsert?: AnalysisUpsertWithoutCoverLettersInput
+    disconnect?: AnalysisWhereInput | boolean
+    delete?: AnalysisWhereInput | boolean
+    connect?: AnalysisWhereUniqueInput
+    update?: XOR<XOR<AnalysisUpdateToOneWithWhereWithoutCoverLettersInput, AnalysisUpdateWithoutCoverLettersInput>, AnalysisUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type DocumentUpdateOneWithoutCoverLettersNestedInput = {
+    create?: XOR<DocumentCreateWithoutCoverLettersInput, DocumentUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutCoverLettersInput
+    upsert?: DocumentUpsertWithoutCoverLettersInput
+    disconnect?: DocumentWhereInput | boolean
+    delete?: DocumentWhereInput | boolean
+    connect?: DocumentWhereUniqueInput
+    update?: XOR<XOR<DocumentUpdateToOneWithWhereWithoutCoverLettersInput, DocumentUpdateWithoutCoverLettersInput>, DocumentUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type JobDescriptionSummaryUpdateOneWithoutCoverLettersNestedInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutCoverLettersInput, JobDescriptionSummaryUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutCoverLettersInput
+    upsert?: JobDescriptionSummaryUpsertWithoutCoverLettersInput
+    disconnect?: JobDescriptionSummaryWhereInput | boolean
+    delete?: JobDescriptionSummaryWhereInput | boolean
+    connect?: JobDescriptionSummaryWhereUniqueInput
+    update?: XOR<XOR<JobDescriptionSummaryUpdateToOneWithWhereWithoutCoverLettersInput, JobDescriptionSummaryUpdateWithoutCoverLettersInput>, JobDescriptionSummaryUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type LLMConversationUpdateOneWithoutCoverLettersNestedInput = {
+    create?: XOR<LLMConversationCreateWithoutCoverLettersInput, LLMConversationUncheckedCreateWithoutCoverLettersInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutCoverLettersInput
+    upsert?: LLMConversationUpsertWithoutCoverLettersInput
+    disconnect?: LLMConversationWhereInput | boolean
+    delete?: LLMConversationWhereInput | boolean
+    connect?: LLMConversationWhereUniqueInput
+    update?: XOR<XOR<LLMConversationUpdateToOneWithWhereWithoutCoverLettersInput, LLMConversationUpdateWithoutCoverLettersInput>, LLMConversationUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type OptimizedResumeCreatekeywordsMatchedInput = {
+    set: string[]
+  }
+
+  export type OptimizedResumeCreateoptimizationSuggestionsInput = {
+    set: string[]
+  }
+
+  export type UserCreateNestedOneWithoutOptimizedResumesInput = {
+    create?: XOR<UserCreateWithoutOptimizedResumesInput, UserUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOptimizedResumesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AnalysisCreateNestedOneWithoutOptimizedResumesInput = {
+    create?: XOR<AnalysisCreateWithoutOptimizedResumesInput, AnalysisUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutOptimizedResumesInput
+    connect?: AnalysisWhereUniqueInput
+  }
+
+  export type DocumentCreateNestedOneWithoutOptimizedResumesInput = {
+    create?: XOR<DocumentCreateWithoutOptimizedResumesInput, DocumentUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutOptimizedResumesInput
+    connect?: DocumentWhereUniqueInput
+  }
+
+  export type JobDescriptionSummaryCreateNestedOneWithoutOptimizedResumesInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutOptimizedResumesInput, JobDescriptionSummaryUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutOptimizedResumesInput
+    connect?: JobDescriptionSummaryWhereUniqueInput
+  }
+
+  export type LLMConversationCreateNestedOneWithoutOptimizedResumesInput = {
+    create?: XOR<LLMConversationCreateWithoutOptimizedResumesInput, LLMConversationUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutOptimizedResumesInput
+    connect?: LLMConversationWhereUniqueInput
+  }
+
+  export type ExtractedResumeCreateNestedOneWithoutOptimizedResumesInput = {
+    create?: XOR<ExtractedResumeCreateWithoutOptimizedResumesInput, ExtractedResumeUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutOptimizedResumesInput
+    connect?: ExtractedResumeWhereUniqueInput
+  }
+
+  export type OptimizedResumeUpdatekeywordsMatchedInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type OptimizedResumeUpdateoptimizationSuggestionsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type UserUpdateOneWithoutOptimizedResumesNestedInput = {
+    create?: XOR<UserCreateWithoutOptimizedResumesInput, UserUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOptimizedResumesInput
+    upsert?: UserUpsertWithoutOptimizedResumesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOptimizedResumesInput, UserUpdateWithoutOptimizedResumesInput>, UserUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type AnalysisUpdateOneWithoutOptimizedResumesNestedInput = {
+    create?: XOR<AnalysisCreateWithoutOptimizedResumesInput, AnalysisUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutOptimizedResumesInput
+    upsert?: AnalysisUpsertWithoutOptimizedResumesInput
+    disconnect?: AnalysisWhereInput | boolean
+    delete?: AnalysisWhereInput | boolean
+    connect?: AnalysisWhereUniqueInput
+    update?: XOR<XOR<AnalysisUpdateToOneWithWhereWithoutOptimizedResumesInput, AnalysisUpdateWithoutOptimizedResumesInput>, AnalysisUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type DocumentUpdateOneWithoutOptimizedResumesNestedInput = {
+    create?: XOR<DocumentCreateWithoutOptimizedResumesInput, DocumentUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutOptimizedResumesInput
+    upsert?: DocumentUpsertWithoutOptimizedResumesInput
+    disconnect?: DocumentWhereInput | boolean
+    delete?: DocumentWhereInput | boolean
+    connect?: DocumentWhereUniqueInput
+    update?: XOR<XOR<DocumentUpdateToOneWithWhereWithoutOptimizedResumesInput, DocumentUpdateWithoutOptimizedResumesInput>, DocumentUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type JobDescriptionSummaryUpdateOneWithoutOptimizedResumesNestedInput = {
+    create?: XOR<JobDescriptionSummaryCreateWithoutOptimizedResumesInput, JobDescriptionSummaryUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: JobDescriptionSummaryCreateOrConnectWithoutOptimizedResumesInput
+    upsert?: JobDescriptionSummaryUpsertWithoutOptimizedResumesInput
+    disconnect?: JobDescriptionSummaryWhereInput | boolean
+    delete?: JobDescriptionSummaryWhereInput | boolean
+    connect?: JobDescriptionSummaryWhereUniqueInput
+    update?: XOR<XOR<JobDescriptionSummaryUpdateToOneWithWhereWithoutOptimizedResumesInput, JobDescriptionSummaryUpdateWithoutOptimizedResumesInput>, JobDescriptionSummaryUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type LLMConversationUpdateOneWithoutOptimizedResumesNestedInput = {
+    create?: XOR<LLMConversationCreateWithoutOptimizedResumesInput, LLMConversationUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutOptimizedResumesInput
+    upsert?: LLMConversationUpsertWithoutOptimizedResumesInput
+    disconnect?: LLMConversationWhereInput | boolean
+    delete?: LLMConversationWhereInput | boolean
+    connect?: LLMConversationWhereUniqueInput
+    update?: XOR<XOR<LLMConversationUpdateToOneWithWhereWithoutOptimizedResumesInput, LLMConversationUpdateWithoutOptimizedResumesInput>, LLMConversationUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type ExtractedResumeUpdateOneWithoutOptimizedResumesNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutOptimizedResumesInput, ExtractedResumeUncheckedCreateWithoutOptimizedResumesInput>
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutOptimizedResumesInput
+    upsert?: ExtractedResumeUpsertWithoutOptimizedResumesInput
+    disconnect?: ExtractedResumeWhereInput | boolean
+    delete?: ExtractedResumeWhereInput | boolean
+    connect?: ExtractedResumeWhereUniqueInput
+    update?: XOR<XOR<ExtractedResumeUpdateToOneWithWhereWithoutOptimizedResumesInput, ExtractedResumeUpdateWithoutOptimizedResumesInput>, ExtractedResumeUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type UserCreateNestedOneWithoutExtractedResumesInput = {
+    create?: XOR<UserCreateWithoutExtractedResumesInput, UserUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExtractedResumesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DocumentCreateNestedOneWithoutExtractedResumesInput = {
+    create?: XOR<DocumentCreateWithoutExtractedResumesInput, DocumentUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutExtractedResumesInput
+    connect?: DocumentWhereUniqueInput
+  }
+
+  export type AnalysisCreateNestedOneWithoutExtractedResumesInput = {
+    create?: XOR<AnalysisCreateWithoutExtractedResumesInput, AnalysisUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutExtractedResumesInput
+    connect?: AnalysisWhereUniqueInput
+  }
+
+  export type LLMConversationCreateNestedOneWithoutExtractedResumesInput = {
+    create?: XOR<LLMConversationCreateWithoutExtractedResumesInput, LLMConversationUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutExtractedResumesInput
+    connect?: LLMConversationWhereUniqueInput
+  }
+
+  export type OptimizedResumeCreateNestedManyWithoutExtractedResumeInput = {
+    create?: XOR<OptimizedResumeCreateWithoutExtractedResumeInput, OptimizedResumeUncheckedCreateWithoutExtractedResumeInput> | OptimizedResumeCreateWithoutExtractedResumeInput[] | OptimizedResumeUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutExtractedResumeInput | OptimizedResumeCreateOrConnectWithoutExtractedResumeInput[]
+    createMany?: OptimizedResumeCreateManyExtractedResumeInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type OptimizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput = {
+    create?: XOR<OptimizedResumeCreateWithoutExtractedResumeInput, OptimizedResumeUncheckedCreateWithoutExtractedResumeInput> | OptimizedResumeCreateWithoutExtractedResumeInput[] | OptimizedResumeUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutExtractedResumeInput | OptimizedResumeCreateOrConnectWithoutExtractedResumeInput[]
+    createMany?: OptimizedResumeCreateManyExtractedResumeInputEnvelope
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneWithoutExtractedResumesNestedInput = {
+    create?: XOR<UserCreateWithoutExtractedResumesInput, UserUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExtractedResumesInput
+    upsert?: UserUpsertWithoutExtractedResumesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutExtractedResumesInput, UserUpdateWithoutExtractedResumesInput>, UserUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type DocumentUpdateOneWithoutExtractedResumesNestedInput = {
+    create?: XOR<DocumentCreateWithoutExtractedResumesInput, DocumentUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutExtractedResumesInput
+    upsert?: DocumentUpsertWithoutExtractedResumesInput
+    disconnect?: DocumentWhereInput | boolean
+    delete?: DocumentWhereInput | boolean
+    connect?: DocumentWhereUniqueInput
+    update?: XOR<XOR<DocumentUpdateToOneWithWhereWithoutExtractedResumesInput, DocumentUpdateWithoutExtractedResumesInput>, DocumentUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type AnalysisUpdateOneWithoutExtractedResumesNestedInput = {
+    create?: XOR<AnalysisCreateWithoutExtractedResumesInput, AnalysisUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutExtractedResumesInput
+    upsert?: AnalysisUpsertWithoutExtractedResumesInput
+    disconnect?: AnalysisWhereInput | boolean
+    delete?: AnalysisWhereInput | boolean
+    connect?: AnalysisWhereUniqueInput
+    update?: XOR<XOR<AnalysisUpdateToOneWithWhereWithoutExtractedResumesInput, AnalysisUpdateWithoutExtractedResumesInput>, AnalysisUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type LLMConversationUpdateOneWithoutExtractedResumesNestedInput = {
+    create?: XOR<LLMConversationCreateWithoutExtractedResumesInput, LLMConversationUncheckedCreateWithoutExtractedResumesInput>
+    connectOrCreate?: LLMConversationCreateOrConnectWithoutExtractedResumesInput
+    upsert?: LLMConversationUpsertWithoutExtractedResumesInput
+    disconnect?: LLMConversationWhereInput | boolean
+    delete?: LLMConversationWhereInput | boolean
+    connect?: LLMConversationWhereUniqueInput
+    update?: XOR<XOR<LLMConversationUpdateToOneWithWhereWithoutExtractedResumesInput, LLMConversationUpdateWithoutExtractedResumesInput>, LLMConversationUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type OptimizedResumeUpdateManyWithoutExtractedResumeNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutExtractedResumeInput, OptimizedResumeUncheckedCreateWithoutExtractedResumeInput> | OptimizedResumeCreateWithoutExtractedResumeInput[] | OptimizedResumeUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutExtractedResumeInput | OptimizedResumeCreateOrConnectWithoutExtractedResumeInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutExtractedResumeInput | OptimizedResumeUpsertWithWhereUniqueWithoutExtractedResumeInput[]
+    createMany?: OptimizedResumeCreateManyExtractedResumeInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutExtractedResumeInput | OptimizedResumeUpdateWithWhereUniqueWithoutExtractedResumeInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutExtractedResumeInput | OptimizedResumeUpdateManyWithWhereWithoutExtractedResumeInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput = {
+    create?: XOR<OptimizedResumeCreateWithoutExtractedResumeInput, OptimizedResumeUncheckedCreateWithoutExtractedResumeInput> | OptimizedResumeCreateWithoutExtractedResumeInput[] | OptimizedResumeUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: OptimizedResumeCreateOrConnectWithoutExtractedResumeInput | OptimizedResumeCreateOrConnectWithoutExtractedResumeInput[]
+    upsert?: OptimizedResumeUpsertWithWhereUniqueWithoutExtractedResumeInput | OptimizedResumeUpsertWithWhereUniqueWithoutExtractedResumeInput[]
+    createMany?: OptimizedResumeCreateManyExtractedResumeInputEnvelope
+    set?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    disconnect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    delete?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    connect?: OptimizedResumeWhereUniqueInput | OptimizedResumeWhereUniqueInput[]
+    update?: OptimizedResumeUpdateWithWhereUniqueWithoutExtractedResumeInput | OptimizedResumeUpdateWithWhereUniqueWithoutExtractedResumeInput[]
+    updateMany?: OptimizedResumeUpdateManyWithWhereWithoutExtractedResumeInput | OptimizedResumeUpdateManyWithWhereWithoutExtractedResumeInput[]
+    deleteMany?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -21441,6 +30863,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutUserInput = {
@@ -21463,6 +30888,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutUserInput = {
@@ -21560,6 +30988,9 @@ export namespace Prisma {
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
     analyses?: AnalysisCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutUserInput = {
@@ -21579,6 +31010,9 @@ export namespace Prisma {
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutUserInput = {
@@ -21637,7 +31071,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     document?: DocumentCreateNestedOneWithoutAnalysesInput
     conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUncheckedCreateWithoutUserInput = {
@@ -21645,6 +31083,7 @@ export namespace Prisma {
     title: string
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -21657,6 +31096,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisCreateOrConnectWithoutUserInput = {
@@ -21689,6 +31131,7 @@ export namespace Prisma {
     analysis?: AnalysisCreateNestedOneWithoutResumeOptimizationsInput
     document?: DocumentCreateNestedOneWithoutResumeOptimizationsInput
     conversation?: LLMConversationCreateNestedOneWithoutResumeOptimizationsInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutResumeOptimizationsInput
   }
 
   export type ResumeOptimizationUncheckedCreateWithoutUserInput = {
@@ -21696,6 +31139,7 @@ export namespace Prisma {
     analysisId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -21720,6 +31164,168 @@ export namespace Prisma {
 
   export type ResumeOptimizationCreateManyUserInputEnvelope = {
     data: ResumeOptimizationCreateManyUserInput | ResumeOptimizationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CoverLetterCreateWithoutUserInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    analysis?: AnalysisCreateNestedOneWithoutCoverLettersInput
+    document?: DocumentCreateNestedOneWithoutCoverLettersInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutCoverLettersInput
+    conversation?: LLMConversationCreateNestedOneWithoutCoverLettersInput
+  }
+
+  export type CoverLetterUncheckedCreateWithoutUserInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateOrConnectWithoutUserInput = {
+    where: CoverLetterWhereUniqueInput
+    create: XOR<CoverLetterCreateWithoutUserInput, CoverLetterUncheckedCreateWithoutUserInput>
+  }
+
+  export type CoverLetterCreateManyUserInputEnvelope = {
+    data: CoverLetterCreateManyUserInput | CoverLetterCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OptimizedResumeCreateWithoutUserInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    analysis?: AnalysisCreateNestedOneWithoutOptimizedResumesInput
+    document?: DocumentCreateNestedOneWithoutOptimizedResumesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutOptimizedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutOptimizedResumesInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutOptimizedResumesInput
+  }
+
+  export type OptimizedResumeUncheckedCreateWithoutUserInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateOrConnectWithoutUserInput = {
+    where: OptimizedResumeWhereUniqueInput
+    create: XOR<OptimizedResumeCreateWithoutUserInput, OptimizedResumeUncheckedCreateWithoutUserInput>
+  }
+
+  export type OptimizedResumeCreateManyUserInputEnvelope = {
+    data: OptimizedResumeCreateManyUserInput | OptimizedResumeCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExtractedResumeCreateWithoutUserInput = {
+    id?: string
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    document?: DocumentCreateNestedOneWithoutExtractedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutExtractedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutExtractedResumesInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeUncheckedCreateWithoutUserInput = {
+    id?: string
+    documentId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeCreateOrConnectWithoutUserInput = {
+    where: ExtractedResumeWhereUniqueInput
+    create: XOR<ExtractedResumeCreateWithoutUserInput, ExtractedResumeUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExtractedResumeCreateManyUserInputEnvelope = {
+    data: ExtractedResumeCreateManyUserInput | ExtractedResumeCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -21980,6 +31586,7 @@ export namespace Prisma {
     title?: StringFilter<"Analysis"> | string
     documentId?: StringNullableFilter<"Analysis"> | string | null
     jobDescription?: StringFilter<"Analysis"> | string
+    jobSummaryId?: StringNullableFilter<"Analysis"> | string | null
     resumeText?: StringFilter<"Analysis"> | string
     analysisData?: StringFilter<"Analysis"> | string
     overallScore?: IntNullableFilter<"Analysis"> | number | null
@@ -22018,6 +31625,7 @@ export namespace Prisma {
     analysisId?: StringNullableFilter<"ResumeOptimization"> | string | null
     documentId?: StringNullableFilter<"ResumeOptimization"> | string | null
     jobDescription?: StringFilter<"ResumeOptimization"> | string
+    jobSummaryId?: StringNullableFilter<"ResumeOptimization"> | string | null
     resumeText?: StringFilter<"ResumeOptimization"> | string
     templateId?: StringFilter<"ResumeOptimization"> | string
     extractedData?: StringFilter<"ResumeOptimization"> | string
@@ -22033,6 +31641,131 @@ export namespace Prisma {
     processingTime?: IntNullableFilter<"ResumeOptimization"> | number | null
     createdAt?: DateTimeFilter<"ResumeOptimization"> | Date | string
     updatedAt?: DateTimeFilter<"ResumeOptimization"> | Date | string
+  }
+
+  export type CoverLetterUpsertWithWhereUniqueWithoutUserInput = {
+    where: CoverLetterWhereUniqueInput
+    update: XOR<CoverLetterUpdateWithoutUserInput, CoverLetterUncheckedUpdateWithoutUserInput>
+    create: XOR<CoverLetterCreateWithoutUserInput, CoverLetterUncheckedCreateWithoutUserInput>
+  }
+
+  export type CoverLetterUpdateWithWhereUniqueWithoutUserInput = {
+    where: CoverLetterWhereUniqueInput
+    data: XOR<CoverLetterUpdateWithoutUserInput, CoverLetterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CoverLetterUpdateManyWithWhereWithoutUserInput = {
+    where: CoverLetterScalarWhereInput
+    data: XOR<CoverLetterUpdateManyMutationInput, CoverLetterUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CoverLetterScalarWhereInput = {
+    AND?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+    OR?: CoverLetterScalarWhereInput[]
+    NOT?: CoverLetterScalarWhereInput | CoverLetterScalarWhereInput[]
+    id?: StringFilter<"CoverLetter"> | string
+    userId?: StringNullableFilter<"CoverLetter"> | string | null
+    content?: StringFilter<"CoverLetter"> | string
+    tone?: StringFilter<"CoverLetter"> | string
+    wordCount?: IntFilter<"CoverLetter"> | number
+    analysisId?: StringNullableFilter<"CoverLetter"> | string | null
+    documentId?: StringNullableFilter<"CoverLetter"> | string | null
+    jobSummaryId?: StringNullableFilter<"CoverLetter"> | string | null
+    contentHash?: StringFilter<"CoverLetter"> | string
+    provider?: StringFilter<"CoverLetter"> | string
+    model?: StringFilter<"CoverLetter"> | string
+    conversationId?: StringNullableFilter<"CoverLetter"> | string | null
+    totalTokensUsed?: IntFilter<"CoverLetter"> | number
+    totalCost?: FloatFilter<"CoverLetter"> | number
+    processingTime?: IntNullableFilter<"CoverLetter"> | number | null
+    usageCount?: IntFilter<"CoverLetter"> | number
+    lastUsedAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    createdAt?: DateTimeFilter<"CoverLetter"> | Date | string
+    updatedAt?: DateTimeFilter<"CoverLetter"> | Date | string
+  }
+
+  export type OptimizedResumeUpsertWithWhereUniqueWithoutUserInput = {
+    where: OptimizedResumeWhereUniqueInput
+    update: XOR<OptimizedResumeUpdateWithoutUserInput, OptimizedResumeUncheckedUpdateWithoutUserInput>
+    create: XOR<OptimizedResumeCreateWithoutUserInput, OptimizedResumeUncheckedCreateWithoutUserInput>
+  }
+
+  export type OptimizedResumeUpdateWithWhereUniqueWithoutUserInput = {
+    where: OptimizedResumeWhereUniqueInput
+    data: XOR<OptimizedResumeUpdateWithoutUserInput, OptimizedResumeUncheckedUpdateWithoutUserInput>
+  }
+
+  export type OptimizedResumeUpdateManyWithWhereWithoutUserInput = {
+    where: OptimizedResumeScalarWhereInput
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type OptimizedResumeScalarWhereInput = {
+    AND?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+    OR?: OptimizedResumeScalarWhereInput[]
+    NOT?: OptimizedResumeScalarWhereInput | OptimizedResumeScalarWhereInput[]
+    id?: StringFilter<"OptimizedResume"> | string
+    userId?: StringNullableFilter<"OptimizedResume"> | string | null
+    content?: StringFilter<"OptimizedResume"> | string
+    extractedData?: StringFilter<"OptimizedResume"> | string
+    templateId?: StringFilter<"OptimizedResume"> | string
+    atsScore?: IntNullableFilter<"OptimizedResume"> | number | null
+    keywordsMatched?: StringNullableListFilter<"OptimizedResume">
+    optimizationSuggestions?: StringNullableListFilter<"OptimizedResume">
+    analysisId?: StringNullableFilter<"OptimizedResume"> | string | null
+    documentId?: StringNullableFilter<"OptimizedResume"> | string | null
+    jobSummaryId?: StringNullableFilter<"OptimizedResume"> | string | null
+    extractedResumeId?: StringNullableFilter<"OptimizedResume"> | string | null
+    contentHash?: StringFilter<"OptimizedResume"> | string
+    provider?: StringFilter<"OptimizedResume"> | string
+    model?: StringFilter<"OptimizedResume"> | string
+    conversationId?: StringNullableFilter<"OptimizedResume"> | string | null
+    totalTokensUsed?: IntFilter<"OptimizedResume"> | number
+    totalCost?: FloatFilter<"OptimizedResume"> | number
+    processingTime?: IntNullableFilter<"OptimizedResume"> | number | null
+    usageCount?: IntFilter<"OptimizedResume"> | number
+    lastUsedAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    createdAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+    updatedAt?: DateTimeFilter<"OptimizedResume"> | Date | string
+  }
+
+  export type ExtractedResumeUpsertWithWhereUniqueWithoutUserInput = {
+    where: ExtractedResumeWhereUniqueInput
+    update: XOR<ExtractedResumeUpdateWithoutUserInput, ExtractedResumeUncheckedUpdateWithoutUserInput>
+    create: XOR<ExtractedResumeCreateWithoutUserInput, ExtractedResumeUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExtractedResumeUpdateWithWhereUniqueWithoutUserInput = {
+    where: ExtractedResumeWhereUniqueInput
+    data: XOR<ExtractedResumeUpdateWithoutUserInput, ExtractedResumeUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ExtractedResumeUpdateManyWithWhereWithoutUserInput = {
+    where: ExtractedResumeScalarWhereInput
+    data: XOR<ExtractedResumeUpdateManyMutationInput, ExtractedResumeUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ExtractedResumeScalarWhereInput = {
+    AND?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
+    OR?: ExtractedResumeScalarWhereInput[]
+    NOT?: ExtractedResumeScalarWhereInput | ExtractedResumeScalarWhereInput[]
+    id?: StringFilter<"ExtractedResume"> | string
+    userId?: StringNullableFilter<"ExtractedResume"> | string | null
+    documentId?: StringNullableFilter<"ExtractedResume"> | string | null
+    analysisId?: StringNullableFilter<"ExtractedResume"> | string | null
+    contentHash?: StringFilter<"ExtractedResume"> | string
+    resumeText?: StringFilter<"ExtractedResume"> | string
+    extractedData?: StringFilter<"ExtractedResume"> | string
+    provider?: StringFilter<"ExtractedResume"> | string
+    model?: StringFilter<"ExtractedResume"> | string
+    conversationId?: StringNullableFilter<"ExtractedResume"> | string | null
+    totalTokensUsed?: IntFilter<"ExtractedResume"> | number
+    totalCost?: FloatFilter<"ExtractedResume"> | number
+    processingTime?: IntNullableFilter<"ExtractedResume"> | number | null
+    usageCount?: IntFilter<"ExtractedResume"> | number
+    lastUsedAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    createdAt?: DateTimeFilter<"ExtractedResume"> | Date | string
+    updatedAt?: DateTimeFilter<"ExtractedResume"> | Date | string
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -22059,6 +31792,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -22085,6 +31821,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -22127,6 +31866,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -22153,6 +31895,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -22179,6 +31924,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -22205,6 +31953,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -22247,6 +31998,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -22273,6 +32027,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDocumentsInput = {
@@ -22299,6 +32056,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -22325,6 +32085,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -22379,6 +32142,9 @@ export namespace Prisma {
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
     analyses?: AnalysisCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutDocumentInput = {
@@ -22398,6 +32164,9 @@ export namespace Prisma {
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutDocumentInput = {
@@ -22426,7 +32195,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutAnalysesInput
     conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUncheckedCreateWithoutDocumentInput = {
@@ -22434,6 +32207,7 @@ export namespace Prisma {
     userId?: string | null
     title: string
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -22446,6 +32220,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisCreateOrConnectWithoutDocumentInput = {
@@ -22478,6 +32255,7 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutResumeOptimizationsInput
     analysis?: AnalysisCreateNestedOneWithoutResumeOptimizationsInput
     conversation?: LLMConversationCreateNestedOneWithoutResumeOptimizationsInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutResumeOptimizationsInput
   }
 
   export type ResumeOptimizationUncheckedCreateWithoutDocumentInput = {
@@ -22485,6 +32263,7 @@ export namespace Prisma {
     userId?: string | null
     analysisId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -22509,6 +32288,168 @@ export namespace Prisma {
 
   export type ResumeOptimizationCreateManyDocumentInputEnvelope = {
     data: ResumeOptimizationCreateManyDocumentInput | ResumeOptimizationCreateManyDocumentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CoverLetterCreateWithoutDocumentInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCoverLettersInput
+    analysis?: AnalysisCreateNestedOneWithoutCoverLettersInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutCoverLettersInput
+    conversation?: LLMConversationCreateNestedOneWithoutCoverLettersInput
+  }
+
+  export type CoverLetterUncheckedCreateWithoutDocumentInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateOrConnectWithoutDocumentInput = {
+    where: CoverLetterWhereUniqueInput
+    create: XOR<CoverLetterCreateWithoutDocumentInput, CoverLetterUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type CoverLetterCreateManyDocumentInputEnvelope = {
+    data: CoverLetterCreateManyDocumentInput | CoverLetterCreateManyDocumentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OptimizedResumeCreateWithoutDocumentInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOptimizedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutOptimizedResumesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutOptimizedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutOptimizedResumesInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutOptimizedResumesInput
+  }
+
+  export type OptimizedResumeUncheckedCreateWithoutDocumentInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateOrConnectWithoutDocumentInput = {
+    where: OptimizedResumeWhereUniqueInput
+    create: XOR<OptimizedResumeCreateWithoutDocumentInput, OptimizedResumeUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type OptimizedResumeCreateManyDocumentInputEnvelope = {
+    data: OptimizedResumeCreateManyDocumentInput | OptimizedResumeCreateManyDocumentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExtractedResumeCreateWithoutDocumentInput = {
+    id?: string
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutExtractedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutExtractedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutExtractedResumesInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeUncheckedCreateWithoutDocumentInput = {
+    id?: string
+    userId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeCreateOrConnectWithoutDocumentInput = {
+    where: ExtractedResumeWhereUniqueInput
+    create: XOR<ExtractedResumeCreateWithoutDocumentInput, ExtractedResumeUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type ExtractedResumeCreateManyDocumentInputEnvelope = {
+    data: ExtractedResumeCreateManyDocumentInput | ExtractedResumeCreateManyDocumentInput[]
     skipDuplicates?: boolean
   }
 
@@ -22547,6 +32488,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -22573,6 +32517,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsageRecordUpsertWithWhereUniqueWithoutDocumentInput = {
@@ -22639,6 +32586,54 @@ export namespace Prisma {
     data: XOR<ResumeOptimizationUpdateManyMutationInput, ResumeOptimizationUncheckedUpdateManyWithoutDocumentInput>
   }
 
+  export type CoverLetterUpsertWithWhereUniqueWithoutDocumentInput = {
+    where: CoverLetterWhereUniqueInput
+    update: XOR<CoverLetterUpdateWithoutDocumentInput, CoverLetterUncheckedUpdateWithoutDocumentInput>
+    create: XOR<CoverLetterCreateWithoutDocumentInput, CoverLetterUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type CoverLetterUpdateWithWhereUniqueWithoutDocumentInput = {
+    where: CoverLetterWhereUniqueInput
+    data: XOR<CoverLetterUpdateWithoutDocumentInput, CoverLetterUncheckedUpdateWithoutDocumentInput>
+  }
+
+  export type CoverLetterUpdateManyWithWhereWithoutDocumentInput = {
+    where: CoverLetterScalarWhereInput
+    data: XOR<CoverLetterUpdateManyMutationInput, CoverLetterUncheckedUpdateManyWithoutDocumentInput>
+  }
+
+  export type OptimizedResumeUpsertWithWhereUniqueWithoutDocumentInput = {
+    where: OptimizedResumeWhereUniqueInput
+    update: XOR<OptimizedResumeUpdateWithoutDocumentInput, OptimizedResumeUncheckedUpdateWithoutDocumentInput>
+    create: XOR<OptimizedResumeCreateWithoutDocumentInput, OptimizedResumeUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type OptimizedResumeUpdateWithWhereUniqueWithoutDocumentInput = {
+    where: OptimizedResumeWhereUniqueInput
+    data: XOR<OptimizedResumeUpdateWithoutDocumentInput, OptimizedResumeUncheckedUpdateWithoutDocumentInput>
+  }
+
+  export type OptimizedResumeUpdateManyWithWhereWithoutDocumentInput = {
+    where: OptimizedResumeScalarWhereInput
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyWithoutDocumentInput>
+  }
+
+  export type ExtractedResumeUpsertWithWhereUniqueWithoutDocumentInput = {
+    where: ExtractedResumeWhereUniqueInput
+    update: XOR<ExtractedResumeUpdateWithoutDocumentInput, ExtractedResumeUncheckedUpdateWithoutDocumentInput>
+    create: XOR<ExtractedResumeCreateWithoutDocumentInput, ExtractedResumeUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type ExtractedResumeUpdateWithWhereUniqueWithoutDocumentInput = {
+    where: ExtractedResumeWhereUniqueInput
+    data: XOR<ExtractedResumeUpdateWithoutDocumentInput, ExtractedResumeUncheckedUpdateWithoutDocumentInput>
+  }
+
+  export type ExtractedResumeUpdateManyWithWhereWithoutDocumentInput = {
+    where: ExtractedResumeScalarWhereInput
+    data: XOR<ExtractedResumeUpdateManyMutationInput, ExtractedResumeUncheckedUpdateManyWithoutDocumentInput>
+  }
+
   export type UserCreateWithoutUsageRecordsInput = {
     id?: string
     email: string
@@ -22663,6 +32658,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutUsageRecordsInput = {
@@ -22689,6 +32687,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutUsageRecordsInput = {
@@ -22716,6 +32717,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutUsageRecordsInput = {
@@ -22738,6 +32742,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutUsageRecordsInput = {
@@ -22780,6 +32787,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUsageRecordsInput = {
@@ -22806,6 +32816,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DocumentUpsertWithoutUsageRecordsInput = {
@@ -22839,6 +32852,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutUsageRecordsInput = {
@@ -22861,6 +32877,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type UserCreateWithoutInvoicesInput = {
@@ -22887,6 +32906,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvoicesInput = {
@@ -22913,6 +32935,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvoicesInput = {
@@ -22955,6 +32980,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoicesInput = {
@@ -22981,6 +33009,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutLlmConversationsInput = {
@@ -23007,6 +33038,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutLlmConversationsInput = {
@@ -23033,6 +33067,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutLlmConversationsInput = {
@@ -23060,6 +33097,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutLlmConversationsInput = {
@@ -23082,6 +33122,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutLlmConversationsInput = {
@@ -23147,7 +33190,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutAnalysesInput
     document?: DocumentCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUncheckedCreateWithoutConversationInput = {
@@ -23156,6 +33203,7 @@ export namespace Prisma {
     title: string
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -23167,6 +33215,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisCreateOrConnectWithoutConversationInput = {
@@ -23199,6 +33250,7 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutResumeOptimizationsInput
     analysis?: AnalysisCreateNestedOneWithoutResumeOptimizationsInput
     document?: DocumentCreateNestedOneWithoutResumeOptimizationsInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutResumeOptimizationsInput
   }
 
   export type ResumeOptimizationUncheckedCreateWithoutConversationInput = {
@@ -23207,6 +33259,7 @@ export namespace Prisma {
     analysisId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -23230,6 +33283,168 @@ export namespace Prisma {
 
   export type ResumeOptimizationCreateManyConversationInputEnvelope = {
     data: ResumeOptimizationCreateManyConversationInput | ResumeOptimizationCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CoverLetterCreateWithoutConversationInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCoverLettersInput
+    analysis?: AnalysisCreateNestedOneWithoutCoverLettersInput
+    document?: DocumentCreateNestedOneWithoutCoverLettersInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutCoverLettersInput
+  }
+
+  export type CoverLetterUncheckedCreateWithoutConversationInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateOrConnectWithoutConversationInput = {
+    where: CoverLetterWhereUniqueInput
+    create: XOR<CoverLetterCreateWithoutConversationInput, CoverLetterUncheckedCreateWithoutConversationInput>
+  }
+
+  export type CoverLetterCreateManyConversationInputEnvelope = {
+    data: CoverLetterCreateManyConversationInput | CoverLetterCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OptimizedResumeCreateWithoutConversationInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOptimizedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutOptimizedResumesInput
+    document?: DocumentCreateNestedOneWithoutOptimizedResumesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutOptimizedResumesInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutOptimizedResumesInput
+  }
+
+  export type OptimizedResumeUncheckedCreateWithoutConversationInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateOrConnectWithoutConversationInput = {
+    where: OptimizedResumeWhereUniqueInput
+    create: XOR<OptimizedResumeCreateWithoutConversationInput, OptimizedResumeUncheckedCreateWithoutConversationInput>
+  }
+
+  export type OptimizedResumeCreateManyConversationInputEnvelope = {
+    data: OptimizedResumeCreateManyConversationInput | OptimizedResumeCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExtractedResumeCreateWithoutConversationInput = {
+    id?: string
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutExtractedResumesInput
+    document?: DocumentCreateNestedOneWithoutExtractedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutExtractedResumesInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeUncheckedCreateWithoutConversationInput = {
+    id?: string
+    userId?: string | null
+    documentId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeCreateOrConnectWithoutConversationInput = {
+    where: ExtractedResumeWhereUniqueInput
+    create: XOR<ExtractedResumeCreateWithoutConversationInput, ExtractedResumeUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ExtractedResumeCreateManyConversationInputEnvelope = {
+    data: ExtractedResumeCreateManyConversationInput | ExtractedResumeCreateManyConversationInput[]
     skipDuplicates?: boolean
   }
 
@@ -23268,6 +33483,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLlmConversationsInput = {
@@ -23294,6 +33512,9 @@ export namespace Prisma {
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DocumentUpsertWithoutLlmConversationsInput = {
@@ -23327,6 +33548,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutLlmConversationsInput = {
@@ -23349,6 +33573,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type LLMMessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -23419,6 +33646,54 @@ export namespace Prisma {
     data: XOR<ResumeOptimizationUpdateManyMutationInput, ResumeOptimizationUncheckedUpdateManyWithoutConversationInput>
   }
 
+  export type CoverLetterUpsertWithWhereUniqueWithoutConversationInput = {
+    where: CoverLetterWhereUniqueInput
+    update: XOR<CoverLetterUpdateWithoutConversationInput, CoverLetterUncheckedUpdateWithoutConversationInput>
+    create: XOR<CoverLetterCreateWithoutConversationInput, CoverLetterUncheckedCreateWithoutConversationInput>
+  }
+
+  export type CoverLetterUpdateWithWhereUniqueWithoutConversationInput = {
+    where: CoverLetterWhereUniqueInput
+    data: XOR<CoverLetterUpdateWithoutConversationInput, CoverLetterUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type CoverLetterUpdateManyWithWhereWithoutConversationInput = {
+    where: CoverLetterScalarWhereInput
+    data: XOR<CoverLetterUpdateManyMutationInput, CoverLetterUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type OptimizedResumeUpsertWithWhereUniqueWithoutConversationInput = {
+    where: OptimizedResumeWhereUniqueInput
+    update: XOR<OptimizedResumeUpdateWithoutConversationInput, OptimizedResumeUncheckedUpdateWithoutConversationInput>
+    create: XOR<OptimizedResumeCreateWithoutConversationInput, OptimizedResumeUncheckedCreateWithoutConversationInput>
+  }
+
+  export type OptimizedResumeUpdateWithWhereUniqueWithoutConversationInput = {
+    where: OptimizedResumeWhereUniqueInput
+    data: XOR<OptimizedResumeUpdateWithoutConversationInput, OptimizedResumeUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type OptimizedResumeUpdateManyWithWhereWithoutConversationInput = {
+    where: OptimizedResumeScalarWhereInput
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type ExtractedResumeUpsertWithWhereUniqueWithoutConversationInput = {
+    where: ExtractedResumeWhereUniqueInput
+    update: XOR<ExtractedResumeUpdateWithoutConversationInput, ExtractedResumeUncheckedUpdateWithoutConversationInput>
+    create: XOR<ExtractedResumeCreateWithoutConversationInput, ExtractedResumeUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ExtractedResumeUpdateWithWhereUniqueWithoutConversationInput = {
+    where: ExtractedResumeWhereUniqueInput
+    data: XOR<ExtractedResumeUpdateWithoutConversationInput, ExtractedResumeUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ExtractedResumeUpdateManyWithWhereWithoutConversationInput = {
+    where: ExtractedResumeScalarWhereInput
+    data: XOR<ExtractedResumeUpdateManyMutationInput, ExtractedResumeUncheckedUpdateManyWithoutConversationInput>
+  }
+
   export type LLMConversationCreateWithoutMessagesInput = {
     id?: string
     type: $Enums.ConversationType
@@ -23436,6 +33711,9 @@ export namespace Prisma {
     document?: DocumentCreateNestedOneWithoutLlmConversationsInput
     analyses?: AnalysisCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutMessagesInput = {
@@ -23455,6 +33733,9 @@ export namespace Prisma {
     errorMessage?: string | null
     analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutMessagesInput = {
@@ -23490,6 +33771,9 @@ export namespace Prisma {
     document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
     analyses?: AnalysisUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutMessagesInput = {
@@ -23509,6 +33793,9 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type UserCreateWithoutAnalysesInput = {
@@ -23535,6 +33822,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAnalysesInput = {
@@ -23561,6 +33851,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAnalysesInput = {
@@ -23588,6 +33881,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutAnalysesInput = {
@@ -23610,6 +33906,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutAnalysesInput = {
@@ -23634,6 +33933,9 @@ export namespace Prisma {
     document?: DocumentCreateNestedOneWithoutLlmConversationsInput
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutAnalysesInput = {
@@ -23653,11 +33955,67 @@ export namespace Prisma {
     errorMessage?: string | null
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutAnalysesInput = {
     where: LLMConversationWhereUniqueInput
     create: XOR<LLMConversationCreateWithoutAnalysesInput, LLMConversationUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type JobDescriptionSummaryCreateWithoutAnalysesInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryUncheckedCreateWithoutAnalysesInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryCreateOrConnectWithoutAnalysesInput = {
+    where: JobDescriptionSummaryWhereUniqueInput
+    create: XOR<JobDescriptionSummaryCreateWithoutAnalysesInput, JobDescriptionSummaryUncheckedCreateWithoutAnalysesInput>
   }
 
   export type ResumeOptimizationCreateWithoutAnalysisInput = {
@@ -23680,6 +34038,7 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutResumeOptimizationsInput
     document?: DocumentCreateNestedOneWithoutResumeOptimizationsInput
     conversation?: LLMConversationCreateNestedOneWithoutResumeOptimizationsInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutResumeOptimizationsInput
   }
 
   export type ResumeOptimizationUncheckedCreateWithoutAnalysisInput = {
@@ -23687,6 +34046,7 @@ export namespace Prisma {
     userId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -23711,6 +34071,168 @@ export namespace Prisma {
 
   export type ResumeOptimizationCreateManyAnalysisInputEnvelope = {
     data: ResumeOptimizationCreateManyAnalysisInput | ResumeOptimizationCreateManyAnalysisInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CoverLetterCreateWithoutAnalysisInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCoverLettersInput
+    document?: DocumentCreateNestedOneWithoutCoverLettersInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutCoverLettersInput
+    conversation?: LLMConversationCreateNestedOneWithoutCoverLettersInput
+  }
+
+  export type CoverLetterUncheckedCreateWithoutAnalysisInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateOrConnectWithoutAnalysisInput = {
+    where: CoverLetterWhereUniqueInput
+    create: XOR<CoverLetterCreateWithoutAnalysisInput, CoverLetterUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type CoverLetterCreateManyAnalysisInputEnvelope = {
+    data: CoverLetterCreateManyAnalysisInput | CoverLetterCreateManyAnalysisInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OptimizedResumeCreateWithoutAnalysisInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOptimizedResumesInput
+    document?: DocumentCreateNestedOneWithoutOptimizedResumesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutOptimizedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutOptimizedResumesInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutOptimizedResumesInput
+  }
+
+  export type OptimizedResumeUncheckedCreateWithoutAnalysisInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateOrConnectWithoutAnalysisInput = {
+    where: OptimizedResumeWhereUniqueInput
+    create: XOR<OptimizedResumeCreateWithoutAnalysisInput, OptimizedResumeUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type OptimizedResumeCreateManyAnalysisInputEnvelope = {
+    data: OptimizedResumeCreateManyAnalysisInput | OptimizedResumeCreateManyAnalysisInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExtractedResumeCreateWithoutAnalysisInput = {
+    id?: string
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutExtractedResumesInput
+    document?: DocumentCreateNestedOneWithoutExtractedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutExtractedResumesInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeUncheckedCreateWithoutAnalysisInput = {
+    id?: string
+    userId?: string | null
+    documentId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeCreateOrConnectWithoutAnalysisInput = {
+    where: ExtractedResumeWhereUniqueInput
+    create: XOR<ExtractedResumeCreateWithoutAnalysisInput, ExtractedResumeUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type ExtractedResumeCreateManyAnalysisInputEnvelope = {
+    data: ExtractedResumeCreateManyAnalysisInput | ExtractedResumeCreateManyAnalysisInput[]
     skipDuplicates?: boolean
   }
 
@@ -23749,6 +34271,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAnalysesInput = {
@@ -23775,6 +34300,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DocumentUpsertWithoutAnalysesInput = {
@@ -23808,6 +34336,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutAnalysesInput = {
@@ -23830,6 +34361,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type LLMConversationUpsertWithoutAnalysesInput = {
@@ -23860,6 +34394,9 @@ export namespace Prisma {
     document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutAnalysesInput = {
@@ -23879,6 +34416,68 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type JobDescriptionSummaryUpsertWithoutAnalysesInput = {
+    update: XOR<JobDescriptionSummaryUpdateWithoutAnalysesInput, JobDescriptionSummaryUncheckedUpdateWithoutAnalysesInput>
+    create: XOR<JobDescriptionSummaryCreateWithoutAnalysesInput, JobDescriptionSummaryUncheckedCreateWithoutAnalysesInput>
+    where?: JobDescriptionSummaryWhereInput
+  }
+
+  export type JobDescriptionSummaryUpdateToOneWithWhereWithoutAnalysesInput = {
+    where?: JobDescriptionSummaryWhereInput
+    data: XOR<JobDescriptionSummaryUpdateWithoutAnalysesInput, JobDescriptionSummaryUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type JobDescriptionSummaryUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type JobDescriptionSummaryUncheckedUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutJobSummaryNestedInput
   }
 
   export type ResumeOptimizationUpsertWithWhereUniqueWithoutAnalysisInput = {
@@ -23895,6 +34494,54 @@ export namespace Prisma {
   export type ResumeOptimizationUpdateManyWithWhereWithoutAnalysisInput = {
     where: ResumeOptimizationScalarWhereInput
     data: XOR<ResumeOptimizationUpdateManyMutationInput, ResumeOptimizationUncheckedUpdateManyWithoutAnalysisInput>
+  }
+
+  export type CoverLetterUpsertWithWhereUniqueWithoutAnalysisInput = {
+    where: CoverLetterWhereUniqueInput
+    update: XOR<CoverLetterUpdateWithoutAnalysisInput, CoverLetterUncheckedUpdateWithoutAnalysisInput>
+    create: XOR<CoverLetterCreateWithoutAnalysisInput, CoverLetterUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type CoverLetterUpdateWithWhereUniqueWithoutAnalysisInput = {
+    where: CoverLetterWhereUniqueInput
+    data: XOR<CoverLetterUpdateWithoutAnalysisInput, CoverLetterUncheckedUpdateWithoutAnalysisInput>
+  }
+
+  export type CoverLetterUpdateManyWithWhereWithoutAnalysisInput = {
+    where: CoverLetterScalarWhereInput
+    data: XOR<CoverLetterUpdateManyMutationInput, CoverLetterUncheckedUpdateManyWithoutAnalysisInput>
+  }
+
+  export type OptimizedResumeUpsertWithWhereUniqueWithoutAnalysisInput = {
+    where: OptimizedResumeWhereUniqueInput
+    update: XOR<OptimizedResumeUpdateWithoutAnalysisInput, OptimizedResumeUncheckedUpdateWithoutAnalysisInput>
+    create: XOR<OptimizedResumeCreateWithoutAnalysisInput, OptimizedResumeUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type OptimizedResumeUpdateWithWhereUniqueWithoutAnalysisInput = {
+    where: OptimizedResumeWhereUniqueInput
+    data: XOR<OptimizedResumeUpdateWithoutAnalysisInput, OptimizedResumeUncheckedUpdateWithoutAnalysisInput>
+  }
+
+  export type OptimizedResumeUpdateManyWithWhereWithoutAnalysisInput = {
+    where: OptimizedResumeScalarWhereInput
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyWithoutAnalysisInput>
+  }
+
+  export type ExtractedResumeUpsertWithWhereUniqueWithoutAnalysisInput = {
+    where: ExtractedResumeWhereUniqueInput
+    update: XOR<ExtractedResumeUpdateWithoutAnalysisInput, ExtractedResumeUncheckedUpdateWithoutAnalysisInput>
+    create: XOR<ExtractedResumeCreateWithoutAnalysisInput, ExtractedResumeUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type ExtractedResumeUpdateWithWhereUniqueWithoutAnalysisInput = {
+    where: ExtractedResumeWhereUniqueInput
+    data: XOR<ExtractedResumeUpdateWithoutAnalysisInput, ExtractedResumeUncheckedUpdateWithoutAnalysisInput>
+  }
+
+  export type ExtractedResumeUpdateManyWithWhereWithoutAnalysisInput = {
+    where: ExtractedResumeScalarWhereInput
+    data: XOR<ExtractedResumeUpdateManyMutationInput, ExtractedResumeUncheckedUpdateManyWithoutAnalysisInput>
   }
 
   export type UserCreateWithoutResumeOptimizationsInput = {
@@ -23921,6 +34568,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutResumeOptimizationsInput = {
@@ -23947,6 +34597,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutResumeOptimizationsInput = {
@@ -23971,6 +34624,10 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutAnalysesInput
     document?: DocumentCreateNestedOneWithoutAnalysesInput
     conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUncheckedCreateWithoutResumeOptimizationsInput = {
@@ -23979,6 +34636,7 @@ export namespace Prisma {
     title: string
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -23990,6 +34648,9 @@ export namespace Prisma {
     processingTime?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisCreateOrConnectWithoutResumeOptimizationsInput = {
@@ -24017,6 +34678,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutResumeOptimizationsInput = {
@@ -24039,6 +34703,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutResumeOptimizationsInput = {
@@ -24063,6 +34730,9 @@ export namespace Prisma {
     document?: DocumentCreateNestedOneWithoutLlmConversationsInput
     messages?: LLMMessageCreateNestedManyWithoutConversationInput
     analyses?: AnalysisCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationUncheckedCreateWithoutResumeOptimizationsInput = {
@@ -24082,11 +34752,67 @@ export namespace Prisma {
     errorMessage?: string | null
     messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type LLMConversationCreateOrConnectWithoutResumeOptimizationsInput = {
     where: LLMConversationWhereUniqueInput
     create: XOR<LLMConversationCreateWithoutResumeOptimizationsInput, LLMConversationUncheckedCreateWithoutResumeOptimizationsInput>
+  }
+
+  export type JobDescriptionSummaryCreateWithoutResumeOptimizationsInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryUncheckedCreateWithoutResumeOptimizationsInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryCreateOrConnectWithoutResumeOptimizationsInput = {
+    where: JobDescriptionSummaryWhereUniqueInput
+    create: XOR<JobDescriptionSummaryCreateWithoutResumeOptimizationsInput, JobDescriptionSummaryUncheckedCreateWithoutResumeOptimizationsInput>
   }
 
   export type UserUpsertWithoutResumeOptimizationsInput = {
@@ -24124,6 +34850,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutResumeOptimizationsInput = {
@@ -24150,6 +34879,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnalysisUpsertWithoutResumeOptimizationsInput = {
@@ -24180,6 +34912,10 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutAnalysesNestedInput
     document?: DocumentUpdateOneWithoutAnalysesNestedInput
     conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateWithoutResumeOptimizationsInput = {
@@ -24188,6 +34924,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -24199,6 +34936,9 @@ export namespace Prisma {
     processingTime?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type DocumentUpsertWithoutResumeOptimizationsInput = {
@@ -24232,6 +34972,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutResumeOptimizationsInput = {
@@ -24254,6 +34997,9 @@ export namespace Prisma {
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type LLMConversationUpsertWithoutResumeOptimizationsInput = {
@@ -24284,6 +35030,9 @@ export namespace Prisma {
     document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutResumeOptimizationsInput = {
@@ -24303,6 +35052,68 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type JobDescriptionSummaryUpsertWithoutResumeOptimizationsInput = {
+    update: XOR<JobDescriptionSummaryUpdateWithoutResumeOptimizationsInput, JobDescriptionSummaryUncheckedUpdateWithoutResumeOptimizationsInput>
+    create: XOR<JobDescriptionSummaryCreateWithoutResumeOptimizationsInput, JobDescriptionSummaryUncheckedCreateWithoutResumeOptimizationsInput>
+    where?: JobDescriptionSummaryWhereInput
+  }
+
+  export type JobDescriptionSummaryUpdateToOneWithWhereWithoutResumeOptimizationsInput = {
+    where?: JobDescriptionSummaryWhereInput
+    data: XOR<JobDescriptionSummaryUpdateWithoutResumeOptimizationsInput, JobDescriptionSummaryUncheckedUpdateWithoutResumeOptimizationsInput>
+  }
+
+  export type JobDescriptionSummaryUpdateWithoutResumeOptimizationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type JobDescriptionSummaryUncheckedUpdateWithoutResumeOptimizationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUncheckedUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutJobSummaryNestedInput
   }
 
   export type UserCreateWithoutSharedAnalysesInput = {
@@ -24329,6 +35140,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
     analyses?: AnalysisCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSharedAnalysesInput = {
@@ -24355,6 +35169,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
     analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
     resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSharedAnalysesInput = {
@@ -24397,6 +35214,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSharedAnalysesInput = {
@@ -24423,6 +35243,2073 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AnalysisCreateWithoutJobSummaryInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAnalysesInput
+    document?: DocumentCreateNestedOneWithoutAnalysesInput
+    conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisCreateOrConnectWithoutJobSummaryInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutJobSummaryInput, AnalysisUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type AnalysisCreateManyJobSummaryInputEnvelope = {
+    data: AnalysisCreateManyJobSummaryInput | AnalysisCreateManyJobSummaryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ResumeOptimizationCreateWithoutJobSummaryInput = {
+    id?: string
+    jobDescription: string
+    resumeText: string
+    templateId: string
+    extractedData: string
+    optimizedResume: string
+    optimizationSuggestions?: ResumeOptimizationCreateoptimizationSuggestionsInput | string[]
+    atsScore?: number | null
+    keywordsMatched?: ResumeOptimizationCreatekeywordsMatchedInput | string[]
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutResumeOptimizationsInput
+    analysis?: AnalysisCreateNestedOneWithoutResumeOptimizationsInput
+    document?: DocumentCreateNestedOneWithoutResumeOptimizationsInput
+    conversation?: LLMConversationCreateNestedOneWithoutResumeOptimizationsInput
+  }
+
+  export type ResumeOptimizationUncheckedCreateWithoutJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    analysisId?: string | null
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    templateId: string
+    extractedData: string
+    optimizedResume: string
+    optimizationSuggestions?: ResumeOptimizationCreateoptimizationSuggestionsInput | string[]
+    atsScore?: number | null
+    keywordsMatched?: ResumeOptimizationCreatekeywordsMatchedInput | string[]
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ResumeOptimizationCreateOrConnectWithoutJobSummaryInput = {
+    where: ResumeOptimizationWhereUniqueInput
+    create: XOR<ResumeOptimizationCreateWithoutJobSummaryInput, ResumeOptimizationUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type ResumeOptimizationCreateManyJobSummaryInputEnvelope = {
+    data: ResumeOptimizationCreateManyJobSummaryInput | ResumeOptimizationCreateManyJobSummaryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CoverLetterCreateWithoutJobSummaryInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCoverLettersInput
+    analysis?: AnalysisCreateNestedOneWithoutCoverLettersInput
+    document?: DocumentCreateNestedOneWithoutCoverLettersInput
+    conversation?: LLMConversationCreateNestedOneWithoutCoverLettersInput
+  }
+
+  export type CoverLetterUncheckedCreateWithoutJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateOrConnectWithoutJobSummaryInput = {
+    where: CoverLetterWhereUniqueInput
+    create: XOR<CoverLetterCreateWithoutJobSummaryInput, CoverLetterUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type CoverLetterCreateManyJobSummaryInputEnvelope = {
+    data: CoverLetterCreateManyJobSummaryInput | CoverLetterCreateManyJobSummaryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OptimizedResumeCreateWithoutJobSummaryInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOptimizedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutOptimizedResumesInput
+    document?: DocumentCreateNestedOneWithoutOptimizedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutOptimizedResumesInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutOptimizedResumesInput
+  }
+
+  export type OptimizedResumeUncheckedCreateWithoutJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateOrConnectWithoutJobSummaryInput = {
+    where: OptimizedResumeWhereUniqueInput
+    create: XOR<OptimizedResumeCreateWithoutJobSummaryInput, OptimizedResumeUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type OptimizedResumeCreateManyJobSummaryInputEnvelope = {
+    data: OptimizedResumeCreateManyJobSummaryInput | OptimizedResumeCreateManyJobSummaryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AnalysisUpsertWithWhereUniqueWithoutJobSummaryInput = {
+    where: AnalysisWhereUniqueInput
+    update: XOR<AnalysisUpdateWithoutJobSummaryInput, AnalysisUncheckedUpdateWithoutJobSummaryInput>
+    create: XOR<AnalysisCreateWithoutJobSummaryInput, AnalysisUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type AnalysisUpdateWithWhereUniqueWithoutJobSummaryInput = {
+    where: AnalysisWhereUniqueInput
+    data: XOR<AnalysisUpdateWithoutJobSummaryInput, AnalysisUncheckedUpdateWithoutJobSummaryInput>
+  }
+
+  export type AnalysisUpdateManyWithWhereWithoutJobSummaryInput = {
+    where: AnalysisScalarWhereInput
+    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutJobSummaryInput>
+  }
+
+  export type ResumeOptimizationUpsertWithWhereUniqueWithoutJobSummaryInput = {
+    where: ResumeOptimizationWhereUniqueInput
+    update: XOR<ResumeOptimizationUpdateWithoutJobSummaryInput, ResumeOptimizationUncheckedUpdateWithoutJobSummaryInput>
+    create: XOR<ResumeOptimizationCreateWithoutJobSummaryInput, ResumeOptimizationUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type ResumeOptimizationUpdateWithWhereUniqueWithoutJobSummaryInput = {
+    where: ResumeOptimizationWhereUniqueInput
+    data: XOR<ResumeOptimizationUpdateWithoutJobSummaryInput, ResumeOptimizationUncheckedUpdateWithoutJobSummaryInput>
+  }
+
+  export type ResumeOptimizationUpdateManyWithWhereWithoutJobSummaryInput = {
+    where: ResumeOptimizationScalarWhereInput
+    data: XOR<ResumeOptimizationUpdateManyMutationInput, ResumeOptimizationUncheckedUpdateManyWithoutJobSummaryInput>
+  }
+
+  export type CoverLetterUpsertWithWhereUniqueWithoutJobSummaryInput = {
+    where: CoverLetterWhereUniqueInput
+    update: XOR<CoverLetterUpdateWithoutJobSummaryInput, CoverLetterUncheckedUpdateWithoutJobSummaryInput>
+    create: XOR<CoverLetterCreateWithoutJobSummaryInput, CoverLetterUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type CoverLetterUpdateWithWhereUniqueWithoutJobSummaryInput = {
+    where: CoverLetterWhereUniqueInput
+    data: XOR<CoverLetterUpdateWithoutJobSummaryInput, CoverLetterUncheckedUpdateWithoutJobSummaryInput>
+  }
+
+  export type CoverLetterUpdateManyWithWhereWithoutJobSummaryInput = {
+    where: CoverLetterScalarWhereInput
+    data: XOR<CoverLetterUpdateManyMutationInput, CoverLetterUncheckedUpdateManyWithoutJobSummaryInput>
+  }
+
+  export type OptimizedResumeUpsertWithWhereUniqueWithoutJobSummaryInput = {
+    where: OptimizedResumeWhereUniqueInput
+    update: XOR<OptimizedResumeUpdateWithoutJobSummaryInput, OptimizedResumeUncheckedUpdateWithoutJobSummaryInput>
+    create: XOR<OptimizedResumeCreateWithoutJobSummaryInput, OptimizedResumeUncheckedCreateWithoutJobSummaryInput>
+  }
+
+  export type OptimizedResumeUpdateWithWhereUniqueWithoutJobSummaryInput = {
+    where: OptimizedResumeWhereUniqueInput
+    data: XOR<OptimizedResumeUpdateWithoutJobSummaryInput, OptimizedResumeUncheckedUpdateWithoutJobSummaryInput>
+  }
+
+  export type OptimizedResumeUpdateManyWithWhereWithoutJobSummaryInput = {
+    where: OptimizedResumeScalarWhereInput
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyWithoutJobSummaryInput>
+  }
+
+  export type UserCreateWithoutCoverLettersInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCoverLettersInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCoverLettersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCoverLettersInput, UserUncheckedCreateWithoutCoverLettersInput>
+  }
+
+  export type AnalysisCreateWithoutCoverLettersInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAnalysesInput
+    document?: DocumentCreateNestedOneWithoutAnalysesInput
+    conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutCoverLettersInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    jobSummaryId?: string | null
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisCreateOrConnectWithoutCoverLettersInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutCoverLettersInput, AnalysisUncheckedCreateWithoutCoverLettersInput>
+  }
+
+  export type DocumentCreateWithoutCoverLettersInput = {
+    id?: string
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    user?: UserCreateNestedOneWithoutDocumentsInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisCreateNestedManyWithoutDocumentInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutCoverLettersInput = {
+    id?: string
+    userId?: string | null
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutCoverLettersInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutCoverLettersInput, DocumentUncheckedCreateWithoutCoverLettersInput>
+  }
+
+  export type JobDescriptionSummaryCreateWithoutCoverLettersInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisCreateNestedManyWithoutJobSummaryInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryUncheckedCreateWithoutCoverLettersInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutJobSummaryInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutJobSummaryInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryCreateOrConnectWithoutCoverLettersInput = {
+    where: JobDescriptionSummaryWhereUniqueInput
+    create: XOR<JobDescriptionSummaryCreateWithoutCoverLettersInput, JobDescriptionSummaryUncheckedCreateWithoutCoverLettersInput>
+  }
+
+  export type LLMConversationCreateWithoutCoverLettersInput = {
+    id?: string
+    type: $Enums.ConversationType
+    title?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    user?: UserCreateNestedOneWithoutLlmConversationsInput
+    document?: DocumentCreateNestedOneWithoutLlmConversationsInput
+    messages?: LLMMessageCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisCreateNestedManyWithoutConversationInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationUncheckedCreateWithoutCoverLettersInput = {
+    id?: string
+    userId?: string | null
+    type: $Enums.ConversationType
+    title?: string | null
+    documentId?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationCreateOrConnectWithoutCoverLettersInput = {
+    where: LLMConversationWhereUniqueInput
+    create: XOR<LLMConversationCreateWithoutCoverLettersInput, LLMConversationUncheckedCreateWithoutCoverLettersInput>
+  }
+
+  export type UserUpsertWithoutCoverLettersInput = {
+    update: XOR<UserUpdateWithoutCoverLettersInput, UserUncheckedUpdateWithoutCoverLettersInput>
+    create: XOR<UserCreateWithoutCoverLettersInput, UserUncheckedCreateWithoutCoverLettersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCoverLettersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCoverLettersInput, UserUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type UserUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AnalysisUpsertWithoutCoverLettersInput = {
+    update: XOR<AnalysisUpdateWithoutCoverLettersInput, AnalysisUncheckedUpdateWithoutCoverLettersInput>
+    create: XOR<AnalysisCreateWithoutCoverLettersInput, AnalysisUncheckedCreateWithoutCoverLettersInput>
+    where?: AnalysisWhereInput
+  }
+
+  export type AnalysisUpdateToOneWithWhereWithoutCoverLettersInput = {
+    where?: AnalysisWhereInput
+    data: XOR<AnalysisUpdateWithoutCoverLettersInput, AnalysisUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type AnalysisUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAnalysesNestedInput
+    document?: DocumentUpdateOneWithoutAnalysesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type DocumentUpsertWithoutCoverLettersInput = {
+    update: XOR<DocumentUpdateWithoutCoverLettersInput, DocumentUncheckedUpdateWithoutCoverLettersInput>
+    create: XOR<DocumentCreateWithoutCoverLettersInput, DocumentUncheckedCreateWithoutCoverLettersInput>
+    where?: DocumentWhereInput
+  }
+
+  export type DocumentUpdateToOneWithWhereWithoutCoverLettersInput = {
+    where?: DocumentWhereInput
+    data: XOR<DocumentUpdateWithoutCoverLettersInput, DocumentUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type DocumentUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneWithoutDocumentsNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type JobDescriptionSummaryUpsertWithoutCoverLettersInput = {
+    update: XOR<JobDescriptionSummaryUpdateWithoutCoverLettersInput, JobDescriptionSummaryUncheckedUpdateWithoutCoverLettersInput>
+    create: XOR<JobDescriptionSummaryCreateWithoutCoverLettersInput, JobDescriptionSummaryUncheckedCreateWithoutCoverLettersInput>
+    where?: JobDescriptionSummaryWhereInput
+  }
+
+  export type JobDescriptionSummaryUpdateToOneWithWhereWithoutCoverLettersInput = {
+    where?: JobDescriptionSummaryWhereInput
+    data: XOR<JobDescriptionSummaryUpdateWithoutCoverLettersInput, JobDescriptionSummaryUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type JobDescriptionSummaryUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUpdateManyWithoutJobSummaryNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type JobDescriptionSummaryUncheckedUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUncheckedUpdateManyWithoutJobSummaryNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutJobSummaryNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type LLMConversationUpsertWithoutCoverLettersInput = {
+    update: XOR<LLMConversationUpdateWithoutCoverLettersInput, LLMConversationUncheckedUpdateWithoutCoverLettersInput>
+    create: XOR<LLMConversationCreateWithoutCoverLettersInput, LLMConversationUncheckedCreateWithoutCoverLettersInput>
+    where?: LLMConversationWhereInput
+  }
+
+  export type LLMConversationUpdateToOneWithWhereWithoutCoverLettersInput = {
+    where?: LLMConversationWhereInput
+    data: XOR<LLMConversationUpdateWithoutCoverLettersInput, LLMConversationUncheckedUpdateWithoutCoverLettersInput>
+  }
+
+  export type LLMConversationUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneWithoutLlmConversationsNestedInput
+    document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
+    messages?: LLMMessageUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUpdateManyWithoutConversationNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
+  }
+
+  export type LLMConversationUncheckedUpdateWithoutCoverLettersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type UserCreateWithoutOptimizedResumesInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutOptimizedResumesInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutOptimizedResumesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutOptimizedResumesInput, UserUncheckedCreateWithoutOptimizedResumesInput>
+  }
+
+  export type AnalysisCreateWithoutOptimizedResumesInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAnalysesInput
+    document?: DocumentCreateNestedOneWithoutAnalysesInput
+    conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutOptimizedResumesInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    jobSummaryId?: string | null
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisCreateOrConnectWithoutOptimizedResumesInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutOptimizedResumesInput, AnalysisUncheckedCreateWithoutOptimizedResumesInput>
+  }
+
+  export type DocumentCreateWithoutOptimizedResumesInput = {
+    id?: string
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    user?: UserCreateNestedOneWithoutDocumentsInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisCreateNestedManyWithoutDocumentInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutOptimizedResumesInput = {
+    id?: string
+    userId?: string | null
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutOptimizedResumesInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutOptimizedResumesInput, DocumentUncheckedCreateWithoutOptimizedResumesInput>
+  }
+
+  export type JobDescriptionSummaryCreateWithoutOptimizedResumesInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisCreateNestedManyWithoutJobSummaryInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryUncheckedCreateWithoutOptimizedResumesInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    summary: string
+    keyRequirements?: JobDescriptionSummaryCreatekeyRequirementsInput | string[]
+    companyName?: string | null
+    jobTitle?: string | null
+    location?: string | null
+    salaryRange?: string | null
+    provider: string
+    model: string
+    usageCount?: number
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastUsedAt?: Date | string
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutJobSummaryInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutJobSummaryInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutJobSummaryInput
+  }
+
+  export type JobDescriptionSummaryCreateOrConnectWithoutOptimizedResumesInput = {
+    where: JobDescriptionSummaryWhereUniqueInput
+    create: XOR<JobDescriptionSummaryCreateWithoutOptimizedResumesInput, JobDescriptionSummaryUncheckedCreateWithoutOptimizedResumesInput>
+  }
+
+  export type LLMConversationCreateWithoutOptimizedResumesInput = {
+    id?: string
+    type: $Enums.ConversationType
+    title?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    user?: UserCreateNestedOneWithoutLlmConversationsInput
+    document?: DocumentCreateNestedOneWithoutLlmConversationsInput
+    messages?: LLMMessageCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisCreateNestedManyWithoutConversationInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationUncheckedCreateWithoutOptimizedResumesInput = {
+    id?: string
+    userId?: string | null
+    type: $Enums.ConversationType
+    title?: string | null
+    documentId?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationCreateOrConnectWithoutOptimizedResumesInput = {
+    where: LLMConversationWhereUniqueInput
+    create: XOR<LLMConversationCreateWithoutOptimizedResumesInput, LLMConversationUncheckedCreateWithoutOptimizedResumesInput>
+  }
+
+  export type ExtractedResumeCreateWithoutOptimizedResumesInput = {
+    id?: string
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutExtractedResumesInput
+    document?: DocumentCreateNestedOneWithoutExtractedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutExtractedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutExtractedResumesInput
+  }
+
+  export type ExtractedResumeUncheckedCreateWithoutOptimizedResumesInput = {
+    id?: string
+    userId?: string | null
+    documentId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExtractedResumeCreateOrConnectWithoutOptimizedResumesInput = {
+    where: ExtractedResumeWhereUniqueInput
+    create: XOR<ExtractedResumeCreateWithoutOptimizedResumesInput, ExtractedResumeUncheckedCreateWithoutOptimizedResumesInput>
+  }
+
+  export type UserUpsertWithoutOptimizedResumesInput = {
+    update: XOR<UserUpdateWithoutOptimizedResumesInput, UserUncheckedUpdateWithoutOptimizedResumesInput>
+    create: XOR<UserCreateWithoutOptimizedResumesInput, UserUncheckedCreateWithoutOptimizedResumesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutOptimizedResumesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutOptimizedResumesInput, UserUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type UserUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AnalysisUpsertWithoutOptimizedResumesInput = {
+    update: XOR<AnalysisUpdateWithoutOptimizedResumesInput, AnalysisUncheckedUpdateWithoutOptimizedResumesInput>
+    create: XOR<AnalysisCreateWithoutOptimizedResumesInput, AnalysisUncheckedCreateWithoutOptimizedResumesInput>
+    where?: AnalysisWhereInput
+  }
+
+  export type AnalysisUpdateToOneWithWhereWithoutOptimizedResumesInput = {
+    where?: AnalysisWhereInput
+    data: XOR<AnalysisUpdateWithoutOptimizedResumesInput, AnalysisUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type AnalysisUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAnalysesNestedInput
+    document?: DocumentUpdateOneWithoutAnalysesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type DocumentUpsertWithoutOptimizedResumesInput = {
+    update: XOR<DocumentUpdateWithoutOptimizedResumesInput, DocumentUncheckedUpdateWithoutOptimizedResumesInput>
+    create: XOR<DocumentCreateWithoutOptimizedResumesInput, DocumentUncheckedCreateWithoutOptimizedResumesInput>
+    where?: DocumentWhereInput
+  }
+
+  export type DocumentUpdateToOneWithWhereWithoutOptimizedResumesInput = {
+    where?: DocumentWhereInput
+    data: XOR<DocumentUpdateWithoutOptimizedResumesInput, DocumentUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type DocumentUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneWithoutDocumentsNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type JobDescriptionSummaryUpsertWithoutOptimizedResumesInput = {
+    update: XOR<JobDescriptionSummaryUpdateWithoutOptimizedResumesInput, JobDescriptionSummaryUncheckedUpdateWithoutOptimizedResumesInput>
+    create: XOR<JobDescriptionSummaryCreateWithoutOptimizedResumesInput, JobDescriptionSummaryUncheckedCreateWithoutOptimizedResumesInput>
+    where?: JobDescriptionSummaryWhereInput
+  }
+
+  export type JobDescriptionSummaryUpdateToOneWithWhereWithoutOptimizedResumesInput = {
+    where?: JobDescriptionSummaryWhereInput
+    data: XOR<JobDescriptionSummaryUpdateWithoutOptimizedResumesInput, JobDescriptionSummaryUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type JobDescriptionSummaryUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUpdateManyWithoutJobSummaryNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type JobDescriptionSummaryUncheckedUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyRequirements?: JobDescriptionSummaryUpdatekeyRequirementsInput | string[]
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryRange?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    usageCount?: IntFieldUpdateOperationsInput | number
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: AnalysisUncheckedUpdateManyWithoutJobSummaryNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutJobSummaryNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutJobSummaryNestedInput
+  }
+
+  export type LLMConversationUpsertWithoutOptimizedResumesInput = {
+    update: XOR<LLMConversationUpdateWithoutOptimizedResumesInput, LLMConversationUncheckedUpdateWithoutOptimizedResumesInput>
+    create: XOR<LLMConversationCreateWithoutOptimizedResumesInput, LLMConversationUncheckedCreateWithoutOptimizedResumesInput>
+    where?: LLMConversationWhereInput
+  }
+
+  export type LLMConversationUpdateToOneWithWhereWithoutOptimizedResumesInput = {
+    where?: LLMConversationWhereInput
+    data: XOR<LLMConversationUpdateWithoutOptimizedResumesInput, LLMConversationUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type LLMConversationUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneWithoutLlmConversationsNestedInput
+    document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
+    messages?: LLMMessageUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUpdateManyWithoutConversationNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
+  }
+
+  export type LLMConversationUncheckedUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ExtractedResumeUpsertWithoutOptimizedResumesInput = {
+    update: XOR<ExtractedResumeUpdateWithoutOptimizedResumesInput, ExtractedResumeUncheckedUpdateWithoutOptimizedResumesInput>
+    create: XOR<ExtractedResumeCreateWithoutOptimizedResumesInput, ExtractedResumeUncheckedCreateWithoutOptimizedResumesInput>
+    where?: ExtractedResumeWhereInput
+  }
+
+  export type ExtractedResumeUpdateToOneWithWhereWithoutOptimizedResumesInput = {
+    where?: ExtractedResumeWhereInput
+    data: XOR<ExtractedResumeUpdateWithoutOptimizedResumesInput, ExtractedResumeUncheckedUpdateWithoutOptimizedResumesInput>
+  }
+
+  export type ExtractedResumeUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutExtractedResumesNestedInput
+    document?: DocumentUpdateOneWithoutExtractedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutExtractedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutExtractedResumesNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateWithoutOptimizedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateWithoutExtractedResumesInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutExtractedResumesInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutUserInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutUserInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutExtractedResumesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutExtractedResumesInput, UserUncheckedCreateWithoutExtractedResumesInput>
+  }
+
+  export type DocumentCreateWithoutExtractedResumesInput = {
+    id?: string
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    user?: UserCreateNestedOneWithoutDocumentsInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisCreateNestedManyWithoutDocumentInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutExtractedResumesInput = {
+    id?: string
+    userId?: string | null
+    filename: string
+    originalSize: number
+    fileHash: string
+    mimeType: string
+    extractedText: string
+    wordCount: number
+    pageCount: number
+    aiProvider: string
+    extractionCost?: number
+    summary?: string | null
+    sections?: DocumentCreatesectionsInput | string[]
+    images?: DocumentCreateimagesInput | string[]
+    processedAt?: Date | string
+    processingTime: number
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutDocumentInput
+    llmConversations?: LLMConversationUncheckedCreateNestedManyWithoutDocumentInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutDocumentInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutDocumentInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutDocumentInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutExtractedResumesInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutExtractedResumesInput, DocumentUncheckedCreateWithoutExtractedResumesInput>
+  }
+
+  export type AnalysisCreateWithoutExtractedResumesInput = {
+    id?: string
+    title: string
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAnalysesInput
+    document?: DocumentCreateNestedOneWithoutAnalysesInput
+    conversation?: LLMConversationCreateNestedOneWithoutAnalysesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutAnalysesInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutExtractedResumesInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    jobSummaryId?: string | null
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutAnalysisInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutAnalysisInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisCreateOrConnectWithoutExtractedResumesInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutExtractedResumesInput, AnalysisUncheckedCreateWithoutExtractedResumesInput>
+  }
+
+  export type LLMConversationCreateWithoutExtractedResumesInput = {
+    id?: string
+    type: $Enums.ConversationType
+    title?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    user?: UserCreateNestedOneWithoutLlmConversationsInput
+    document?: DocumentCreateNestedOneWithoutLlmConversationsInput
+    messages?: LLMMessageCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisCreateNestedManyWithoutConversationInput
+    resumeOptimizations?: ResumeOptimizationCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationUncheckedCreateWithoutExtractedResumesInput = {
+    id?: string
+    userId?: string | null
+    type: $Enums.ConversationType
+    title?: string | null
+    documentId?: string | null
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    status?: $Enums.ConversationStatus
+    errorMessage?: string | null
+    messages?: LLMMessageUncheckedCreateNestedManyWithoutConversationInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutConversationInput
+    resumeOptimizations?: ResumeOptimizationUncheckedCreateNestedManyWithoutConversationInput
+    coverLetters?: CoverLetterUncheckedCreateNestedManyWithoutConversationInput
+    optimizedResumes?: OptimizedResumeUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type LLMConversationCreateOrConnectWithoutExtractedResumesInput = {
+    where: LLMConversationWhereUniqueInput
+    create: XOR<LLMConversationCreateWithoutExtractedResumesInput, LLMConversationUncheckedCreateWithoutExtractedResumesInput>
+  }
+
+  export type OptimizedResumeCreateWithoutExtractedResumeInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOptimizedResumesInput
+    analysis?: AnalysisCreateNestedOneWithoutOptimizedResumesInput
+    document?: DocumentCreateNestedOneWithoutOptimizedResumesInput
+    jobSummary?: JobDescriptionSummaryCreateNestedOneWithoutOptimizedResumesInput
+    conversation?: LLMConversationCreateNestedOneWithoutOptimizedResumesInput
+  }
+
+  export type OptimizedResumeUncheckedCreateWithoutExtractedResumeInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateOrConnectWithoutExtractedResumeInput = {
+    where: OptimizedResumeWhereUniqueInput
+    create: XOR<OptimizedResumeCreateWithoutExtractedResumeInput, OptimizedResumeUncheckedCreateWithoutExtractedResumeInput>
+  }
+
+  export type OptimizedResumeCreateManyExtractedResumeInputEnvelope = {
+    data: OptimizedResumeCreateManyExtractedResumeInput | OptimizedResumeCreateManyExtractedResumeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutExtractedResumesInput = {
+    update: XOR<UserUpdateWithoutExtractedResumesInput, UserUncheckedUpdateWithoutExtractedResumesInput>
+    create: XOR<UserCreateWithoutExtractedResumesInput, UserUncheckedCreateWithoutExtractedResumesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutExtractedResumesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutExtractedResumesInput, UserUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type UserUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutUserNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type DocumentUpsertWithoutExtractedResumesInput = {
+    update: XOR<DocumentUpdateWithoutExtractedResumesInput, DocumentUncheckedUpdateWithoutExtractedResumesInput>
+    create: XOR<DocumentCreateWithoutExtractedResumesInput, DocumentUncheckedCreateWithoutExtractedResumesInput>
+    where?: DocumentWhereInput
+  }
+
+  export type DocumentUpdateToOneWithWhereWithoutExtractedResumesInput = {
+    where?: DocumentWhereInput
+    data: XOR<DocumentUpdateWithoutExtractedResumesInput, DocumentUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type DocumentUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneWithoutDocumentsNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    originalSize?: IntFieldUpdateOperationsInput | number
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    extractedText?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    pageCount?: IntFieldUpdateOperationsInput | number
+    aiProvider?: StringFieldUpdateOperationsInput | string
+    extractionCost?: FloatFieldUpdateOperationsInput | number
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    sections?: DocumentUpdatesectionsInput | string[]
+    images?: DocumentUpdateimagesInput | string[]
+    processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processingTime?: IntFieldUpdateOperationsInput | number
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutDocumentNestedInput
+    llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type AnalysisUpsertWithoutExtractedResumesInput = {
+    update: XOR<AnalysisUpdateWithoutExtractedResumesInput, AnalysisUncheckedUpdateWithoutExtractedResumesInput>
+    create: XOR<AnalysisCreateWithoutExtractedResumesInput, AnalysisUncheckedCreateWithoutExtractedResumesInput>
+    where?: AnalysisWhereInput
+  }
+
+  export type AnalysisUpdateToOneWithWhereWithoutExtractedResumesInput = {
+    where?: AnalysisWhereInput
+    data: XOR<AnalysisUpdateWithoutExtractedResumesInput, AnalysisUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type AnalysisUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAnalysesNestedInput
+    document?: DocumentUpdateOneWithoutAnalysesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type LLMConversationUpsertWithoutExtractedResumesInput = {
+    update: XOR<LLMConversationUpdateWithoutExtractedResumesInput, LLMConversationUncheckedUpdateWithoutExtractedResumesInput>
+    create: XOR<LLMConversationCreateWithoutExtractedResumesInput, LLMConversationUncheckedCreateWithoutExtractedResumesInput>
+    where?: LLMConversationWhereInput
+  }
+
+  export type LLMConversationUpdateToOneWithWhereWithoutExtractedResumesInput = {
+    where?: LLMConversationWhereInput
+    data: XOR<LLMConversationUpdateWithoutExtractedResumesInput, LLMConversationUncheckedUpdateWithoutExtractedResumesInput>
+  }
+
+  export type LLMConversationUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneWithoutLlmConversationsNestedInput
+    document?: DocumentUpdateOneWithoutLlmConversationsNestedInput
+    messages?: LLMMessageUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUpdateManyWithoutConversationNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+  }
+
+  export type LLMConversationUncheckedUpdateWithoutExtractedResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumConversationTypeFieldUpdateOperationsInput | $Enums.ConversationType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type OptimizedResumeUpsertWithWhereUniqueWithoutExtractedResumeInput = {
+    where: OptimizedResumeWhereUniqueInput
+    update: XOR<OptimizedResumeUpdateWithoutExtractedResumeInput, OptimizedResumeUncheckedUpdateWithoutExtractedResumeInput>
+    create: XOR<OptimizedResumeCreateWithoutExtractedResumeInput, OptimizedResumeUncheckedCreateWithoutExtractedResumeInput>
+  }
+
+  export type OptimizedResumeUpdateWithWhereUniqueWithoutExtractedResumeInput = {
+    where: OptimizedResumeWhereUniqueInput
+    data: XOR<OptimizedResumeUpdateWithoutExtractedResumeInput, OptimizedResumeUncheckedUpdateWithoutExtractedResumeInput>
+  }
+
+  export type OptimizedResumeUpdateManyWithWhereWithoutExtractedResumeInput = {
+    where: OptimizedResumeScalarWhereInput
+    data: XOR<OptimizedResumeUpdateManyMutationInput, OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeInput>
   }
 
   export type AccountCreateManyUserInput = {
@@ -24522,6 +37409,7 @@ export namespace Prisma {
     title: string
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -24540,6 +37428,7 @@ export namespace Prisma {
     analysisId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -24553,6 +37442,71 @@ export namespace Prisma {
     totalTokensUsed?: number
     totalCost?: number
     processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateManyUserInput = {
+    id?: string
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateManyUserInput = {
+    id?: string
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExtractedResumeCreateManyUserInput = {
+    id?: string
+    documentId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24649,6 +37603,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutUserInput = {
@@ -24671,6 +37628,9 @@ export namespace Prisma {
     llmConversations?: LLMConversationUncheckedUpdateManyWithoutDocumentNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutDocumentNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutDocumentNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutDocumentNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutDocumentNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateManyWithoutUserInput = {
@@ -24780,6 +37740,9 @@ export namespace Prisma {
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutUserInput = {
@@ -24799,6 +37762,9 @@ export namespace Prisma {
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateManyWithoutUserInput = {
@@ -24863,7 +37829,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     document?: DocumentUpdateOneWithoutAnalysesNestedInput
     conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateWithoutUserInput = {
@@ -24871,6 +37841,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -24883,6 +37854,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateManyWithoutUserInput = {
@@ -24890,6 +37864,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -24923,6 +37898,7 @@ export namespace Prisma {
     analysis?: AnalysisUpdateOneWithoutResumeOptimizationsNestedInput
     document?: DocumentUpdateOneWithoutResumeOptimizationsNestedInput
     conversation?: LLMConversationUpdateOneWithoutResumeOptimizationsNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutResumeOptimizationsNestedInput
   }
 
   export type ResumeOptimizationUncheckedUpdateWithoutUserInput = {
@@ -24930,6 +37906,7 @@ export namespace Prisma {
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -24952,6 +37929,7 @@ export namespace Prisma {
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -24965,6 +37943,203 @@ export namespace Prisma {
     totalTokensUsed?: IntFieldUpdateOperationsInput | number
     totalCost?: FloatFieldUpdateOperationsInput | number
     processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analysis?: AnalysisUpdateOneWithoutCoverLettersNestedInput
+    document?: DocumentUpdateOneWithoutCoverLettersNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutCoverLettersNestedInput
+    conversation?: LLMConversationUpdateOneWithoutCoverLettersNestedInput
+  }
+
+  export type CoverLetterUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analysis?: AnalysisUpdateOneWithoutOptimizedResumesNestedInput
+    document?: DocumentUpdateOneWithoutOptimizedResumesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutOptimizedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutOptimizedResumesNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutOptimizedResumesNestedInput
+  }
+
+  export type OptimizedResumeUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExtractedResumeUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    document?: DocumentUpdateOneWithoutExtractedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutExtractedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutExtractedResumesNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25000,6 +38175,7 @@ export namespace Prisma {
     userId?: string | null
     title: string
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -25018,6 +38194,7 @@ export namespace Prisma {
     userId?: string | null
     analysisId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -25031,6 +38208,71 @@ export namespace Prisma {
     totalTokensUsed?: number
     totalCost?: number
     processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateManyDocumentInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateManyDocumentInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExtractedResumeCreateManyDocumentInput = {
+    id?: string
+    userId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25082,6 +38324,9 @@ export namespace Prisma {
     messages?: LLMMessageUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateWithoutDocumentInput = {
@@ -25101,6 +38346,9 @@ export namespace Prisma {
     messages?: LLMMessageUncheckedUpdateManyWithoutConversationNestedInput
     analyses?: AnalysisUncheckedUpdateManyWithoutConversationNestedInput
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutConversationNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutConversationNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutConversationNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type LLMConversationUncheckedUpdateManyWithoutDocumentInput = {
@@ -25135,7 +38383,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutAnalysesNestedInput
     conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateWithoutDocumentInput = {
@@ -25143,6 +38395,7 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -25155,6 +38408,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateManyWithoutDocumentInput = {
@@ -25162,6 +38418,7 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -25195,6 +38452,7 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutResumeOptimizationsNestedInput
     analysis?: AnalysisUpdateOneWithoutResumeOptimizationsNestedInput
     conversation?: LLMConversationUpdateOneWithoutResumeOptimizationsNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutResumeOptimizationsNestedInput
   }
 
   export type ResumeOptimizationUncheckedUpdateWithoutDocumentInput = {
@@ -25202,6 +38460,7 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -25224,6 +38483,7 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -25237,6 +38497,203 @@ export namespace Prisma {
     totalTokensUsed?: IntFieldUpdateOperationsInput | number
     totalCost?: FloatFieldUpdateOperationsInput | number
     processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCoverLettersNestedInput
+    analysis?: AnalysisUpdateOneWithoutCoverLettersNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutCoverLettersNestedInput
+    conversation?: LLMConversationUpdateOneWithoutCoverLettersNestedInput
+  }
+
+  export type CoverLetterUncheckedUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOptimizedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutOptimizedResumesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutOptimizedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutOptimizedResumesNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutOptimizedResumesNestedInput
+  }
+
+  export type OptimizedResumeUncheckedUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExtractedResumeUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutExtractedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutExtractedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutExtractedResumesNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25263,6 +38720,7 @@ export namespace Prisma {
     title: string
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     analysisData: string
     overallScore?: number | null
@@ -25281,6 +38739,7 @@ export namespace Prisma {
     analysisId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -25293,6 +38752,71 @@ export namespace Prisma {
     totalTokensUsed?: number
     totalCost?: number
     processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateManyConversationInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateManyConversationInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExtractedResumeCreateManyConversationInput = {
+    id?: string
+    userId?: string | null
+    documentId?: string | null
+    analysisId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25361,7 +38885,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutAnalysesNestedInput
     document?: DocumentUpdateOneWithoutAnalysesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutAnalysesNestedInput
     resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateWithoutConversationInput = {
@@ -25370,6 +38898,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -25381,6 +38910,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateManyWithoutConversationInput = {
@@ -25389,6 +38921,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     analysisData?: StringFieldUpdateOperationsInput | string
     overallScore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -25421,6 +38954,7 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutResumeOptimizationsNestedInput
     analysis?: AnalysisUpdateOneWithoutResumeOptimizationsNestedInput
     document?: DocumentUpdateOneWithoutResumeOptimizationsNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutResumeOptimizationsNestedInput
   }
 
   export type ResumeOptimizationUncheckedUpdateWithoutConversationInput = {
@@ -25429,6 +38963,7 @@ export namespace Prisma {
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -25451,6 +38986,7 @@ export namespace Prisma {
     analysisId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -25467,11 +39003,209 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CoverLetterUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCoverLettersNestedInput
+    analysis?: AnalysisUpdateOneWithoutCoverLettersNestedInput
+    document?: DocumentUpdateOneWithoutCoverLettersNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutCoverLettersNestedInput
+  }
+
+  export type CoverLetterUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOptimizedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutOptimizedResumesNestedInput
+    document?: DocumentUpdateOneWithoutOptimizedResumesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutOptimizedResumesNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutOptimizedResumesNestedInput
+  }
+
+  export type OptimizedResumeUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExtractedResumeUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutExtractedResumesNestedInput
+    document?: DocumentUpdateOneWithoutExtractedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutExtractedResumesNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ResumeOptimizationCreateManyAnalysisInput = {
     id?: string
     userId?: string | null
     documentId?: string | null
     jobDescription: string
+    jobSummaryId?: string | null
     resumeText: string
     templateId: string
     extractedData: string
@@ -25485,6 +39219,71 @@ export namespace Prisma {
     totalTokensUsed?: number
     totalCost?: number
     processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateManyAnalysisInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateManyAnalysisInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    documentId?: string | null
+    jobSummaryId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExtractedResumeCreateManyAnalysisInput = {
+    id?: string
+    userId?: string | null
+    documentId?: string | null
+    contentHash: string
+    resumeText: string
+    extractedData: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25509,6 +39308,7 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutResumeOptimizationsNestedInput
     document?: DocumentUpdateOneWithoutResumeOptimizationsNestedInput
     conversation?: LLMConversationUpdateOneWithoutResumeOptimizationsNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutResumeOptimizationsNestedInput
   }
 
   export type ResumeOptimizationUncheckedUpdateWithoutAnalysisInput = {
@@ -25516,6 +39316,7 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -25538,6 +39339,7 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     documentId?: NullableStringFieldUpdateOperationsInput | string | null
     jobDescription?: StringFieldUpdateOperationsInput | string
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeText?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     extractedData?: StringFieldUpdateOperationsInput | string
@@ -25551,6 +39353,663 @@ export namespace Prisma {
     totalTokensUsed?: IntFieldUpdateOperationsInput | number
     totalCost?: FloatFieldUpdateOperationsInput | number
     processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCoverLettersNestedInput
+    document?: DocumentUpdateOneWithoutCoverLettersNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutCoverLettersNestedInput
+    conversation?: LLMConversationUpdateOneWithoutCoverLettersNestedInput
+  }
+
+  export type CoverLetterUncheckedUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOptimizedResumesNestedInput
+    document?: DocumentUpdateOneWithoutOptimizedResumesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutOptimizedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutOptimizedResumesNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutOptimizedResumesNestedInput
+  }
+
+  export type OptimizedResumeUncheckedUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExtractedResumeUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutExtractedResumesNestedInput
+    document?: DocumentUpdateOneWithoutExtractedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutExtractedResumesNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateManyWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisCreateManyJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    title: string
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    analysisData: string
+    overallScore?: number | null
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ResumeOptimizationCreateManyJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    analysisId?: string | null
+    documentId?: string | null
+    jobDescription: string
+    resumeText: string
+    templateId: string
+    extractedData: string
+    optimizedResume: string
+    optimizationSuggestions?: ResumeOptimizationCreateoptimizationSuggestionsInput | string[]
+    atsScore?: number | null
+    keywordsMatched?: ResumeOptimizationCreatekeywordsMatchedInput | string[]
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CoverLetterCreateManyJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    tone?: string
+    wordCount?: number
+    analysisId?: string | null
+    documentId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeCreateManyJobSummaryInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAnalysesNestedInput
+    document?: DocumentUpdateOneWithoutAnalysesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutAnalysesNestedInput
+    resumeOptimizations?: ResumeOptimizationUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumeOptimizations?: ResumeOptimizationUncheckedUpdateManyWithoutAnalysisNestedInput
+    coverLetters?: CoverLetterUncheckedUpdateManyWithoutAnalysisNestedInput
+    optimizedResumes?: OptimizedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    analysisData?: StringFieldUpdateOperationsInput | string
+    overallScore?: NullableIntFieldUpdateOperationsInput | number | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumeOptimizationUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    optimizedResume?: StringFieldUpdateOperationsInput | string
+    optimizationSuggestions?: ResumeOptimizationUpdateoptimizationSuggestionsInput | string[]
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: ResumeOptimizationUpdatekeywordsMatchedInput | string[]
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutResumeOptimizationsNestedInput
+    analysis?: AnalysisUpdateOneWithoutResumeOptimizationsNestedInput
+    document?: DocumentUpdateOneWithoutResumeOptimizationsNestedInput
+    conversation?: LLMConversationUpdateOneWithoutResumeOptimizationsNestedInput
+  }
+
+  export type ResumeOptimizationUncheckedUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    optimizedResume?: StringFieldUpdateOperationsInput | string
+    optimizationSuggestions?: ResumeOptimizationUpdateoptimizationSuggestionsInput | string[]
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: ResumeOptimizationUpdatekeywordsMatchedInput | string[]
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumeOptimizationUncheckedUpdateManyWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    resumeText?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    optimizedResume?: StringFieldUpdateOperationsInput | string
+    optimizationSuggestions?: ResumeOptimizationUpdateoptimizationSuggestionsInput | string[]
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: ResumeOptimizationUpdatekeywordsMatchedInput | string[]
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCoverLettersNestedInput
+    analysis?: AnalysisUpdateOneWithoutCoverLettersNestedInput
+    document?: DocumentUpdateOneWithoutCoverLettersNestedInput
+    conversation?: LLMConversationUpdateOneWithoutCoverLettersNestedInput
+  }
+
+  export type CoverLetterUncheckedUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CoverLetterUncheckedUpdateManyWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    wordCount?: IntFieldUpdateOperationsInput | number
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOptimizedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutOptimizedResumesNestedInput
+    document?: DocumentUpdateOneWithoutOptimizedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutOptimizedResumesNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutOptimizedResumesNestedInput
+  }
+
+  export type OptimizedResumeUncheckedUpdateWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutJobSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeCreateManyExtractedResumeInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    extractedData: string
+    templateId: string
+    atsScore?: number | null
+    keywordsMatched?: OptimizedResumeCreatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeCreateoptimizationSuggestionsInput | string[]
+    analysisId?: string | null
+    documentId?: string | null
+    jobSummaryId?: string | null
+    contentHash: string
+    provider: string
+    model: string
+    conversationId?: string | null
+    totalTokensUsed?: number
+    totalCost?: number
+    processingTime?: number | null
+    usageCount?: number
+    lastUsedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OptimizedResumeUpdateWithoutExtractedResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOptimizedResumesNestedInput
+    analysis?: AnalysisUpdateOneWithoutOptimizedResumesNestedInput
+    document?: DocumentUpdateOneWithoutOptimizedResumesNestedInput
+    jobSummary?: JobDescriptionSummaryUpdateOneWithoutOptimizedResumesNestedInput
+    conversation?: LLMConversationUpdateOneWithoutOptimizedResumesNestedInput
+  }
+
+  export type OptimizedResumeUncheckedUpdateWithoutExtractedResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OptimizedResumeUncheckedUpdateManyWithoutExtractedResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    extractedData?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    atsScore?: NullableIntFieldUpdateOperationsInput | number | null
+    keywordsMatched?: OptimizedResumeUpdatekeywordsMatchedInput | string[]
+    optimizationSuggestions?: OptimizedResumeUpdateoptimizationSuggestionsInput | string[]
+    analysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    documentId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSummaryId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalTokensUsed?: IntFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    processingTime?: NullableIntFieldUpdateOperationsInput | number | null
+    usageCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

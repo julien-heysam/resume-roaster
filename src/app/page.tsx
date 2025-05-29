@@ -212,6 +212,14 @@ export default function Home() {
       sessionStorage.setItem('resumeData', JSON.stringify(resumeData))
       sessionStorage.setItem('jobDescription', jobDescription)
       
+      // Store analysis ID and document ID for proper caching
+      if (result.analysisId) {
+        sessionStorage.setItem('analysisId', result.analysisId)
+      }
+      if (resumeData.documentId) {
+        sessionStorage.setItem('documentId', resumeData.documentId)
+      }
+      
       // Store PDF images if available
       if (pdfImages && pdfImages.length > 0) {
         sessionStorage.setItem('pdfImages', JSON.stringify(pdfImages))

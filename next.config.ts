@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
     // Enable optimizations
     optimizePackageImports: ['@anthropic-ai/sdk', '@supabase/supabase-js'],
   },
+  // Configure API timeouts for long-running operations
+  api: {
+    responseLimit: false,
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
   // Configure headers for better performance
   async headers() {
     return [
