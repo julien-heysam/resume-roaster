@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
+import { parseJSONResponse } from '@/lib/json-utils'
 
 const ANALYSIS_PROMPT = `You are an expert resume reviewer and career coach. Your task is to analyze a resume against a specific job description and provide brutally honest, actionable feedback.
 
@@ -351,73 +352,27 @@ Please provide a comprehensive analysis following the framework above.`
     let analysisData: any
     
     try {
-      // Method 1: Try the current approach first
-      let jsonText = responseText.trim()
-      
-      // Remove markdown code blocks if present
-      if (jsonText.startsWith('```json')) {
-        jsonText = jsonText.replace(/^```json\s*/, '').replace(/```\s*$/, '')
-      } else if (jsonText.startsWith('```')) {
-        jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '')
-      }
-      
-      // Try to parse as JSON
-      analysisData = JSON.parse(jsonText)
-      
+      analysisData = parseJSONResponse(responseText)
     } catch (parseError) {
-      console.log('Method 1 failed, trying fallback methods...')
+      console.error('All parsing methods failed:', parseError)
+      console.log('Raw response:', responseText)
       
-      try {
-        // Method 2: Extract text between ```json ... ```
-        const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
-        if (jsonMatch && jsonMatch[1]) {
-          analysisData = JSON.parse(jsonMatch[1].trim())
-        } else {
-          throw new Error('No JSON code block found')
-        }
-        
-      } catch (secondParseError) {
-        console.log('Method 2 failed, trying method 3...')
-        
-        try {
-          // Method 3: Find first { and last } and extract JSON
-          const firstBrace = responseText.indexOf('{')
-          const lastBrace = responseText.lastIndexOf('}')
-          
-          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-            const jsonText = responseText.substring(firstBrace, lastBrace + 1)
-            analysisData = JSON.parse(jsonText)
-          } else {
-            throw new Error('No valid JSON braces found')
-          }
-          
-        } catch (thirdParseError) {
-          // Method 4: Return the error if all methods fail
-          console.error('All parsing methods failed:', {
-            method1: parseError,
-            method2: secondParseError,
-            method3: thirdParseError
-          })
-          console.log('Raw response:', responseText)
-          
-          // Update conversation with error
-          await LLMLogger.updateConversation({
-            conversationId,
-            status: ConversationStatus.FAILED,
-            errorMessage: 'Failed to parse analysis results - AI response could not be converted to valid JSON',
-            totalTokensUsed: totalTokens,
-            totalCost
-          })
-          
-          return NextResponse.json(
-            { 
-              error: 'Failed to parse analysis results. The AI response could not be converted to valid JSON.',
-              details: 'Please try again or contact support if the issue persists.'
-            },
-            { status: 500 }
-          )
-        }
-      }
+      // Update conversation with error
+      await LLMLogger.updateConversation({
+        conversationId,
+        status: ConversationStatus.FAILED,
+        errorMessage: 'Failed to parse analysis results - AI response could not be converted to valid JSON',
+        totalTokensUsed: totalTokens,
+        totalCost
+      })
+      
+      return NextResponse.json(
+        { 
+          error: 'Failed to parse analysis results. The AI response could not be converted to valid JSON.',
+          details: 'Please try again or contact support if the issue persists.'
+        },
+        { status: 500 }
+      )
     }
     
     // Validate required fields

@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
 import { getOrCreateCoverLetter, saveCoverLetterToCache } from '@/lib/cache-utils'
+import { callOpenAIText, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
+import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -150,41 +152,18 @@ Generate only the cover letter content without any additional formatting or expl
     console.log('Estimated tokens (rough):', Math.ceil(prompt.length / 4))
     console.log('=== END DEBUG ===')
 
-    // Call OpenAI API
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert career coach and professional writer specializing in creating compelling cover letters that get results. Write cover letters that are personalized, engaging, and demonstrate clear value to employers.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: 1000,
-        temperature: 0.7,
-      }),
+    // Call OpenAI API using the centralized utility
+    const openaiResponse = await callOpenAIText(prompt, {
+      model: OPENAI_MODELS.MINI,
+      maxTokens: CONTEXT_SIZES.MINI,
+      temperature: TEMPERATURES.HIGH,
+      systemPrompt: 'You are an expert career coach and professional writer specializing in creating compelling cover letters that get results. Write cover letters that are personalized, engaging, and demonstrate clear value to employers.'
     })
 
-    if (!openaiResponse.ok) {
-      const errorData = await openaiResponse.json()
-      console.error('OpenAI API error:', errorData)
-      return NextResponse.json(
-        { error: 'Failed to generate cover letter' },
-        { status: 500 }
-      )
-    }
-
-    const openaiData = await openaiResponse.json()
-    const coverLetter = openaiData.choices[0]?.message?.content
+    const coverLetter = openaiResponse.data
+    const tokensUsed = openaiResponse.usage.totalTokens
+    const estimatedCost = openaiResponse.cost
+    const processingTime = openaiResponse.processingTime
 
     if (!coverLetter) {
       return NextResponse.json(
@@ -192,10 +171,6 @@ Generate only the cover letter content without any additional formatting or expl
         { status: 500 }
       )
     }
-
-    const processingTime = Date.now() - startTime
-    const tokensUsed = openaiData.usage?.total_tokens || 0
-    const estimatedCost = (tokensUsed / 1000) * 0.002 // Rough estimate for GPT-4o-mini
 
     // Store the cover letter generation in database using LLMConversation
     let conversationId = null
@@ -207,7 +182,7 @@ Generate only the cover letter content without any additional formatting or expl
           type: 'COVER_LETTER_GENERATION',
           title: `Cover Letter - ${new Date().toLocaleDateString()}`,
           provider: 'openai',
-          model: 'gpt-4.1-mini',
+          model: OPENAI_MODELS.MINI,
           totalTokensUsed: tokensUsed,
           totalCost: estimatedCost,
           status: 'COMPLETED',
@@ -224,8 +199,8 @@ Generate only the cover letter content without any additional formatting or expl
           role: 'USER',
           content: `Generate cover letter for job:\n\n${effectiveJobDescription}\n\nUsing resume data and tone: ${tone}`,
           messageIndex: 0,
-          inputTokens: tokensUsed - (openaiData.usage?.completion_tokens || 0),
-          totalTokens: tokensUsed - (openaiData.usage?.completion_tokens || 0)
+          inputTokens: openaiResponse.usage.promptTokens,
+          totalTokens: openaiResponse.usage.promptTokens
         }
       })
 
@@ -235,13 +210,13 @@ Generate only the cover letter content without any additional formatting or expl
           role: 'ASSISTANT',
           content: coverLetter,
           messageIndex: 1,
-          outputTokens: openaiData.usage?.completion_tokens || 0,
-          totalTokens: openaiData.usage?.completion_tokens || 0,
+          outputTokens: openaiResponse.usage.completionTokens,
+          totalTokens: openaiResponse.usage.completionTokens,
           cost: estimatedCost,
           processingTime: processingTime,
-          finishReason: openaiData.choices[0]?.finish_reason || 'stop',
-          temperature: 0.7,
-          maxTokens: 1000
+          finishReason: openaiResponse.finishReason,
+          temperature: TEMPERATURES.HIGH,
+          maxTokens: CONTEXT_SIZES.MINI
         }
       })
 
@@ -263,7 +238,7 @@ Generate only the cover letter content without any additional formatting or expl
         processingTime,
         estimatedCost,
         provider: 'openai',
-        model: 'gpt-4.1-mini',
+        model: OPENAI_MODELS.MINI,
         conversationId: conversationId || undefined
       },
       analysisId,

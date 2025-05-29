@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
+import { callOpenAIJobSummary, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
+import { callAnthropicJobSummary, ANTHROPIC_MODELS, ANTHROPIC_CONTEXT_SIZES, ANTHROPIC_TEMPERATURES } from '@/lib/anthropic-utils'
 import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
@@ -15,11 +17,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { jobDescription } = await request.json()
+    const { jobDescription, provider = 'openai' } = await request.json()
 
     if (!jobDescription || typeof jobDescription !== 'string') {
       return NextResponse.json(
         { error: 'Job description is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!['openai', 'anthropic'].includes(provider)) {
+      return NextResponse.json(
+        { error: 'Provider must be either "openai" or "anthropic"' },
         { status: 400 }
       )
     }
@@ -33,6 +42,7 @@ export async function POST(request: NextRequest) {
     console.log('=== JOB DESCRIPTION SUMMARIZATION ===')
     console.log('Original length:', jobDescription.length)
     console.log('Content hash:', contentHash)
+    console.log('Provider:', provider)
 
     // Check if we already have a summary for this job description
     let existingSummary = await db.jobDescriptionSummary.findUnique({
@@ -62,12 +72,13 @@ export async function POST(request: NextRequest) {
           location: existingSummary.location,
           salaryRange: existingSummary.salaryRange,
           usageCount: existingSummary.usageCount,
-          cached: true
+          cached: true,
+          provider: existingSummary.provider
         }
       })
     }
 
-    console.log('No existing summary found, generating new one...')
+    console.log(`No existing summary found, generating new one using ${provider}...`)
 
     const startTime = Date.now()
 
@@ -77,89 +88,68 @@ export async function POST(request: NextRequest) {
 JOB DESCRIPTION:
 ${jobDescription}
 
-Please provide a JSON response with the following structure:
-{
-  "summary": "A concise 2-3 paragraph summary of the role, responsibilities, and company (max 500 words)",
-  "keyRequirements": ["requirement1", "requirement2", "requirement3", ...],
-  "companyName": "Company name if mentioned",
-  "jobTitle": "Job title",
-  "location": "Location if mentioned",
-  "salaryRange": "Salary range if mentioned"
-}
-
 Focus on:
 - Core responsibilities and role purpose
 - Essential skills and qualifications
 - Company culture and values (if mentioned)
 - Key benefits or perks (if mentioned)
 - Remove redundant information and marketing fluff
-- Keep technical requirements specific but concise
+- Keep technical requirements specific but concise`
 
-Respond only with valid JSON.`
+    let response: any
+    let parsedSummary: any
+    let tokensUsed: number
+    let estimatedCost: number
+    let processingTime: number
 
-    // Use GPT-4o-mini for fast, cost-effective summarization
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert HR analyst and job description summarizer. You extract key information and create concise, useful summaries while preserving all important details. Always respond with valid JSON.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: 1000,
-        temperature: 0.3, // Lower temperature for more consistent extraction
-        response_format: { type: "json_object" }
-      }),
-    })
+    if (provider === 'anthropic') {
+      // Check for API key
+      if (!process.env.ANTHROPIC_API_KEY) {
+        return NextResponse.json(
+          { error: 'Anthropic API key not configured' },
+          { status: 500 }
+        )
+      }
 
-    if (!openaiResponse.ok) {
-      const errorData = await openaiResponse.json()
-      console.error('OpenAI API error:', errorData)
-      return NextResponse.json(
-        { error: 'Failed to summarize job description' },
-        { status: 500 }
-      )
+      // Use Anthropic for summarization
+      response = await callAnthropicJobSummary(prompt, {
+        model: ANTHROPIC_MODELS.SONNET,
+        maxTokens: ANTHROPIC_CONTEXT_SIZES.MINI,
+        temperature: ANTHROPIC_TEMPERATURES.NORMAL,
+        systemPrompt: 'You are an expert HR analyst and job description summarizer. You extract key information and create concise, useful summaries while preserving all important details. Use the provided tool to return structured data.'
+      })
+
+      console.log('Summary generated successfully with Anthropic')
+      console.log('Used tools:', response.usedTools)
+    } else {
+      // Check for API key
+      if (!process.env.OPENAI_API_KEY) {
+        return NextResponse.json(
+          { error: 'OpenAI API key not configured' },
+          { status: 500 }
+        )
+      }
+
+      // Use OpenAI for summarization (default)
+      response = await callOpenAIJobSummary(prompt, {
+        model: OPENAI_MODELS.MINI,
+        maxTokens: CONTEXT_SIZES.MINI,
+        temperature: TEMPERATURES.NORMAL,
+        systemPrompt: 'You are an expert HR analyst and job description summarizer. You extract key information and create concise, useful summaries while preserving all important details. Use the provided function to return structured data.'
+      })
+
+      console.log('Summary generated successfully with OpenAI')
+      console.log('Used function calling for structured output')
     }
 
-    const openaiData = await openaiResponse.json()
-    const summaryContent = openaiData.choices[0]?.message?.content
+    parsedSummary = response.data
+    tokensUsed = response.usage.totalTokens
+    estimatedCost = response.cost
+    processingTime = response.processingTime
 
-    if (!summaryContent) {
-      return NextResponse.json(
-        { error: 'No summary generated' },
-        { status: 500 }
-      )
-    }
-
-    let parsedSummary
-    try {
-      parsedSummary = JSON.parse(summaryContent)
-    } catch (error) {
-      console.error('Failed to parse summary JSON:', error)
-      return NextResponse.json(
-        { error: 'Invalid summary format generated' },
-        { status: 500 }
-      )
-    }
-
-    const processingTime = Date.now() - startTime
-    const tokensUsed = openaiData.usage?.total_tokens || 0
-    const estimatedCost = (tokensUsed / 1000) * 0.002 // GPT-4o-mini pricing
-
-    console.log('Summary generated successfully')
     console.log('Processing time:', processingTime, 'ms')
     console.log('Tokens used:', tokensUsed)
-    console.log('Summary length:', parsedSummary.summary?.length || 0)
+    console.log('Cost:', estimatedCost)
 
     // Save the summary to database
     const savedSummary = await db.jobDescriptionSummary.create({
@@ -172,8 +162,8 @@ Respond only with valid JSON.`
         jobTitle: parsedSummary.jobTitle || null,
         location: parsedSummary.location || null,
         salaryRange: parsedSummary.salaryRange || null,
-        provider: 'openai',
-        model: 'gpt-4.1-mini',
+        provider: provider,
+        model: provider === 'anthropic' ? ANTHROPIC_MODELS.SONNET : OPENAI_MODELS.MINI,
         totalTokensUsed: tokensUsed,
         totalCost: estimatedCost,
         processingTime: processingTime
@@ -194,6 +184,7 @@ Respond only with valid JSON.`
         salaryRange: savedSummary.salaryRange,
         usageCount: 1,
         cached: false,
+        provider: provider,
         metadata: {
           tokensUsed,
           processingTime,

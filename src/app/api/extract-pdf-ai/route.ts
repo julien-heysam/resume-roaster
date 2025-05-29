@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { DocumentService, UserService, UsageService, generateFileHash } from '@/lib/database'
+import { callOpenAIJSON, callOpenAIPDFExtraction, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
+import { callAnthropicPDFExtraction, ANTHROPIC_MODELS, ANTHROPIC_CONTEXT_SIZES, ANTHROPIC_TEMPERATURES } from '@/lib/anthropic-utils'
+import { legacyParseJSON } from '@/lib/json-utils'
 import Anthropic from '@anthropic-ai/sdk'
 import OpenAI from 'openai'
-import { DocumentService, UserService, UsageService, generateFileHash } from '@/lib/database'
 import { convertPDFToImages } from '@/lib/pdf-to-image'
 import fs from 'fs/promises'
 import path from 'path'
 import os from 'os'
+import crypto from 'crypto'
 
 // Add canvas import for image conversion
 import { createCanvas } from 'canvas'
@@ -324,154 +330,65 @@ export async function POST(request: NextRequest) {
           )
         }
 
-        console.log('Using Anthropic Claude Sonnet 4 for PDF extraction...')
+        console.log('Using Anthropic Claude with tool calling for PDF extraction...')
 
-        // Initialize Anthropic client
-        const anthropic = new Anthropic({
-          apiKey: process.env.ANTHROPIC_API_KEY,
-        })
-
-        const base64Data = buffer.toString('base64')
-
-        // Convert PDF to images for visual context
-        console.log('🖼️ Converting PDF to images for visual context...')
-        pdfImages = await convertPDFToImages(buffer)
-
-        console.log('📤 Sending PDF and images to Claude for enhanced extraction...')
-        
-        // Build the content array with PDF and images
-        const messageContent: any[] = [
-          {
-            type: "text",
-            text: `Extract the resume content from this PDF and format it as clean, professional markdown. I'm providing both the PDF document and visual images of the pages for better context understanding.
-
-🎯 Use the visual images to understand:
-- Layout and formatting structure (columns, spacing, alignment)
-- Headers, subheaders, and section breaks
-- Visual emphasis (bold, italic, underlined text)
-- Tables, figures, and structured data
-- Professional formatting and design elements
-
-📋 Focus on maintaining the original structure and hierarchy while making it readable and well-formatted. Respond with JSON containing markdown, summary, and sections fields.`
-          },
-          {
-            type: "document",
-            source: {
-              type: "base64",
-              media_type: "application/pdf",
-              data: base64Data
-            }
-          }
-        ]
-
-        // Add images if available
-        if (pdfImages.length > 0) {
-          console.log(`📸 Adding ${pdfImages.length} page images for visual context`)
-          pdfImages.forEach((imageBase64, index) => {
-            messageContent.push({
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: "image/png",
-                data: imageBase64
-              }
-            })
-          })
-        } else {
-          console.log('⚠️ No images generated, proceeding with PDF only')
-        }
-        
-        const message = await anthropic.messages.create({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 8000,
-          temperature: 0.1,
-          system: SYSTEM_PROMPT,
-          messages: [
-            {
-              role: "user",
-              content: messageContent
-            }
-          ]
-        })
-
-        // Extract text content from the response
-        const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
+        // For Anthropic, we need to first extract text using basic methods, then use tool calling for formatting
+        const tempDir = os.tmpdir()
+        const tempFilePath = path.join(tempDir, `pdf_${Date.now()}_${Math.random().toString(36).substring(7)}.pdf`)
         
         try {
-          // Method 1: Try the current approach first
-          let jsonText = responseText.trim()
+          // Write buffer to temporary file
+          await fs.writeFile(tempFilePath, buffer)
           
-          // Remove markdown code blocks if present
-          if (jsonText.startsWith('```json')) {
-            jsonText = jsonText.replace(/^```json\s*/, '').replace(/```\s*$/, '')
-          } else if (jsonText.startsWith('```')) {
-            jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '')
-          }
+          // Extract text using basic methods first
+          const rawText = await extractTextFromPDFBasic(tempFilePath, file.name)
           
-          // Try to parse as JSON
-          extractedData = JSON.parse(jsonText)
+          // Convert PDF to images for visual context
+          console.log('🖼️ Converting PDF to images for visual context...')
+          pdfImages = await convertPDFToImages(buffer)
+
+          console.log('📤 Using Anthropic tool calling for text formatting...')
           
-          // Extract only the markdown content
+          // Build the content for the prompt with extracted text
+          const promptContent = `Extract and format this resume content as clean, professional markdown:
+
+${rawText}
+
+Use the layout and structure to understand:
+- Headers, subheaders, and section breaks
+- Professional formatting and design elements
+- Tables, figures, and structured data
+- Maintain the original hierarchy while making it readable
+
+Focus on creating clean, well-formatted markdown that preserves the resume's structure and content.`
+
+          // Use tool calling for structured formatting
+          const response = await callAnthropicPDFExtraction(promptContent, {
+            model: ANTHROPIC_MODELS.SONNET,
+            maxTokens: ANTHROPIC_CONTEXT_SIZES.LARGE,
+            temperature: ANTHROPIC_TEMPERATURES.LOW,
+            systemPrompt: 'You are an expert resume parser and markdown formatter. Your task is to extract text content from documents and format it as clean, professional markdown. Use the provided tool to return structured data with markdown, summary, and sections.'
+          })
+
+          extractedData = response.data
           extractedText = extractedData.markdown?.trim() || ''
-          
+
           if (!extractedText) {
             throw new Error('No markdown content found in response')
           }
+
+          console.log('✅ Anthropic tool calling extraction completed successfully')
+          console.log('Processing time:', response.processingTime, 'ms')
+          console.log('Tokens used:', response.usage.totalTokens)
+          console.log('Cost:', response.cost)
+          console.log('Used tools:', response.usedTools)
           
-        } catch (parseError) {
-          console.log('Method 1 failed, trying fallback methods...')
-          
+        } finally {
+          // Clean up temporary file
           try {
-            // Method 2: Extract text between ```json ... ```
-            const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
-            if (jsonMatch && jsonMatch[1]) {
-              extractedData = JSON.parse(jsonMatch[1].trim())
-              extractedText = extractedData.markdown?.trim() || ''
-              
-              if (!extractedText) {
-                throw new Error('No markdown content found in response')
-              }
-            } else {
-              throw new Error('No JSON code block found')
-            }
-            
-          } catch (secondParseError) {
-            console.log('Method 2 failed, trying method 3...')
-            
-            try {
-              // Method 3: Find first { and last } and extract JSON
-              const firstBrace = responseText.indexOf('{')
-              const lastBrace = responseText.lastIndexOf('}')
-              
-              if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-                const jsonText = responseText.substring(firstBrace, lastBrace + 1)
-                extractedData = JSON.parse(jsonText)
-                extractedText = extractedData.markdown?.trim() || ''
-                
-                if (!extractedText) {
-                  throw new Error('No markdown content found in response')
-                }
-              } else {
-                throw new Error('No valid JSON braces found')
-              }
-              
-            } catch (thirdParseError) {
-              // Method 4: Fallback to treating entire response as markdown
-              console.log('All JSON parsing methods failed, treating entire response as markdown')
-              console.error('All parsing methods failed:', {
-                method1: parseError,
-                method2: secondParseError,
-                method3: thirdParseError
-              })
-              
-              // If JSON parsing fails, use the entire response as markdown
-              extractedText = responseText.trim()
-              extractedData = {
-                markdown: extractedText,
-                summary: "Resume content extracted and formatted as markdown using Claude",
-                sections: ["Resume Content"]
-              }
-            }
+            await fs.unlink(tempFilePath)
+          } catch (cleanupError) {
+            console.warn('Failed to clean up temporary file:', cleanupError)
           }
         }
 
@@ -503,50 +420,72 @@ export async function POST(request: NextRequest) {
           const pdfImagesOpenAI = await convertPDFToImages(buffer)
           pdfImages = pdfImagesOpenAI // Store for frontend display
           
-          // Initialize OpenAI client
-          const openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-          })
-
-          console.log('📤 Processing extracted text and images with GPT-4 Mini for enhanced formatting...')
-          
-          // Build the messages array with text and images
-          const messages: any[] = [
-            {
-              role: "system",
-              content: SYSTEM_PROMPT
-            },
-            {
-              role: "user",
-              content: [
-                {
-                  type: "text",
-                  text: `Please process this extracted resume text and format it as clean, professional markdown. I'm providing both the raw extracted text and visual images of the PDF pages for better context understanding.
-
-🎯 Use the visual images to understand:
-- Layout and formatting structure (columns, spacing, alignment)
-- Headers, subheaders, and section breaks  
-- Visual emphasis (bold, italic, underlined text)
-- Tables, figures, and structured data
-- Professional formatting and design elements
-
-Here is the raw text extracted from the PDF resume:
+          // For text-only processing, use the centralized utility with function calling
+          if (!pdfImagesOpenAI || pdfImagesOpenAI.length === 0) {
+            console.log('📝 Processing with text-only using function calling...')
+            
+            const prompt = `Extract and format this resume content as clean, professional markdown:
 
 ${rawText}
 
-📋 Please format this content according to the guidelines in the system prompt and return a JSON object with:
-- "markdown": the formatted content as clean markdown
-- "summary": a brief summary of the resume content  
-- "sections": an array of main sections found in the resume`
-                }
-              ]
-            }
-          ]
+Use the visual layout and structure to understand:
+- Headers, subheaders, and section breaks
+- Professional formatting and design elements
+- Tables, figures, and structured data
+- Maintain the original hierarchy while making it readable
 
-          // Add images if available
-          if (pdfImages.length > 0) {
-            console.log(`📸 Adding ${pdfImages.length} page images for visual context`)
-            pdfImages.forEach((imageBase64, index) => {
+Focus on creating clean, well-formatted markdown that preserves the resume's structure and content.`
+
+            const response = await callOpenAIPDFExtraction(prompt, {
+              model: OPENAI_MODELS.MINI,
+              maxTokens: CONTEXT_SIZES.NORMAL,
+              temperature: TEMPERATURES.LOW,
+              systemPrompt: 'You are an expert resume parser and markdown formatter. Extract text content from documents and format as clean, professional markdown. Use the provided function to return structured data.'
+            })
+
+            extractedData = response.data
+            extractedText = extractedData.markdown?.trim() || ''
+
+            if (!extractedText) {
+              throw new Error('No markdown content found in response')
+            }
+
+            console.log('✅ Function calling extraction completed successfully')
+          } else {
+            // For image processing, keep the existing approach
+            console.log('🖼️ Processing with images using direct OpenAI SDK...')
+            
+            // Initialize OpenAI client
+            const openai = new OpenAI({
+              apiKey: process.env.OPENAI_API_KEY,
+            })
+
+            // Prepare messages with images
+            const messages: any[] = [
+              {
+                role: "system",
+                content: SYSTEM_PROMPT
+              },
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: `${rawText}
+
+Please extract and format this resume content as clean, professional markdown. Return a JSON object with the following structure:
+{
+  "markdown": "The formatted resume content in markdown",
+  "summary": "Brief summary of the resume",
+  "sections": ["Array of main sections found"]
+}`
+                  }
+                ]
+              }
+            ]
+
+            // Add images to the message
+            pdfImagesOpenAI.forEach((imageBase64: string) => {
               messages[1].content.push({
                 type: "image_url",
                 image_url: {
@@ -555,93 +494,37 @@ ${rawText}
                 }
               })
             })
-          } else {
-            console.log('⚠️ No images generated, proceeding with text only')
-          }
-          
-          const completion = await openai.chat.completions.create({
-            model: "gpt-4.1-mini",
-            messages: messages,
-            temperature: 0.1,
-            max_tokens: 4000
-          })
 
-          const responseText = completion.choices[0]?.message?.content || ''
-          
-          try {
-            // Method 1: Try the current approach first
-            let jsonText = responseText.trim()
-            
-            // Remove markdown code blocks if present
-            if (jsonText.startsWith('```json')) {
-              jsonText = jsonText.replace(/^```json\s*/, '').replace(/```\s*$/, '')
-            } else if (jsonText.startsWith('```')) {
-              jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '')
-            }
-            
-            // Try to parse as JSON
-            extractedData = JSON.parse(jsonText)
-            
-            // Extract only the markdown content
-            extractedText = extractedData.markdown?.trim() || ''
-            
-            if (!extractedText) {
-              throw new Error('No markdown content found in response')
-            }
-            
-          } catch (parseError) {
-            console.log('Method 1 failed, trying fallback methods...')
+            const completion = await openai.chat.completions.create({
+              model: OPENAI_MODELS.MINI,
+              messages: messages,
+              temperature: TEMPERATURES.LOW,
+              max_tokens: CONTEXT_SIZES.NORMAL
+            })
+
+            const responseText = completion.choices[0]?.message?.content || ''
             
             try {
-              // Method 2: Extract text between ```json ... ```
-              const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
-              if (jsonMatch && jsonMatch[1]) {
-                extractedData = JSON.parse(jsonMatch[1].trim())
-                extractedText = extractedData.markdown?.trim() || ''
-                
-                if (!extractedText) {
-                  throw new Error('No markdown content found in response')
-                }
-              } else {
-                throw new Error('No JSON code block found')
+              extractedData = legacyParseJSON(responseText)
+              
+              // Extract only the markdown content
+              extractedText = extractedData.markdown?.trim() || ''
+              
+              if (!extractedText) {
+                throw new Error('No markdown content found in response')
               }
               
-            } catch (secondParseError) {
-              console.log('Method 2 failed, trying method 3...')
+            } catch (parseError) {
+              // Fallback to treating entire response as markdown
+              console.log('All JSON parsing methods failed, treating entire response as markdown')
+              console.error('JSON parsing failed:', parseError)
               
-              try {
-                // Method 3: Find first { and last } and extract JSON
-                const firstBrace = responseText.indexOf('{')
-                const lastBrace = responseText.lastIndexOf('}')
-                
-                if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-                  const jsonText = responseText.substring(firstBrace, lastBrace + 1)
-                  extractedData = JSON.parse(jsonText)
-                  extractedText = extractedData.markdown?.trim() || ''
-                  
-                  if (!extractedText) {
-                    throw new Error('No markdown content found in response')
-                  }
-                } else {
-                  throw new Error('No valid JSON braces found')
-                }
-                
-              } catch (thirdParseError) {
-                // Method 4: Fallback to treating entire response as markdown
-                console.log('All JSON parsing methods failed, treating entire response as markdown')
-                console.error('All parsing methods failed:', {
-                  method1: parseError,
-                  method2: secondParseError,
-                  method3: thirdParseError
-                })
-                
-                // If JSON parsing fails, use the entire response as markdown
-                extractedText = responseText.trim()
-                extractedData = {
-                  markdown: extractedText,
-                  summary: "Resume content extracted and formatted as markdown using GPT-4 Mini",
-                  sections: ["Resume Content"]
-                }
+              // If JSON parsing fails, use the entire response as markdown
+              extractedText = responseText.trim()
+              extractedData = {
+                markdown: extractedText,
+                summary: "Resume content extracted and formatted as markdown using GPT-4 Mini",
+                sections: ["Resume Content"]
               }
             }
           }

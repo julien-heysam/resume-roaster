@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
 import { getOrCreateOptimizedResume, saveOptimizedResumeToCache } from '@/lib/cache-utils'
+import { legacyParseJSON } from '@/lib/json-utils'
+import { callAnthropicResumeOptimization, ANTHROPIC_MODELS, ANTHROPIC_CONTEXT_SIZES, ANTHROPIC_TEMPERATURES } from '@/lib/anthropic-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -141,224 +143,38 @@ EXTRACTED JOB DETAILS:
 - Key Requirements: ${jobSummaryData.keyRequirements?.slice(0, 5).join(', ') || 'See job description'}
 ` : ''}
 
-Make sure you dont omit any information from the resume text, this is the most important part of the process.
-
-Please extract and return ONLY a valid JSON object with the following structure:
-{
-  "personalInfo": {
-    "name": string,
-    "email": string,
-    "phone": string,
-    "location": string,
-    "linkedin": string,
-    "portfolio": string,
-    "github": string,
-    "jobTitle": string,
-    "jobDescription": string
-  },
-  "summary": string,
-  "experience": [
-    {
-      "title": string,
-      "company": string,
-      "location": string,
-      "startDate": string,
-      "endDate": string,
-      "description": [string],
-      "achievements": [string]
-    }
-  ],
-  "education": [
-    {
-      "degree": string,
-      "school": string,
-      "location": string,
-      "graduationDate": string,
-      "gpa": string,
-      "honors": [string]
-    }
-  ],
-  "skills": {
-    "technical": [string],
-    "soft": [string],
-    "languages": [string],
-    "certifications": [string]
-  },
-  "projects": [
-    {
-      "name": string,
-      "description": string,
-      "technologies": [string],
-      "link": string
-    }
-  ]
-}
-
 IMPORTANT INSTRUCTIONS:
 1. Extract information accurately from the resume text
 2. Optimize content for ATS compatibility
 3. Include quantified achievements where possible
 4. Match keywords from the job description naturally
 5. Ensure all dates are in MM/YYYY format
-6. Return ONLY the JSON object, no additional text or formatting
-7. If information is missing, use null or empty arrays as appropriate
+6. If information is missing, use null or empty arrays as appropriate
+7. Make sure you don't omit any information from the resume text, this is the most important part of the process.
 
-
-EXAMPLE OUTPUT:
-{
-  personalInfo: {
-    name: "Alex Johnson",
-    email: "alex.johnson@email.com",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-    linkedin: "https://linkedin.com/in/alexjohnson",
-    portfolio: "https://alexjohnson.dev",
-    github: "https://github.com/alexjohnson",
-    jobTitle: "Software Engineer",
-    jobDescription: "Experienced Software Engineer"
-  },
-  summary: "Experienced Software Engineer with 5+ years developing scalable web applications. Proven track record of leading cross-functional teams and delivering high-impact solutions that drive business growth.",
-  experience: [
-    {
-      title: "Senior Software Engineer",
-      company: "TechCorp Inc.",
-      location: "San Francisco, CA",
-      startDate: "2022",
-      endDate: "Present",
-      description: [
-        "Led development of microservices architecture serving 1M+ users",
-        "Mentored junior developers and established coding best practices"
-      ],
-      achievements: [
-        "Reduced system latency by 40% through optimization initiatives",
-        "Increased team productivity by 25% through process improvements"
-      ]
-    }
-  ],
-  education: [
-    {
-      degree: "Bachelor of Science in Computer Science",
-      school: "University of California",
-      location: "Berkeley, CA",
-      graduationDate: "2019",
-      gpa: "3.8",
-      honors: ["Magna Cum Laude"]
-    }
-  ],
-  skills: {
-    technical: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS", "Docker"],
-    soft: ["Leadership", "Problem-solving", "Communication", "Team Management"],
-    languages: ["English", "Spanish"],
-    certifications: ["AWS Certified Solutions Architect"]
-  },
-  projects: [
-    {
-      name: "E-commerce Platform",
-      description: "Built a full-stack e-commerce platform with React and Node.js",
-      technologies: ["React", "Node.js", "MongoDB", "Stripe"],
-      link: "https://github.com/alexjohnson/ecommerce"
-    }
-  ]
-}`
+Please use the optimize_resume_data function to return the structured data.`
 
     console.log('Final prompt length:', prompt.length)
     console.log('Estimated tokens (rough):', Math.ceil(prompt.length / 4))
     console.log('=== END DEBUG ===')
 
-    // Call Anthropic API
-    const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY!,
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        temperature: 0.3,
-        system: 'You are an expert resume parser and career coach. Extract resume data into structured JSON format that is optimized for ATS systems and tailored for the target job. Always return valid JSON only.',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-      }),
+    // Use centralized Anthropic utility with function calling
+    const response = await callAnthropicResumeOptimization(prompt, {
+      model: ANTHROPIC_MODELS.SONNET,
+      maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL,
+      temperature: ANTHROPIC_TEMPERATURES.LOW,
+      systemPrompt: 'You are an expert resume parser and career coach. Extract resume data into structured JSON format that is optimized for ATS systems and tailored for the target job. Use the provided tool to return structured data.'
     })
 
-    if (!anthropicResponse.ok) {
-      const errorData = await anthropicResponse.json()
-      console.error('Anthropic API error:', errorData)
-      return NextResponse.json(
-        { error: 'Failed to extract resume data' },
-        { status: 500 }
-      )
-    }
+    const extractedData = response.data
+    const processingTime = response.processingTime
+    const tokensUsed = response.usage.totalTokens
+    const estimatedCost = response.cost
 
-    const anthropicData = await anthropicResponse.json()
-    const extractedContent = anthropicData.content[0]?.text
-
-    if (!extractedContent) {
-      return NextResponse.json(
-        { error: 'No data extracted' },
-        { status: 500 }
-      )
-    }
-
-    // Parse the JSON response
-    let extractedData
-    try {
-      // Method 1: Try parsing as direct JSON (remove any leading/trailing whitespace)
-      const jsonText = extractedContent.trim()
-      extractedData = JSON.parse(jsonText)
-      
-    } catch (parseError) {
-      console.log('Method 1 failed, trying fallback methods...')
-      
-      try {
-        // Method 2: Extract text between ```json ... ```
-        const jsonMatch = extractedContent.match(/```json\s*([\s\S]*?)\s*```/)
-        if (jsonMatch && jsonMatch[1]) {
-          extractedData = JSON.parse(jsonMatch[1].trim())
-        } else {
-          throw new Error('No JSON code block found')
-        }
-        
-      } catch (secondParseError) {
-        console.log('Method 2 failed, trying method 3...')
-        
-        try {
-          // Method 3: Find first { and last } and extract JSON
-          const firstBrace = extractedContent.indexOf('{')
-          const lastBrace = extractedContent.lastIndexOf('}')
-          
-          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-            const jsonText = extractedContent.substring(firstBrace, lastBrace + 1)
-            extractedData = JSON.parse(jsonText)
-          } else {
-            throw new Error('No valid JSON braces found')
-          }
-          
-        } catch (thirdParseError) {
-          // Method 4: Return the error if all methods fail
-          console.error('All parsing methods failed:', {
-            method1: parseError,
-            method2: secondParseError,
-            method3: thirdParseError
-          })
-          console.error('Raw content:', extractedContent)
-          return NextResponse.json(
-            { error: 'Failed to parse extracted data' },
-            { status: 500 }
-          )
-        }
-      }
-    }
-
-    const processingTime = Date.now() - startTime
-    const tokensUsed = (anthropicData.usage?.input_tokens || 0) + (anthropicData.usage?.output_tokens || 0)
-    const estimatedCost = ((anthropicData.usage?.input_tokens || 0) * 0.003 + (anthropicData.usage?.output_tokens || 0) * 0.015) / 1000 // Claude 3.5 Sonnet pricing
+    console.log('Resume extraction completed successfully')
+    console.log('Processing time:', processingTime, 'ms')
+    console.log('Tokens used:', tokensUsed)
+    console.log('Used tools:', response.usedTools)
 
     // Calculate ATS score and keyword matching
     const atsScore = calculateATSScore(extractedData, effectiveJobDescription)
@@ -392,8 +208,8 @@ EXAMPLE OUTPUT:
           role: 'USER',
           content: prompt,
           messageIndex: 0,
-          inputTokens: anthropicData.usage?.input_tokens || 0,
-          totalTokens: anthropicData.usage?.input_tokens || 0
+          inputTokens: tokensUsed,
+          totalTokens: tokensUsed
         }
       })
 
@@ -401,15 +217,15 @@ EXAMPLE OUTPUT:
         data: {
           conversationId: conversation.id,
           role: 'ASSISTANT',
-          content: extractedContent,
+          content: JSON.stringify(extractedData),
           messageIndex: 1,
-          outputTokens: anthropicData.usage?.output_tokens || 0,
-          totalTokens: anthropicData.usage?.output_tokens || 0,
+          outputTokens: tokensUsed,
+          totalTokens: tokensUsed,
           cost: estimatedCost,
           processingTime: processingTime,
-          finishReason: anthropicData.stop_reason || 'end_turn',
+          finishReason: response.stopReason || 'end_turn',
           temperature: 0.3,
-          maxTokens: 2000
+          maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL
         }
       })
 
