@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAlertDialog } from "@/components/ui/alert-dialog"
 import Link from "next/link"
 import { Footer } from "@/components/ui/footer"
+import { Navigation } from "@/components/ui/navigation"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -78,25 +79,8 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <Flame className="h-8 w-8 text-orange-500" />
-              <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                Resume Roaster
-              </span>
-            </Link>
-            <Link href="/">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+      {/* Navigation */}
+      <Navigation currentPage="contact" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Page Header */}
@@ -221,7 +205,7 @@ export default function ContactPage() {
                   <Mail className="h-5 w-5 text-orange-500 mt-0.5" />
                   <div>
                     <p className="font-medium">Email</p>
-                    <p className="text-sm text-gray-600">support@resume-roaster.com</p>
+                    <p className="text-sm text-gray-600">support@resume-roaster.xyz</p>
                   </div>
                 </div>
 

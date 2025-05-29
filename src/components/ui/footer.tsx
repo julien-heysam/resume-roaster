@@ -24,7 +24,7 @@ export function Footer() {
               <Link href="https://twitter.com" className="text-gray-400 hover:text-gray-600 transition-colors">
                 <Twitter className="h-5 w-5" />
               </Link>
-              <Link href="mailto:support@resumeroaster.com" className="text-gray-400 hover:text-gray-600 transition-colors">
+              <Link href="mailto:support@resume-roaster.xyz" className="text-gray-400 hover:text-gray-600 transition-colors">
                 <Mail className="h-5 w-5" />
               </Link>
             </div>

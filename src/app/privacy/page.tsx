@@ -5,29 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Footer } from "@/components/ui/footer"
+import { Navigation } from "@/components/ui/navigation"
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <Flame className="h-8 w-8 text-orange-500" />
-              <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                Resume Roaster
-              </span>
-            </Link>
-            <Link href="/">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+      {/* Navigation */}
+      <Navigation currentPage="privacy" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
         {/* Page Header */}
@@ -225,7 +209,7 @@ export default function PrivacyPage() {
                 </ul>
 
                 <p className="text-gray-600">
-                  To exercise these rights, please contact us at privacy@resumeroaster.com.
+                  To exercise these rights, please contact us at support@resume-roaster.xyz.
                 </p>
               </div>
             </CardContent>
@@ -268,7 +252,7 @@ export default function PrivacyPage() {
               </p>
               
               <div className="space-y-2 text-orange-700">
-                <p><strong>Email:</strong> support@resume-roaster.com</p>
+                <p><strong>Email:</strong> support@resume-roaster.xyz</p>
                 <p><strong>Address:</strong> 1717 webster st, Oakland, CA 94612</p>
                 <p><strong>Phone:</strong> +1 (415) 430-8779</p>
               </div>

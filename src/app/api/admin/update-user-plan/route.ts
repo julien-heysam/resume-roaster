@@ -105,8 +105,11 @@ export async function POST(request: NextRequest) {
 // Simple admin check - customize this based on your requirements
 function isAdmin(email: string): boolean {
   const adminEmails = [
-    'admin@resumeroaster.com',
+    'support@resume-roaster.xyz',
+    'julien@resume-roaster.xyz',
     'julien@resumeroaster.com',
+    'admin@resumeroaster.com',
+    'julien.wut@gmail.com',
     // Add your admin emails here
   ]
   

@@ -247,7 +247,7 @@ export default function PricingPage() {
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">Is there a free trial?</h3>
-              <p className="text-gray-600">Our Free plan gives you 3 roasts per month to try out the service. No credit card required!</p>
+              <p className="text-gray-600">Our Free plan gives you 3 credits per month to try out the service. No credit card required!</p>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">How does the AI analysis work?</h3>
@@ -260,4 +260,4 @@ export default function PricingPage() {
       <Footer />
     </div>
   )
-} 
+}
