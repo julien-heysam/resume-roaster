@@ -64,17 +64,39 @@ export default function ContactPage() {
 
     setLoading(true)
     
-    // Simulate form submission
-    setTimeout(() => {
-      setLoading(false)
-      showAlert({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you within 24 hours.",
-        type: "success",
-        confirmText: "Great!"
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       })
-      setFormData({ name: '', email: '', subject: '', message: '' })
-    }, 1000)
+
+      const result = await response.json()
+
+      if (response.ok && result.success) {
+        setLoading(false)
+        showAlert({
+          title: "Message Sent!",
+          description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+          type: "success",
+          confirmText: "Great!"
+        })
+        setFormData({ name: '', email: '', subject: '', message: '' })
+      } else {
+        throw new Error(result.error || 'Failed to send message')
+      }
+    } catch (error) {
+      setLoading(false)
+      console.error('Contact form error:', error)
+      showAlert({
+        title: "Error",
+        description: "Failed to send your message. Please try again or contact us directly at support@resume-roaster.xyz",
+        type: "error",
+        confirmText: "OK"
+      })
+    }
   }
 
   return (
