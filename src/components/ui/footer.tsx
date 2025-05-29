@@ -1,4 +1,4 @@
-import { Flame, Github, Twitter, Mail, Heart } from 'lucide-react'
+import { Flame, Linkedin, Twitter, Mail, Heart } from 'lucide-react'
 import Link from 'next/link'
 
 export function Footer() {
@@ -18,8 +18,8 @@ export function Footer() {
               Get brutally honest AI-powered feedback on your resume and land your dream job faster.
             </p>
             <div className="flex space-x-4">
-              <Link href="https://github.com" className="text-gray-400 hover:text-gray-600 transition-colors">
-                <Github className="h-5 w-5" />
+              <Link href="https://www.linkedin.com/in/julien-wuthrich-a75156119/" className="text-gray-400 hover:text-gray-600 transition-colors">
+                <Linkedin className="h-5 w-5" />
               </Link>
               <Link href="https://twitter.com" className="text-gray-400 hover:text-gray-600 transition-colors">
                 <Twitter className="h-5 w-5" />
@@ -89,25 +89,25 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
+                <Link href="/company/about" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
                   About Us
                 </Link>
               </li>
-              <li>
-                <Link href="/blog" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
+              {/* <li>
+                <Link href="/company/blog" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
                   Blog
                 </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
+              </li> */}
+              {/* <li>
+                <Link href="/company/careers" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
                   Careers
                 </Link>
-              </li>
-              <li>
-                <Link href="/press" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
+              </li> */}
+              {/* <li>
+                <Link href="/company/press" className="text-sm text-gray-600 hover:text-orange-500 transition-colors">
                   Press
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
