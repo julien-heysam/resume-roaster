@@ -25,10 +25,10 @@ export function RoastLimitBanner({
   // Show different messages based on tier
   const getTierDisplay = () => {
     switch (tier) {
-      case 'PRO':
-        return { name: 'Pro', color: 'text-blue-600', bgColor: 'bg-blue-50' }
-      case 'ENTERPRISE':
-        return { name: 'Enterprise', color: 'text-purple-600', bgColor: 'bg-purple-50' }
+      case 'PLUS':
+        return { name: 'Plus', color: 'text-blue-600', bgColor: 'bg-blue-50' }
+      case 'PREMIUM':
+        return { name: 'Premium', color: 'text-purple-600', bgColor: 'bg-purple-50' }
       default:
         return { name: 'Free', color: 'text-gray-600', bgColor: 'bg-gray-50' }
     }
@@ -37,7 +37,7 @@ export function RoastLimitBanner({
   const tierDisplay = getTierDisplay()
 
   // Handle unlimited plans
-  if (tier === 'ENTERPRISE' || maxRoasts === -1) {
+  if (tier === 'PREMIUM' || maxRoasts === -1) {
     return (
       <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
         <div className="flex items-center justify-between text-sm">
@@ -55,15 +55,15 @@ export function RoastLimitBanner({
     )
   }
 
-  // Handle PRO plan with high limits
-  if (tier === 'PRO' && canRoast && remainingRoasts > 10) {
+  // Handle PLUS plan with high limits
+  if (tier === 'PLUS' && canRoast && remainingRoasts > 10) {
     return (
       <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center space-x-2">
             <Crown className="h-4 w-4 text-blue-500" />
             <span className="text-blue-700 font-medium">
-              Pro Plan - {remainingRoasts} credits remaining
+              Plus Plan - {remainingRoasts} credits remaining
             </span>
           </div>
           <div className="text-blue-600 text-xs">
@@ -86,7 +86,7 @@ export function RoastLimitBanner({
             </span>
           </div>
           <Button variant="link" size="sm" onClick={onUpgrade} className="text-orange-600 p-0 h-auto">
-            {tier === 'FREE' ? 'Upgrade to Pro →' : 'Manage Plan →'}
+            {tier === 'FREE' ? 'Upgrade to Plus →' : 'Manage Plan →'}
           </Button>
         </div>
       </div>
@@ -106,13 +106,13 @@ export function RoastLimitBanner({
               </p>
               <p className="text-xs text-yellow-700 mt-1">
                 {tier === 'FREE' 
-                  ? 'Upgrade to Pro for 100 credits/month' 
+                  ? 'Upgrade to Plus for 100 credits/month' 
                   : 'Your plan resets monthly'
                 }
               </p>
             </div>
             <Button size="sm" onClick={onUpgrade}>
-              {tier === 'FREE' ? 'Upgrade to Pro' : 'Manage Plan'}
+              {tier === 'FREE' ? 'Upgrade to Plus' : 'Manage Plan'}
             </Button>
           </div>
         </CardContent>
@@ -142,9 +142,9 @@ export function RoastLimitBanner({
             <Button size="lg" onClick={onUpgrade} className="w-full">
               <Crown className="h-4 w-4 mr-2" />
               {tier === 'FREE' 
-                ? 'Upgrade to Pro - $9.99/month' 
-                : tier === 'PRO' 
-                  ? 'Upgrade to Enterprise' 
+                ? 'Upgrade to Plus - $9.99/month' 
+                : tier === 'PLUS' 
+                  ? 'Upgrade to Premium' 
                   : 'Manage Plan'
               }
             </Button>

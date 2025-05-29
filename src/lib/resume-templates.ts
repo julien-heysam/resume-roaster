@@ -70,6 +70,11 @@ export const yourResumeTemplate: ResumeTemplate = {
     <title>${data.personalInfo.name} - Resume</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { 
+            background: white;
+            margin: 0;
+            padding: 0;
+        }
         body { 
             font-family: 'Times New Roman', serif; 
             line-height: 1.4; 
@@ -261,7 +266,16 @@ export const yourResumeTemplate: ResumeTemplate = {
         }
         
         @media print {
-            body { padding: 0.5in; }
+            html {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body { 
+                background: white !important; 
+                color: #000000 !important; 
+                padding: 0.5in !important;
+            }
             .page-number { 
                 position: fixed; 
                 bottom: 0.3in; 
@@ -456,23 +470,31 @@ export const modernTechTemplate: ResumeTemplate = {
     <title>${data.personalInfo.name} - Resume</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { 
+            background: #1a202c;
+            margin: 0;
+            padding: 0;
+        }
         body { 
             font-family: 'Fira Code', 'Monaco', 'Consolas', monospace; 
             line-height: 1.6; 
             color: #e2e8f0; 
             background: #1a202c;
-            max-width: 8.5in; 
-            margin: 0 auto; 
-            padding: 0.75in;
+            max-width: none; 
+            margin: 0;
+            padding: 0;
             font-size: 10pt;
+            width: 100vw;
+            min-height: 100vh;
         }
         
         .terminal {
             background: #2d3748;
-            border-radius: 8px;
+            border-radius: 0;
             padding: 20px;
-            border: 1px solid #4a5568;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: none;
+            box-shadow: none;
+            min-height: 100vh;
         }
         
         .terminal-header {
@@ -653,16 +675,34 @@ export const modernTechTemplate: ResumeTemplate = {
         }
         
         @media print {
+            html {
+                background: #1a202c !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
             body { 
-                background: white; 
-                color: black; 
+                background: #1a202c !important; 
+                color: #e2e8f0 !important; 
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
             }
             .terminal {
-                background: white;
-                border: 1px solid #ccc;
+                background: #2d3748 !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 20px !important;
+                min-height: 100vh !important;
             }
-            .name { color: #2d3748; }
-            .section-title { color: #2d3748; }
+            .name { color: #68d391 !important; }
+            .section-title { color: #f6ad55 !important; }
+            .job { background: #2a2e3a !important; }
+            .skill-group { background: #2a2e3a !important; }
+            .education-item { background: #2a2e3a !important; }
+            .skill-tag { background: #4a5568 !important; }
         }
     </style>
 </head>
@@ -811,7 +851,7 @@ const summary = "${data.summary}";
     )
   ).map(skill => `"${skill}"`).join(', ')}],
   "frameworks": [${data.skills.technical.filter(skill => 
-    !['JavaScript', 'Python', 'Java', 'C++', 'C#', 'TypeScript', 'Go', 'Rust', 'PHP', 'Ruby'].some(lang => 
+    !['JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'].some(lang => 
       skill.toLowerCase().includes(lang.toLowerCase())
     )
   ).map(skill => `"${skill}"`).join(', ')}],
@@ -877,6 +917,11 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
     <title>${data.personalInfo.name} - Executive Resume</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { 
+            background: white;
+            margin: 0;
+            padding: 0;
+        }
         body { 
             font-family: 'Georgia', 'Times New Roman', serif; 
             line-height: 1.6; 
@@ -1128,7 +1173,15 @@ export const executiveLeadershipTemplate: ResumeTemplate = {
         }
         
         @media print {
-            body { padding: 0.5in; }
+            html {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body { 
+                background: white !important;
+                padding: 0.5in !important; 
+            }
             .name-executive { font-size: 24pt; }
             .section-title-executive { font-size: 14pt; }
         }

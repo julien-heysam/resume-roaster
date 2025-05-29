@@ -398,7 +398,7 @@ export async function POST(request: NextRequest) {
         const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
         
         try {
-          // Claude might wrap JSON in code blocks, so let's handle that
+          // Method 1: Try the current approach first
           let jsonText = responseText.trim()
           
           // Remove markdown code blocks if present
@@ -419,14 +419,59 @@ export async function POST(request: NextRequest) {
           }
           
         } catch (parseError) {
-          console.log('Failed to parse JSON response, treating entire response as markdown')
+          console.log('Method 1 failed, trying fallback methods...')
           
-          // If JSON parsing fails, use the entire response as markdown
-          extractedText = responseText.trim()
-          extractedData = {
-            markdown: extractedText,
-            summary: "Resume content extracted and formatted as markdown using Claude",
-            sections: ["Resume Content"]
+          try {
+            // Method 2: Extract text between ```json ... ```
+            const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
+            if (jsonMatch && jsonMatch[1]) {
+              extractedData = JSON.parse(jsonMatch[1].trim())
+              extractedText = extractedData.markdown?.trim() || ''
+              
+              if (!extractedText) {
+                throw new Error('No markdown content found in response')
+              }
+            } else {
+              throw new Error('No JSON code block found')
+            }
+            
+          } catch (secondParseError) {
+            console.log('Method 2 failed, trying method 3...')
+            
+            try {
+              // Method 3: Find first { and last } and extract JSON
+              const firstBrace = responseText.indexOf('{')
+              const lastBrace = responseText.lastIndexOf('}')
+              
+              if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+                const jsonText = responseText.substring(firstBrace, lastBrace + 1)
+                extractedData = JSON.parse(jsonText)
+                extractedText = extractedData.markdown?.trim() || ''
+                
+                if (!extractedText) {
+                  throw new Error('No markdown content found in response')
+                }
+              } else {
+                throw new Error('No valid JSON braces found')
+              }
+              
+            } catch (thirdParseError) {
+              // Method 4: Fallback to treating entire response as markdown
+              console.log('All JSON parsing methods failed, treating entire response as markdown')
+              console.error('All parsing methods failed:', {
+                method1: parseError,
+                method2: secondParseError,
+                method3: thirdParseError
+              })
+              
+              // If JSON parsing fails, use the entire response as markdown
+              extractedText = responseText.trim()
+              extractedData = {
+                markdown: extractedText,
+                summary: "Resume content extracted and formatted as markdown using Claude",
+                sections: ["Resume Content"]
+              }
+            }
           }
         }
 
@@ -524,7 +569,7 @@ ${rawText}
           const responseText = completion.choices[0]?.message?.content || ''
           
           try {
-            // GPT-4 might wrap JSON in code blocks, so let's handle that
+            // Method 1: Try the current approach first
             let jsonText = responseText.trim()
             
             // Remove markdown code blocks if present
@@ -545,14 +590,59 @@ ${rawText}
             }
             
           } catch (parseError) {
-            console.log('Failed to parse JSON response, treating entire response as markdown')
+            console.log('Method 1 failed, trying fallback methods...')
             
-            // If JSON parsing fails, use the entire response as markdown
-            extractedText = responseText.trim()
-            extractedData = {
-              markdown: extractedText,
-              summary: "Resume content extracted and formatted as markdown using GPT-4 Mini",
-              sections: ["Resume Content"]
+            try {
+              // Method 2: Extract text between ```json ... ```
+              const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
+              if (jsonMatch && jsonMatch[1]) {
+                extractedData = JSON.parse(jsonMatch[1].trim())
+                extractedText = extractedData.markdown?.trim() || ''
+                
+                if (!extractedText) {
+                  throw new Error('No markdown content found in response')
+                }
+              } else {
+                throw new Error('No JSON code block found')
+              }
+              
+            } catch (secondParseError) {
+              console.log('Method 2 failed, trying method 3...')
+              
+              try {
+                // Method 3: Find first { and last } and extract JSON
+                const firstBrace = responseText.indexOf('{')
+                const lastBrace = responseText.lastIndexOf('}')
+                
+                if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+                  const jsonText = responseText.substring(firstBrace, lastBrace + 1)
+                  extractedData = JSON.parse(jsonText)
+                  extractedText = extractedData.markdown?.trim() || ''
+                  
+                  if (!extractedText) {
+                    throw new Error('No markdown content found in response')
+                  }
+                } else {
+                  throw new Error('No valid JSON braces found')
+                }
+                
+              } catch (thirdParseError) {
+                // Method 4: Fallback to treating entire response as markdown
+                console.log('All JSON parsing methods failed, treating entire response as markdown')
+                console.error('All parsing methods failed:', {
+                  method1: parseError,
+                  method2: secondParseError,
+                  method3: thirdParseError
+                })
+                
+                // If JSON parsing fails, use the entire response as markdown
+                extractedText = responseText.trim()
+                extractedData = {
+                  markdown: extractedText,
+                  summary: "Resume content extracted and formatted as markdown using GPT-4 Mini",
+                  sections: ["Resume Content"]
+                }
+              }
             }
           }
           

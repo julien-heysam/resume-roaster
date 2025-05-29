@@ -254,7 +254,7 @@ export function Chatbot({ className }: ChatbotProps) {
                             </div>
                           ) : (
                             <div className="space-y-2">
-                              {conversations.map((conversation) => (
+                              {conversations.slice(0, 3).map((conversation) => (
                                 <div
                                   key={conversation.id}
                                   onClick={() => selectConversation(conversation.id)}
@@ -278,6 +278,13 @@ export function Chatbot({ className }: ChatbotProps) {
                                   </div>
                                 </div>
                               ))}
+                              {conversations.length > 3 && (
+                                <div className="text-center py-2">
+                                  <p className="text-xs text-gray-400">
+                                    +{conversations.length - 3} more conversations
+                                  </p>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

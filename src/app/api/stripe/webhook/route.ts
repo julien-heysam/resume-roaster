@@ -79,7 +79,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
     const status = subscription.status
     
     // Get tier from metadata
-    const tier = subscription.metadata.tier as 'PRO' | 'ENTERPRISE'
+    const tier = subscription.metadata.tier as 'PLUS' | 'PREMIUM'
     
     if (!tier) {
       console.error('No tier found in subscription metadata')

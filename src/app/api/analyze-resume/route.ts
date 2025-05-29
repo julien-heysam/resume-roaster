@@ -276,7 +276,7 @@ Please provide a comprehensive analysis following the framework above.`
     let analysisData: any
     
     try {
-      // Claude might wrap JSON in code blocks, so let's handle that
+      // Method 1: Try the current approach first
       let jsonText = responseText.trim()
       
       // Remove markdown code blocks if present
@@ -289,26 +289,75 @@ Please provide a comprehensive analysis following the framework above.`
       // Try to parse as JSON
       analysisData = JSON.parse(jsonText)
       
-      // Validate required fields
-      if (!analysisData.overallScore || !analysisData.strengths || !analysisData.weaknesses) {
-        throw new Error('Invalid analysis format')
-      }
-      
     } catch (parseError) {
-      console.error('Failed to parse analysis response:', parseError)
-      console.log('Raw response:', responseText)
+      console.log('Method 1 failed, trying fallback methods...')
       
+      try {
+        // Method 2: Extract text between ```json ... ```
+        const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
+        if (jsonMatch && jsonMatch[1]) {
+          analysisData = JSON.parse(jsonMatch[1].trim())
+        } else {
+          throw new Error('No JSON code block found')
+        }
+        
+      } catch (secondParseError) {
+        console.log('Method 2 failed, trying method 3...')
+        
+        try {
+          // Method 3: Find first { and last } and extract JSON
+          const firstBrace = responseText.indexOf('{')
+          const lastBrace = responseText.lastIndexOf('}')
+          
+          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            const jsonText = responseText.substring(firstBrace, lastBrace + 1)
+            analysisData = JSON.parse(jsonText)
+          } else {
+            throw new Error('No valid JSON braces found')
+          }
+          
+        } catch (thirdParseError) {
+          // Method 4: Return the error if all methods fail
+          console.error('All parsing methods failed:', {
+            method1: parseError,
+            method2: secondParseError,
+            method3: thirdParseError
+          })
+          console.log('Raw response:', responseText)
+          
+          // Update conversation with error
+          await LLMLogger.updateConversation({
+            conversationId,
+            status: ConversationStatus.FAILED,
+            errorMessage: 'Failed to parse analysis results - AI response could not be converted to valid JSON',
+            totalTokensUsed: totalTokens,
+            totalCost
+          })
+          
+          return NextResponse.json(
+            { 
+              error: 'Failed to parse analysis results. The AI response could not be converted to valid JSON.',
+              details: 'Please try again or contact support if the issue persists.'
+            },
+            { status: 500 }
+          )
+        }
+      }
+    }
+    
+    // Validate required fields
+    if (!analysisData.overallScore || !analysisData.strengths || !analysisData.weaknesses) {
       // Update conversation with error
       await LLMLogger.updateConversation({
         conversationId,
         status: ConversationStatus.FAILED,
-        errorMessage: 'Failed to parse analysis results',
+        errorMessage: 'Invalid analysis format returned by AI - missing required fields',
         totalTokensUsed: totalTokens,
         totalCost
       })
       
       return NextResponse.json(
-        { error: 'Failed to parse analysis results. Please try again.' },
+        { error: 'Invalid analysis format returned by AI. Missing required fields.' },
         { status: 500 }
       )
     }

@@ -262,6 +262,29 @@ exports.Prisma.AnalysisScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ResumeOptimizationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  analysisId: 'analysisId',
+  documentId: 'documentId',
+  jobDescription: 'jobDescription',
+  resumeText: 'resumeText',
+  templateId: 'templateId',
+  extractedData: 'extractedData',
+  optimizedResume: 'optimizedResume',
+  optimizationSuggestions: 'optimizationSuggestions',
+  atsScore: 'atsScore',
+  keywordsMatched: 'keywordsMatched',
+  provider: 'provider',
+  model: 'model',
+  conversationId: 'conversationId',
+  totalTokensUsed: 'totalTokensUsed',
+  totalCost: 'totalCost',
+  processingTime: 'processingTime',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SharedAnalysisScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -289,14 +312,15 @@ exports.Prisma.NullsOrder = {
 };
 exports.SubscriptionTier = exports.$Enums.SubscriptionTier = {
   FREE: 'FREE',
-  PRO: 'PRO',
-  ENTERPRISE: 'ENTERPRISE'
+  PLUS: 'PLUS',
+  PREMIUM: 'PREMIUM'
 };
 
 exports.UsageAction = exports.$Enums.UsageAction = {
   EXTRACT_PDF: 'EXTRACT_PDF',
   ROAST_ANALYSIS: 'ROAST_ANALYSIS',
-  COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION'
+  COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION',
+  RESUME_OPTIMIZATION: 'RESUME_OPTIMIZATION'
 };
 
 exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
@@ -311,6 +335,7 @@ exports.ConversationType = exports.$Enums.ConversationType = {
   JOB_EXTRACTION: 'JOB_EXTRACTION',
   COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION',
   PDF_EXTRACTION: 'PDF_EXTRACTION',
+  RESUME_EXTRACTION: 'RESUME_EXTRACTION',
   GENERAL_CHAT: 'GENERAL_CHAT',
   CHATBOT_SUPPORT: 'CHATBOT_SUPPORT'
 };
@@ -338,6 +363,7 @@ exports.Prisma.ModelName = {
   LLMConversation: 'LLMConversation',
   LLMMessage: 'LLMMessage',
   Analysis: 'Analysis',
+  ResumeOptimization: 'ResumeOptimization',
   SharedAnalysis: 'SharedAnalysis'
 };
 

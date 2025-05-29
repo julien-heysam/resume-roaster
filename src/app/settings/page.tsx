@@ -48,10 +48,10 @@ export default function SettingsPage() {
   // Get tier badge
   const getTierBadge = (tier: string) => {
     switch (tier) {
-      case 'PRO':
-        return <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white"><Crown className="h-3 w-3 mr-1" />Pro</Badge>
-      case 'ENTERPRISE':
-        return <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"><Crown className="h-3 w-3 mr-1" />Enterprise</Badge>
+      case 'PLUS':
+        return <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white"><Crown className="h-3 w-3 mr-1" />Plus</Badge>
+      case 'PREMIUM':
+        return <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"><Crown className="h-3 w-3 mr-1" />Premium</Badge>
       default:
         return <Badge variant="outline">Free</Badge>
     }
@@ -189,12 +189,12 @@ export default function SettingsPage() {
                         <span className="text-sm text-gray-600">
                           {subscription?.monthlyRoasts || 0} / {
                             subscription?.tier === 'FREE' ? '3' :
-                            subscription?.tier === 'PRO' ? '100' : 
+                            subscription?.tier === 'PLUS' ? '100' : 
                             'Unlimited'
                           }
                         </span>
                       </div>
-                      {subscription?.tier !== 'ENTERPRISE' && (
+                      {subscription?.tier !== 'PREMIUM' && (
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div 
                             className={`h-2 rounded-full transition-all ${

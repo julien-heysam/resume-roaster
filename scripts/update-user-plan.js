@@ -4,13 +4,13 @@
  * Script to manually update user subscription plans
  * 
  * Usage:
- * node scripts/update-user-plan.js --email user@example.com --tier PRO
- * node scripts/update-user-plan.js --userId cm123456 --tier ENTERPRISE --reset-usage
+ * node scripts/update-user-plan.js --email user@example.com --tier PLUS
+ * node scripts/update-user-plan.js --userId cm123456 --tier PREMIUM --reset-usage
  * 
  * Options:
  * --email <email>              User email
  * --userId <id>               User ID
- * --tier <FREE|PRO|ENTERPRISE> New subscription tier
+ * --tier <FREE|PLUS|PREMIUM> New subscription tier
  * --subscription-id <id>       Stripe subscription ID (optional)
  * --customer-id <id>          Stripe customer ID (optional)
  * --expires <date>            Subscription end date (YYYY-MM-DD) (optional)
@@ -184,13 +184,13 @@ function showHelp() {
 📝 Update User Subscription Plan
 
 Usage:
-  node scripts/update-user-plan.js --email user@example.com --tier PRO
-  node scripts/update-user-plan.js --userId cm123456 --tier ENTERPRISE --reset-usage
+  node scripts/update-user-plan.js --email user@example.com --tier PLUS
+  node scripts/update-user-plan.js --userId cm123456 --tier PREMIUM --reset-usage
 
 Options:
   --email <email>              User email
   --userId <id>               User ID  
-  --tier <FREE|PRO|ENTERPRISE> New subscription tier (required)
+  --tier <FREE|PLUS|PREMIUM> New subscription tier (required)
   --subscription-id <id>       Stripe subscription ID (optional)
   --customer-id <id>          Stripe customer ID (optional)
   --expires <date>            Subscription end date YYYY-MM-DD (optional)
@@ -199,17 +199,17 @@ Options:
   --help                      Show this help message
 
 Examples:
-  # Upgrade user to PRO
-  node scripts/update-user-plan.js --email user@example.com --tier PRO
+  # Upgrade user to PLUS
+  node scripts/update-user-plan.js --email user@example.com --tier PLUS
 
   # Downgrade user to FREE and reset usage
   node scripts/update-user-plan.js --userId cm123456 --tier FREE --reset-usage
 
-  # Set ENTERPRISE with expiration
-  node scripts/update-user-plan.js --email user@example.com --tier ENTERPRISE --expires 2024-12-31
+  # Set PREMIUM with expiration
+  node scripts/update-user-plan.js --email user@example.com --tier PREMIUM --expires 2024-12-31
 
   # Update with Stripe IDs
-  node scripts/update-user-plan.js --email user@example.com --tier PRO \\
+  node scripts/update-user-plan.js --email user@example.com --tier PLUS \\
     --subscription-id sub_123 --customer-id cus_456
 `)
 }
@@ -227,8 +227,8 @@ function validateOptions(options) {
     process.exit(1)
   }
 
-  if (!['FREE', 'PRO', 'ENTERPRISE'].includes(options.tier.toUpperCase())) {
-    console.error('❌ Invalid tier. Must be FREE, PRO, or ENTERPRISE')
+  if (!['FREE', 'PLUS', 'PREMIUM'].includes(options.tier.toUpperCase())) {
+    console.error('❌ Invalid tier. Must be FREE, PLUS, or PREMIUM')
     process.exit(1)
   }
 

@@ -165,13 +165,13 @@ export class UserService {
     }
 
     // Get limits based on subscription tier
-    const limits: Record<string, number> = {
+    const MONTHLY_LIMITS = {
       FREE: 3,
-      PRO: 100,
-      ENTERPRISE: -1 // Unlimited
-    }
+      PLUS: 100,
+      PREMIUM: -1 // Unlimited
+    } as const
 
-    const limit = limits[user.subscriptionTier]
+    const limit = MONTHLY_LIMITS[user.subscriptionTier]
     const canRoast = limit === -1 || user.monthlyRoasts < limit
     const remaining = limit === -1 ? -1 : Math.max(0, limit - user.monthlyRoasts)
 
@@ -197,7 +197,7 @@ export class UserService {
 
   // Update subscription
   static async updateSubscription(userId: string, data: {
-    subscriptionTier?: 'FREE' | 'PRO' | 'ENTERPRISE'
+    subscriptionTier?: 'FREE' | 'PLUS' | 'PREMIUM'
     subscriptionId?: string
     customerId?: string
     subscriptionEndsAt?: Date

@@ -8,6 +8,7 @@ import {
   allTemplates 
 } from '@/lib/resume-templates'
 import { latexTemplates, getLatexTemplate } from '@/lib/latex-templates'
+import { db } from '@/lib/database'
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,18 +21,34 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const body = await request.json()
+    // Better error handling for JSON parsing
+    let requestBody
+    try {
+      const text = await request.text()
+      if (!text || text.trim() === '') {
+        return NextResponse.json(
+          { error: 'Request body is empty' },
+          { status: 400 }
+        )
+      }
+      requestBody = JSON.parse(text)
+    } catch (parseError) {
+      console.error('JSON parsing error:', parseError)
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      )
+    }
+
     const { 
       resumeData, 
       jobDescription, 
-      templateId = 'classic-professional',
-      format = 'html' // 'html' or 'markdown'
-    }: {
-      resumeData: ResumeData
-      jobDescription: string
-      templateId?: string
-      format?: 'html' | 'markdown'
-    } = body
+      templateId, 
+      format = 'html',
+      documentId = null,
+      analysisId = null,
+      isPreview = false
+    } = requestBody
 
     // Validate required fields
     if (!resumeData || !jobDescription) {
@@ -41,18 +58,72 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if it's a LaTeX template
-    const latexTemplate = getLatexTemplate(templateId)
+    const startTime = Date.now()
+
+    // Check if this is a LaTeX template
+    const latexTemplate = latexTemplates.find(t => t.id === templateId)
+    
     if (latexTemplate) {
-      // Handle LaTeX template
-      const { optimizedData, suggestions } = optimizeResumeForJob(
-        resumeData, 
-        jobDescription, 
-        templateId
+      // Handle LaTeX template generation
+      const optimizedData = optimizeResumeForJob(resumeData, jobDescription, templateId).optimizedData
+      const generatedLatex = latexTemplate.generateLaTeX(optimizedData)
+      
+      const suggestions = [
+        "Optimized for ATS compatibility",
+        "Enhanced keyword matching",
+        "Professional LaTeX formatting"
+      ]
+      
+      const atsScore = calculateATSScore(optimizedData, jobDescription)
+      const keywordsFound = extractJobKeywords(jobDescription).filter(keyword =>
+        resumeData.summary.toLowerCase().includes(keyword.toLowerCase()) ||
+        (resumeData.skills.technical || []).some((skill: string) => 
+          skill.toLowerCase().includes(keyword.toLowerCase())
+        ) ||
+        (resumeData.skills.soft || []).some((skill: string) => 
+          skill.toLowerCase().includes(keyword.toLowerCase())
+        )
       )
 
-      // Generate LaTeX source
-      const generatedLatex = latexTemplate.generateLaTeX(optimizedData)
+      const processingTime = Date.now() - startTime
+
+      // Only store optimization result in database if this is NOT a preview request
+      if (!isPreview) {
+        try {
+          const user = await db.user.findUnique({
+            where: { email: session.user.email }
+          })
+
+          if (user) {
+            await db.resumeOptimization.create({
+              data: {
+                userId: user.id,
+                analysisId: analysisId || null,
+                documentId: documentId || null,
+                jobDescription: jobDescription,
+                resumeText: JSON.stringify(resumeData),
+                templateId: templateId,
+                extractedData: JSON.stringify(optimizedData),
+                optimizedResume: generatedLatex,
+                optimizationSuggestions: suggestions,
+                atsScore: atsScore,
+                keywordsMatched: keywordsFound,
+                provider: 'local', // LaTeX generation is local
+                model: 'latex-template',
+                totalTokensUsed: 0,
+                totalCost: 0,
+                processingTime: processingTime
+              }
+            })
+            console.log('LaTeX optimization result stored in database')
+          }
+        } catch (dbError) {
+          console.error('Failed to store LaTeX optimization result:', dbError)
+          // Continue without failing the request
+        }
+      } else {
+        console.log('Skipping database save for LaTeX template preview')
+      }
 
       return NextResponse.json({
         success: true,
@@ -69,16 +140,8 @@ export async function POST(request: NextRequest) {
           },
           optimizations: {
             suggestions,
-            keywordsFound: extractJobKeywords(jobDescription).filter(keyword =>
-              resumeData.summary.toLowerCase().includes(keyword.toLowerCase()) ||
-              resumeData.skills.technical.some(skill => 
-                skill.toLowerCase().includes(keyword.toLowerCase())
-              ) ||
-              resumeData.skills.soft.some(skill => 
-                skill.toLowerCase().includes(keyword.toLowerCase())
-              )
-            ),
-            atsScore: calculateATSScore(optimizedData, jobDescription)
+            keywordsFound,
+            atsScore
           }
         }
       })
@@ -105,6 +168,57 @@ export async function POST(request: NextRequest) {
       ? template.generateHTML(optimizedData, jobDescription)
       : template.generateMarkdown(optimizedData, jobDescription)
 
+    const atsScore = calculateATSScore(optimizedData, jobDescription)
+    const keywordsFound = extractJobKeywords(jobDescription).filter(keyword =>
+      resumeData.summary.toLowerCase().includes(keyword.toLowerCase()) ||
+      (resumeData.skills.technical || []).some((skill: string) => 
+        skill.toLowerCase().includes(keyword.toLowerCase())
+      ) ||
+      (resumeData.skills.soft || []).some((skill: string) => 
+        skill.toLowerCase().includes(keyword.toLowerCase())
+      )
+    )
+
+    const processingTime = Date.now() - startTime
+
+    // Only store optimization result in database if this is NOT a preview request
+    if (!isPreview) {
+      try {
+        const user = await db.user.findUnique({
+          where: { email: session.user.email }
+        })
+
+        if (user) {
+          await db.resumeOptimization.create({
+            data: {
+              userId: user.id,
+              analysisId: analysisId || null,
+              documentId: documentId || null,
+              jobDescription: jobDescription,
+              resumeText: JSON.stringify(resumeData),
+              templateId: templateId,
+              extractedData: JSON.stringify(optimizedData),
+              optimizedResume: generatedResume,
+              optimizationSuggestions: suggestions,
+              atsScore: atsScore,
+              keywordsMatched: keywordsFound,
+              provider: 'local', // HTML generation is local
+              model: 'html-template',
+              totalTokensUsed: 0,
+              totalCost: 0,
+              processingTime: processingTime
+            }
+          })
+          console.log('HTML optimization result stored in database')
+        }
+      } catch (dbError) {
+        console.error('Failed to store HTML optimization result:', dbError)
+        // Continue without failing the request
+      }
+    } else {
+      console.log('Skipping database save for HTML template preview')
+    }
+
     // Return the optimized resume
     return NextResponse.json({
       success: true,
@@ -121,16 +235,8 @@ export async function POST(request: NextRequest) {
         },
         optimizations: {
           suggestions,
-          keywordsFound: extractJobKeywords(jobDescription).filter(keyword =>
-            resumeData.summary.toLowerCase().includes(keyword.toLowerCase()) ||
-            resumeData.skills.technical.some(skill => 
-              skill.toLowerCase().includes(keyword.toLowerCase())
-            ) ||
-            resumeData.skills.soft.some(skill => 
-              skill.toLowerCase().includes(keyword.toLowerCase())
-            )
-          ),
-          atsScore: calculateATSScore(optimizedData, jobDescription)
+          keywordsFound,
+          atsScore
         }
       }
     })
@@ -218,7 +324,7 @@ const calculateATSScore = (resumeData: ResumeData, jobDescription: string): numb
 
   // Check for technical skills match (25 points)
   const techSkillsMatch = jobKeywords.filter(keyword =>
-    resumeData.skills.technical.some(skill => 
+    (resumeData.skills.technical || []).some((skill: string) => 
       skill.toLowerCase().includes(keyword.toLowerCase())
     )
   )
@@ -226,7 +332,7 @@ const calculateATSScore = (resumeData: ResumeData, jobDescription: string): numb
 
   // Check for soft skills match (15 points)
   const softSkillsMatch = jobKeywords.filter(keyword =>
-    resumeData.skills.soft.some(skill => 
+    (resumeData.skills.soft || []).some((skill: string) => 
       skill.toLowerCase().includes(keyword.toLowerCase())
     )
   )

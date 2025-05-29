@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useAlertDialog } from "@/components/ui/alert-dialog"
+import { ResumeOptimizationLoading } from "../../components/ui/resume-optimizer-loading"
 import { 
   CheckCircle, 
   AlertTriangle, 
@@ -83,7 +84,7 @@ export default function AnalysisPage() {
   const { showAlert, AlertDialog } = useAlertDialog()
 
   // Generate cache key based on analysis data and job description
-  const generateCacheKey = (analysis: AnalysisData, resume: any, jobDesc: string) => {
+  const generateCacheKey = (analysis: AnalysisData, resume: any, jobDesc: string, isFreshAnalysis: boolean = false) => {
     try {
       // Simple hash function that works in all environments
       const simpleHash = (str: string) => {
@@ -114,7 +115,10 @@ export default function AnalysisPage() {
       const resumeHash = simpleHash(resumeText)
       const jobHash = simpleHash(jobText)
       
-      return `extraction_${analysisHash}_${resumeHash}_${jobHash}`
+      // If this is a fresh analysis, add a timestamp to ensure we don't use old cache
+      const freshFlag = isFreshAnalysis ? `_fresh_${Date.now()}` : ''
+      
+      return `extraction_${analysisHash}_${resumeHash}_${jobHash}${freshFlag}`
     } catch (error) {
       console.error('Failed to generate cache key:', error)
       // Fallback to timestamp-based key
@@ -249,10 +253,12 @@ Note: Original resume text was not available, using analysis data for optimizati
       }
 
       // Generate cache key for this specific combination
-      const currentCacheKey = generateCacheKey(analysisData, resumeData, jobDescription || '')
+      const currentCacheKey = generateCacheKey(analysisData, resumeData, jobDescription || '', false) // Use consistent key for checking
+      console.log('Checking cache with key:', currentCacheKey)
       
       // Check if we have cached data for this exact combination
       let extractedData = loadCachedExtraction(currentCacheKey)
+      console.log('Cache lookup result:', extractedData ? 'Found' : 'Not found')
       
       if (extractedData) {
         console.log('Using cached extraction data - skipping AI processing')
@@ -272,6 +278,7 @@ Note: Original resume text was not available, using analysis data for optimizati
           onCancel: () => {
             // User wants fresh processing, remove cache and continue
             localStorage.removeItem(currentCacheKey)
+            setCachedExtractionData(null) // Update the state to reflect cache removal
             proceedWithFreshExtraction(resumeText, currentCacheKey)
           }
         })
@@ -317,8 +324,10 @@ Note: Original resume text was not available, using analysis data for optimizati
   const proceedWithExtractedData = (extractedData: any) => {
     console.log('Resume data ready:', extractedData)
     
-    // Store the extracted data in session storage
+    // Store the extracted data in session storage with a fresh flag
     sessionStorage.setItem('extractedResumeData', JSON.stringify(extractedData))
+    sessionStorage.setItem('extractedDataTimestamp', Date.now().toString())
+    sessionStorage.setItem('isFromAnalysis', 'true') // Flag to indicate this is fresh from analysis
     if (jobDescription) {
       sessionStorage.setItem('analysisJobDescription', jobDescription)
     }
@@ -331,6 +340,10 @@ Note: Original resume text was not available, using analysis data for optimizati
   const proceedWithFreshExtraction = async (resumeText: string, currentCacheKey: string) => {
     console.log('No cached data found - running AI extraction...')
     
+    // Get stored document and analysis IDs from session storage
+    const storedDocumentId = sessionStorage.getItem('documentId')
+    const storedAnalysisId = sessionStorage.getItem('analysisId')
+    
     // Call the extraction API
     const response = await fetch('/api/extract-resume-data', {
       method: 'POST',
@@ -340,7 +353,9 @@ Note: Original resume text was not available, using analysis data for optimizati
       body: JSON.stringify({
         resumeText: resumeText,
         analysisData: analysisData,
-        jobDescription: jobDescription || ''
+        jobDescription: jobDescription || '',
+        documentId: storedDocumentId || null,
+        analysisId: storedAnalysisId || null
       }),
     })
 
@@ -354,6 +369,7 @@ Note: Original resume text was not available, using analysis data for optimizati
     
     // Cache the result for future use
     saveCachedExtraction(currentCacheKey, extractedData)
+    setCachedExtractionData(extractedData) // Update the state to reflect new cached data
     console.log('Extraction completed and cached for future use')
     
     // Proceed with the extracted data
@@ -439,14 +455,18 @@ Note: Original resume text was not available, using analysis data for optimizati
   // Generate cache key when data is available
   useEffect(() => {
     if (analysisData && resumeData) {
-      const key = generateCacheKey(analysisData, resumeData, jobDescription || '')
+      const key = generateCacheKey(analysisData, resumeData, jobDescription || '', false) // Don't use fresh flag for checking existing cache
       setCacheKey(key)
+      console.log('Generated cache key:', key)
       
       // Check if we have cached extraction data
       const cached = loadCachedExtraction(key)
       if (cached) {
         setCachedExtractionData(cached)
-        console.log('Found cached extraction data for current analysis')
+        console.log('Found cached extraction data for current analysis:', cached)
+      } else {
+        setCachedExtractionData(null)
+        console.log('No cached extraction data found for current analysis')
       }
     }
   }, [analysisData, resumeData, jobDescription])
@@ -568,6 +588,10 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
         </div>
       </div>
     )
+  }
+
+  if (isGeneratingOptimized) {
+    return <ResumeOptimizationLoading />
   }
 
   if (!analysisData) {
@@ -1129,13 +1153,13 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
             </Card>
 
             {/* Upgrade Prompt */}
-            {(!subscription || subscription.tier === 'FREE' || subscription.tier === 'PRO') && (
+            {(!subscription || subscription.tier === 'FREE' || subscription.tier === 'PLUS') && (
               <Card className="bg-gradient-to-b from-orange-50 to-red-50 border-orange-200">
                 <CardHeader>
                   <CardTitle className="text-orange-700">
                     {!subscription || subscription.tier === 'FREE' 
                       ? 'Unlock Premium Features' 
-                      : 'Upgrade to Enterprise'
+                      : 'Upgrade to Premium'
                     }
                   </CardTitle>
                 </CardHeader>
@@ -1165,8 +1189,8 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                     onClick={() => router.push('/pricing')}
                   >
                     {!subscription || subscription.tier === 'FREE' 
-                      ? 'Upgrade to Premium' 
-                      : 'Upgrade to Enterprise'
+                      ? 'Upgrade to Plus' 
+                      : 'Upgrade to Premium'
                     }
                   </Button>
                 </CardContent>

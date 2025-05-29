@@ -26,9 +26,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!['FREE', 'PRO', 'ENTERPRISE'].includes(subscriptionTier)) {
+    if (!['FREE', 'PLUS', 'PREMIUM'].includes(subscriptionTier)) {
       return NextResponse.json(
-        { error: 'Invalid subscription tier. Must be FREE, PRO, or ENTERPRISE' },
+        { error: 'Invalid subscription tier. Must be FREE, PLUS, or PREMIUM' },
         { status: 400 }
       )
     }
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     // Prepare update data
     const updateData: any = {
-      subscriptionTier: subscriptionTier as 'FREE' | 'PRO' | 'ENTERPRISE',
+      subscriptionTier: subscriptionTier as 'FREE' | 'PLUS' | 'PREMIUM',
       updatedAt: new Date()
     }
 

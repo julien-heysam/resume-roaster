@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
 
 export interface SubscriptionData {
-  tier: 'FREE' | 'PRO' | 'ENTERPRISE'
+  tier: 'FREE' | 'PLUS' | 'PREMIUM'
   subscriptionId?: string
   customerId?: string
   subscriptionEndsAt?: Date
@@ -99,10 +99,10 @@ export function useSubscription() {
         if (subscription.tier === 'FREE') {
           return subscription.monthlyRoasts < 3
         }
-        if (subscription.tier === 'PRO') {
+        if (subscription.tier === 'PLUS') {
           return subscription.monthlyRoasts < 100
         }
-        return true // ENTERPRISE has unlimited
+        return true // PREMIUM has unlimited
 
       case 'download':
       case 'history':
@@ -120,9 +120,9 @@ export function useSubscription() {
     switch (subscription.tier) {
       case 'FREE':
         return Math.max(0, 3 - subscription.monthlyRoasts)
-      case 'PRO':
+      case 'PLUS':
         return Math.max(0, 100 - subscription.monthlyRoasts)
-      case 'ENTERPRISE':
+      case 'PREMIUM':
         return -1 // Unlimited
       default:
         return 0

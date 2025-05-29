@@ -3,15 +3,17 @@ import Anthropic from '@anthropic-ai/sdk'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { ResumeData } from '@/lib/resume-templates'
+import { db } from '@/lib/database'
 
-const EXTRACTION_PROMPT = `You are an expert resume data extraction specialist. Your task is to analyze a resume text and its analysis results, then extract structured data that can be used to pre-fill a resume builder form.
+const EXTRACTION_PROMPT = `You are an expert resume data extraction specialist. Your task is to analyze a resume text, its analysis results, and any provided resume images, then extract structured data that can be used to pre-fill a resume builder form.
 
 You will be given:
 1. The original resume text (markdown format)
 2. Analysis results with suggestions and insights
 3. A job description (if available)
+4. Resume images (if available) - use these to better understand the layout and extract missing information
 
-Your goal is to extract and structure the resume data into a standardized format that can be used to pre-fill a resume optimizer form. Use the analysis insights to improve and optimize the extracted data.
+Your goal is to extract and structure the resume data into a standardized format that can be used to pre-fill a resume optimizer form. Use the analysis insights and visual information from images to improve and optimize the extracted data.
 
 **EXTRACTION GUIDELINES:**
 
@@ -29,6 +31,7 @@ Your goal is to extract and structure the resume data into a standardized format
 - Add missing keywords from the job description naturally
 - Maintain professional tone and ATS-friendly formatting
 - Fix any issues identified in the analysis (dates, formatting, etc.)
+- Use visual information from images to extract data that might be missing from text
 
 **RESPONSE FORMAT:**
 Return a JSON object with the following structure:
@@ -90,7 +93,8 @@ Return a JSON object with the following structure:
 - Ensure all arrays contain strings, not objects
 - Optimize content based on analysis suggestions but keep it truthful
 - If the analysis suggests adding keywords, incorporate them naturally where they fit
-- Remove or improve weak bullet points identified in the analysis`
+- Remove or improve weak bullet points identified in the analysis
+- Use visual cues from images to better understand the resume structure and extract complete information`
 
 export async function POST(request: NextRequest) {
   try {
@@ -103,7 +107,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { resumeText, analysisData, jobDescription } = await request.json()
+    const { resumeText, analysisData, jobDescription, documentId, analysisId } = await request.json()
 
     if (!resumeText || !analysisData) {
       return NextResponse.json(
@@ -121,11 +125,36 @@ export async function POST(request: NextRequest) {
 
     console.log('Extracting structured resume data with AI optimization...')
 
+    // Get document with images if documentId is provided
+    let document = null
+    let resumeImages: string[] = []
+    
+    if (documentId) {
+      try {
+        document = await db.document.findUnique({
+          where: { id: documentId },
+          select: { images: true, filename: true }
+        })
+        
+        if (document?.images) {
+          resumeImages = document.images
+          console.log(`Found ${resumeImages.length} resume images for better extraction`)
+        }
+      } catch (error) {
+        console.warn('Failed to fetch document images:', error)
+        // Continue without images
+      }
+    }
+
     // Initialize Anthropic client
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
     })
 
+    // Prepare the content array for the message
+    const messageContent: any[] = []
+    
+    // Add the text prompt
     const userPrompt = `Please extract and optimize the resume data from the following information:
 
 ORIGINAL RESUME TEXT:
@@ -145,7 +174,36 @@ ATS Issues: ${analysisData.atsIssues?.join(', ') || 'None'}
 ${jobDescription ? `JOB DESCRIPTION:
 ${jobDescription}` : ''}
 
+${resumeImages.length > 0 ? `\nI'm also providing ${resumeImages.length} image(s) of the resume to help you better understand the layout and extract any information that might be missing from the text.` : ''}
+
 Extract the resume data into the specified JSON format, incorporating the analysis insights to create optimized content that addresses the identified weaknesses and missing elements while maintaining truthfulness to the original resume.`
+
+    messageContent.push({
+      type: "text",
+      text: userPrompt
+    })
+
+    // Add resume images if available
+    if (resumeImages.length > 0) {
+      for (let i = 0; i < Math.min(resumeImages.length, 3); i++) { // Limit to 3 images to avoid token limits
+        const imageData = resumeImages[i]
+        if (imageData && imageData.startsWith('data:image/')) {
+          // Extract base64 data and media type
+          const [header, base64Data] = imageData.split(',')
+          const mediaType = header.match(/data:([^;]+)/)?.[1] || 'image/png'
+          
+          messageContent.push({
+            type: "image",
+            source: {
+              type: "base64",
+              media_type: mediaType,
+              data: base64Data
+            }
+          })
+        }
+      }
+      console.log(`Added ${Math.min(resumeImages.length, 3)} images to the extraction prompt`)
+    }
 
     const startTime = Date.now()
     
@@ -157,7 +215,7 @@ Extract the resume data into the specified JSON format, incorporating the analys
       messages: [
         {
           role: "user",
-          content: userPrompt
+          content: messageContent
         }
       ]
     })
@@ -170,7 +228,7 @@ Extract the resume data into the specified JSON format, incorporating the analys
     let extractedData: ResumeData
     
     try {
-      // Claude might wrap JSON in code blocks, so let's handle that
+      // Method 1: Try the current approach first
       let jsonText = responseText.trim()
       
       // Remove markdown code blocks if present
@@ -183,19 +241,94 @@ Extract the resume data into the specified JSON format, incorporating the analys
       // Try to parse as JSON
       extractedData = JSON.parse(jsonText)
       
-      // Validate required structure
-      if (!extractedData.personalInfo || !extractedData.experience || !extractedData.skills) {
-        throw new Error('Invalid resume data structure')
-      }
-      
     } catch (parseError) {
-      console.error('Failed to parse extraction response:', parseError)
-      console.log('Raw response:', responseText)
+      console.log('Method 1 failed, trying fallback methods...')
       
+      try {
+        // Method 2: Extract text between ```json ... ```
+        const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
+        if (jsonMatch && jsonMatch[1]) {
+          extractedData = JSON.parse(jsonMatch[1].trim())
+        } else {
+          throw new Error('No JSON code block found')
+        }
+        
+      } catch (secondParseError) {
+        console.log('Method 2 failed, trying method 3...')
+        
+        try {
+          // Method 3: Find first { and last } and extract JSON
+          const firstBrace = responseText.indexOf('{')
+          const lastBrace = responseText.lastIndexOf('}')
+          
+          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            const jsonText = responseText.substring(firstBrace, lastBrace + 1)
+            extractedData = JSON.parse(jsonText)
+          } else {
+            throw new Error('No valid JSON braces found')
+          }
+          
+        } catch (thirdParseError) {
+          // Method 4: Return the error if all methods fail
+          console.error('All parsing methods failed:', {
+            method1: parseError,
+            method2: secondParseError,
+            method3: thirdParseError
+          })
+          console.log('Raw response:', responseText)
+          
+          return NextResponse.json(
+            { 
+              error: 'Failed to parse extracted resume data. The AI response could not be converted to valid JSON.',
+              details: 'Please try again or contact support if the issue persists.'
+            },
+            { status: 500 }
+          )
+        }
+      }
+    }
+    
+    // Validate required structure
+    if (!extractedData.personalInfo || !extractedData.experience || !extractedData.skills) {
       return NextResponse.json(
-        { error: 'Failed to parse extracted resume data. Please try again.' },
+        { error: 'Invalid resume data structure returned by AI. Missing required sections.' },
         { status: 500 }
       )
+    }
+
+    // Store the extraction result in the database
+    try {
+      const user = await db.user.findUnique({
+        where: { email: session.user.email }
+      })
+
+      if (user) {
+        await db.resumeOptimization.create({
+          data: {
+            userId: user.id,
+            analysisId: analysisId || null,
+            documentId: documentId || null,
+            jobDescription: jobDescription || '',
+            resumeText: resumeText,
+            templateId: 'extraction', // Special template ID for extraction
+            extractedData: JSON.stringify(extractedData),
+            optimizedResume: '', // Will be filled when actual optimization happens
+            optimizationSuggestions: analysisData.suggestions?.map((s: any) => `${s.section}: ${s.solution}`) || [],
+            atsScore: analysisData.overallScore || null,
+            keywordsMatched: analysisData.keywordMatch?.found || [],
+            provider: 'anthropic',
+            model: 'claude-sonnet-4-20250514',
+            totalTokensUsed: message.usage.input_tokens + message.usage.output_tokens,
+            totalCost: 0, // Calculate based on your pricing
+            processingTime: processingTime
+          }
+        })
+        
+        console.log('Resume extraction result stored in database')
+      }
+    } catch (dbError) {
+      console.error('Failed to store extraction result in database:', dbError)
+      // Continue without failing the request
     }
 
     console.log(`Resume data extracted successfully in ${processingTime}ms`)
@@ -206,7 +339,8 @@ Extract the resume data into the specified JSON format, incorporating the analys
       metadata: {
         processingTime,
         tokensUsed: message.usage.input_tokens + message.usage.output_tokens,
-        optimizationsApplied: analysisData.suggestions?.length || 0
+        optimizationsApplied: analysisData.suggestions?.length || 0,
+        imagesProcessed: resumeImages.length
       }
     })
 
@@ -235,4 +369,4 @@ Extract the resume data into the specified JSON format, incorporating the analys
       { status: 500 }
     )
   }
-} 
+}

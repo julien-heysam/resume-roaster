@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import OpenAI from 'openai';
 import { 
   createChatbotConversation, 
   addMessageToConversation, 
@@ -12,78 +13,70 @@ interface ChatMessage {
   sender: 'user' | 'bot';
 }
 
-const RESUME_RESPONSES = {
-  greetings: [
-    "Hello! I'm here to help you create an outstanding resume. What would you like to work on today?",
-    "Hi there! Ready to make your resume shine? I'm here to guide you through the process.",
-    "Welcome! I'm your resume optimization assistant. How can I help you land your dream job?",
-  ],
-  
-  improvement: [
-    "Great question! Here are key areas to focus on: 1) Use strong action verbs, 2) Quantify your achievements with numbers, 3) Tailor content to the job description, 4) Keep formatting clean and ATS-friendly.",
-    "To improve your resume, focus on: • Highlighting measurable accomplishments • Using industry-specific keywords • Ensuring proper formatting • Keeping it concise yet comprehensive.",
-    "Resume improvement tips: Start each bullet point with an action verb, include metrics wherever possible, customize for each application, and ensure your contact information is current and professional.",
-  ],
-  
-  ats: [
-    "For ATS optimization: Use standard fonts (Arial, Calibri), avoid graphics/images, include relevant keywords from job descriptions, use standard section headings, and save as both PDF and Word formats.",
-    "ATS-friendly tips: • Use simple formatting • Include keywords naturally • Avoid headers/footers • Use standard section names • Test with online ATS scanners.",
-    "To beat ATS systems: Match job description keywords, use standard resume sections, avoid fancy formatting, include both acronyms and full terms (e.g., 'AI' and 'Artificial Intelligence').",
-  ],
-  
-  sections: [
-    "Essential resume sections: 1) Contact Information, 2) Professional Summary, 3) Work Experience, 4) Education, 5) Skills. Optional: Projects, Certifications, Volunteer Work.",
-    "Key sections to include: • Header with contact info • Compelling summary • Relevant work experience • Education details • Technical/soft skills • Additional sections as needed.",
-    "Standard resume structure: Contact details at top, followed by a strong summary, detailed work experience (reverse chronological), education, skills, and any relevant additional sections.",
-  ],
-  
-  length: [
-    "Resume length guidelines: 1 page for entry-level (0-5 years), 2 pages for mid-level (5-15 years), 3+ pages only for senior executives or academic positions.",
-    "Keep it concise: Most recruiters spend 6-10 seconds on initial review. One page is ideal for most professionals, two pages maximum unless you're very senior.",
-    "Length matters: Quality over quantity. Better to have one strong page than two weak ones. Focus on your most relevant and impressive achievements.",
-  ],
-  
-  keywords: [
-    "Include keywords from: job descriptions, industry terminology, technical skills, soft skills, and company values. Use them naturally throughout your resume.",
-    "Keyword strategy: Mirror the job posting language, include both hard and soft skills, use industry jargon appropriately, and incorporate company-specific terms.",
-    "Smart keyword usage: Study job descriptions, use relevant technical terms, include both acronyms and full terms, and ensure natural integration into your content.",
-  ],
-  
-  default: [
-    "I'd be happy to help with your resume! Could you be more specific about what you'd like to improve?",
-    "That's a great question about resumes! What particular aspect would you like me to focus on?",
-    "I'm here to help optimize your resume. What specific area are you looking to enhance?",
-  ]
-};
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-function getResponseCategory(message: string): keyof typeof RESUME_RESPONSES {
-  const lowerMessage = message.toLowerCase();
-  
-  if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-    return 'greetings';
+const SYSTEM_PROMPT = `You are a professional resume and career advisor assistant for Resume Roaster, an AI-powered resume optimization platform. Your role is to help users create outstanding resumes and advance their careers.
+
+Key guidelines:
+- Provide specific, actionable advice about resume writing, formatting, and optimization
+- Help with ATS (Applicant Tracking System) optimization
+- Offer career advancement tips and job search strategies
+- Be encouraging and supportive while maintaining professionalism
+- Keep responses concise but comprehensive (2-4 sentences typically)
+- Focus on modern resume best practices and current hiring trends
+- When discussing specific sections, provide concrete examples
+- Always prioritize practical, implementable advice
+
+Areas of expertise:
+- Resume structure and formatting
+- ATS optimization techniques
+- Industry-specific resume advice
+- Cover letter guidance
+- LinkedIn profile optimization
+- Interview preparation
+- Career transition strategies
+- Skills highlighting and quantifying achievements
+
+Respond in a friendly, professional tone that builds confidence while providing valuable insights.`;
+
+async function generateAIResponse(userMessage: string, conversationHistory: ChatMessage[] = []): Promise<string> {
+  try {
+    // Prepare conversation history for context
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      { role: 'system', content: SYSTEM_PROMPT }
+    ];
+
+    // Add recent conversation history (last 10 messages for context)
+    const recentHistory = conversationHistory.slice(-10);
+    for (const msg of recentHistory) {
+      messages.push({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      });
+    }
+
+    // Add current user message
+    messages.push({ role: 'user', content: userMessage });
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4.1-nano',
+      messages,
+      max_tokens: 500,
+      temperature: 0.7,
+      presence_penalty: 0.1,
+      frequency_penalty: 0.1,
+    });
+
+    return completion.choices[0]?.message?.content || 'I apologize, but I encountered an issue generating a response. Please try asking your question again.';
+  } catch (error) {
+    console.error('OpenAI API error:', error);
+    
+    // Fallback response
+    return "I'm experiencing some technical difficulties right now. In the meantime, here's a quick tip: Focus on quantifying your achievements with specific numbers and metrics in your resume - it makes a huge difference to recruiters!";
   }
-  
-  if (lowerMessage.includes('improve') || lowerMessage.includes('better') || lowerMessage.includes('enhance')) {
-    return 'improvement';
-  }
-  
-  if (lowerMessage.includes('ats') || lowerMessage.includes('applicant tracking') || lowerMessage.includes('scan')) {
-    return 'ats';
-  }
-  
-  if (lowerMessage.includes('section') || lowerMessage.includes('structure') || lowerMessage.includes('format')) {
-    return 'sections';
-  }
-  
-  if (lowerMessage.includes('length') || lowerMessage.includes('long') || lowerMessage.includes('page')) {
-    return 'length';
-  }
-  
-  if (lowerMessage.includes('keyword') || lowerMessage.includes('seo') || lowerMessage.includes('optimize')) {
-    return 'keywords';
-  }
-  
-  return 'default';
 }
 
 function generateConversationTitle(message: string): string {
@@ -103,11 +96,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if OpenAI API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        { error: 'OpenAI API key not configured' },
+        { status: 500 }
+      );
+    }
+
     // Get user session (for authenticated users)
     const session = await getServerSession();
     const userId = session?.user?.id || null;
 
     let currentConversationId = conversationId;
+    let conversationHistory: ChatMessage[] = [];
 
     // If no conversation ID, create a new conversation
     if (!currentConversationId) {
@@ -115,17 +117,21 @@ export async function POST(request: NextRequest) {
       const conversation = await createChatbotConversation(userId, title, message);
       currentConversationId = conversation.id;
     } else {
-      // Add user message to existing conversation
+      // Add user message to existing conversation and get history
       await addMessageToConversation(currentConversationId, message, 'USER');
+      
+      // Get conversation history for context
+      const conversation = await getChatbotConversation(currentConversationId, userId);
+      if (conversation) {
+        conversationHistory = conversation.messages.map(msg => ({
+          content: msg.content,
+          sender: msg.sender
+        }));
+      }
     }
 
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1500));
-    
-    // Generate bot response
-    const category = getResponseCategory(message);
-    const responses = RESUME_RESPONSES[category];
-    const response = responses[Math.floor(Math.random() * responses.length)];
+    // Generate AI response
+    const response = await generateAIResponse(message, conversationHistory);
     
     // Add bot response to conversation
     const botMessage = await addMessageToConversation(currentConversationId, response, 'ASSISTANT');
@@ -133,7 +139,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       response: botMessage.content,
       conversationId: currentConversationId,
-      category,
       timestamp: botMessage.timestamp.toISOString(),
     });
     

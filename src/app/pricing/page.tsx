@@ -40,7 +40,7 @@ export default function PricingPage() {
       tier: "FREE"
     },
     {
-      name: "Pro",
+      name: "Plus",
       price: { monthly: 9.99, yearly: 99.99 },
       description: "For serious job seekers who want the best",
       features: [
@@ -54,16 +54,16 @@ export default function PricingPage() {
         "Interview tips"
       ],
       limitations: [],
-      cta: "Upgrade to Pro",
+      cta: "Upgrade to Plus",
       popular: true,
-      tier: "PRO"
+      tier: "PLUS"
     },
     {
-      name: "Enterprise",
+      name: "Premium",
       price: { monthly: 49.99, yearly: 499.99 },
       description: "For teams and organizations",
       features: [
-        "Everything in Pro",
+        "Everything in Plus",
         "Unlimited credits per month",
         "Team management",
         "Bulk resume processing",
@@ -74,9 +74,9 @@ export default function PricingPage() {
         "Analytics dashboard"
       ],
       limitations: [],
-      cta: "Upgrade to Enterprise",
+      cta: "Upgrade to Premium",
       popular: false,
-      tier: "ENTERPRISE"
+      tier: "PREMIUM"
     }
   ]
 
@@ -94,11 +94,11 @@ export default function PricingPage() {
     try {
       let priceId: string | undefined
 
-      if (tier === 'PRO') {
+      if (tier === 'PLUS') {
         priceId = billingCycle === 'monthly' ? 
           process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID : 
           process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PRICE_ID
-      } else if (tier === 'ENTERPRISE') {
+      } else if (tier === 'PREMIUM') {
         priceId = billingCycle === 'monthly' ? 
           process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID : 
           process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_YEARLY_PRICE_ID
@@ -177,8 +177,8 @@ export default function PricingPage() {
               <CardHeader className="text-center pb-8">
                 <div className="flex items-center justify-center mb-4">
                   {plan.name === 'Free' && <Zap className="h-8 w-8 text-blue-500" />}
-                  {plan.name === 'Pro' && <Crown className="h-8 w-8 text-orange-500" />}
-                  {plan.name === 'Enterprise' && <Star className="h-8 w-8 text-purple-500" />}
+                  {plan.name === 'Plus' && <Crown className="h-8 w-8 text-orange-500" />}
+                  {plan.name === 'Premium' && <Star className="h-8 w-8 text-purple-500" />}
                 </div>
                 <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
                 <CardDescription className="text-gray-600 mt-2">

@@ -23,7 +23,7 @@ interface PricingPlan {
     yearly: number
   }
   features: string[]
-  tier: 'FREE' | 'PRO' | 'ENTERPRISE'
+  tier: 'FREE' | 'PLUS' | 'PREMIUM'
   priceIds: {
     monthly: string
     yearly: string
@@ -50,12 +50,12 @@ function CheckoutForm({ plan, billingCycle }: StripeCheckoutProps) {
   // Check if user is already on this plan
   const isCurrentPlan = subscription?.tier === plan.tier
   const isUpgrade = subscription && (
-    (subscription.tier === 'FREE' && (plan.tier === 'PRO' || plan.tier === 'ENTERPRISE')) ||
-    (subscription.tier === 'PRO' && plan.tier === 'ENTERPRISE')
+    (subscription.tier === 'FREE' && (plan.tier === 'PLUS' || plan.tier === 'PREMIUM')) ||
+    (subscription.tier === 'PLUS' && plan.tier === 'PREMIUM')
   )
   const isDowngrade = subscription && (
-    (subscription.tier === 'PRO' && plan.tier === 'FREE') ||
-    (subscription.tier === 'ENTERPRISE' && (plan.tier === 'PRO' || plan.tier === 'FREE'))
+    (subscription.tier === 'PLUS' && plan.tier === 'FREE') ||
+    (subscription.tier === 'PREMIUM' && (plan.tier === 'PLUS' || plan.tier === 'FREE'))
   )
 
   // Format subscription end date

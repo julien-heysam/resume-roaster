@@ -37,14 +37,15 @@ model User {
   lastRoastReset DateTime @default(now())
 
   // Relations
-  accounts         Account[]
-  sessions         Session[]
-  documents        Document[]
-  usageRecords     UsageRecord[]
-  invoices         Invoice[]
-  llmConversations LLMConversation[]
-  sharedAnalyses   SharedAnalysis[]
-  analyses         Analysis[]
+  accounts            Account[]
+  sessions            Session[]
+  documents           Document[]
+  usageRecords        UsageRecord[]
+  invoices            Invoice[]
+  llmConversations    LLMConversation[]
+  sharedAnalyses      SharedAnalysis[]
+  analyses            Analysis[]
+  resumeOptimizations ResumeOptimization[]
 
   @@map("users")
 }
@@ -111,10 +112,11 @@ model Document {
   processingTime Int // milliseconds
 
   // Relations
-  user             User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
-  usageRecords     UsageRecord[]
-  llmConversations LLMConversation[]
-  analyses         Analysis[]
+  user                User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  usageRecords        UsageRecord[]
+  llmConversations    LLMConversation[]
+  analyses            Analysis[]
+  resumeOptimizations ResumeOptimization[]
 
   @@index([fileHash])
   @@index([userId])
@@ -199,10 +201,11 @@ model LLMConversation {
   errorMessage String?
 
   // Relations
-  user     User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
-  document Document?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  messages LLMMessage[]
-  analyses Analysis[]
+  user                User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  document            Document?            @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  messages            LLMMessage[]
+  analyses            Analysis[]
+  resumeOptimizations ResumeOptimization[]
 
   @@index([userId])
   @@index([type])
@@ -278,14 +281,62 @@ model Analysis {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user         User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
-  document     Document?        @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  conversation LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  user                User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  document            Document?            @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  conversation        LLMConversation?     @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  resumeOptimizations ResumeOptimization[]
 
   @@index([userId])
   @@index([createdAt])
   @@index([overallScore])
   @@map("analyses")
+}
+
+model ResumeOptimization {
+  id     String  @id @default(cuid())
+  userId String? // Null for anonymous users
+
+  // Input references
+  analysisId String? // Reference to the analysis that triggered this optimization
+  documentId String? // Reference to the original document
+
+  // Input data
+  jobDescription String @db.Text // The job description used for optimization
+  resumeText     String @db.Text // The original resume text
+  templateId     String // Template used for optimization
+
+  // Optimization results
+  extractedData           String   @db.Text // JSON string of the extracted/optimized resume data
+  optimizedResume         String   @db.Text // The final optimized resume HTML/content
+  optimizationSuggestions String[] // Array of optimization suggestions applied
+  atsScore                Int? // ATS compatibility score
+  keywordsMatched         String[] // Keywords that were successfully matched
+
+  // AI metadata
+  provider       String // "anthropic", "openai", etc.
+  model          String // "claude-3-sonnet", "gpt-4", etc.
+  conversationId String? // Link to LLM conversation if available
+
+  // Costs and performance
+  totalTokensUsed Int   @default(0)
+  totalCost       Float @default(0) // Cost in USD
+  processingTime  Int? // Processing time in milliseconds
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user         User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  analysis     Analysis?        @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  document     Document?        @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  conversation LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([analysisId])
+  @@index([createdAt])
+  @@index([atsScore])
+  @@map("resume_optimizations")
 }
 
 model SharedAnalysis {
@@ -313,14 +364,15 @@ model SharedAnalysis {
 // Enums
 enum SubscriptionTier {
   FREE
-  PRO
-  ENTERPRISE
+  PLUS
+  PREMIUM
 }
 
 enum UsageAction {
   EXTRACT_PDF
   ROAST_ANALYSIS
   COVER_LETTER_GENERATION
+  RESUME_OPTIMIZATION
 }
 
 enum InvoiceStatus {
@@ -335,6 +387,7 @@ enum ConversationType {
   JOB_EXTRACTION
   COVER_LETTER_GENERATION
   PDF_EXTRACTION
+  RESUME_EXTRACTION
   GENERAL_CHAT
   CHATBOT_SUPPORT
 }

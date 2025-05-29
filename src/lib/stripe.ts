@@ -47,8 +47,8 @@ export const SUBSCRIPTION_TIERS = {
       'Email support'
     ]
   },
-  PRO: {
-    name: 'Pro',
+  PLUS: {
+    name: 'Plus',
     monthlyRoasts: 100,
     features: [
       '100 resume roasts per month',
@@ -63,8 +63,8 @@ export const SUBSCRIPTION_TIERS = {
       'Fine tuned AI models'
     ]
   },
-  ENTERPRISE: {
-    name: 'Enterprise',
+  PREMIUM: {
+    name: 'Premium',
     monthlyRoasts: -1, // Unlimited
     features: [
       'Unlimited resume roasts',
