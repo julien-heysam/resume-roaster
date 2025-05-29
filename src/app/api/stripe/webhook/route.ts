@@ -40,6 +40,10 @@ export async function POST(request: NextRequest) {
 
     // Handle the event
     switch (event.type) {
+      case 'checkout.session.completed':
+        await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session)
+        break
+        
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
         await handleSubscriptionChange(event.data.object as Stripe.Subscription)
@@ -188,5 +192,54 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 
   } catch (error) {
     console.error('Error handling payment failure:', error)
+  }
+}
+
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+  try {
+    const customerId = session.customer as string
+    const subscriptionId = session.subscription as string
+    
+    console.log('Checkout session completed:', {
+      sessionId: session.id,
+      customerId,
+      subscriptionId,
+      metadata: session.metadata
+    })
+
+    // Find user by customer ID
+    const user = await db.user.findFirst({
+      where: { customerId }
+    })
+
+    if (!user) {
+      console.error(`User not found for customer ID: ${customerId}`)
+      return
+    }
+
+    // Get tier from metadata
+    const tier = session.metadata?.tier as 'PLUS' | 'PREMIUM'
+    
+    if (!tier) {
+      console.error('No tier found in session metadata')
+      return
+    }
+
+    // Update user subscription
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        subscriptionId,
+        subscriptionTier: tier,
+        // Reset monthly roasts on new subscription
+        monthlyRoasts: 0,
+        lastRoastReset: new Date(),
+      }
+    })
+
+    console.log(`Checkout completed for user ${user.id}: ${tier}`)
+
+  } catch (error) {
+    console.error('Error handling checkout session completion:', error)
   }
 } 

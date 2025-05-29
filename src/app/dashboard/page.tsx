@@ -1,16 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { FileText, TrendingUp, Calendar, Search, Filter, Eye, Download, ArrowLeft, Trash2, ExternalLink, ChevronDown, ChevronUp, MoreHorizontal, Star, Clock, Target } from "lucide-react"
+import { FileText, TrendingUp, Calendar, Search, Filter, Eye, Download, ArrowLeft, Trash2, ExternalLink, ChevronDown, ChevronUp, MoreHorizontal, Star, Clock, Target, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Navigation } from "@/components/ui/navigation"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Footer } from "@/components/ui/footer"
+import { toast } from 'sonner'
 
 interface AnalysisResult {
   id: string
@@ -37,6 +38,7 @@ interface PaginationInfo {
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [analyses, setAnalyses] = useState<AnalysisResult[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -55,6 +57,26 @@ export default function DashboardPage() {
       router.push('/auth/signin')
     }
   }, [status, router])
+
+  // Handle Stripe success redirect
+  useEffect(() => {
+    const success = searchParams.get('success')
+    const tier = searchParams.get('tier')
+    const sessionId = searchParams.get('session_id')
+    
+    if (success === 'true' && tier) {
+      toast.success(`🎉 Welcome to ${tier} plan! Your subscription is now active.`, {
+        duration: 5000,
+      })
+      
+      // Clean up URL parameters
+      const url = new URL(window.location.href)
+      url.searchParams.delete('success')
+      url.searchParams.delete('tier')
+      url.searchParams.delete('session_id')
+      window.history.replaceState({}, '', url.toString())
+    }
+  }, [searchParams])
 
   // Fetch analysis history
   const fetchAnalyses = async (page = 1, search = '') => {

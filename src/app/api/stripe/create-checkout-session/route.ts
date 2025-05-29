@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { stripe, STRIPE_PRICE_IDS, validateStripeConfig } from '@/lib/stripe'
 import { db } from '@/lib/database'
+import { getBaseUrl } from '@/lib/utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -67,6 +68,19 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Get the base URL for redirects
+    const baseUrl = getBaseUrl()
+    
+    console.log('Stripe checkout session creation:', {
+      baseUrl,
+      successUrl: `${baseUrl}/dashboard?success=true&tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${baseUrl}/pricing?canceled=true`,
+      environment: {
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+        VERCEL_URL: process.env.VERCEL_URL
+      }
+    })
+
     // Create checkout session
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -78,8 +92,8 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: 'subscription',
-      success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard?success=true&tier=${tier}`,
-      cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/pricing?canceled=true`,
+      success_url: `${baseUrl}/dashboard?success=true&tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/pricing?canceled=true`,
       metadata: {
         userId: user.id,
         tier,
@@ -94,6 +108,13 @@ export async function POST(request: NextRequest) {
       },
       allow_promotion_codes: true,
       billing_address_collection: 'required',
+    })
+
+    console.log('Created checkout session:', {
+      sessionId: checkoutSession.id,
+      url: checkoutSession.url,
+      successUrl: checkoutSession.success_url,
+      cancelUrl: checkoutSession.cancel_url
     })
 
     return NextResponse.json({ 

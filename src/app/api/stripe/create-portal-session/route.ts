@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { stripe, validateStripeConfig } from '@/lib/stripe'
 import { db } from '@/lib/database'
+import { getBaseUrl } from '@/lib/utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,10 +36,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get the base URL for redirects
+    const baseUrl = getBaseUrl()
+
     // Create customer portal session
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: user.customerId,
-      return_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard`,
+      return_url: `${baseUrl}/dashboard`,
     })
 
     return NextResponse.json({ url: portalSession.url })

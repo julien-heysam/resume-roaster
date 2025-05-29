@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { randomBytes } from 'crypto'
+import { getBaseUrl } from '@/lib/utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +24,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Get the base URL for sharing
+    const baseUrl = getBaseUrl()
 
     // Generate a unique share ID
     const shareId = randomBytes(16).toString('hex')
@@ -46,14 +50,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       shareId: sharedAnalysis.id,
-      shareUrl: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/shared/${sharedAnalysis.id}`,
+      shareUrl: `${baseUrl}/shared/${sharedAnalysis.id}`,
       expiresAt: sharedAnalysis.expiresAt
     })
 
   } catch (error) {
-    console.error('Share analysis error:', error)
+    console.error('Error creating shared analysis:', error)
     return NextResponse.json(
-      { error: 'Failed to create shareable link' },
+      { error: 'Failed to create shared analysis' },
       { status: 500 }
     )
   }
@@ -72,33 +76,34 @@ export async function GET(request: NextRequest) {
 
     // Get user's shared analyses
     const sharedAnalyses = await db.sharedAnalysis.findMany({
-      where: { 
+      where: {
         userId: session.user.id,
         expiresAt: {
-          gt: new Date() // Only active shares
+          gt: new Date() // Only non-expired shares
         }
       },
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        createdAt: true,
-        expiresAt: true,
-        viewCount: true,
-        settings: true
+      orderBy: {
+        createdAt: 'desc'
       }
     })
 
+    // Get the base URL for sharing
+    const baseUrl = getBaseUrl()
+
+    const formattedShares = sharedAnalyses.map(share => ({
+      id: share.id,
+      shareUrl: `${baseUrl}/shared/${share.id}`,
+      viewCount: share.viewCount,
+      expiresAt: share.expiresAt,
+      createdAt: share.createdAt
+    }))
+
     return NextResponse.json({
-      success: true,
-      sharedAnalyses: sharedAnalyses.map(analysis => ({
-        ...analysis,
-        shareUrl: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/shared/${analysis.id}`,
-        settings: JSON.parse(analysis.settings || '{}')
-      }))
+      shares: formattedShares
     })
 
   } catch (error) {
-    console.error('Get shared analyses error:', error)
+    console.error('Error fetching shared analyses:', error)
     return NextResponse.json(
       { error: 'Failed to fetch shared analyses' },
       { status: 500 }
