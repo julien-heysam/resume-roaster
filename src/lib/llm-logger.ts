@@ -1,91 +1,100 @@
 import { db } from './database'
-import { ConversationType, MessageRole, ConversationStatus } from '@/generated/prisma'
+import { MessageRole, LlmCallStatus } from '@/generated/prisma'
 
-interface CreateConversationParams {
+interface CreateLlmCallParams {
   userId?: string
-  type: ConversationType
-  title?: string
-  documentId?: string
   provider: string
   model: string
+  operationType: string
+  resumeId?: string
+  extractedResumeId?: string
+  extractedJobId?: string
+  generatedRoastId?: string
+  generatedCoverLetterId?: string
+  generatedResumeId?: string
 }
 
 interface LogMessageParams {
-  conversationId: string
+  llmCallId: string
   role: MessageRole
   content: string
+  messageIndex: number
   inputTokens?: number
   outputTokens?: number
   totalTokens?: number
-  cost?: number
-  processingTime?: number
+  costUsd?: number
+  processingTimeMs?: number
   finishReason?: string
   temperature?: number
   maxTokens?: number
+  metadata?: any
 }
 
-interface UpdateConversationParams {
-  conversationId: string
-  status?: ConversationStatus
-  totalTokensUsed?: number
-  totalCost?: number
+interface UpdateLlmCallParams {
+  llmCallId: string
+  status?: LlmCallStatus
+  totalInputTokens?: number
+  totalOutputTokens?: number
+  totalTokens?: number
+  totalCostUsd?: number
+  totalProcessingTimeMs?: number
   errorMessage?: string
   completedAt?: Date
 }
 
 export class LLMLogger {
   /**
-   * Create a new LLM conversation
+   * Create a new LLM call
    */
-  static async createConversation(params: CreateConversationParams): Promise<string> {
+  static async createLlmCall(params: CreateLlmCallParams): Promise<string> {
     try {
-      const conversation = await db.lLMConversation.create({
+      const llmCall = await db.llmCall.create({
         data: {
           userId: params.userId,
-          type: params.type,
-          title: params.title,
-          documentId: params.documentId,
           provider: params.provider,
           model: params.model,
+          operationType: params.operationType,
+          resumeId: params.resumeId,
+          extractedResumeId: params.extractedResumeId,
+          extractedJobId: params.extractedJobId,
+          generatedRoastId: params.generatedRoastId,
+          generatedCoverLetterId: params.generatedCoverLetterId,
+          generatedResumeId: params.generatedResumeId,
         }
       })
       
-      console.log(`Created LLM conversation: ${conversation.id} (${params.type})`)
-      return conversation.id
+      console.log(`Created LLM call: ${llmCall.id} (${params.operationType})`)
+      return llmCall.id
     } catch (error) {
-      console.error('Failed to create LLM conversation:', error)
+      console.error('Failed to create LLM call:', error)
       throw error
     }
   }
 
   /**
-   * Log a message in an existing conversation
+   * Log a message in an existing LLM call
    */
   static async logMessage(params: LogMessageParams): Promise<void> {
     try {
-      // Get the current message count to determine the index
-      const messageCount = await db.lLMMessage.count({
-        where: { conversationId: params.conversationId }
-      })
-
-      await db.lLMMessage.create({
+      await db.llmMessage.create({
         data: {
-          conversationId: params.conversationId,
+          llmCallId: params.llmCallId,
           role: params.role,
           content: params.content,
+          messageIndex: params.messageIndex,
           inputTokens: params.inputTokens,
           outputTokens: params.outputTokens,
           totalTokens: params.totalTokens,
-          cost: params.cost || 0,
-          messageIndex: messageCount,
-          processingTime: params.processingTime,
+          costUsd: params.costUsd || 0,
+          processingTimeMs: params.processingTimeMs,
           finishReason: params.finishReason,
           temperature: params.temperature,
           maxTokens: params.maxTokens,
+          metadata: params.metadata,
         }
       })
 
-      console.log(`Logged message ${messageCount} in conversation ${params.conversationId}`)
+      console.log(`Logged message ${params.messageIndex} in LLM call ${params.llmCallId}`)
     } catch (error) {
       console.error('Failed to log LLM message:', error)
       // Don't throw error to avoid breaking the main flow
@@ -93,37 +102,40 @@ export class LLMLogger {
   }
 
   /**
-   * Update conversation totals and status
+   * Update LLM call totals and status
    */
-  static async updateConversation(params: UpdateConversationParams): Promise<void> {
+  static async updateLlmCall(params: UpdateLlmCallParams): Promise<void> {
     try {
       const updateData: any = {}
       
       if (params.status !== undefined) updateData.status = params.status
-      if (params.totalTokensUsed !== undefined) updateData.totalTokensUsed = params.totalTokensUsed
-      if (params.totalCost !== undefined) updateData.totalCost = params.totalCost
+      if (params.totalInputTokens !== undefined) updateData.totalInputTokens = params.totalInputTokens
+      if (params.totalOutputTokens !== undefined) updateData.totalOutputTokens = params.totalOutputTokens
+      if (params.totalTokens !== undefined) updateData.totalTokens = params.totalTokens
+      if (params.totalCostUsd !== undefined) updateData.totalCostUsd = params.totalCostUsd
+      if (params.totalProcessingTimeMs !== undefined) updateData.totalProcessingTimeMs = params.totalProcessingTimeMs
       if (params.errorMessage !== undefined) updateData.errorMessage = params.errorMessage
       if (params.completedAt !== undefined) updateData.completedAt = params.completedAt
 
-      await db.lLMConversation.update({
-        where: { id: params.conversationId },
+      await db.llmCall.update({
+        where: { id: params.llmCallId },
         data: updateData
       })
 
-      console.log(`Updated LLM conversation: ${params.conversationId}`)
+      console.log(`Updated LLM call: ${params.llmCallId}`)
     } catch (error) {
-      console.error('Failed to update LLM conversation:', error)
+      console.error('Failed to update LLM call:', error)
       // Don't throw error to avoid breaking the main flow
     }
   }
 
   /**
-   * Get conversation with all messages
+   * Get LLM call with all messages
    */
-  static async getConversation(conversationId: string) {
+  static async getLlmCall(llmCallId: string) {
     try {
-      return await db.lLMConversation.findUnique({
-        where: { id: conversationId },
+      return await db.llmCall.findUnique({
+        where: { id: llmCallId },
         include: {
           messages: {
             orderBy: { messageIndex: 'asc' }
@@ -131,26 +143,26 @@ export class LLMLogger {
           user: {
             select: { id: true, email: true, name: true }
           },
-          document: {
+          resume: {
             select: { id: true, filename: true }
           }
         }
       })
     } catch (error) {
-      console.error('Failed to get LLM conversation:', error)
+      console.error('Failed to get LLM call:', error)
       return null
     }
   }
 
   /**
-   * Get user's conversations
+   * Get user's LLM calls
    */
-  static async getUserConversations(userId: string, type?: ConversationType, limit = 50) {
+  static async getUserLlmCalls(userId: string, operationType?: string, limit = 50) {
     try {
-      return await db.lLMConversation.findMany({
+      return await db.llmCall.findMany({
         where: {
           userId,
-          ...(type && { type })
+          ...(operationType && { operationType })
         },
         include: {
           messages: {
@@ -158,7 +170,7 @@ export class LLMLogger {
             orderBy: { messageIndex: 'desc' },
             take: 1 // Get only the latest message
           },
-          document: {
+          resume: {
             select: { id: true, filename: true }
           }
         },
@@ -166,7 +178,7 @@ export class LLMLogger {
         take: limit
       })
     } catch (error) {
-      console.error('Failed to get user conversations:', error)
+      console.error('Failed to get user LLM calls:', error)
       return []
     }
   }
@@ -183,43 +195,43 @@ export class LLMLogger {
         ...(userId && { userId })
       }
 
-      const [conversationStats, messageStats, costStats] = await Promise.all([
-        // Conversation counts by type
-        db.lLMConversation.groupBy({
-          by: ['type'],
+      const [callStats, messageStats, costStats] = await Promise.all([
+        // Call counts by operation type
+        db.llmCall.groupBy({
+          by: ['operationType'],
           where: whereClause,
           _count: true
         }),
         
         // Message counts by role
-        db.lLMMessage.groupBy({
+        db.llmMessage.groupBy({
           by: ['role'],
           where: {
             createdAt: {
               gte: new Date(Date.now() - days * 24 * 60 * 60 * 1000)
             },
-            conversation: userId ? { userId } : undefined
+            llmCall: userId ? { userId } : undefined
           },
           _count: true,
           _sum: {
             totalTokens: true,
-            cost: true
+            costUsd: true
           }
         }),
 
         // Total costs and tokens
-        db.lLMConversation.aggregate({
+        db.llmCall.aggregate({
           where: whereClause,
           _sum: {
-            totalTokensUsed: true,
-            totalCost: true
+            totalTokens: true,
+            totalCostUsd: true
           },
           _count: true
         })
       ])
 
       return {
-        conversationStats,
+        callStats,
         messageStats,
         costStats,
         period: `${days} days`
@@ -231,4 +243,4 @@ export class LLMLogger {
   }
 }
 
-export { ConversationType, MessageRole, ConversationStatus } 
+export { MessageRole, LlmCallStatus } 

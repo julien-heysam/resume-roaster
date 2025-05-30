@@ -1,4 +1,4 @@
-import { PrismaClient, UsageAction } from '@/generated/prisma'
+import { PrismaClient } from '@/generated/prisma'
 import { createHash } from 'crypto'
 
 declare global {
@@ -16,11 +16,11 @@ export function generateFileHash(buffer: Buffer): string {
   return createHash('sha256').update(buffer).digest('hex')
 }
 
-// Document caching and retrieval
-export class DocumentService {
-  // Check if document was already processed
+// Resume storage and retrieval
+export class ResumeService {
+  // Check if resume was already processed
   static async findByHash(fileHash: string) {
-    return await db.document.findUnique({
+    return await db.resume.findUnique({
       where: { fileHash },
       include: {
         user: {
@@ -30,89 +30,264 @@ export class DocumentService {
     })
   }
 
-  // Create new document record
+  // Create new resume record
   static async create(data: {
     userId?: string
     filename: string
-    originalSize: number
     fileHash: string
     mimeType: string
-    extractedText: string
-    wordCount: number
-    pageCount: number
-    aiProvider: string
-    extractionCost?: number
-    summary?: string
-    sections?: string[]
     images?: string[]
-    processingTime: number
+    metadata?: any
   }) {
-    return await db.document.create({
+    return await db.resume.create({
       data: {
         ...data,
-        sections: data.sections || [],
-        images: data.images || []
-      }
-    })
-  }
-
-  // Get user's recent documents
-  static async getUserDocuments(userId: string, limit = 10) {
-    return await db.document.findMany({
-      where: { userId },
-      orderBy: { processedAt: 'desc' },
-      take: limit,
-      select: {
-        id: true,
-        filename: true,
-        wordCount: true,
-        pageCount: true,
-        processedAt: true,
-        summary: true,
-        aiProvider: true
-      }
-    })
-  }
-
-  // Delete old documents (cleanup)
-  static async deleteOldDocuments(daysOld = 30) {
-    const cutoffDate = new Date()
-    cutoffDate.setDate(cutoffDate.getDate() - daysOld)
-
-    return await db.document.deleteMany({
-      where: {
-        processedAt: {
-          lt: cutoffDate
-        },
-        userId: null // Only delete anonymous documents
-      }
-    })
-  }
-
-  // Delete document by ID
-  static async deleteById(documentId: string) {
-    return await db.document.delete({
-      where: { id: documentId }
-    })
-  }
-
-  // Delete document by file hash
-  static async deleteByHash(fileHash: string) {
-    return await db.document.delete({
-      where: { fileHash }
-    })
-  }
-
-  // Find document by ID
-  static async findById(documentId: string) {
-    return await db.document.findUnique({
-      where: { id: documentId },
+        images: data.images || [],
+        metadata: data.metadata || null
+      },
       include: {
         user: {
           select: { id: true, email: true, name: true }
         }
       }
     })
+  }
+
+  // Get user's recent resumes
+  static async getUserResumes(userId: string, limit = 10) {
+    return await db.resume.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        filename: true,
+        mimeType: true,
+        createdAt: true,
+        metadata: true
+      }
+    })
+  }
+
+  // Delete old resumes (cleanup)
+  static async deleteOldResumes(daysOld = 30) {
+    const cutoffDate = new Date()
+    cutoffDate.setDate(cutoffDate.getDate() - daysOld)
+
+    return await db.resume.deleteMany({
+      where: {
+        createdAt: {
+          lt: cutoffDate
+        },
+        userId: null // Only delete anonymous resumes
+      }
+    })
+  }
+
+  // Delete resume by ID
+  static async deleteById(resumeId: string) {
+    return await db.resume.delete({
+      where: { id: resumeId }
+    })
+  }
+
+  // Delete resume by file hash
+  static async deleteByHash(fileHash: string) {
+    return await db.resume.delete({
+      where: { fileHash }
+    })
+  }
+
+  // Find resume by ID
+  static async findById(resumeId: string) {
+    return await db.resume.findUnique({
+      where: { id: resumeId },
+      include: {
+        user: {
+          select: { id: true, email: true, name: true }
+        }
+      }
+    })
+  }
+}
+
+// Extracted resume data service
+export class ExtractedResumeService {
+  // Find by content hash
+  static async findByHash(contentHash: string) {
+    return await db.extractedResume.findUnique({
+      where: { contentHash }
+    })
+  }
+
+  // Create extracted resume data
+  static async create(data: {
+    resumeId: string
+    contentHash: string
+    data: any
+  }) {
+    return await db.extractedResume.create({
+      data
+    })
+  }
+
+  // Delete extracted resume data by ID
+  static async delete(id: string) {
+    return await db.extractedResume.delete({
+      where: { id }
+    })
+  }
+}
+
+// Job description service
+export class JobDescriptionService {
+  // Find by content hash
+  static async findByHash(contentHash: string) {
+    return await db.extractedJobDescription.findUnique({
+      where: { contentHash }
+    })
+  }
+
+  // Create extracted job description
+  static async create(data: {
+    contentHash: string
+    originalText: string
+    data: any
+  }) {
+    return await db.extractedJobDescription.create({
+      data
+    })
+  }
+}
+
+// Generated content services
+export class GeneratedRoastService {
+  // Find by content hash
+  static async findByHash(contentHash: string) {
+    return await db.generatedRoast.findUnique({
+      where: { contentHash }
+    })
+  }
+
+  // Create generated roast
+  static async create(data: {
+    userId?: string
+    resumeId?: string
+    extractedResumeId?: string
+    extractedJobId?: string
+    contentHash: string
+    data: any
+    overallScore?: number
+  }) {
+    return await db.generatedRoast.create({
+      data
+    })
+  }
+
+  // Get user's roasts
+  static async getUserRoasts(userId: string, limit = 10) {
+    return await db.generatedRoast.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      include: {
+        resume: {
+          select: { filename: true }
+        }
+      }
+    })
+  }
+}
+
+// LLM call tracking service
+export class LlmCallService {
+  // Create LLM call record
+  static async create(data: {
+    userId?: string
+    provider: string
+    model: string
+    operationType: string
+    resumeId?: string
+    extractedResumeId?: string
+    extractedJobId?: string
+    generatedRoastId?: string
+    generatedCoverLetterId?: string
+    generatedResumeId?: string
+  }) {
+    return await db.llmCall.create({
+      data
+    })
+  }
+
+  // Update LLM call with results
+  static async updateWithResults(id: string, data: {
+    totalInputTokens?: number
+    totalOutputTokens?: number
+    totalTokens?: number
+    totalCostUsd?: number
+    totalProcessingTimeMs?: number
+    status?: 'COMPLETED' | 'FAILED' | 'TIMEOUT'
+    errorMessage?: string
+    completedAt?: Date
+  }) {
+    return await db.llmCall.update({
+      where: { id },
+      data
+    })
+  }
+
+  // Add message to LLM call
+  static async addMessage(data: {
+    llmCallId: string
+    role: 'system' | 'user' | 'assistant'
+    content: string
+    messageIndex: number
+    inputTokens?: number
+    outputTokens?: number
+    totalTokens?: number
+    costUsd?: number
+    processingTimeMs?: number
+    finishReason?: string
+    temperature?: number
+    maxTokens?: number
+    metadata?: any
+  }) {
+    return await db.llmMessage.create({
+      data
+    })
+  }
+
+  // Get user's LLM usage stats
+  static async getUserUsageStats(userId: string, startDate?: Date, endDate?: Date) {
+    const where: any = { userId }
+    
+    if (startDate || endDate) {
+      where.createdAt = {}
+      if (startDate) where.createdAt.gte = startDate
+      if (endDate) where.createdAt.lte = endDate
+    }
+
+    const calls = await db.llmCall.findMany({
+      where,
+      select: {
+        provider: true,
+        model: true,
+        operationType: true,
+        totalTokens: true,
+        totalCostUsd: true,
+        createdAt: true
+      }
+    })
+
+    const totalCost = calls.reduce((sum, call) => sum + Number(call.totalCostUsd), 0)
+    const totalTokens = calls.reduce((sum, call) => sum + call.totalTokens, 0)
+
+    return {
+      calls,
+      totalCost,
+      totalTokens,
+      callCount: calls.length
+    }
   }
 }
 
@@ -206,96 +381,5 @@ export class UserService {
       where: { id: userId },
       data
     })
-  }
-}
-
-// Usage tracking for billing
-export class UsageService {
-  // Record usage event
-  static async recordUsage(data: {
-    userId: string
-    documentId: string
-    action: UsageAction
-    cost?: number
-    creditsUsed?: number
-  }) {
-    const now = new Date()
-    const billingMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-
-    return await db.usageRecord.create({
-      data: {
-        ...data,
-        cost: data.cost || 0,
-        creditsUsed: data.creditsUsed || 1,
-        billingMonth
-      }
-    })
-  }
-
-  // Get user's monthly usage
-  static async getMonthlyUsage(userId: string, month?: string) {
-    const now = new Date()
-    const targetMonth = month || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-
-    const usage = await db.usageRecord.groupBy({
-      by: ['action'],
-      where: {
-        userId,
-        billingMonth: targetMonth
-      },
-      _sum: {
-        cost: true,
-        creditsUsed: true
-      },
-      _count: {
-        id: true
-      }
-    })
-
-    type UsageRecord = {
-      action: UsageAction
-      _count: { id: number }
-      _sum: { cost: number | null; creditsUsed: number | null }
-    }
-
-    return usage.reduce((acc: Record<string, { count: number; cost: number; credits: number }>, record: UsageRecord) => {
-      acc[record.action] = {
-        count: record._count.id,
-        cost: record._sum.cost || 0,
-        credits: record._sum.creditsUsed || 0
-      }
-      return acc
-    }, {} as Record<string, { count: number; cost: number; credits: number }>)
-  }
-
-  // Get total costs for billing
-  static async getBillingData(userId: string, startDate: Date, endDate: Date) {
-    const records = await db.usageRecord.findMany({
-      where: {
-        userId,
-        createdAt: {
-          gte: startDate,
-          lte: endDate
-        }
-      },
-      include: {
-        document: {
-          select: {
-            filename: true,
-            aiProvider: true
-          }
-        }
-      }
-    })
-
-    const totalCost = records.reduce((sum: number, record: any) => sum + record.cost, 0)
-    const totalCredits = records.reduce((sum: number, record: any) => sum + record.creditsUsed, 0)
-
-    return {
-      records,
-      totalCost,
-      totalCredits,
-      itemCount: records.length
-    }
   }
 } 

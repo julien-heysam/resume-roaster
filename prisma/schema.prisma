@@ -15,572 +15,384 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// Core Authentication & Users
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
   name              String?
-  emailVerified     DateTime?
+  emailVerified     DateTime? @map("email_verified")
   image             String?
-  hashedPassword    String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
+  hashedPassword    String?  @map("hashed_password")
+  
   // Subscription and billing
-  subscriptionTier  SubscriptionTier @default(FREE)
-  subscriptionId    String?
-  customerId        String? // Stripe customer ID
-  subscriptionEndsAt DateTime?
+  subscriptionTier  SubscriptionTier @default(FREE) @map("subscription_tier")
+  subscriptionId    String?  @map("subscription_id")
+  customerId        String?  @map("customer_id") // Stripe customer ID
+  subscriptionEndsAt DateTime? @map("subscription_ends_at")
   
   // Usage tracking
-  monthlyRoasts     Int      @default(0)
-  totalRoasts       Int      @default(0)
-  lastRoastReset    DateTime @default(now())
+  monthlyRoasts     Int      @default(0) @map("monthly_roasts")
+  totalRoasts       Int      @default(0) @map("total_roasts")
+  lastRoastReset    DateTime @default(now()) @map("last_roast_reset")
+  
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 
   // Relations
-  accounts          Account[]
   sessions          Session[]
-  documents         Document[]
-  usageRecords      UsageRecord[]
-  invoices          Invoice[]
-  llmConversations  LLMConversation[]
+  resumes           Resume[]
+  llmCalls          LlmCall[]
+  generatedRoasts   GeneratedRoast[]
+  generatedCoverLetters GeneratedCoverLetter[]
+  generatedResumes  GeneratedResume[]
   sharedAnalyses    SharedAnalysis[]
-  analyses          Analysis[]
-  resumeOptimizations ResumeOptimization[]
-  coverLetters      CoverLetter[]
-  optimizedResumes  OptimizedResume[]
-  extractedResumes  ExtractedResume[]
+  invoices          Invoice[]
 
   @@map("users")
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
 model Session {
   id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
   expires      DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
-model Document {
+// LLM Call Tracking
+model LlmCall {
   id              String   @id @default(cuid())
-  userId          String?  // Null for anonymous users
+  userId          String?  @map("user_id") // NULL for anonymous
   
-  // File information
-  filename        String
-  originalSize    Int
-  fileHash        String   @unique // SHA-256 hash to detect duplicates
-  mimeType        String
+  // Call metadata
+  provider        String   // 'openai', 'anthropic', etc.
+  model           String   // 'gpt-4', 'claude-4-sonnet', etc.
+  operationType   String   @map("operation_type") // 'extract_resume', 'generate_roast', etc.
   
-  // Extraction data
-  extractedText   String   @db.Text
-  wordCount       Int
-  pageCount       Int
-  aiProvider      String   // "anthropic" or "openai"
-  extractionCost  Float    @default(0) // Cost in USD
+  // Token usage (aggregated from messages)
+  totalInputTokens  Int    @default(0) @map("total_input_tokens")
+  totalOutputTokens Int    @default(0) @map("total_output_tokens")
+  totalTokens       Int    @default(0) @map("total_tokens")
   
-  // Metadata from AI
-  summary         String?  @db.Text
-  sections        String[] // JSON array of sections
-  images          String[] @default([]) // Base64 encoded PDF page images
+  // Cost tracking
+  totalCostUsd    Decimal  @default(0) @map("total_cost_usd") @db.Decimal(10,6)
   
-  // Processing info
-  processedAt     DateTime @default(now())
-  processingTime  Int      // milliseconds
-  
-  // Relations
-  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  usageRecords    UsageRecord[]
-  llmConversations LLMConversation[]
-  analyses        Analysis[]
-  resumeOptimizations ResumeOptimization[]
-  coverLetters    CoverLetter[]
-  optimizedResumes OptimizedResume[]
-  extractedResumes ExtractedResume[]
-
-  @@index([fileHash])
-  @@index([userId])
-  @@map("documents")
-}
-
-model UsageRecord {
-  id          String      @id @default(cuid())
-  userId      String
-  documentId  String
-  action      UsageAction
-  cost        Float       @default(0) // Cost in USD
-  creditsUsed Int         @default(1)
-  createdAt   DateTime    @default(now())
-  
-  // Billing period
-  billingMonth String     // Format: "2025-01"
-  
-  // Relations
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  document    Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
-
-  @@index([userId, billingMonth])
-  @@index([createdAt])
-  @@map("usage_records")
-}
-
-model Invoice {
-  id              String        @id @default(cuid())
-  userId          String
-  
-  // Billing details
-  amount          Float         // Total amount in USD
-  currency        String        @default("USD")
-  status          InvoiceStatus @default(PENDING)
-  
-  // Billing period
-  billingPeriodStart DateTime
-  billingPeriodEnd   DateTime
-  
-  // Stripe integration
-  stripeInvoiceId    String?   @unique
-  stripePaymentId    String?
-  
-  // Metadata
-  itemCount       Int           // Number of roasts in this invoice
-  generatedAt     DateTime      @default(now())
-  paidAt          DateTime?
-  
-  // Relations
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([status])
-  @@map("invoices")
-}
-
-model LLMConversation {
-  id              String   @id @default(cuid())
-  userId          String?  // Null for anonymous users
-  
-  // Conversation metadata
-  type            ConversationType // RESUME_ANALYSIS, JOB_EXTRACTION, COVER_LETTER, etc.
-  title           String?  // Optional title for the conversation
-  documentId      String?  // Related document if applicable
-  
-  // Provider and model info
-  provider        String   // "anthropic", "openai", etc.
-  model           String   // "claude-3-sonnet", "gpt-4", etc.
-  
-  // Costs and tokens
-  totalTokensUsed Int      @default(0)
-  totalCost       Float    @default(0) // Cost in USD
-  
-  // Timing
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  completedAt     DateTime?
+  // Performance
+  totalProcessingTimeMs Int? @map("total_processing_time_ms")
   
   // Status
-  status          ConversationStatus @default(ACTIVE)
-  errorMessage    String?
+  status          LlmCallStatus @default(COMPLETED)
+  errorMessage    String?  @map("error_message")
   
+  // Relations (what was this call for?)
+  resumeId              String? @map("resume_id")
+  extractedResumeId     String? @map("extracted_resume_id")
+  extractedJobId        String? @map("extracted_job_id")
+  generatedRoastId      String? @map("generated_roast_id")
+  generatedCoverLetterId String? @map("generated_cover_letter_id")
+  generatedResumeId     String? @map("generated_resume_id")
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+  completedAt     DateTime? @map("completed_at")
+
   // Relations
-  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  messages        LLMMessage[]
-  analyses        Analysis[]
-  resumeOptimizations ResumeOptimization[]
-  coverLetters    CoverLetter[]
-  optimizedResumes OptimizedResume[]
-  extractedResumes ExtractedResume[]
+  user                  User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resume                Resume?               @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  extractedResume       ExtractedResume?      @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
+  extractedJob          ExtractedJobDescription? @relation(fields: [extractedJobId], references: [id], onDelete: SetNull)
+  generatedRoast        GeneratedRoast?       @relation(fields: [generatedRoastId], references: [id], onDelete: SetNull)
+  generatedCoverLetter  GeneratedCoverLetter? @relation(fields: [generatedCoverLetterId], references: [id], onDelete: SetNull)
+  generatedResume       GeneratedResume?      @relation(fields: [generatedResumeId], references: [id], onDelete: SetNull)
+  messages              LlmMessage[]
 
   @@index([userId])
-  @@index([type])
+  @@index([provider, model])
+  @@index([operationType])
   @@index([createdAt])
-  @@map("llm_conversations")
+  @@index([totalCostUsd])
+  @@index([status])
+  @@map("llm_calls")
 }
 
-model LLMMessage {
+// LLM Messages (the actual conversation)
+model LlmMessage {
   id              String   @id @default(cuid())
-  conversationId  String
+  llmCallId       String   @map("llm_call_id")
   
   // Message content
-  role            MessageRole // USER, ASSISTANT, SYSTEM
+  role            MessageRole
   content         String   @db.Text
   
+  // Message order in conversation
+  messageIndex    Int      @map("message_index") // 0, 1, 2, etc.
+  
   // Token usage for this specific message
-  inputTokens     Int?     // Tokens in the input
-  outputTokens    Int?     // Tokens in the output
-  totalTokens     Int?     // Total tokens for this message
+  inputTokens     Int?     @map("input_tokens")
+  outputTokens    Int?     @map("output_tokens")
+  totalTokens     Int?     @map("total_tokens")
   
   // Cost for this specific message
-  cost            Float    @default(0) // Cost in USD
+  costUsd         Decimal  @default(0) @map("cost_usd") @db.Decimal(10,6)
   
-  // Metadata
-  messageIndex    Int      // Order in conversation (0, 1, 2, ...)
-  processingTime  Int?     // Response time in milliseconds
+  // Performance for this message
+  processingTimeMs Int?    @map("processing_time_ms")
   
   // AI-specific metadata
-  finishReason    String?  // "stop", "length", "content_filter", etc.
-  temperature     Float?   // Temperature used for generation
-  maxTokens       Int?     // Max tokens requested
+  finishReason    String?  @map("finish_reason") // 'stop', 'length', 'content_filter', etc.
+  temperature     Decimal? @db.Decimal(3,2)
+  maxTokens       Int?     @map("max_tokens")
   
-  // Timestamps
-  createdAt       DateTime @default(now())
+  // Additional metadata
+  metadata        Json?
+  
+  createdAt       DateTime @default(now()) @map("created_at")
   
   // Relations
-  conversation    LLMConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  llmCall         LlmCall  @relation(fields: [llmCallId], references: [id], onDelete: Cascade)
 
-  @@index([conversationId])
+  @@unique([llmCallId, messageIndex])
+  @@index([llmCallId])
+  @@index([role])
   @@index([createdAt])
-  @@unique([conversationId, messageIndex])
   @@map("llm_messages")
 }
 
-model Analysis {
+// Core Resume Storage
+model Resume {
   id              String   @id @default(cuid())
-  userId          String?  // Null for anonymous users
-  
-  // Analysis metadata
-  title           String   // User-provided or auto-generated title
-  documentId      String?  // Related document if applicable
-  
-  // Input data
-  jobDescription  String   @db.Text // The job description used for analysis (kept for backward compatibility)
-  jobSummaryId    String?  // Reference to summarized job description
-  resumeText      String   @db.Text // The resume text that was analyzed
-  
-  // Analysis results
-  analysisData    String   @db.Text // JSON string of the complete analysis results
-  overallScore    Int?     // Overall score for quick access
-  
-  // AI metadata
-  provider        String   // "anthropic", "openai", etc.
-  model           String   // "claude-3-sonnet", "gpt-4", etc.
-  conversationId  String?  // Link to LLM conversation if available
-  
-  // Costs and performance
-  totalTokensUsed Int      @default(0)
-  totalCost       Float    @default(0) // Cost in USD
-  processingTime  Int?     // Processing time in milliseconds
-  
-  // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
+  userId          String?  @map("user_id") // NULL for anonymous
+  filename        String
+  fileHash        String   @unique @map("file_hash") // SHA-256 for deduplication
+  mimeType        String   @map("mime_type")
+  images          String[] // Base64 encoded PDF page images
+  metadata        Json?    // Any additional file metadata
+  createdAt       DateTime @default(now()) @map("created_at")
+
   // Relations
-  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
-  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
-  resumeOptimizations ResumeOptimization[]
-  coverLetters    CoverLetter[]
-  optimizedResumes OptimizedResume[]
-  extractedResumes ExtractedResume[]
+  user                  User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  llmCalls              LlmCall[]
+  extractedResumes      ExtractedResume[]
+  generatedRoasts       GeneratedRoast[]
+  generatedCoverLetters GeneratedCoverLetter[]
+  generatedResumes      GeneratedResume[]
 
   @@index([userId])
-  @@index([createdAt])
+  @@index([fileHash])
+  @@map("resumes")
+}
+
+// Extracted Data (Structured)
+model ExtractedResume {
+  id              String   @id @default(cuid())
+  resumeId        String   @map("resume_id")
+  contentHash     String   @unique @map("content_hash") // For deduplication
+  data            Json     // Structured resume data
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  resume                Resume                @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  llmCalls              LlmCall[]
+  summarizedResumes     SummarizedResume[]
+  generatedRoasts       GeneratedRoast[]
+  generatedCoverLetters GeneratedCoverLetter[]
+  generatedResumes      GeneratedResume[]
+
+  @@index([contentHash])
+  @@map("extracted_resumes")
+}
+
+model ExtractedJobDescription {
+  id              String   @id @default(cuid())
+  contentHash     String   @unique @map("content_hash") // For deduplication based on original text
+  originalText    String   @map("original_text") @db.Text
+  url             String?  // Job posting URL
+  data            Json     // Structured job data (title, company, requirements, etc.)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  llmCalls                    LlmCall[]
+  summarizedJobDescriptions   SummarizedJobDescription[]
+  generatedRoasts             GeneratedRoast[]
+  generatedCoverLetters       GeneratedCoverLetter[]
+  generatedResumes            GeneratedResume[]
+
+  @@index([contentHash])
+  @@map("extracted_job_descriptions")
+}
+
+// Summarized Data
+model SummarizedResume {
+  id                String   @id @default(cuid())
+  extractedResumeId String   @map("extracted_resume_id")
+  contentHash       String   @unique @map("content_hash")
+  summary           Json     // Summary data
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  extractedResume   ExtractedResume @relation(fields: [extractedResumeId], references: [id], onDelete: Cascade)
+
+  @@index([contentHash])
+  @@map("summarized_resumes")
+}
+
+model SummarizedJobDescription {
+  id              String   @id @default(cuid())
+  extractedJobId  String   @map("extracted_job_id")
+  contentHash     String   @unique @map("content_hash")
+  summary         Json     // Summary data
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  extractedJob    ExtractedJobDescription @relation(fields: [extractedJobId], references: [id], onDelete: Cascade)
+
+  @@index([contentHash])
+  @@map("summarized_job_descriptions")
+}
+
+// Generated Content
+model GeneratedRoast {
+  id                String   @id @default(cuid())
+  userId            String?  @map("user_id")
+  resumeId          String?  @map("resume_id")
+  extractedResumeId String?  @map("extracted_resume_id")
+  extractedJobId    String?  @map("extracted_job_id")
+  contentHash       String   @unique @map("content_hash") // For deduplication
+  data              Json     // Complete roast analysis
+  overallScore      Int?     @map("overall_score")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user            User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resume          Resume?                  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  extractedResume ExtractedResume?         @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
+  extractedJob    ExtractedJobDescription? @relation(fields: [extractedJobId], references: [id], onDelete: SetNull)
+  llmCalls        LlmCall[]
+  sharedAnalyses  SharedAnalysis[]
+
+  @@index([userId])
+  @@index([contentHash])
   @@index([overallScore])
-  @@index([jobSummaryId])
-  @@map("analyses")
+  @@map("generated_roasts")
 }
 
-model ResumeOptimization {
-  id              String   @id @default(cuid())
-  userId          String?  // Null for anonymous users
-  
-  // Input references
-  analysisId      String?  // Reference to the analysis that triggered this optimization
-  documentId      String?  // Reference to the original document
-  
-  // Input data
-  jobDescription  String   @db.Text // The job description used for optimization (kept for backward compatibility)
-  jobSummaryId    String?  // Reference to summarized job description
-  resumeText      String   @db.Text // The original resume text
-  templateId      String   // Template used for optimization
-  
-  // Optimization results
-  extractedData   String   @db.Text // JSON string of the extracted/optimized resume data
-  optimizedResume String   @db.Text // The final optimized resume HTML/content
-  optimizationSuggestions String[] // Array of optimization suggestions applied
-  atsScore        Int?     // ATS compatibility score
-  keywordsMatched String[] // Keywords that were successfully matched
-  
-  // AI metadata
-  provider        String   // "anthropic", "openai", etc.
-  model           String   // "claude-3-sonnet", "gpt-4", etc.
-  conversationId  String?  // Link to LLM conversation if available
-  
-  // Costs and performance
-  totalTokensUsed Int      @default(0)
-  totalCost       Float    @default(0) // Cost in USD
-  processingTime  Int?     // Processing time in milliseconds
-  
-  // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
+model GeneratedCoverLetter {
+  id                String   @id @default(cuid())
+  userId            String?  @map("user_id")
+  resumeId          String?  @map("resume_id")
+  extractedResumeId String?  @map("extracted_resume_id")
+  extractedJobId    String?  @map("extracted_job_id")
+  contentHash       String   @unique @map("content_hash")
+  content           String   @db.Text // The actual cover letter text
+  tone              String   @default("professional")
+  metadata          Json?    // Additional metadata (word count, etc.)
+  createdAt         DateTime @default(now()) @map("created_at")
+
   // Relations
-  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
-  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
-  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
+  user            User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resume          Resume?                  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  extractedResume ExtractedResume?         @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
+  extractedJob    ExtractedJobDescription? @relation(fields: [extractedJobId], references: [id], onDelete: SetNull)
+  llmCalls        LlmCall[]
 
   @@index([userId])
-  @@index([analysisId])
-  @@index([createdAt])
-  @@index([atsScore])
-  @@index([jobSummaryId])
-  @@map("resume_optimizations")
+  @@index([contentHash])
+  @@map("generated_cover_letters")
 }
 
-model SharedAnalysis {
-  id            String   @id // Custom ID for sharing
-  userId        String
-  
-  // Analysis content
-  analysisData  String   @db.Text // JSON string of analysis results
-  settings      String?  @db.Text // JSON string of share settings
-  
-  // Sharing metadata
-  viewCount     Int      @default(0)
-  expiresAt     DateTime
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
+model GeneratedResume {
+  id                String   @id @default(cuid())
+  userId            String?  @map("user_id")
+  resumeId          String?  @map("resume_id")
+  extractedResumeId String?  @map("extracted_resume_id")
+  extractedJobId    String?  @map("extracted_job_id")
+  templateId        String   @map("template_id")
+  contentHash       String   @unique @map("content_hash")
+  content           String   @db.Text // HTML/Markdown content
+  data              Json     // Structured data used to generate
+  atsScore          Int?     @map("ats_score")
+  keywordsMatched   String[] @map("keywords_matched")
+  createdAt         DateTime @default(now()) @map("created_at")
+
   // Relations
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resume          Resume?                  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  extractedResume ExtractedResume?         @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
+  extractedJob    ExtractedJobDescription? @relation(fields: [extractedJobId], references: [id], onDelete: SetNull)
+  llmCalls        LlmCall[]
+
+  @@index([userId])
+  @@index([contentHash])
+  @@index([atsScore])
+  @@map("generated_resumes")
+}
+
+// Sharing
+model SharedAnalysis {
+  id            String   @id // Custom shareable ID
+  userId        String   @map("user_id")
+  roastId       String   @map("roast_id")
+  settings      Json?
+  viewCount     Int      @default(0) @map("view_count")
+  expiresAt     DateTime @map("expires_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roast GeneratedRoast @relation(fields: [roastId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([expiresAt])
   @@map("shared_analyses")
 }
 
-model JobDescriptionSummary {
-  id              String   @id @default(cuid())
-  
-  // Content hashing for deduplication
-  contentHash     String   @unique // SHA-256 hash of the original job description
-  originalText    String   @db.Text // Original job description
-  
-  // Summary data
-  summary         String   @db.Text // Summarized version
-  keyRequirements String[] // Extracted key requirements
-  companyName     String?  // Extracted company name
-  jobTitle        String?  // Extracted job title
-  location        String?  // Extracted location
-  salaryRange     String?  // Extracted salary range if mentioned
-  
-  // AI metadata
-  provider        String   // "openai", "anthropic", etc.
-  model           String   // Model used for summarization
-  
-  // Usage tracking
-  usageCount      Int      @default(1) // How many times this summary has been used
-  
-  // Costs and performance
-  totalTokensUsed Int      @default(0)
-  totalCost       Float    @default(0) // Cost in USD
-  processingTime  Int?     // Processing time in milliseconds
-  
-  // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  lastUsedAt      DateTime @default(now())
-  
-  // Relations
-  analyses        Analysis[]
-  resumeOptimizations ResumeOptimization[]
-  coverLetters    CoverLetter[]
-  optimizedResumes OptimizedResume[]
+// Billing
+model Invoice {
+  id                   String        @id @default(cuid())
+  userId               String        @map("user_id")
+  amount               Decimal       @db.Decimal(10,2)
+  currency             String        @default("USD")
+  status               InvoiceStatus @default(PENDING)
+  billingPeriodStart   DateTime      @map("billing_period_start")
+  billingPeriodEnd     DateTime      @map("billing_period_end")
+  stripeInvoiceId      String?       @unique @map("stripe_invoice_id")
+  stripePaymentId      String?       @map("stripe_payment_id")
+  itemCount            Int           @map("item_count")
+  generatedAt          DateTime      @default(now()) @map("generated_at")
+  paidAt               DateTime?     @map("paid_at")
 
-  @@index([contentHash])
-  @@index([createdAt])
-  @@index([usageCount])
-  @@map("job_description_summaries")
-}
-
-model CoverLetter {
-  id              String   @id @default(cuid())
-  userId          String?  // Null for anonymous users
-  
-  // Content and metadata
-  content         String   @db.Text // The generated cover letter content
-  tone            String   @default("professional") // professional, enthusiastic, conversational
-  wordCount       Int      @default(0)
-  
-  // Input references
-  analysisId      String?  // Reference to the analysis that triggered this
-  documentId      String?  // Reference to the resume document
-  jobSummaryId    String?  // Reference to the job description summary
-  
-  // Content hashing for deduplication (based on resume + job + tone)
-  contentHash     String   @unique // SHA-256 hash for deduplication
-  
-  // AI metadata
-  provider        String   // "openai", "anthropic", etc.
-  model           String   // Model used for generation
-  conversationId  String?  // Link to LLM conversation if available
-  
-  // Costs and performance
-  totalTokensUsed Int      @default(0)
-  totalCost       Float    @default(0) // Cost in USD
-  processingTime  Int?     // Processing time in milliseconds
-  
-  // Usage tracking
-  usageCount      Int      @default(1) // How many times this has been accessed
-  lastUsedAt      DateTime @default(now())
-  
-  // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
   // Relations
-  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
-  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
-  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@index([analysisId])
-  @@index([documentId])
-  @@index([jobSummaryId])
-  @@index([contentHash])
-  @@index([createdAt])
-  @@index([usageCount])
-  @@map("cover_letters")
+  @@index([status])
+  @@map("invoices")
 }
 
-model OptimizedResume {
-  id              String   @id @default(cuid())
-  userId          String?  // Null for anonymous users
-  
-  // Content and metadata
-  content         String   @db.Text // The optimized resume content (HTML/markdown)
-  extractedData   String   @db.Text // JSON string of structured resume data
-  templateId      String   // Template used for optimization
-  atsScore        Int?     // ATS compatibility score
-  keywordsMatched String[] // Keywords that were successfully matched
-  optimizationSuggestions String[] // Array of optimization suggestions applied
-  
-  // Input references
-  analysisId      String?  // Reference to the analysis that triggered this
-  documentId      String?  // Reference to the original resume document
-  jobSummaryId    String?  // Reference to the job description summary
-  extractedResumeId String? // Reference to the extracted resume data
-  
-  // Content hashing for deduplication (based on resume + job + template)
-  contentHash     String   @unique // SHA-256 hash for deduplication
-  
-  // AI metadata
-  provider        String   // "openai", "anthropic", etc.
-  model           String   // Model used for optimization
-  conversationId  String?  // Link to LLM conversation if available
-  
-  // Costs and performance
-  totalTokensUsed Int      @default(0)
-  totalCost       Float    @default(0) // Cost in USD
-  processingTime  Int?     // Processing time in milliseconds
-  
-  // Usage tracking
-  usageCount      Int      @default(1) // How many times this has been accessed
-  lastUsedAt      DateTime @default(now())
-  
-  // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relations
-  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
-  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  jobSummary      JobDescriptionSummary? @relation(fields: [jobSummaryId], references: [id], onDelete: SetNull)
-  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
-  extractedResume ExtractedResume? @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
+// Feature Announcements
+model Announcement {
+  id              String            @id @default(cuid())
+  title           String
+  description     String            @db.Text
+  featureName     String?           @map("feature_name")
+  estimatedDate   String?           @map("estimated_date")
+  type            AnnouncementType  @default(COMING_SOON)
+  ctaText         String?           @map("cta_text")
+  ctaUrl          String?           @map("cta_url")
+  isActive        Boolean           @default(true) @map("is_active")
+  startDate       DateTime?         @map("start_date")
+  endDate         DateTime?         @map("end_date")
+  targetTiers     SubscriptionTier[] @map("target_tiers")
+  dismissedBy     String[]          @map("dismissed_by") // User IDs who dismissed this
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
 
-  @@index([userId])
-  @@index([analysisId])
-  @@index([documentId])
-  @@index([jobSummaryId])
-  @@index([extractedResumeId])
-  @@index([contentHash])
-  @@index([createdAt])
-  @@index([usageCount])
-  @@index([atsScore])
-  @@map("optimized_resumes")
-}
-
-model ExtractedResume {
-  id              String   @id @default(cuid())
-  userId          String?  // Null for anonymous users
-  
-  // Input references
-  documentId      String?  // Reference to the original resume document
-  analysisId      String?  // Reference to the analysis that triggered this extraction
-  
-  // Content hashing for deduplication (based on resume text)
-  contentHash     String   @unique // SHA-256 hash of the resume text for deduplication
-  resumeText      String   @db.Text // The original resume text that was extracted
-  
-  // Extracted data
-  extractedData   String   @db.Text // JSON string of the structured resume data
-  
-  // AI metadata
-  provider        String   // "anthropic", "openai", etc.
-  model           String   // Model used for extraction
-  conversationId  String?  // Link to LLM conversation if available
-  
-  // Costs and performance
-  totalTokensUsed Int      @default(0)
-  totalCost       Float    @default(0) // Cost in USD
-  processingTime  Int?     // Processing time in milliseconds
-  
-  // Usage tracking
-  usageCount      Int      @default(1) // How many times this has been accessed
-  lastUsedAt      DateTime @default(now())
-  
-  // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relations
-  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  document        Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  analysis        Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
-  conversation    LLMConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
-  optimizedResumes OptimizedResume[] // Optimized resumes based on this extraction
-
-  @@index([userId])
-  @@index([documentId])
-  @@index([analysisId])
-  @@index([contentHash])
-  @@index([createdAt])
-  @@index([usageCount])
-  @@map("extracted_resumes")
+  @@index([isActive])
+  @@index([startDate, endDate])
+  @@map("announcements")
 }
 
 // Enums
@@ -590,12 +402,16 @@ enum SubscriptionTier {
   PREMIUM
 }
 
-enum UsageAction {
-  EXTRACT_PDF
-  ROAST_ANALYSIS
-  COVER_LETTER_GENERATION
-  RESUME_OPTIMIZATION
-  RESUME_EXTRACTION
+enum LlmCallStatus {
+  COMPLETED
+  FAILED
+  TIMEOUT
+}
+
+enum MessageRole {
+  system
+  user
+  assistant
 }
 
 enum InvoiceStatus {
@@ -605,25 +421,11 @@ enum InvoiceStatus {
   CANCELLED
 }
 
-enum ConversationType {
-  RESUME_ANALYSIS
-  JOB_EXTRACTION
-  COVER_LETTER_GENERATION
-  PDF_EXTRACTION
-  RESUME_EXTRACTION
-  GENERAL_CHAT
-  CHATBOT_SUPPORT
-}
-
-enum ConversationStatus {
-  ACTIVE
-  COMPLETED
-  FAILED
-  CANCELLED
-}
-
-enum MessageRole {
-  USER
-  ASSISTANT
-  SYSTEM
+enum AnnouncementType {
+  COMING_SOON
+  IN_PROGRESS
+  BETA
+  NEW
+  MAINTENANCE
+  UPDATE
 }

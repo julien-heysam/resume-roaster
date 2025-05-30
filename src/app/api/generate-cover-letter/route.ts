@@ -3,7 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
-import { getOrCreateCoverLetter, saveCoverLetterToCache } from '@/lib/cache-utils'
+import { checkCachedCoverLetter, saveCoverLetterToCache } from '@/lib/cache-utils'
+import { callOpenAIText, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
+import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -77,29 +79,25 @@ export async function POST(request: NextRequest) {
     console.log('Effective job description length:', effectiveJobDescription.length)
 
     // Check for cached cover letter first
-    const cachedCoverLetter = await getOrCreateCoverLetter(
-      user.id,
+    const cachedCoverLetter = await checkCachedCoverLetter(
       truncatedResumeText,
       jobSummaryData?.id || null,
       tone,
-      analysisId,
-      resumeData.documentId
+      analysisId
     )
 
     if (cachedCoverLetter) {
       console.log('Returning cached cover letter')
+      
       return NextResponse.json({
         success: true,
         data: {
-          coverLetter: cachedCoverLetter.content,
-          tone: cachedCoverLetter.tone,
-          wordCount: cachedCoverLetter.wordCount,
+          coverLetter: cachedCoverLetter.coverLetter,
+          tone: tone,
+          wordCount: cachedCoverLetter.coverLetter.split(' ').length,
           cached: true,
           usageCount: cachedCoverLetter.usageCount,
-          metadata: {
-            processingTime: Date.now() - startTime,
-            fromCache: true
-          }
+          metadata: cachedCoverLetter.metadata
         }
       })
     }
@@ -150,41 +148,18 @@ Generate only the cover letter content without any additional formatting or expl
     console.log('Estimated tokens (rough):', Math.ceil(prompt.length / 4))
     console.log('=== END DEBUG ===')
 
-    // Call OpenAI API
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert career coach and professional writer specializing in creating compelling cover letters that get results. Write cover letters that are personalized, engaging, and demonstrate clear value to employers.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: 1000,
-        temperature: 0.7,
-      }),
+    // Call OpenAI API using the centralized utility
+    const openaiResponse = await callOpenAIText(prompt, {
+      model: OPENAI_MODELS.MINI,
+      maxTokens: CONTEXT_SIZES.MINI,
+      temperature: TEMPERATURES.HIGH,
+      systemPrompt: 'You are an expert career coach and professional writer specializing in creating compelling cover letters that get results. Write cover letters that are personalized, engaging, and demonstrate clear value to employers.'
     })
 
-    if (!openaiResponse.ok) {
-      const errorData = await openaiResponse.json()
-      console.error('OpenAI API error:', errorData)
-      return NextResponse.json(
-        { error: 'Failed to generate cover letter' },
-        { status: 500 }
-      )
-    }
-
-    const openaiData = await openaiResponse.json()
-    const coverLetter = openaiData.choices[0]?.message?.content
+    const coverLetter = openaiResponse.data
+    const tokensUsed = openaiResponse.usage.totalTokens
+    const estimatedCost = openaiResponse.cost
+    const processingTime = openaiResponse.processingTime
 
     if (!coverLetter) {
       return NextResponse.json(
@@ -193,55 +168,44 @@ Generate only the cover letter content without any additional formatting or expl
       )
     }
 
-    const processingTime = Date.now() - startTime
-    const tokensUsed = openaiData.usage?.total_tokens || 0
-    const estimatedCost = (tokensUsed / 1000) * 0.002 // Rough estimate for GPT-4o-mini
-
-    // Store the cover letter generation in database using LLMConversation
-    let conversationId = null
+    // Store the cover letter generation in database using LlmCall
+    let llmCallId = null
     try {
-      // Create LLM conversation record
-      const conversation = await db.lLMConversation.create({
+      // Create LLM call record
+      const llmCall = await db.llmCall.create({
         data: {
           userId: user.id,
-          type: 'COVER_LETTER_GENERATION',
-          title: `Cover Letter - ${new Date().toLocaleDateString()}`,
           provider: 'openai',
-          model: 'gpt-4.1-mini',
-          totalTokensUsed: tokensUsed,
-          totalCost: estimatedCost,
+          model: 'gpt-4o-mini',
+          operationType: 'cover_letter_generation',
+          totalTokens: tokensUsed,
+          totalCostUsd: estimatedCost,
           status: 'COMPLETED',
           completedAt: new Date()
         }
       })
 
-      conversationId = conversation.id
+      llmCallId = llmCall.id
 
       // Create messages for the conversation
-      await db.lLMMessage.create({
+      await db.llmMessage.create({
         data: {
-          conversationId: conversation.id,
-          role: 'USER',
+          llmCallId: llmCall.id,
+          role: 'user',
           content: `Generate cover letter for job:\n\n${effectiveJobDescription}\n\nUsing resume data and tone: ${tone}`,
           messageIndex: 0,
-          inputTokens: tokensUsed - (openaiData.usage?.completion_tokens || 0),
-          totalTokens: tokensUsed - (openaiData.usage?.completion_tokens || 0)
+          totalTokens: Math.floor(tokensUsed * 0.8)
         }
       })
 
-      await db.lLMMessage.create({
+      await db.llmMessage.create({
         data: {
-          conversationId: conversation.id,
-          role: 'ASSISTANT',
+          llmCallId: llmCall.id,
+          role: 'assistant',
           content: coverLetter,
           messageIndex: 1,
-          outputTokens: openaiData.usage?.completion_tokens || 0,
-          totalTokens: openaiData.usage?.completion_tokens || 0,
-          cost: estimatedCost,
-          processingTime: processingTime,
-          finishReason: openaiData.choices[0]?.finish_reason || 'stop',
-          temperature: 0.7,
-          maxTokens: 1000
+          totalTokens: Math.floor(tokensUsed * 0.2),
+          costUsd: estimatedCost
         }
       })
 
@@ -253,29 +217,20 @@ Generate only the cover letter content without any additional formatting or expl
 
     // Save to cache
     const cachedResult = await saveCoverLetterToCache(
-      user.id,
-      coverLetter,
-      tone,
       truncatedResumeText,
       jobSummaryData?.id || null,
-      {
-        tokensUsed,
-        processingTime,
-        estimatedCost,
-        provider: 'openai',
-        model: 'gpt-4.1-mini',
-        conversationId: conversationId || undefined
-      },
-      analysisId,
-      resumeData.documentId
+      tone,
+      coverLetter,
+      user.id,
+      analysisId
     )
 
     return NextResponse.json({
       success: true,
       data: {
         coverLetter: cachedResult.content,
-        tone: cachedResult.tone,
-        wordCount: cachedResult.wordCount,
+        tone: tone,
+        wordCount: coverLetter.split(' ').length,
         cached: false,
         usageCount: 1,
         metadata: {

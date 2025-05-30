@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { LLMLogger, ConversationType } from '@/lib/llm-logger'
+import { db } from '@/lib/database'
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,79 +15,74 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const action = searchParams.get('action') || 'conversations'
-    const type = searchParams.get('type') as ConversationType
-    const days = parseInt(searchParams.get('days') || '30')
-    const limit = parseInt(searchParams.get('limit') || '50')
+    const conversationId = searchParams.get('conversationId')
+    const type = searchParams.get('type')
 
-    switch (action) {
-      case 'conversations': {
-        const conversations = await LLMLogger.getUserConversations(
-          session.user.id,
-          type,
-          limit
-        )
-        
-        return NextResponse.json({
-          success: true,
-          conversations,
-          total: conversations.length
-        })
-      }
-
-      case 'analytics': {
-        const analytics = await LLMLogger.getUsageAnalytics(session.user.id, days)
-        
-        return NextResponse.json({
-          success: true,
-          analytics
-        })
-      }
-
-      case 'conversation': {
-        const conversationId = searchParams.get('id')
-        
-        if (!conversationId) {
-          return NextResponse.json(
-            { error: 'Conversation ID required' },
-            { status: 400 }
-          )
+    if (conversationId) {
+      // Get specific LLM call details
+      const llmCall = await db.llmCall.findUnique({
+        where: { id: conversationId },
+        include: {
+          messages: {
+            orderBy: { messageIndex: 'asc' }
+          }
         }
+      })
 
-        const conversation = await LLMLogger.getConversation(conversationId)
-        
-        if (!conversation) {
-          return NextResponse.json(
-            { error: 'Conversation not found' },
-            { status: 404 }
-          )
-        }
-
-        // Check if user owns this conversation
-        if (conversation.userId !== session.user.id) {
-          return NextResponse.json(
-            { error: 'Access denied' },
-            { status: 403 }
-          )
-        }
-
-        return NextResponse.json({
-          success: true,
-          conversation
-        })
-      }
-
-      default:
+      if (!llmCall || llmCall.userId !== session.user.id) {
         return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
+          { error: 'LLM call not found' },
+          { status: 404 }
         )
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: llmCall
+      })
+    } else {
+      // Get user's LLM calls summary
+      const llmCalls = await db.llmCall.findMany({
+        where: { 
+          userId: session.user.id,
+          ...(type && { operationType: type })
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+        include: {
+          _count: {
+            select: { messages: true }
+          }
+        }
+      })
+
+      const totalCost = await db.llmCall.aggregate({
+        where: { userId: session.user.id },
+        _sum: { totalCostUsd: true }
+      })
+
+      const totalTokens = await db.llmCall.aggregate({
+        where: { userId: session.user.id },
+        _sum: { totalTokens: true }
+      })
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          calls: llmCalls,
+          summary: {
+            totalCalls: llmCalls.length,
+            totalCost: totalCost._sum.totalCostUsd || 0,
+            totalTokens: totalTokens._sum.totalTokens || 0
+          }
+        }
+      })
     }
 
   } catch (error) {
     console.error('LLM analytics error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch analytics' },
+      { error: 'Failed to fetch analytics data' },
       { status: 500 }
     )
   }
@@ -108,7 +103,22 @@ export async function POST(request: NextRequest) {
 
     const { days = 30 } = await request.json()
 
-    const analytics = await LLMLogger.getUsageAnalytics(undefined, days)
+    // Get system-wide analytics from the new schema
+    const totalCost = await db.llmCall.aggregate({
+      _sum: { totalCostUsd: true }
+    })
+
+    const totalTokens = await db.llmCall.aggregate({
+      _sum: { totalTokens: true }
+    })
+
+    const totalCalls = await db.llmCall.count()
+
+    const analytics = {
+      totalCalls,
+      totalCost: totalCost._sum.totalCostUsd || 0,
+      totalTokens: totalTokens._sum.totalTokens || 0
+    }
     
     return NextResponse.json({
       success: true,

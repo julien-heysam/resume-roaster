@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { LLMLogger, ConversationType, MessageRole, ConversationStatus } from '@/lib/llm-logger'
+import { LLMLogger, MessageRole } from '@/lib/llm-logger'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { db } from '@/lib/database'
-import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
+import { db, GeneratedRoastService } from '@/lib/database'
+import { parseJSONResponse } from '@/lib/json-utils'
+import crypto from 'crypto'
+import { ANTHROPIC_MODELS } from '@/lib/anthropic-utils'
 
 const ANALYSIS_PROMPT = `You are an expert resume reviewer and career coach. Your task is to analyze a resume against a specific job description and provide brutally honest, actionable feedback.
 
@@ -151,10 +153,10 @@ Respond with a JSON object in this exact format:
 }`
 
 export async function POST(request: NextRequest) {
-  let conversationId: string | null = null
+  let llmCallId: string | null = null
 
   try {
-    const { resumeData, jobDescription, analysisName } = await request.json()
+    const { resumeData, jobDescription, analysisName, extractedJobId, summarizedResumeId } = await request.json()
 
     if (!resumeData || !jobDescription) {
       return NextResponse.json(
@@ -171,131 +173,105 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Starting resume analysis...')
+    console.log('Extracted Job ID:', extractedJobId)
+    console.log('Summarized Resume ID:', summarizedResumeId)
 
     // Get user session for logging
     const session = await getServerSession(authOptions)
     const userId = session?.user?.id || null
 
     // Generate analysis title
-    let analysisTitle = analysisName?.trim()
-    if (!analysisTitle) {
-      // Auto-generate title with increment
-      const userAnalysisCount = await db.analysis.count({
-        where: { userId }
-      })
-      analysisTitle = `Analysis ${userAnalysisCount + 1}`
-    }
+    let analysisTitle = analysisName?.trim() || `Analysis ${Date.now()}`
 
-    // Prepare the resume text
-    const resumeText = typeof resumeData === 'string' ? resumeData : 
-                      resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
-
-    console.log('Resume analysis - documentId:', resumeData.documentId) // Debug log
-    console.log('Job description length:', jobDescription.length)
-
-    // STEP 1: Extract resume data first (new step)
-    console.log('Extracting resume data...')
-    let extractedResumeId = null
-    let extractedResumeData = null
-
-    try {
-      const extractResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/extract-resume`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': request.headers.get('cookie') || '', // Forward cookies for auth
-        },
-        body: JSON.stringify({
-          resumeText,
-          documentId: resumeData.documentId || null,
-          bypassCache: false // Use cache if available
-        }),
-      })
-
-      if (extractResponse.ok) {
-        const extractResult = await extractResponse.json()
-        if (extractResult.success) {
-          extractedResumeId = extractResult.extractedResumeId
-          extractedResumeData = extractResult.data
-          console.log('Resume extraction successful:', extractResult.cached ? 'from cache' : 'newly extracted')
+    // Fetch summarized resume data if summarizedResumeId is provided
+    let resumeContent = ''
+    if (summarizedResumeId) {
+      console.log('Fetching summarized resume data...')
+      try {
+        const summarizedResume = await db.summarizedResume.findUnique({
+          where: { id: summarizedResumeId }
+        })
+        
+        if (summarizedResume && summarizedResume.summary) {
+          // Use the structured summary data
+          resumeContent = typeof summarizedResume.summary === 'string' 
+            ? summarizedResume.summary 
+            : JSON.stringify(summarizedResume.summary, null, 2)
+          console.log('Using summarized resume data')
         } else {
-          console.warn('Resume extraction failed, continuing with original text:', extractResult.error)
+          console.warn('Summarized resume not found, falling back to original data')
+          resumeContent = typeof resumeData === 'string' ? resumeData : 
+                         resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
         }
-      } else {
-        console.warn('Resume extraction API call failed, continuing with original text')
+      } catch (error) {
+        console.error('Error fetching summarized resume:', error)
+        resumeContent = typeof resumeData === 'string' ? resumeData : 
+                       resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
       }
-    } catch (extractError) {
-      console.warn('Resume extraction error, continuing with original text:', extractError)
+    } else {
+      // Fallback to original resume data
+      resumeContent = typeof resumeData === 'string' ? resumeData : 
+                     resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
     }
+
+    // Fetch summarized job description if extractedJobId is provided
+    let jobContent = jobDescription
+    if (extractedJobId) {
+      console.log('Fetching summarized job description...')
+      try {
+        const summarizedJob = await db.summarizedJobDescription.findFirst({
+          where: { extractedJobId: extractedJobId }
+        })
+        
+        if (summarizedJob && summarizedJob.summary) {
+          // Use the AI-generated summary
+          jobContent = typeof summarizedJob.summary === 'string' 
+            ? summarizedJob.summary 
+            : JSON.stringify(summarizedJob.summary, null, 2)
+          console.log('Using summarized job description')
+        } else {
+          console.warn('Summarized job description not found, using original')
+          jobContent = jobDescription
+        }
+      } catch (error) {
+        console.error('Error fetching summarized job description:', error)
+        jobContent = jobDescription
+      }
+    }
+
+    console.log('Resume content length:', resumeContent.length)
+    console.log('Job content length:', jobContent.length)
 
     // Initialize Anthropic client
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY
     })
 
-    // Create conversation for logging
-    conversationId = await LLMLogger.createConversation({
+    // Create LLM call for logging
+    llmCallId = await LLMLogger.createLlmCall({
       userId: userId ?? undefined,
-      type: ConversationType.RESUME_ANALYSIS,
-      title: analysisTitle,
-      documentId: resumeData.documentId || null,
       provider: 'anthropic',
-      model: 'claude-sonnet-4-20250514'
+      model: ANTHROPIC_MODELS.SONNET,
+      operationType: 'resume_analysis',
+      resumeId: resumeData.resumeId || undefined,
+      extractedJobId: extractedJobId || undefined // Link to the job description
     })
 
-    // Get or create job description summary if the job description is long
-    let jobSummaryData = null
-    let effectiveJobDescription = jobDescription
-
-    if (shouldSummarizeJobDescription(jobDescription, 3000)) { // Use higher threshold for analysis since Claude can handle more
-      console.log('Job description is long, getting/creating summary...')
-      
-      try {
-        jobSummaryData = await getOrCreateJobSummary(jobDescription)
-        effectiveJobDescription = jobSummaryData.summary
-        console.log('Using job summary for analysis:', jobSummaryData.cached ? 'cached' : 'newly generated')
-        console.log('Summary length:', effectiveJobDescription.length)
-      } catch (error) {
-        console.error('Error getting job summary:', error)
-        // Fallback to truncation if summarization fails
-        effectiveJobDescription = jobDescription.substring(0, 3000) + '\n\n[Job description truncated for length...]'
-      }
-    }
-
-    // Log user message
     const userPrompt = `Please analyze this resume against the job description:
 
 **RESUME:**
-${resumeText}
+${resumeContent}
 
 **JOB DESCRIPTION:**
-${effectiveJobDescription}
-
-${jobSummaryData ? `
-**EXTRACTED JOB DETAILS:**
-- Company: ${jobSummaryData.companyName || 'Not specified'}
-- Position: ${jobSummaryData.jobTitle || 'Not specified'}
-- Location: ${jobSummaryData.location || 'Not specified'}
-- Key Requirements: ${jobSummaryData.keyRequirements?.slice(0, 8).join(', ') || 'See job description'}
-` : ''}
-
-${extractedResumeData ? `
-**STRUCTURED RESUME DATA:**
-The resume has been parsed into structured data for better analysis:
-- Name: ${extractedResumeData.personalInfo?.name || 'Not specified'}
-- Current Role: ${extractedResumeData.personalInfo?.jobTitle || 'Not specified'}
-- Experience Entries: ${extractedResumeData.experience?.length || 0}
-- Education Entries: ${extractedResumeData.education?.length || 0}
-- Technical Skills: ${extractedResumeData.skills?.technical?.length || 0}
-- Projects: ${extractedResumeData.projects?.length || 0}
-` : ''}
+${jobContent}
 
 Please provide a comprehensive analysis following the framework above.`
 
     await LLMLogger.logMessage({
-      conversationId,
-      role: MessageRole.USER,
-      content: userPrompt
+      llmCallId,
+      role: MessageRole.user,
+      content: userPrompt,
+      messageIndex: 0
     })
 
     console.log('Sending request to Anthropic...')
@@ -303,7 +279,7 @@ Please provide a comprehensive analysis following the framework above.`
     const startTime = Date.now()
     
     const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: ANTHROPIC_MODELS.SONNET,
       max_tokens: 4000,
       temperature: 0.3,
       system: ANALYSIS_PROMPT,
@@ -335,14 +311,15 @@ Please provide a comprehensive analysis following the framework above.`
 
     // Log AI response
     await LLMLogger.logMessage({
-      conversationId,
-      role: MessageRole.ASSISTANT,
+      llmCallId,
+      role: MessageRole.assistant,
       content: responseText,
+      messageIndex: 1,
       inputTokens,
       outputTokens,
       totalTokens,
-      cost: totalCost,
-      processingTime,
+      costUsd: totalCost,
+      processingTimeMs: processingTime,
       finishReason: message.stop_reason || 'stop',
       temperature: 0.3,
       maxTokens: 4000
@@ -351,84 +328,38 @@ Please provide a comprehensive analysis following the framework above.`
     let analysisData: any
     
     try {
-      // Method 1: Try the current approach first
-      let jsonText = responseText.trim()
-      
-      // Remove markdown code blocks if present
-      if (jsonText.startsWith('```json')) {
-        jsonText = jsonText.replace(/^```json\s*/, '').replace(/```\s*$/, '')
-      } else if (jsonText.startsWith('```')) {
-        jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '')
-      }
-      
-      // Try to parse as JSON
-      analysisData = JSON.parse(jsonText)
-      
+      analysisData = parseJSONResponse(responseText)
     } catch (parseError) {
-      console.log('Method 1 failed, trying fallback methods...')
+      console.error('All parsing methods failed:', parseError)
+      console.log('Raw response:', responseText)
       
-      try {
-        // Method 2: Extract text between ```json ... ```
-        const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/)
-        if (jsonMatch && jsonMatch[1]) {
-          analysisData = JSON.parse(jsonMatch[1].trim())
-        } else {
-          throw new Error('No JSON code block found')
-        }
-        
-      } catch (secondParseError) {
-        console.log('Method 2 failed, trying method 3...')
-        
-        try {
-          // Method 3: Find first { and last } and extract JSON
-          const firstBrace = responseText.indexOf('{')
-          const lastBrace = responseText.lastIndexOf('}')
-          
-          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-            const jsonText = responseText.substring(firstBrace, lastBrace + 1)
-            analysisData = JSON.parse(jsonText)
-          } else {
-            throw new Error('No valid JSON braces found')
-          }
-          
-        } catch (thirdParseError) {
-          // Method 4: Return the error if all methods fail
-          console.error('All parsing methods failed:', {
-            method1: parseError,
-            method2: secondParseError,
-            method3: thirdParseError
-          })
-          console.log('Raw response:', responseText)
-          
-          // Update conversation with error
-          await LLMLogger.updateConversation({
-            conversationId,
-            status: ConversationStatus.FAILED,
-            errorMessage: 'Failed to parse analysis results - AI response could not be converted to valid JSON',
-            totalTokensUsed: totalTokens,
-            totalCost
-          })
-          
-          return NextResponse.json(
-            { 
-              error: 'Failed to parse analysis results. The AI response could not be converted to valid JSON.',
-              details: 'Please try again or contact support if the issue persists.'
-            },
-            { status: 500 }
-          )
-        }
-      }
+      // Update LLM call with error
+      await LLMLogger.updateLlmCall({
+        llmCallId,
+        status: 'FAILED',
+        errorMessage: 'Failed to parse analysis results - AI response could not be converted to valid JSON',
+        totalTokens,
+        totalCostUsd: totalCost
+      })
+      
+      return NextResponse.json(
+        { 
+          error: 'Failed to parse analysis results. The AI response could not be converted to valid JSON.',
+          details: 'Please try again or contact support if the issue persists.'
+        },
+        { status: 500 }
+      )
     }
     
     // Validate required fields
     if (!analysisData.overallScore || !analysisData.strengths || !analysisData.weaknesses) {
-      // Update conversation with error
-      await LLMLogger.updateConversation({
-        conversationId,
-        status: ConversationStatus.FAILED,
+      // Update LLM call with error
+      await LLMLogger.updateLlmCall({
+        llmCallId,
+        status: 'FAILED',
         errorMessage: 'Invalid analysis format returned by AI - missing required fields',
-        totalTokensUsed: totalTokens,
-        totalCost
+        totalTokens,
+        totalCostUsd: totalCost
       })
       
       return NextResponse.json(
@@ -437,76 +368,57 @@ Please provide a comprehensive analysis following the framework above.`
       )
     }
 
-    // Update conversation as completed
-    await LLMLogger.updateConversation({
-      conversationId,
-      status: ConversationStatus.COMPLETED,
-      totalTokensUsed: totalTokens,
-      totalCost,
+    // Update LLM call as completed
+    await LLMLogger.updateLlmCall({
+      llmCallId,
+      status: 'COMPLETED',
+      totalTokens,
+      totalCostUsd: totalCost,
+      totalProcessingTimeMs: processingTime,
       completedAt: new Date()
     })
 
     console.log(`Analysis completed with score: ${analysisData.overallScore}`)
 
-    // Save analysis to the new Analysis table
-    const analysisRecord = await db.analysis.create({
-      data: {
-        userId: userId ?? undefined,
-        title: analysisTitle,
-        documentId: resumeData.documentId || null,
-        jobDescription: jobDescription.trim(),
-        jobSummaryId: jobSummaryData?.id || null, // Reference to job summary if used
-        resumeText,
-        analysisData: JSON.stringify(analysisData),
-        overallScore: analysisData.overallScore,
-        provider: 'anthropic',
-        model: 'claude-sonnet-4-20250514',
-        conversationId,
-        totalTokensUsed: totalTokens,
-        totalCost: totalCost,
-        processingTime
-      }
+    // Save analysis as a generated roast
+    const contentHash = crypto.createHash('sha256')
+      .update(resumeContent + jobContent + JSON.stringify(analysisData))
+      .digest('hex')
+
+    const roastRecord = await GeneratedRoastService.create({
+      userId: userId ?? undefined,
+      resumeId: resumeData.resumeId || undefined,
+      extractedResumeId: resumeData.extractedResumeId || undefined,
+      extractedJobId: extractedJobId || undefined, // Use the provided job ID
+      contentHash,
+      data: analysisData,
+      overallScore: analysisData.overallScore
     })
 
-    console.log(`Analysis saved with ID: ${analysisRecord.id}`)
-
-    // Update the extracted resume with the analysis ID if we have one
-    if (extractedResumeId) {
-      try {
-        await db.extractedResume.update({
-          where: { id: extractedResumeId },
-          data: { analysisId: analysisRecord.id }
-        })
-        console.log(`Updated extracted resume ${extractedResumeId} with analysis ID ${analysisRecord.id}`)
-      } catch (updateError) {
-        console.warn('Failed to update extracted resume with analysis ID:', updateError)
-      }
-    }
+    console.log(`Analysis saved with ID: ${roastRecord.id}`)
 
     return NextResponse.json({
       success: true,
       analysis: analysisData,
-      conversationId,
-      analysisId: analysisRecord.id,
-      extractedResumeId, // Include this for future optimization calls
+      llmCallId,
+      roastId: roastRecord.id,
       metadata: {
         totalTokens,
         totalCost,
         processingTime,
         provider: 'anthropic',
-        model: 'claude-sonnet-4-20250514',
-        extractedResumeData: extractedResumeData ? 'available' : 'not_extracted'
+        model: ANTHROPIC_MODELS.SONNET
       }
     })
 
   } catch (error) {
     console.error('Resume analysis error:', error)
     
-    // Update conversation with error if we have a conversationId
-    if (conversationId) {
-      await LLMLogger.updateConversation({
-        conversationId,
-        status: ConversationStatus.FAILED,
+    // Update LLM call with error if we have an ID
+    if (llmCallId) {
+      await LLMLogger.updateLlmCall({
+        llmCallId,
+        status: 'FAILED',
         errorMessage: error instanceof Error ? error.message : 'Unknown error'
       })
     }

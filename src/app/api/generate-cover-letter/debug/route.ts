@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { resumeData, jobDescription, analysisData, tone = 'professional' } = await request.json()
+    const { resumeData, jobDescription, analysisData, tone = 'professional', analysisId } = await request.json()
 
     if (!resumeData || !jobDescription) {
       return NextResponse.json(
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
         .update(jobDescription.trim().toLowerCase())
         .digest('hex')
 
-      const existingSummary = await db.jobDescriptionSummary.findUnique({
+      const existingSummary = await db.summarizedJobDescription.findUnique({
         where: { contentHash }
       })
 
@@ -59,11 +59,11 @@ export async function POST(request: NextRequest) {
           id: existingSummary.id,
           exists: true,
           cached: true,
-          summaryLength: existingSummary.summary.length,
-          usageCount: existingSummary.usageCount,
-          companyName: existingSummary.companyName,
-          jobTitle: existingSummary.jobTitle,
-          keyRequirements: existingSummary.keyRequirements
+          summaryLength: existingSummary.summary ? String(existingSummary.summary).length : 0,
+          usageCount: 0, // Not tracked in new schema
+          companyName: 'N/A', // Not stored in new schema
+          jobTitle: 'N/A', // Not stored in new schema
+          keyRequirements: [] // Not stored in new schema
         }
         effectiveJobDescription = existingSummary.summary
       } else {
@@ -84,19 +84,20 @@ export async function POST(request: NextRequest) {
       const coverLetterHash = generateCoverLetterHash(
         truncatedResumeText,
         jobSummaryInfo?.id || null,
-        tone
+        tone,
+        analysisId
       )
 
-      const existingCoverLetter = await db.coverLetter.findUnique({
+      const existingCoverLetter = await db.generatedCoverLetter.findUnique({
         where: { contentHash: coverLetterHash }
       })
 
       coverLetterCacheInfo = {
         hash: coverLetterHash,
         exists: !!existingCoverLetter,
-        usageCount: existingCoverLetter?.usageCount || 0,
-        wordCount: existingCoverLetter?.wordCount || 0,
-        lastUsed: existingCoverLetter?.lastUsedAt || null
+        usageCount: 0, // Not tracked in new schema
+        wordCount: existingCoverLetter?.content ? existingCoverLetter.content.split(' ').length : 0,
+        lastUsed: existingCoverLetter?.createdAt || null
       }
     }
 

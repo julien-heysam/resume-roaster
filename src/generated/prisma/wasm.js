@@ -127,30 +127,13 @@ exports.Prisma.UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   hashedPassword: 'hashedPassword',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
   subscriptionTier: 'subscriptionTier',
   subscriptionId: 'subscriptionId',
   customerId: 'customerId',
   subscriptionEndsAt: 'subscriptionEndsAt',
   monthlyRoasts: 'monthlyRoasts',
   totalRoasts: 'totalRoasts',
-  lastRoastReset: 'lastRoastReset'
-};
-
-exports.Prisma.AccountScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  expires_at: 'expires_at',
-  token_type: 'token_type',
-  scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state',
+  lastRoastReset: 'lastRoastReset',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -160,38 +143,142 @@ exports.Prisma.SessionScalarFieldEnum = {
   sessionToken: 'sessionToken',
   userId: 'userId',
   expires: 'expires',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  createdAt: 'createdAt'
 };
 
-exports.Prisma.DocumentScalarFieldEnum = {
+exports.Prisma.LlmCallScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  provider: 'provider',
+  model: 'model',
+  operationType: 'operationType',
+  totalInputTokens: 'totalInputTokens',
+  totalOutputTokens: 'totalOutputTokens',
+  totalTokens: 'totalTokens',
+  totalCostUsd: 'totalCostUsd',
+  totalProcessingTimeMs: 'totalProcessingTimeMs',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  resumeId: 'resumeId',
+  extractedResumeId: 'extractedResumeId',
+  extractedJobId: 'extractedJobId',
+  generatedRoastId: 'generatedRoastId',
+  generatedCoverLetterId: 'generatedCoverLetterId',
+  generatedResumeId: 'generatedResumeId',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+};
+
+exports.Prisma.LlmMessageScalarFieldEnum = {
+  id: 'id',
+  llmCallId: 'llmCallId',
+  role: 'role',
+  content: 'content',
+  messageIndex: 'messageIndex',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  totalTokens: 'totalTokens',
+  costUsd: 'costUsd',
+  processingTimeMs: 'processingTimeMs',
+  finishReason: 'finishReason',
+  temperature: 'temperature',
+  maxTokens: 'maxTokens',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ResumeScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   filename: 'filename',
-  originalSize: 'originalSize',
   fileHash: 'fileHash',
   mimeType: 'mimeType',
-  extractedText: 'extractedText',
-  wordCount: 'wordCount',
-  pageCount: 'pageCount',
-  aiProvider: 'aiProvider',
-  extractionCost: 'extractionCost',
-  summary: 'summary',
-  sections: 'sections',
   images: 'images',
-  processedAt: 'processedAt',
-  processingTime: 'processingTime'
+  metadata: 'metadata',
+  createdAt: 'createdAt'
 };
 
-exports.Prisma.UsageRecordScalarFieldEnum = {
+exports.Prisma.ExtractedResumeScalarFieldEnum = {
+  id: 'id',
+  resumeId: 'resumeId',
+  contentHash: 'contentHash',
+  data: 'data',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ExtractedJobDescriptionScalarFieldEnum = {
+  id: 'id',
+  contentHash: 'contentHash',
+  originalText: 'originalText',
+  url: 'url',
+  data: 'data',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SummarizedResumeScalarFieldEnum = {
+  id: 'id',
+  extractedResumeId: 'extractedResumeId',
+  contentHash: 'contentHash',
+  summary: 'summary',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SummarizedJobDescriptionScalarFieldEnum = {
+  id: 'id',
+  extractedJobId: 'extractedJobId',
+  contentHash: 'contentHash',
+  summary: 'summary',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.GeneratedRoastScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  documentId: 'documentId',
-  action: 'action',
-  cost: 'cost',
-  creditsUsed: 'creditsUsed',
-  createdAt: 'createdAt',
-  billingMonth: 'billingMonth'
+  resumeId: 'resumeId',
+  extractedResumeId: 'extractedResumeId',
+  extractedJobId: 'extractedJobId',
+  contentHash: 'contentHash',
+  data: 'data',
+  overallScore: 'overallScore',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.GeneratedCoverLetterScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  resumeId: 'resumeId',
+  extractedResumeId: 'extractedResumeId',
+  extractedJobId: 'extractedJobId',
+  contentHash: 'contentHash',
+  content: 'content',
+  tone: 'tone',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.GeneratedResumeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  resumeId: 'resumeId',
+  extractedResumeId: 'extractedResumeId',
+  extractedJobId: 'extractedJobId',
+  templateId: 'templateId',
+  contentHash: 'contentHash',
+  content: 'content',
+  data: 'data',
+  atsScore: 'atsScore',
+  keywordsMatched: 'keywordsMatched',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SharedAnalysisScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  roastId: 'roastId',
+  settings: 'settings',
+  viewCount: 'viewCount',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.InvoiceScalarFieldEnum = {
@@ -209,180 +296,20 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   paidAt: 'paidAt'
 };
 
-exports.Prisma.LLMConversationScalarFieldEnum = {
+exports.Prisma.AnnouncementScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  featureName: 'featureName',
+  estimatedDate: 'estimatedDate',
   type: 'type',
-  title: 'title',
-  documentId: 'documentId',
-  provider: 'provider',
-  model: 'model',
-  totalTokensUsed: 'totalTokensUsed',
-  totalCost: 'totalCost',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  completedAt: 'completedAt',
-  status: 'status',
-  errorMessage: 'errorMessage'
-};
-
-exports.Prisma.LLMMessageScalarFieldEnum = {
-  id: 'id',
-  conversationId: 'conversationId',
-  role: 'role',
-  content: 'content',
-  inputTokens: 'inputTokens',
-  outputTokens: 'outputTokens',
-  totalTokens: 'totalTokens',
-  cost: 'cost',
-  messageIndex: 'messageIndex',
-  processingTime: 'processingTime',
-  finishReason: 'finishReason',
-  temperature: 'temperature',
-  maxTokens: 'maxTokens',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.AnalysisScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  documentId: 'documentId',
-  jobDescription: 'jobDescription',
-  jobSummaryId: 'jobSummaryId',
-  resumeText: 'resumeText',
-  analysisData: 'analysisData',
-  overallScore: 'overallScore',
-  provider: 'provider',
-  model: 'model',
-  conversationId: 'conversationId',
-  totalTokensUsed: 'totalTokensUsed',
-  totalCost: 'totalCost',
-  processingTime: 'processingTime',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ResumeOptimizationScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  analysisId: 'analysisId',
-  documentId: 'documentId',
-  jobDescription: 'jobDescription',
-  jobSummaryId: 'jobSummaryId',
-  resumeText: 'resumeText',
-  templateId: 'templateId',
-  extractedData: 'extractedData',
-  optimizedResume: 'optimizedResume',
-  optimizationSuggestions: 'optimizationSuggestions',
-  atsScore: 'atsScore',
-  keywordsMatched: 'keywordsMatched',
-  provider: 'provider',
-  model: 'model',
-  conversationId: 'conversationId',
-  totalTokensUsed: 'totalTokensUsed',
-  totalCost: 'totalCost',
-  processingTime: 'processingTime',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SharedAnalysisScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  analysisData: 'analysisData',
-  settings: 'settings',
-  viewCount: 'viewCount',
-  expiresAt: 'expiresAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.JobDescriptionSummaryScalarFieldEnum = {
-  id: 'id',
-  contentHash: 'contentHash',
-  originalText: 'originalText',
-  summary: 'summary',
-  keyRequirements: 'keyRequirements',
-  companyName: 'companyName',
-  jobTitle: 'jobTitle',
-  location: 'location',
-  salaryRange: 'salaryRange',
-  provider: 'provider',
-  model: 'model',
-  usageCount: 'usageCount',
-  totalTokensUsed: 'totalTokensUsed',
-  totalCost: 'totalCost',
-  processingTime: 'processingTime',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  lastUsedAt: 'lastUsedAt'
-};
-
-exports.Prisma.CoverLetterScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  content: 'content',
-  tone: 'tone',
-  wordCount: 'wordCount',
-  analysisId: 'analysisId',
-  documentId: 'documentId',
-  jobSummaryId: 'jobSummaryId',
-  contentHash: 'contentHash',
-  provider: 'provider',
-  model: 'model',
-  conversationId: 'conversationId',
-  totalTokensUsed: 'totalTokensUsed',
-  totalCost: 'totalCost',
-  processingTime: 'processingTime',
-  usageCount: 'usageCount',
-  lastUsedAt: 'lastUsedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.OptimizedResumeScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  content: 'content',
-  extractedData: 'extractedData',
-  templateId: 'templateId',
-  atsScore: 'atsScore',
-  keywordsMatched: 'keywordsMatched',
-  optimizationSuggestions: 'optimizationSuggestions',
-  analysisId: 'analysisId',
-  documentId: 'documentId',
-  jobSummaryId: 'jobSummaryId',
-  extractedResumeId: 'extractedResumeId',
-  contentHash: 'contentHash',
-  provider: 'provider',
-  model: 'model',
-  conversationId: 'conversationId',
-  totalTokensUsed: 'totalTokensUsed',
-  totalCost: 'totalCost',
-  processingTime: 'processingTime',
-  usageCount: 'usageCount',
-  lastUsedAt: 'lastUsedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ExtractedResumeScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  documentId: 'documentId',
-  analysisId: 'analysisId',
-  contentHash: 'contentHash',
-  resumeText: 'resumeText',
-  extractedData: 'extractedData',
-  provider: 'provider',
-  model: 'model',
-  conversationId: 'conversationId',
-  totalTokensUsed: 'totalTokensUsed',
-  totalCost: 'totalCost',
-  processingTime: 'processingTime',
-  usageCount: 'usageCount',
-  lastUsedAt: 'lastUsedAt',
+  ctaText: 'ctaText',
+  ctaUrl: 'ctaUrl',
+  isActive: 'isActive',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  targetTiers: 'targetTiers',
+  dismissedBy: 'dismissedBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -390,6 +317,15 @@ exports.Prisma.ExtractedResumeScalarFieldEnum = {
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -401,18 +337,28 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
 exports.SubscriptionTier = exports.$Enums.SubscriptionTier = {
   FREE: 'FREE',
   PLUS: 'PLUS',
   PREMIUM: 'PREMIUM'
 };
 
-exports.UsageAction = exports.$Enums.UsageAction = {
-  EXTRACT_PDF: 'EXTRACT_PDF',
-  ROAST_ANALYSIS: 'ROAST_ANALYSIS',
-  COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION',
-  RESUME_OPTIMIZATION: 'RESUME_OPTIMIZATION',
-  RESUME_EXTRACTION: 'RESUME_EXTRACTION'
+exports.LlmCallStatus = exports.$Enums.LlmCallStatus = {
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  TIMEOUT: 'TIMEOUT'
+};
+
+exports.MessageRole = exports.$Enums.MessageRole = {
+  system: 'system',
+  user: 'user',
+  assistant: 'assistant'
 };
 
 exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
@@ -422,45 +368,31 @@ exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
   CANCELLED: 'CANCELLED'
 };
 
-exports.ConversationType = exports.$Enums.ConversationType = {
-  RESUME_ANALYSIS: 'RESUME_ANALYSIS',
-  JOB_EXTRACTION: 'JOB_EXTRACTION',
-  COVER_LETTER_GENERATION: 'COVER_LETTER_GENERATION',
-  PDF_EXTRACTION: 'PDF_EXTRACTION',
-  RESUME_EXTRACTION: 'RESUME_EXTRACTION',
-  GENERAL_CHAT: 'GENERAL_CHAT',
-  CHATBOT_SUPPORT: 'CHATBOT_SUPPORT'
-};
-
-exports.ConversationStatus = exports.$Enums.ConversationStatus = {
-  ACTIVE: 'ACTIVE',
-  COMPLETED: 'COMPLETED',
-  FAILED: 'FAILED',
-  CANCELLED: 'CANCELLED'
-};
-
-exports.MessageRole = exports.$Enums.MessageRole = {
-  USER: 'USER',
-  ASSISTANT: 'ASSISTANT',
-  SYSTEM: 'SYSTEM'
+exports.AnnouncementType = exports.$Enums.AnnouncementType = {
+  COMING_SOON: 'COMING_SOON',
+  IN_PROGRESS: 'IN_PROGRESS',
+  BETA: 'BETA',
+  NEW: 'NEW',
+  MAINTENANCE: 'MAINTENANCE',
+  UPDATE: 'UPDATE'
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Account: 'Account',
   Session: 'Session',
-  Document: 'Document',
-  UsageRecord: 'UsageRecord',
-  Invoice: 'Invoice',
-  LLMConversation: 'LLMConversation',
-  LLMMessage: 'LLMMessage',
-  Analysis: 'Analysis',
-  ResumeOptimization: 'ResumeOptimization',
+  LlmCall: 'LlmCall',
+  LlmMessage: 'LlmMessage',
+  Resume: 'Resume',
+  ExtractedResume: 'ExtractedResume',
+  ExtractedJobDescription: 'ExtractedJobDescription',
+  SummarizedResume: 'SummarizedResume',
+  SummarizedJobDescription: 'SummarizedJobDescription',
+  GeneratedRoast: 'GeneratedRoast',
+  GeneratedCoverLetter: 'GeneratedCoverLetter',
+  GeneratedResume: 'GeneratedResume',
   SharedAnalysis: 'SharedAnalysis',
-  JobDescriptionSummary: 'JobDescriptionSummary',
-  CoverLetter: 'CoverLetter',
-  OptimizedResume: 'OptimizedResume',
-  ExtractedResume: 'ExtractedResume'
+  Invoice: 'Invoice',
+  Announcement: 'Announcement'
 };
 
 /**

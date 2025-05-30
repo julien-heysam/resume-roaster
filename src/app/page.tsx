@@ -137,6 +137,42 @@ export default function Home() {
     setSelectedProvider('anthropic')
   }
 
+  const handleRerun = async (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai') => {
+    if (!selectedFile) {
+      showAlert({
+        title: "No File Selected",
+        description: "Please upload a file first!",
+        type: "warning"
+      })
+      return
+    }
+
+    try {
+      // Update the selected method and provider
+      setSelectedExtractionMethod(method)
+      if (provider) {
+        setSelectedProvider(provider)
+      }
+
+      // Re-run extraction with new settings and bypass cache to force fresh extraction
+      const extracted = await retryExtraction(selectedFile, session?.user?.id, method, provider, true)
+      if (extracted) {
+        showAlert({
+          title: "Re-extraction Complete",
+          description: `Successfully re-extracted using ${method} method${provider ? ` with ${provider}` : ''} with fresh data`,
+          type: "success"
+        })
+      }
+    } catch (error) {
+      console.error('Re-run extraction error:', error)
+      showAlert({
+        title: "Re-run Failed",
+        description: error instanceof Error ? error.message : "Failed to re-run extraction",
+        type: "error"
+      })
+    }
+  }
+
   const handleStartRoasting = async (resumeData: any, jobDescription: string, analysisName?: string) => {
     if (!resumeData) {
       showAlert({
@@ -180,7 +216,54 @@ export default function Home() {
         })
       }, 1000)
 
-      // Call the analysis API
+      // Step 1: Process job description first
+      console.log('Processing job description...')
+      const jobProcessResponse = await fetch('/api/summarize-job-description', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jobDescription: jobDescription.trim()
+        }),
+      })
+
+      const jobProcessResult = await jobProcessResponse.json()
+
+      if (!jobProcessResponse.ok) {
+        throw new Error(jobProcessResult.error || 'Failed to process job description')
+      }
+
+      console.log('Job description processed:', jobProcessResult)
+
+      // Step 2: Create summarized resume record
+      console.log('Creating summarized resume record...')
+      const resumeText = typeof resumeData === 'string' ? resumeData : 
+                        resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
+      
+      const summarizeResumeResponse = await fetch('/api/summarized_resumes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resumeText: resumeText,
+          resumeId: resumeData.resumeId || resumeData.documentId,
+          extractedResumeId: resumeData.extractedResumeId || resumeData.documentId,
+          bypassCache: false
+        }),
+      })
+
+      const summarizeResumeResult = await summarizeResumeResponse.json()
+
+      if (!summarizeResumeResponse.ok) {
+        console.warn('Failed to create summarized resume:', summarizeResumeResult.error)
+        // Continue with analysis even if summarization fails
+      } else {
+        console.log('Summarized resume created:', summarizeResumeResult)
+      }
+
+      // Step 3: Call the analysis API with the extracted job ID
       const response = await fetch('/api/analyze-resume', {
         method: 'POST',
         headers: {
@@ -189,6 +272,8 @@ export default function Home() {
         body: JSON.stringify({
           resumeData,
           jobDescription: jobDescription.trim(),
+          extractedJobId: jobProcessResult.extractedJobId, // Pass the job ID
+          summarizedResumeId: summarizeResumeResult?.summarizedResumeId || null, // Pass the summarized resume ID
           analysisName: analysisName?.trim()
         }),
       })
@@ -422,11 +507,30 @@ export default function Home() {
                       </div>
                     )}
                     
+                    {/* Re-run Loading Indicator */}
+                    {isExtracting && (
+                      <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-center justify-center space-x-3">
+                          <Loader className="h-5 w-5 animate-spin text-blue-500" />
+                          <span className="text-blue-700">
+                            Re-running extraction with {selectedExtractionMethod === 'basic' 
+                              ? 'basic method...' 
+                              : selectedProvider === 'openai'
+                              ? 'GPT-4 Mini...'
+                              : 'Claude Sonnet 4...'
+                            }
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    
                     <ExtractedTextPreview 
                       data={extractedData}
                       images={pdfImages}
                       onProceed={handleStartRoasting}
-                      onClear={handleFileRemove}
+                      onRerun={handleRerun}
+                      currentMethod={selectedExtractionMethod}
+                      currentProvider={selectedProvider}
                       isProcessing={isExtracting}
                       isAnalyzing={false}
                     />

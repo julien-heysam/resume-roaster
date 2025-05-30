@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import OpenAI from 'openai';
+import { callOpenAIText, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils';
 import { 
   createChatbotConversation, 
   addMessageToConversation, 
@@ -12,11 +12,6 @@ interface ChatMessage {
   content: string;
   sender: 'user' | 'bot';
 }
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 const SYSTEM_PROMPT = `You are a professional resume and career advisor assistant for Resume Roaster, an AI-powered resume optimization platform. Your role is to help users create outstanding resumes and advance their careers.
 
@@ -45,32 +40,26 @@ Respond in a friendly, professional tone that builds confidence while providing 
 async function generateAIResponse(userMessage: string, conversationHistory: ChatMessage[] = []): Promise<string> {
   try {
     // Prepare conversation history for context
-    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      { role: 'system', content: SYSTEM_PROMPT }
-    ];
-
+    let contextPrompt = userMessage;
+    
     // Add recent conversation history (last 10 messages for context)
     const recentHistory = conversationHistory.slice(-10);
-    for (const msg of recentHistory) {
-      messages.push({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: msg.content
-      });
+    if (recentHistory.length > 0) {
+      const historyText = recentHistory.map(msg => 
+        `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
+      ).join('\n');
+      
+      contextPrompt = `Previous conversation:\n${historyText}\n\nCurrent message: ${userMessage}`;
     }
 
-    // Add current user message
-    messages.push({ role: 'user', content: userMessage });
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4.1-nano',
-      messages,
-      max_tokens: 1000,
-      temperature: 0.5,
-      presence_penalty: 0.1,
-      frequency_penalty: 0.1,
+    const response = await callOpenAIText(contextPrompt, {
+      model: OPENAI_MODELS.NANO,
+      maxTokens: CONTEXT_SIZES.MINI,
+      temperature: TEMPERATURES.NORMAL,
+      systemPrompt: SYSTEM_PROMPT
     });
 
-    return completion.choices[0]?.message?.content || 'I apologize, but I encountered an issue generating a response. Please try asking your question again.';
+    return response.data || 'I apologize, but I encountered an issue generating a response. Please try asking your question again.';
   } catch (error) {
     console.error('OpenAI API error:', error);
     
@@ -118,7 +107,7 @@ export async function POST(request: NextRequest) {
       currentConversationId = conversation.id;
     } else {
       // Add user message to existing conversation and get history
-      await addMessageToConversation(currentConversationId, message, 'USER');
+      await addMessageToConversation(currentConversationId, message, 'user');
       
       // Get conversation history for context
       const conversation = await getChatbotConversation(currentConversationId, userId);
@@ -134,7 +123,7 @@ export async function POST(request: NextRequest) {
     const response = await generateAIResponse(message, conversationHistory);
     
     // Add bot response to conversation
-    const botMessage = await addMessageToConversation(currentConversationId, response, 'ASSISTANT');
+    const botMessage = await addMessageToConversation(currentConversationId, response, 'assistant');
     
     return NextResponse.json({
       response: botMessage.content,

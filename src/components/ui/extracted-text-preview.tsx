@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card"
@@ -15,6 +15,12 @@ import { Eye, EyeOff, FileText, Hash, Calendar, HardDrive, Link, Loader, Briefca
 
 interface ExtractedResumeData {
   text: string
+  structuredData?: {
+    markdown?: string
+    summary?: string
+    sections?: string[]
+    originalText?: string
+  }
   documentId?: string
   metadata: {
     pages: number
@@ -33,6 +39,9 @@ interface ExtractedTextPreviewProps {
   images?: string[]
   onProceed?: (resumeData: ExtractedResumeData, jobDescription: string, analysisName?: string) => void
   onClear?: () => void
+  onRerun?: (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai') => void
+  currentMethod?: 'basic' | 'ai'
+  currentProvider?: 'anthropic' | 'openai'
   isProcessing?: boolean
   isAnalyzing?: boolean
 }
@@ -42,6 +51,9 @@ export function ExtractedTextPreview({
   images = [],
   onProceed, 
   onClear,
+  onRerun,
+  currentMethod,
+  currentProvider,
   isProcessing = false,
   isAnalyzing = false 
 }: ExtractedTextPreviewProps) {
@@ -54,6 +66,7 @@ export function ExtractedTextPreview({
   const [renderKey, setRenderKey] = useState(0)
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isRerunning, setIsRerunning] = useState(false)
 
   const handleToggleFullText = () => {
     setShowFullText(prev => !prev)
@@ -95,10 +108,54 @@ export function ExtractedTextPreview({
     }
   }
 
+  const handleRerun = () => {
+    if (onRerun && !isProcessing && !isAnalyzing && !isStartingAnalysis && !isRerunning && currentMethod) {
+      setIsRerunning(true)
+      onRerun(currentMethod, currentProvider)
+      // Reset loading state after a delay (the parent component should handle the actual completion)
+      setTimeout(() => setIsRerunning(false), 30000) // 30 second timeout
+    }
+  }
+
   const displayText = showFullText ? data.text : data.text.slice(0, 1000) + (data.text.length > 1000 ? "..." : "")
 
+  useEffect(() => {
+    if (!isProcessing) {
+      setIsRerunning(false)
+    }
+  }, [isProcessing])
+
+  // Determine what content to display - prefer structured markdown over raw text
+  const contentToDisplay = data.structuredData?.markdown || data.text
+  const displayContent = showFullText ? contentToDisplay : contentToDisplay.slice(0, 1000) + (contentToDisplay.length > 1000 ? "..." : "")
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Re-run Loading Overlay */}
+      {isRerunning && (
+        <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10 rounded-lg">
+          <div className="bg-white rounded-lg p-6 shadow-lg border border-blue-200 max-w-sm mx-4">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <Loader className="h-6 w-6 animate-spin text-blue-500" />
+                <div className="absolute inset-0 rounded-full border-2 border-blue-100"></div>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Re-running Extraction</h3>
+                <p className="text-sm text-gray-600">
+                  Using {currentMethod === 'basic' ? 'Basic' : 'AI'} method
+                  {currentMethod === 'ai' && currentProvider ? ` with ${currentProvider}` : ''}...
+                </p>
+                <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
+                  <div className="bg-blue-500 h-1 rounded-full animate-pulse" style={{width: '60%'}}></div>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">This will overwrite cached data</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Resume Preview Card */}
       <Card className="border-orange-200 shadow-lg">
         <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-200">
@@ -116,17 +173,26 @@ export function ExtractedTextPreview({
               <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-300">
                 ✓ Ready
               </Badge>
-              {onClear && (
+              {onRerun && (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={handleClear}
-                  disabled={isProcessing || isAnalyzing || isStartingAnalysis}
-                  className="text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-300"
-                  title="Clear extraction and upload a new file"
+                  onClick={handleRerun}
+                  disabled={isProcessing || isAnalyzing || isStartingAnalysis || isRerunning}
+                  className="text-blue-600 hover:text-blue-700 border-blue-300 hover:border-blue-400"
+                  title={`Re-run extraction using ${currentMethod === 'basic' ? 'Basic' : 'AI'} method${currentMethod === 'ai' && currentProvider ? ` with ${currentProvider}` : ''}`}
                 >
-                  <X className="h-4 w-4 mr-1" />
-                  Clear
+                  {isRerunning ? (
+                    <>
+                      <Loader className="h-4 w-4 mr-1 animate-spin" />
+                      Re-running...
+                    </>
+                  ) : (
+                    <>
+                      <RotateCcw className="h-4 w-4 mr-1" />
+                      Re-run
+                    </>
+                  )}
                 </Button>
               )}
             </div>
@@ -184,10 +250,17 @@ export function ExtractedTextPreview({
           {/* Resume Text Preview */}
           <div className="border border-gray-200 rounded-lg p-4 bg-white">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold text-gray-900">Resume Content</h4>
+              <div className="flex items-center space-x-2">
+                <h4 className="font-semibold text-gray-900">Resume Content</h4>
+                {data.structuredData?.markdown && (
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
+                    ✨ AI Formatted
+                  </Badge>
+                )}
+              </div>
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-gray-500">
-                  {data.text.length} chars | {showFullText ? 'Full' : 'Truncated'}
+                  {contentToDisplay.length} chars | {showFullText ? 'Full' : 'Truncated'} | {data.structuredData?.markdown ? 'AI Formatted' : 'Raw Text'}
                 </span>
                 <Button
                   variant="outline"
@@ -211,10 +284,10 @@ export function ExtractedTextPreview({
             </div>
             
             {/* Truncation Warning Banner */}
-            {!showFullText && data.text.length > 1000 && (
+            {!showFullText && contentToDisplay.length > 1000 && (
               <div className="mb-3 p-3 bg-orange-50 border border-orange-200 rounded-lg text-center">
                 <p className="text-sm text-orange-700 font-medium">
-                  📄 Content is truncated - Click "Show Full Content" to see the complete resume ({data.text.length} characters total)
+                  📄 Content is truncated - Click "Show Full Content" to see the complete resume ({contentToDisplay.length} characters total)
                 </p>
               </div>
             )}
@@ -222,12 +295,12 @@ export function ExtractedTextPreview({
             <ScrollArea className={showFullText ? "w-full" : "max-h-64 w-full"}>
               <div className="prose prose-sm max-w-none">
                 <ReactMarkdown 
-                  key={`${renderKey}-${data.text.length}`}
+                  key={`${renderKey}-${contentToDisplay.length}`}
                   remarkPlugins={[remarkGfm]}
                 >
-                  {displayText}
+                  {displayContent}
                 </ReactMarkdown>
-                {!showFullText && data.text.length > 1000 && (
+                {!showFullText && contentToDisplay.length > 1000 && (
                   <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg text-center">
                     <p className="text-sm text-orange-700">
                       📄 Content truncated - Click "Show Full Content" to see the complete resume

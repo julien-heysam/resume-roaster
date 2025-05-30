@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Footer } from "@/components/ui/footer"
+import { FeatureAnnouncementBanner } from "@/components/ui/feature-announcement-banner"
 import { toast } from 'sonner'
 
 interface AnalysisResult {
@@ -104,12 +105,13 @@ function DashboardContent() {
           createdAt: item.createdAt,
           overallScore: item.overallScore,
           title: item.title,
-          pdfImages: item.pdfImages,
-          jobDescription: item.jobDescription,
+          documentId: item.documentId,
+          pdfImages: item.pdfImages || [],
+          jobDescription: item.jobDescription || '',
           data: {
-            resumeData: item.document,
+            resumeData: item.data?.resumeData || null,
             jobDescription: item.jobDescription || '',
-            analysis: item.analysisData
+            analysis: item.data?.analysis || null
           }
         }))
         
@@ -323,6 +325,25 @@ function DashboardContent() {
           </Card>
         </div>
 
+        {/* Feature Announcement Banner */}
+        <FeatureAnnouncementBanner
+          title="🚀 Enhanced Dashboard Coming Soon!"
+          description="We're working on exciting new features including advanced analytics, resume comparison tools, and AI-powered insights to help you land your dream job faster."
+          featureName="Dashboard 2.0"
+          estimatedDate="Q3 2025"
+          type="in-progress"
+          ctaText="Learn More"
+          ctaAction={() => {
+            // You can link to a blog post, feature page, or open a modal
+            window.open('/help', '_blank')
+          }}
+          dismissible={true}
+          onDismiss={() => {
+            // Optional: Store dismissal in localStorage or user preferences
+            localStorage.setItem('dashboard-announcement-dismissed', 'true')
+          }}
+        />
+
         {/* Search and Filters */}
         <div className="mb-8">
           <form onSubmit={handleSearch} className="flex items-center space-x-4">
@@ -485,6 +506,13 @@ function DashboardContent() {
                                   alert('Analysis data is not available for this item.')
                                   return
                                 }
+                                
+                                console.log('=== DASHBOARD VIEW CLICK ===')
+                                console.log('Analysis data:', analysis.data.analysis)
+                                console.log('Resume data:', analysis.data.resumeData)
+                                console.log('Job description:', analysis.data.jobDescription)
+                                
+                                // Store core analysis data
                                 sessionStorage.setItem('analysisResults', JSON.stringify(analysis.data.analysis))
                                 sessionStorage.setItem('resumeData', JSON.stringify(analysis.data.resumeData))
                                 sessionStorage.setItem('jobDescription', analysis.data.jobDescription || '')
@@ -497,12 +525,32 @@ function DashboardContent() {
                                   sessionStorage.removeItem('documentId')
                                 }
                                 
+                                // Store extracted resume ID if available (for cache detection)
+                                // This might be stored in the analysis metadata
+                                if (analysis.data.analysis?.metadata?.extractedResumeId) {
+                                  sessionStorage.setItem('extractedResumeId', analysis.data.analysis.metadata.extractedResumeId)
+                                } else if (analysis.data.resumeData?.extractedResumeId) {
+                                  sessionStorage.setItem('extractedResumeId', analysis.data.resumeData.extractedResumeId)
+                                } else {
+                                  // Generate a fallback extracted resume ID based on analysis ID
+                                  sessionStorage.setItem('extractedResumeId', `extracted_${analysis.id}`)
+                                }
+                                
                                 // Store PDF images if available
                                 if (analysis.pdfImages && analysis.pdfImages.length > 0) {
                                   sessionStorage.setItem('pdfImages', JSON.stringify(analysis.pdfImages))
                                 } else {
                                   sessionStorage.removeItem('pdfImages')
                                 }
+                                
+                                // Store a flag indicating this is from dashboard (not fresh analysis)
+                                sessionStorage.setItem('isFromDashboard', 'true')
+                                sessionStorage.setItem('dashboardAnalysisId', analysis.id)
+                                
+                                console.log('=== STORED DATA FOR ANALYSIS PAGE ===')
+                                console.log('Analysis ID:', analysis.id)
+                                console.log('Document ID:', analysis.documentId)
+                                console.log('Has PDF images:', !!(analysis.pdfImages && analysis.pdfImages.length > 0))
                                 
                                 router.push('/analysis')
                               }}

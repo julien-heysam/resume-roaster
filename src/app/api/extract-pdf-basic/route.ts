@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DocumentService, UserService, UsageService, generateFileHash } from '@/lib/database'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { ResumeService, ExtractedResumeService, UserService, generateFileHash } from '@/lib/database'
 import fs from 'fs/promises'
 import path from 'path'
 import os from 'os'
+import crypto from 'crypto'
 
 interface ExtractedResumeData {
   text: string
-  documentId?: string
+  resumeId?: string
+  extractedResumeId?: string
   metadata: {
     pages: number
     wordCount: number
@@ -97,9 +101,13 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now()
   
   try {
+    // Get session
+    const session = await getServerSession(authOptions)
+    const userId = session?.user?.id
+
     const formData = await request.formData()
     const file = formData.get('file') as File
-    const userId = formData.get('userId') as string | null // Optional user ID
+    const bypassCache = (formData.get('bypassCache') as string) === 'true'
     
     if (!file) {
       return NextResponse.json(
@@ -125,7 +133,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log(`Starting basic PDF extraction for: ${file.name}`)
+    console.log(`Starting basic PDF extraction for: ${file.name}, Bypass Cache: ${bypassCache}`)
 
     // Convert file to buffer and generate hash
     const buffer = Buffer.from(await file.arrayBuffer())
@@ -133,45 +141,45 @@ export async function POST(request: NextRequest) {
     
     console.log(`File hash: ${fileHash}`)
 
-    // Check if document was already processed
-    const existingDocument = await DocumentService.findByHash(fileHash)
+    // Check if resume was already processed
+    const existingResume = await ResumeService.findByHash(fileHash)
     
-    if (existingDocument) {
-      console.log(`Found cached document for ${file.name}`)
+    if (existingResume && !bypassCache) {
+      console.log(`Found cached resume for ${file.name}`)
       
-      // Return cached result
-      const extractedData: ExtractedResumeData = {
-        text: existingDocument.extractedText,
-        documentId: existingDocument.id,
-        metadata: {
-          pages: existingDocument.pageCount,
-          wordCount: existingDocument.wordCount,
-          fileName: file.name,
-          fileSize: file.size,
-          extractedAt: existingDocument.processedAt.toISOString(),
-          aiProvider: 'basic-extraction',
-          fromCache: true
+      // Check if we have extracted data for this resume
+      const resumeContentHash = crypto.createHash('sha256').update(fileHash + 'extracted').digest('hex')
+      const existingExtracted = await ExtractedResumeService.findByHash(resumeContentHash)
+      
+      if (existingExtracted) {
+        const data = existingExtracted.data as any
+        const extractedData: ExtractedResumeData = {
+          text: data?.text || '',
+          resumeId: existingResume.id,
+          extractedResumeId: existingExtracted.id,
+          metadata: {
+            pages: data?.pages || 1,
+            wordCount: data?.wordCount || 0,
+            fileName: file.name,
+            fileSize: file.size,
+            extractedAt: existingExtracted.createdAt.toISOString(),
+            aiProvider: 'basic-extraction',
+            fromCache: true
+          }
         }
-      }
 
-      // Record usage if user is provided
-      if (userId) {
-        await UsageService.recordUsage({
-          userId,
-          documentId: existingDocument.id,
-          action: 'EXTRACT_PDF',
-          cost: 0, // Free from cache
-          creditsUsed: 0
+        return NextResponse.json({
+          success: true,
+          data: extractedData,
+          summary: data?.summary || "Resume content extracted from cache",
+          sections: data?.sections || ["Resume Content"],
+          fromCache: true
         })
       }
+    }
 
-      return NextResponse.json({
-        success: true,
-        data: extractedData,
-        summary: existingDocument.summary || "Resume content extracted from cache",
-        sections: existingDocument.sections || ["Resume Content"],
-        fromCache: true
-      })
+    if (bypassCache) {
+      console.log(`🔄 BYPASS CACHE: Force re-extracting using basic method`)
     }
 
     // Create temporary file for processing
@@ -193,40 +201,52 @@ export async function POST(request: NextRequest) {
 
       const processingTime = Date.now() - startTime
 
-      // Basic extraction is free
-      const extractionCost = 0
-
-      // Save document to database
-      const savedDocument = await DocumentService.create({
-        userId: userId || undefined,
-        filename: file.name,
-        originalSize: file.size,
-        fileHash,
-        mimeType: file.type,
-        extractedText,
-        wordCount,
-        pageCount: estimatedPages,
-        aiProvider: 'basic-extraction',
-        extractionCost,
-        summary: "Resume content extracted using basic PDF extraction",
-        sections: ["Resume Content"],
-        processingTime
-      })
-
-      // Record usage if user is provided
-      if (userId) {
-        await UsageService.recordUsage({
-          userId,
-          documentId: savedDocument.id,
-          action: 'EXTRACT_PDF',
-          cost: extractionCost,
-          creditsUsed: 0 // Basic extraction is free
+      // Save resume to database
+      let savedResume = existingResume
+      if (!savedResume) {
+        savedResume = await ResumeService.create({
+          userId: userId || undefined,
+          filename: file.name,
+          fileHash: fileHash,
+          mimeType: file.type,
+          images: [], // No images for basic extraction
+          metadata: {
+            originalSize: file.size,
+            extractionMethod: 'basic'
+          }
         })
       }
 
+      // Save extracted data
+      const resumeContentHash = crypto.createHash('sha256').update(fileHash + 'extracted').digest('hex')
+      
+      // If bypassing cache, delete existing extracted data first
+      if (bypassCache && existingResume) {
+        const existingExtracted = await ExtractedResumeService.findByHash(resumeContentHash)
+        if (existingExtracted) {
+          console.log(`🗑️ BYPASS CACHE: Deleting existing extracted data for fresh extraction`)
+          await ExtractedResumeService.delete(existingExtracted.id)
+        }
+      }
+      
+      const savedExtracted = await ExtractedResumeService.create({
+        resumeId: savedResume.id,
+        contentHash: resumeContentHash,
+        data: {
+          text: extractedText,
+          pages: estimatedPages,
+          wordCount,
+          aiProvider: 'basic-extraction',
+          summary: "Resume content extracted using basic PDF extraction",
+          sections: ["Resume Content"],
+          processingTime
+        }
+      })
+
       const resultData: ExtractedResumeData = {
         text: extractedText,
-        documentId: savedDocument.id,
+        resumeId: savedResume.id,
+        extractedResumeId: savedExtracted.id,
         metadata: {
           pages: estimatedPages,
           wordCount,
@@ -245,7 +265,9 @@ export async function POST(request: NextRequest) {
         data: resultData,
         summary: "Resume content extracted using basic PDF extraction",
         sections: ["Resume Content"],
-        fromCache: false
+        fromCache: false,
+        resumeId: savedResume.id,
+        extractedResumeId: savedExtracted.id
       })
 
     } finally {

@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       data: {
         id: shareId,
         userId: session.user.id,
-        analysisData: JSON.stringify(analysisData),
+        roastId: analysisData.roastId || 'unknown',
         settings: JSON.stringify(settings || {}),
         expiresAt,
         viewCount: 0

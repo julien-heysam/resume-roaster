@@ -22,17 +22,16 @@ export async function createChatbotConversation(
   title: string,
   firstMessage: string
 ): Promise<ChatbotConversation> {
-  const conversation = await prisma.lLMConversation.create({
+  const llmCall = await prisma.llmCall.create({
     data: {
       userId,
-      type: 'CHATBOT_SUPPORT',
-      title,
       provider: 'internal',
       model: 'chatbot-v1',
-      status: 'ACTIVE',
+      operationType: 'chatbot_support',
+      status: 'COMPLETED',
       messages: {
         create: {
-          role: 'USER',
+          role: 'user',
           content: firstMessage,
           messageIndex: 0,
         }
@@ -46,48 +45,48 @@ export async function createChatbotConversation(
   });
 
   return {
-    id: conversation.id,
-    title: conversation.title || title,
-    messages: conversation.messages.map(msg => ({
+    id: llmCall.id,
+    title: title,
+    messages: llmCall.messages.map(msg => ({
       id: msg.id,
       content: msg.content,
-      sender: msg.role === 'USER' ? 'user' : 'bot',
+      sender: msg.role === 'user' ? 'user' : 'bot',
       timestamp: msg.createdAt,
     })),
-    createdAt: conversation.createdAt,
-    updatedAt: conversation.updatedAt,
+    createdAt: llmCall.createdAt,
+    updatedAt: llmCall.completedAt || llmCall.createdAt,
   };
 }
 
 export async function addMessageToConversation(
   conversationId: string,
   content: string,
-  role: 'USER' | 'ASSISTANT'
+  role: 'user' | 'assistant'
 ): Promise<ChatbotMessage> {
   // Get the current message count to determine the next index
-  const messageCount = await prisma.lLMMessage.count({
-    where: { conversationId }
+  const messageCount = await prisma.llmMessage.count({
+    where: { llmCallId: conversationId }
   });
 
-  const message = await prisma.lLMMessage.create({
+  const message = await prisma.llmMessage.create({
     data: {
-      conversationId,
+      llmCallId: conversationId,
       role,
       content,
       messageIndex: messageCount,
     }
   });
 
-  // Update conversation timestamp
-  await prisma.lLMConversation.update({
+  // Update LLM call timestamp
+  await prisma.llmCall.update({
     where: { id: conversationId },
-    data: { updatedAt: new Date() }
+    data: { completedAt: new Date() }
   });
 
   return {
     id: message.id,
     content: message.content,
-    sender: role === 'USER' ? 'user' : 'bot',
+    sender: role === 'user' ? 'user' : 'bot',
     timestamp: message.createdAt,
   };
 }
@@ -95,30 +94,30 @@ export async function addMessageToConversation(
 export async function getChatbotConversations(
   userId: string | null
 ): Promise<ChatbotConversation[]> {
-  const conversations = await prisma.lLMConversation.findMany({
+  const llmCalls = await prisma.llmCall.findMany({
     where: {
       userId,
-      type: 'CHATBOT_SUPPORT',
+      operationType: 'chatbot_support',
     },
     include: {
       messages: {
         orderBy: { messageIndex: 'asc' }
       }
     },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { completedAt: 'desc' }
   });
 
-  return conversations.map(conv => ({
-    id: conv.id,
-    title: conv.title || 'Untitled Conversation',
-    messages: conv.messages.map(msg => ({
+  return llmCalls.map(call => ({
+    id: call.id,
+    title: 'Chatbot Conversation',
+    messages: call.messages.map(msg => ({
       id: msg.id,
       content: msg.content,
-      sender: msg.role === 'USER' ? 'user' : 'bot',
+      sender: msg.role === 'user' ? 'user' : 'bot',
       timestamp: msg.createdAt,
     })),
-    createdAt: conv.createdAt,
-    updatedAt: conv.updatedAt,
+    createdAt: call.createdAt,
+    updatedAt: call.completedAt || call.createdAt,
   }));
 }
 
@@ -126,11 +125,11 @@ export async function getChatbotConversation(
   conversationId: string,
   userId: string | null
 ): Promise<ChatbotConversation | null> {
-  const conversation = await prisma.lLMConversation.findFirst({
+  const llmCall = await prisma.llmCall.findFirst({
     where: {
       id: conversationId,
       userId,
-      type: 'CHATBOT_SUPPORT',
+      operationType: 'chatbot_support',
     },
     include: {
       messages: {
@@ -139,18 +138,18 @@ export async function getChatbotConversation(
     }
   });
 
-  if (!conversation) return null;
+  if (!llmCall) return null;
 
   return {
-    id: conversation.id,
-    title: conversation.title || 'Untitled Conversation',
-    messages: conversation.messages.map(msg => ({
+    id: llmCall.id,
+    title: 'Chatbot Conversation',
+    messages: llmCall.messages.map(msg => ({
       id: msg.id,
       content: msg.content,
-      sender: msg.role === 'USER' ? 'user' : 'bot',
+      sender: msg.role === 'user' ? 'user' : 'bot',
       timestamp: msg.createdAt,
     })),
-    createdAt: conversation.createdAt,
-    updatedAt: conversation.updatedAt,
+    createdAt: llmCall.createdAt,
+    updatedAt: llmCall.completedAt || llmCall.createdAt,
   };
 } 

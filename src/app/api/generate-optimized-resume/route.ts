@@ -7,8 +7,8 @@ import {
   optimizeResumeForJob,
   allTemplates 
 } from '@/lib/resume-templates'
-import { latexTemplates, getLatexTemplate } from '@/lib/latex-templates'
 import { db } from '@/lib/database'
+import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,93 +60,6 @@ export async function POST(request: NextRequest) {
     }
 
     const startTime = Date.now()
-
-    // Check if this is a LaTeX template
-    const latexTemplate = latexTemplates.find(t => t.id === templateId)
-    
-    if (latexTemplate) {
-      // Handle LaTeX template generation
-      const optimizedData = optimizeResumeForJob(resumeData, jobDescription, templateId).optimizedData
-      const generatedLatex = latexTemplate.generateLaTeX(optimizedData)
-      
-      const suggestions = [
-        "Optimized for ATS compatibility",
-        "Enhanced keyword matching",
-        "Professional LaTeX formatting"
-      ]
-      
-      const atsScore = calculateATSScore(optimizedData, jobDescription)
-      const keywordsFound = extractJobKeywords(jobDescription).filter(keyword =>
-        resumeData.summary.toLowerCase().includes(keyword.toLowerCase()) ||
-        (resumeData.skills.technical || []).some((skill: string) => 
-          skill.toLowerCase().includes(keyword.toLowerCase())
-        ) ||
-        (resumeData.skills.soft || []).some((skill: string) => 
-          skill.toLowerCase().includes(keyword.toLowerCase())
-        )
-      )
-
-      const processingTime = Date.now() - startTime
-
-      // Only store optimization result in database if this is NOT a preview request
-      if (!isPreview) {
-        try {
-          const user = await db.user.findUnique({
-            where: { email: session.user.email }
-          })
-
-          if (user) {
-            await db.resumeOptimization.create({
-              data: {
-                userId: user.id,
-                analysisId: analysisId || null,
-                documentId: documentId || null,
-                jobDescription: jobDescription || 'No job description (template generation)',
-                resumeText: JSON.stringify(resumeData),
-                templateId: templateId,
-                extractedData: JSON.stringify(optimizedData),
-                optimizedResume: generatedLatex,
-                optimizationSuggestions: suggestions,
-                atsScore: atsScore,
-                keywordsMatched: keywordsFound,
-                provider: skipOptimization ? 'local' : 'local',
-                model: skipOptimization ? 'template-only' : 'template-optimization',
-                totalTokensUsed: 0,
-                totalCost: 0,
-                processingTime: processingTime
-              }
-            })
-            console.log('LaTeX optimization result stored in database')
-          }
-        } catch (dbError) {
-          console.error('Failed to store LaTeX optimization result:', dbError)
-          // Continue without failing the request
-        }
-      } else {
-        console.log('Skipping database save for LaTeX template preview')
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          resume: generatedLatex,
-          format: 'latex',
-          template: {
-            id: latexTemplate.id,
-            name: latexTemplate.name,
-            description: latexTemplate.description,
-            category: latexTemplate.category,
-            atsOptimized: latexTemplate.atsOptimized,
-            type: 'latex'
-          },
-          optimizations: {
-            suggestions,
-            keywordsFound,
-            atsScore
-          }
-        }
-      })
-    }
 
     // Handle HTML template (existing logic)
     const template = getTemplateById(templateId)
@@ -204,24 +117,16 @@ export async function POST(request: NextRequest) {
         })
 
         if (user) {
-          await db.resumeOptimization.create({
+          await db.generatedResume.create({
             data: {
               userId: user.id,
-              analysisId: analysisId || null,
-              documentId: documentId || null,
-              jobDescription: jobDescription || 'No job description (template generation)',
-              resumeText: JSON.stringify(resumeData),
-              templateId: templateId,
-              extractedData: JSON.stringify(optimizedData),
-              optimizedResume: generatedResume,
-              optimizationSuggestions: suggestions,
-              atsScore: atsScore,
-              keywordsMatched: keywordsFound,
-              provider: skipOptimization ? 'local' : 'local',
-              model: skipOptimization ? 'template-only' : 'template-optimization',
-              totalTokensUsed: 0,
-              totalCost: 0,
-              processingTime: processingTime
+              resumeId: documentId || null,
+              templateId: templateId || 'default',
+              contentHash: crypto.randomUUID(), // Generate a unique hash
+              content: generatedResume,
+              data: JSON.stringify(optimizedData),
+              atsScore: atsScore || null,
+              keywordsMatched: keywordsFound || []
             }
           })
           console.log('HTML optimization result stored in database')
@@ -268,7 +173,7 @@ export async function POST(request: NextRequest) {
 // GET endpoint to fetch available templates
 export async function GET() {
   try {
-    // Combine HTML templates with LaTeX templates
+    // Return only HTML templates
     const htmlTemplates = allTemplates.map(template => ({
       id: template.id,
       name: template.name,
@@ -278,21 +183,10 @@ export async function GET() {
       type: 'html' as const
     }))
 
-    const latexTemplatesFormatted = latexTemplates.map(template => ({
-      id: template.id,
-      name: `${template.name} (LaTeX)`,
-      description: `${template.description} - Professional LaTeX typesetting`,
-      category: template.category,
-      atsOptimized: template.atsOptimized,
-      type: 'latex' as const
-    }))
-
-    const allAvailableTemplates = [...htmlTemplates, ...latexTemplatesFormatted]
-
     return NextResponse.json({
       success: true,
       data: {
-        templates: allAvailableTemplates
+        templates: htmlTemplates
       }
     })
   } catch (error) {
