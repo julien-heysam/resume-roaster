@@ -8,9 +8,9 @@ const anthropic = new Anthropic({
 
 // Default model constants
 export const ANTHROPIC_MODELS = {
-  HAIKU: 'claude-3.5-haiku-20241022',
+  HAIKU: 'claude-3-5-haiku-20241022',
   SONNET: 'claude-sonnet-4-20250514', 
-  OPUS: 'claude-4-opus-20250514',
+  OPUS: 'claude-opus-4-20250514',
 } as const
 
 // Default context size constants (max tokens)

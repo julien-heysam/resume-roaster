@@ -167,10 +167,14 @@ interface UserProfile {
 
 export default function ResumeOptimizer() {
   const { data: session } = useSession()
-  const { showAlert, AlertDialog } = useAlertDialog()
   const router = useRouter()
+  const { showAlert, AlertDialog } = useAlertDialog()
   
-  // State for form data
+  // State for tracking if we came from analysis
+  const [isFromAnalysis, setIsFromAnalysis] = useState(false)
+  const [hasOptimizedData, setHasOptimizedData] = useState(false)
+  
+  // Resume data state
   const [resumeData, setResumeData] = useState<ResumeData>({
     personalInfo: {
       name: '',
@@ -181,7 +185,7 @@ export default function ResumeOptimizer() {
       portfolio: '',
       github: '',
       jobTitle: '',
-      jobDescription: '' // This will not be saved to localStorage
+      jobDescription: ''
     },
     summary: '',
     experience: [],
@@ -209,19 +213,27 @@ export default function ResumeOptimizer() {
     
     if (isPrefilled) {
       try {
-        // Load extracted resume data from session storage
+        // Load optimized resume data from session storage (new format)
+        const optimizedResumeData = sessionStorage.getItem('optimizedResumeData')
+        // Also check for legacy extractedResumeData for backward compatibility
         const extractedResumeData = sessionStorage.getItem('extractedResumeData')
-        const analysisJobDescription = sessionStorage.getItem('analysisJobDescription')
-        const isFromAnalysis = sessionStorage.getItem('isFromAnalysis') === 'true'
-        const extractedDataTimestamp = sessionStorage.getItem('extractedDataTimestamp')
+        const resumeDataToUse = optimizedResumeData || extractedResumeData
         
-        if (extractedResumeData) {
-          const parsedData = JSON.parse(extractedResumeData)
+        const analysisJobDescription = sessionStorage.getItem('analysisJobDescription')
+        const isFromAnalysisFlag = sessionStorage.getItem('isFromAnalysis') === 'true'
+        const dataTimestamp = sessionStorage.getItem('optimizedDataTimestamp') || sessionStorage.getItem('extractedDataTimestamp')
+        
+        // Set the analysis state
+        setIsFromAnalysis(isFromAnalysisFlag)
+        setHasOptimizedData(!!resumeDataToUse)
+        
+        if (resumeDataToUse) {
+          const parsedData = JSON.parse(resumeDataToUse)
           console.log('Loading prefilled resume data:', parsedData)
           
           // If this is fresh data from analysis, use it directly and update localStorage
-          if (isFromAnalysis) {
-            console.log('Fresh data from analysis - using extracted data and updating cache')
+          if (isFromAnalysisFlag) {
+            console.log('Fresh data from analysis - using optimized data and updating cache')
             
             // Pre-fill the form with extracted data, ensuring proper structure
             const newResumeData = {
@@ -255,42 +267,33 @@ export default function ResumeOptimizer() {
                 honors: Array.isArray(edu.honors) ? edu.honors : []
               })) : [],
               skills: {
-                technical: Array.isArray(parsedData.skills?.technical) ? parsedData.skills.technical : [],
-                soft: Array.isArray(parsedData.skills?.soft) ? parsedData.skills.soft : [],
-                languages: Array.isArray(parsedData.skills?.languages) ? parsedData.skills.languages : [],
-                certifications: Array.isArray(parsedData.skills?.certifications) ? parsedData.skills.certifications : []
+                technical: (Array.isArray(parsedData.skills?.technical) && parsedData.skills.technical.length > 0) 
+                  ? parsedData.skills.technical 
+                  : [],
+                soft: (Array.isArray(parsedData.skills?.soft) && parsedData.skills.soft.length > 0)
+                  ? parsedData.skills.soft
+                  : [],
+                languages: (Array.isArray(parsedData.skills?.languages) && parsedData.skills.languages.length > 0)
+                  ? parsedData.skills.languages
+                  : [],
+                certifications: (Array.isArray(parsedData.skills?.certifications) && parsedData.skills.certifications.length > 0)
+                  ? parsedData.skills.certifications
+                  : []
               },
-              projects: Array.isArray(parsedData.projects) ? parsedData.projects.map((proj: any) => ({
-                name: proj.name || '',
-                description: proj.description || '',
-                technologies: Array.isArray(proj.technologies) ? proj.technologies : [],
-                link: proj.link || ''
-              })) : []
+              projects: (Array.isArray(parsedData.projects) && parsedData.projects.length > 0)
+                ? parsedData.projects.map((proj: any) => ({
+                    name: proj.name || '',
+                    description: proj.description || '',
+                    technologies: Array.isArray(proj.technologies) ? proj.technologies : [],
+                    link: proj.link || ''
+                  }))
+                : []
             }
             
             setResumeData(newResumeData)
-            setProfileDataLoaded(true)
             
-            // Update localStorage with the new data (excluding jobDescription)
-            const profileToSave: UserProfile = {
-              personalInfo: {
-                name: newResumeData.personalInfo.name,
-                email: newResumeData.personalInfo.email,
-                phone: newResumeData.personalInfo.phone,
-                location: newResumeData.personalInfo.location,
-                linkedin: newResumeData.personalInfo.linkedin,
-                portfolio: newResumeData.personalInfo.portfolio,
-                github: newResumeData.personalInfo.github,
-                jobTitle: newResumeData.personalInfo.jobTitle
-              },
-              summary: newResumeData.summary,
-              experience: newResumeData.experience,
-              education: newResumeData.education,
-              skills: newResumeData.skills,
-              projects: newResumeData.projects,
-              lastUpdated: new Date().toISOString()
-            }
-            saveToLocalStorage(RESUME_DATA_KEY, profileToSave)
+            // Save to localStorage for future use
+            saveToLocalStorage(RESUME_DATA_KEY, newResumeData)
             console.log('Updated localStorage with fresh extracted data')
             
           } else {
@@ -366,10 +369,12 @@ export default function ResumeOptimizer() {
           }
           
           // Clean up session storage after loading
-          sessionStorage.removeItem('extractedResumeData')
+          sessionStorage.removeItem('optimizedResumeData')
+          sessionStorage.removeItem('extractedResumeData') // Legacy cleanup
           sessionStorage.removeItem('analysisJobDescription')
           sessionStorage.removeItem('isFromAnalysis')
-          sessionStorage.removeItem('extractedDataTimestamp')
+          sessionStorage.removeItem('optimizedDataTimestamp')
+          sessionStorage.removeItem('extractedDataTimestamp') // Legacy cleanup
           
           // Remove the prefilled parameter from URL
           const newUrl = window.location.pathname
@@ -411,12 +416,16 @@ export default function ResumeOptimizer() {
     
     if (isPrefilled) {
       try {
-        // Load extracted resume data from session storage
+        // Load optimized resume data from session storage (new format)
+        const optimizedResumeData = sessionStorage.getItem('optimizedResumeData')
+        // Also check for legacy extractedResumeData for backward compatibility
         const extractedResumeData = sessionStorage.getItem('extractedResumeData')
+        const resumeDataToUse = optimizedResumeData || extractedResumeData
+        
         const analysisJobDescription = sessionStorage.getItem('analysisJobDescription')
         
-        if (extractedResumeData) {
-          const parsedData = JSON.parse(extractedResumeData)
+        if (resumeDataToUse) {
+          const parsedData = JSON.parse(resumeDataToUse)
           console.log('Loading prefilled resume data:', parsedData)
           
           // Pre-fill the form with extracted data
@@ -429,7 +438,8 @@ export default function ResumeOptimizer() {
           }
           
           // Clean up session storage after loading
-          sessionStorage.removeItem('extractedResumeData')
+          sessionStorage.removeItem('optimizedResumeData')
+          sessionStorage.removeItem('extractedResumeData') // Legacy cleanup
           sessionStorage.removeItem('analysisJobDescription')
           
           // Remove the prefilled parameter from URL
@@ -704,6 +714,95 @@ export default function ResumeOptimizer() {
     }
   }
 
+  // Function to generate resume with template (for analysis users)
+  const handleGenerateWithTemplate = async () => {
+    if (!resumeData.personalInfo.name || !resumeData.personalInfo.email) {
+      showAlert({
+        title: "Missing Information",
+        description: "Please fill in at least your name and email.",
+        type: "warning",
+        confirmText: "OK"
+      })
+      return
+    }
+
+    if (!selectedTemplate) {
+      showAlert({
+        title: "No Template Selected",
+        description: "Please select a template for your resume.",
+        type: "warning",
+        confirmText: "OK"
+      })
+      return
+    }
+
+    setIsOptimizing(true)
+    
+    try {
+      // Get stored IDs from session storage
+      const storedDocumentId = sessionStorage.getItem('documentId')
+      const storedAnalysisId = sessionStorage.getItem('analysisId')
+      
+      console.log('Generating resume with template (no optimization):', selectedTemplate)
+      
+      // Use the existing generate-optimized-resume endpoint with skipOptimization: true
+      const templateResponse = await fetch('/api/generate-optimized-resume', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resumeData: resumeData,
+          templateId: selectedTemplate,
+          format: 'html',
+          documentId: storedDocumentId || null,
+          analysisId: storedAnalysisId || null,
+          skipOptimization: true, // This tells the API to skip LLM optimization
+          isPreview: false
+        }),
+      })
+
+      if (!templateResponse.ok) {
+        throw new Error('Failed to generate resume with template')
+      }
+
+      const templateResult = await templateResponse.json()
+      if (!templateResult.success) {
+        throw new Error(templateResult.error || 'Failed to generate resume with template')
+      }
+
+      // Transform the result to match the expected format
+      const transformedResult: OptimizedResumeResponse = {
+        resume: templateResult.data.resume,
+        format: 'html' as const,
+        template: templateResult.data.template,
+        optimizations: {
+          suggestions: templateResult.data.optimizations?.suggestions || ['Resume generated with selected template'],
+          keywordsFound: templateResult.data.optimizations?.keywordsFound || [],
+          atsScore: templateResult.data.optimizations?.atsScore || 85 // Default good score for template generation
+        }
+      }
+
+      // Store the result and redirect to download page
+      sessionStorage.setItem('optimizedResumeResult', JSON.stringify(transformedResult))
+      sessionStorage.setItem('resumeDataForDownload', JSON.stringify(resumeData))
+      console.log('Resume template generation completed successfully, redirecting to download page')
+      
+      router.push('/download')
+
+    } catch (error) {
+      console.error('Error generating resume with template:', error)
+      showAlert({
+        title: "Template Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate resume with template. Please try again.",
+        type: "error",
+        confirmText: "OK"
+      })
+    } finally {
+      setIsOptimizing(false)
+    }
+  }
+
   const handleOptimizeResume = async () => {
     if (!jobDescription.trim()) {
       showAlert({
@@ -819,55 +918,8 @@ Link: ${proj.link}
       // STEP 2: Optimize the resume using the extracted data
       console.log('Optimizing resume with extracted data...')
       
-      const optimizeResponse = await fetch('/api/optimize-resume', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          extractedResumeId,
-          jobDescription,
-          analysisData: null, // We could get this from sessionStorage if available
-          templateId: selectedTemplate,
-          documentId: storedDocumentId || null,
-          analysisId: storedAnalysisId || null,
-          bypassCache: false
-        }),
-      })
-
-      if (!optimizeResponse.ok) {
-        throw new Error('Failed to optimize resume')
-      }
-
-      const optimizeResult = await optimizeResponse.json()
-      if (!optimizeResult.success) {
-        throw new Error(optimizeResult.error || 'Failed to optimize resume')
-      }
-
-      // Transform the result to match the expected OptimizedResumeResponse format
-      const transformedResult: OptimizedResumeResponse = {
-        resume: optimizeResult.content,
-        format: 'html' as const,
-        template: {
-          id: selectedTemplate,
-          name: 'Optimized Template',
-          description: 'AI-optimized resume template',
-          category: 'modern' as const,
-          atsOptimized: true
-        },
-        optimizations: {
-          suggestions: optimizeResult.metadata.optimizationSuggestions || [],
-          keywordsFound: optimizeResult.metadata.keywordsMatched || [],
-          atsScore: optimizeResult.metadata.atsScore || 0
-        }
-      }
-
-      // Store the optimized result in sessionStorage and redirect to download page
-      sessionStorage.setItem('optimizedResumeResult', JSON.stringify(transformedResult))
-      sessionStorage.setItem('resumeDataForDownload', JSON.stringify(resumeData))
-      console.log('Resume optimization completed successfully, redirecting to download page')
-      
-      router.push('/download')
+      // NOTE: This function is deprecated - use handleGenerateWithTemplate instead
+      throw new Error('This optimization method is deprecated. Please use the template-based generation instead.')
 
     } catch (error) {
       console.error('Error optimizing resume:', error)
@@ -973,13 +1025,8 @@ Link: ${proj.link}
 
   // Determine if we should show "Get Resume" or "Generate Optimized Resume"
   const shouldShowGetResume = () => {
-    return (
-      resumeData.personalInfo.name &&
-      resumeData.personalInfo.email &&
-      selectedTemplate &&
-      (resumeData.experience.length > 0 || resumeData.summary) &&
-      !jobDescription.trim() // No job description means just generate template
-    )
+    // Always show "Get Resume" - we don't want to do optimization here
+    return true
   }
 
   const handleDownloadPDF = async () => {
@@ -1158,7 +1205,7 @@ Link: ${proj.link}
                     </TabsTrigger>
                     <TabsTrigger value="optimize" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
                       <Zap className="h-4 w-4 mr-2" />
-                      Optimize
+                      Template
                     </TabsTrigger>
                   </TabsList>
                 </div>
@@ -1795,27 +1842,17 @@ Link: ${proj.link}
                           <Zap className="h-6 w-6 text-white" />
                         </div>
                         <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                          {shouldShowGetResume() ? 'Generate Your Resume' : 'Generate Your Optimized Resume'}
+                          Generate Your Resume
                         </span>
                       </CardTitle>
                       <CardDescription className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        {shouldShowGetResume() 
-                          ? 'Create a professional resume with your selected template. Add a job description for AI-powered optimization.'
-                          : 'Create an ATS-optimized resume tailored specifically to your target job using AI-powered optimization'
-                        }
+                        Create a professional resume with your selected template
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="p-8">
                       <div className="text-center space-y-6">
                         {/* Progress Indicators */}
                         <div className="flex items-center justify-center space-x-4 mb-6">
-                          <div className={`flex items-center space-x-2 ${jobDescription.trim() ? 'text-green-600' : 'text-gray-400'}`}>
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${jobDescription.trim() ? 'bg-green-100' : 'bg-gray-100'}`}>
-                              {jobDescription.trim() ? <CheckCircle className="h-4 w-4" /> : <span className="text-xs">1</span>}
-                            </div>
-                            <span className="text-sm font-medium">Job Description</span>
-                          </div>
-                          <div className="w-8 h-0.5 bg-gray-200"></div>
                           <div className={`flex items-center space-x-2 ${resumeData.personalInfo.name && resumeData.personalInfo.email ? 'text-green-600' : 'text-gray-400'}`}>
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center ${resumeData.personalInfo.name && resumeData.personalInfo.email ? 'bg-green-100' : 'bg-gray-100'}`}>
                               {resumeData.personalInfo.name && resumeData.personalInfo.email ? <CheckCircle className="h-4 w-4" /> : <span className="text-xs">2</span>}
@@ -1832,7 +1869,7 @@ Link: ${proj.link}
                         </div>
 
                         {/* Mode indicator */}
-                        {shouldShowGetResume() && (
+                        {false && (
                           <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                             <p className="text-sm text-blue-800 flex items-center justify-center">
                               <FileText className="h-4 w-4 mr-2" />
@@ -1841,7 +1878,7 @@ Link: ${proj.link}
                           </div>
                         )}
 
-                        {!shouldShowGetResume() && jobDescription.trim() && (
+                        {false && (
                           <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
                             <p className="text-sm text-purple-800 flex items-center justify-center">
                               <Sparkles className="h-4 w-4 mr-2" />
@@ -1851,7 +1888,7 @@ Link: ${proj.link}
                         )}
 
                         <Button
-                          onClick={shouldShowGetResume() ? handleGetResume : handleOptimizeResume}
+                          onClick={handleGenerateWithTemplate}
                           disabled={isOptimizing || !resumeData.personalInfo.name || !resumeData.personalInfo.email || !selectedTemplate}
                           className="w-full max-w-md bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
                           size="lg"
@@ -1860,10 +1897,10 @@ Link: ${proj.link}
                           {isOptimizing ? (
                             <>
                               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                              {shouldShowGetResume() ? 'Generating Resume...' : 'Optimizing Your Resume...'}
+                              Generating Resume...
                             </>
                           ) : (
-                            shouldShowGetResume() ? 'Get Resume' : 'Generate Optimized Resume'
+                            'Generate Resume'
                           )}
                         </Button>
 
@@ -1877,7 +1914,6 @@ Link: ${proj.link}
                               {!resumeData.personalInfo.name && <li>• Enter your full name</li>}
                               {!resumeData.personalInfo.email && <li>• Enter your email address</li>}
                               {!selectedTemplate && <li>• Select a template</li>}
-                              {shouldShowGetResume() ? null : !jobDescription.trim() && <li>• Add a job description for AI optimization (optional for basic resume)</li>}
                             </ul>
                           </div>
                         )}

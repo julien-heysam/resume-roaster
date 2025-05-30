@@ -76,10 +76,8 @@ export default function AnalysisPage() {
   const [analysisId, setAnalysisId] = useState<string | undefined>(undefined)
   const [documentId, setDocumentId] = useState<string | undefined>(undefined)
   const [isGeneratingOptimized, setIsGeneratingOptimized] = useState(false)
-  const [cachedExtractionData, setCachedExtractionData] = useState<any>(null)
-  const [cachedOptimizedResume, setCachedOptimizedResume] = useState<any>(null)
-  const [cachedCoverLetter, setCachedCoverLetter] = useState<any>(null)
-  const [cacheKey, setCacheKey] = useState<string | null>(null)
+  const [hasOptimizedResume, setHasOptimizedResume] = useState(false)
+  const [hasCoverLetter, setHasCoverLetter] = useState(false)
   const [isDebugExpanded, setIsDebugExpanded] = useState(false)
   const [pdfImages, setPdfImages] = useState<string[]>([])
   const [showImageModal, setShowImageModal] = useState(false)
@@ -91,121 +89,32 @@ export default function AnalysisPage() {
   const router = useRouter()
   const { showAlert, AlertDialog } = useAlertDialog()
 
-  // Generate cache key based on analysis data and job description
-  const generateCacheKey = (analysis: AnalysisData, resume: any, jobDesc: string, isFreshAnalysis: boolean = false) => {
-    try {
-      // Simple hash function that works in all environments
-      const simpleHash = (str: string) => {
-        let hash = 0
-        if (str.length === 0) return hash.toString(36)
-        for (let i = 0; i < str.length; i++) {
-          const char = str.charCodeAt(i)
-          hash = ((hash << 5) - hash) + char
-          hash = hash & hash // Convert to 32bit integer
+  // Check for existing optimized resume and cover letter in database
+  useEffect(() => {
+    const checkExistingContent = async () => {
+      if (!analysisId) return
+
+      try {
+        // Check for existing optimized resume
+        const optimizedResponse = await fetch(`/api/check-generated-content?analysisId=${analysisId}&type=resume`)
+        if (optimizedResponse.ok) {
+          const optimizedResult = await optimizedResponse.json()
+          setHasOptimizedResume(optimizedResult.exists)
         }
-        return Math.abs(hash).toString(36)
-      }
 
-      const analysisData = JSON.stringify({
-        score: analysis.overallScore,
-        strengths: analysis.strengths,
-        weaknesses: analysis.weaknesses,
-        suggestions: analysis.suggestions.map(s => s.solution),
-        keywords: analysis.keywordMatch
-      })
-      
-      const resumeText = typeof resume === 'string' ? resume.slice(0, 200) : 
-        (resume?.text || resume?.extractedText || '').slice(0, 200)
-      
-      const jobText = jobDesc.slice(0, 200)
-      
-      const analysisHash = simpleHash(analysisData)
-      const resumeHash = simpleHash(resumeText)
-      const jobHash = simpleHash(jobText)
-      
-      // If this is a fresh analysis, add a timestamp to ensure we don't use old cache
-      const freshFlag = isFreshAnalysis ? `_fresh_${Date.now()}` : ''
-      
-      return `extraction_${analysisHash}_${resumeHash}_${jobHash}${freshFlag}`
-    } catch (error) {
-      console.error('Failed to generate cache key:', error)
-      // Fallback to timestamp-based key
-      return `extraction_fallback_${Date.now()}`
-    }
-  }
-
-  // Load cached extraction data
-  const loadCachedExtraction = (key: string) => {
-    try {
-      const cached = localStorage.getItem(key)
-      if (cached) {
-        const parsedCache = JSON.parse(cached)
-        // Check if cache is not older than 24 hours
-        const cacheAge = Date.now() - parsedCache.timestamp
-        const maxAge = 24 * 60 * 60 * 1000 // 24 hours
-        
-        if (cacheAge < maxAge) {
-          return parsedCache.data
-        } else {
-          // Remove expired cache
-          localStorage.removeItem(key)
+        // Check for existing cover letter
+        const coverLetterResponse = await fetch(`/api/check-generated-content?analysisId=${analysisId}&type=cover-letter`)
+        if (coverLetterResponse.ok) {
+          const coverLetterResult = await coverLetterResponse.json()
+          setHasCoverLetter(coverLetterResult.exists)
         }
+      } catch (error) {
+        console.error('Error checking existing content:', error)
       }
-    } catch (error) {
-      console.error('Failed to load cached extraction:', error)
     }
-    return null
-  }
 
-  // Save extraction data to cache
-  const saveCachedExtraction = (key: string, data: any) => {
-    try {
-      const cacheData = {
-        data: data,
-        timestamp: Date.now(),
-        version: '1.0'
-      }
-      localStorage.setItem(key, JSON.stringify(cacheData))
-    } catch (error) {
-      console.error('Failed to save extraction to cache:', error)
-    }
-  }
-
-  // Clean up old cache entries to prevent localStorage bloat
-  const cleanupOldCaches = () => {
-    try {
-      const maxAge = 24 * 60 * 60 * 1000 // 24 hours
-      const keysToRemove: string[] = []
-      
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key && key.startsWith('extraction_')) {
-          try {
-            const cached = localStorage.getItem(key)
-            if (cached) {
-              const parsedCache = JSON.parse(cached)
-              const cacheAge = Date.now() - parsedCache.timestamp
-              
-              if (cacheAge > maxAge) {
-                keysToRemove.push(key)
-              }
-            }
-          } catch (error) {
-            // If we can't parse it, it's probably corrupted, remove it
-            keysToRemove.push(key)
-          }
-        }
-      }
-      
-      keysToRemove.forEach(key => localStorage.removeItem(key))
-      
-      if (keysToRemove.length > 0) {
-        console.log(`Cleaned up ${keysToRemove.length} old extraction cache entries`)
-      }
-    } catch (error) {
-      console.error('Failed to cleanup old caches:', error)
-    }
-  }
+    checkExistingContent()
+  }, [analysisId])
 
   // Handle generating optimized version
   const handleGenerateOptimized = async (bypassCache: boolean = false) => {
@@ -260,46 +169,29 @@ Areas for Improvement: ${analysisData.weaknesses.join(', ')}
 Note: Original resume text was not available, using analysis data for optimization.`
       }
 
-      // Generate cache key for this specific combination
-      const currentCacheKey = generateCacheKey(analysisData, resumeData, jobDescription || '', false) // Use consistent key for checking
-      console.log('Checking cache with key:', currentCacheKey)
-      
-      // Check if we have cached data for this exact combination (unless bypassing cache)
-      let extractedData = null
-      if (!bypassCache) {
-        extractedData = loadCachedExtraction(currentCacheKey)
-        console.log('Cache lookup result:', extractedData ? 'Found' : 'Not found')
-      } else {
-        console.log('🚀 BYPASSING CACHE - Force regenerating with fresh AI processing')
-      }
-      
-      if (extractedData && !bypassCache) {
-        console.log('Using cached extraction data - skipping AI processing')
-        
-        // Show user that we're using cached data
+      // Check if we have existing optimized resume (unless bypassing)
+      if (!bypassCache && hasOptimizedResume) {
         showAlert({
-          title: "🚀 Cached Data Found!",
-          description: "Found cached optimization data for this analysis! This will be much faster than re-processing. Would you like to use the cached data or re-process with AI?",
+          title: "🚀 Existing Optimized Resume Found!",
+          description: "Found an existing optimized resume for this analysis! Would you like to use the existing one or generate a new one?",
           type: "info",
-          confirmText: "Use Cached Data (Instant)",
-          cancelText: "Re-process with AI",
+          confirmText: "Use Existing (Instant)",
+          cancelText: "Generate New",
           showCancel: true,
           onConfirm: () => {
-            // Continue with cached data
-            proceedWithExtractedData(extractedData)
+            // Continue with existing data
+            proceedWithExistingData()
           },
           onCancel: () => {
-            // User wants fresh processing, remove cache and continue
-            localStorage.removeItem(currentCacheKey)
-            setCachedExtractionData(null) // Update the state to reflect cache removal
-            proceedWithFreshExtraction(resumeText, currentCacheKey, true) // Pass bypassCache=true
+            // User wants fresh processing
+            proceedWithFreshExtraction(resumeText, true) // Pass bypassCache=true
           }
         })
         return
       }
       
-      // No cached data or bypassing cache, proceed with fresh extraction
-      await proceedWithFreshExtraction(resumeText, currentCacheKey, bypassCache)
+      // No existing data or bypassing, proceed with fresh extraction
+      await proceedWithFreshExtraction(resumeText, bypassCache)
       
     } catch (error) {
       console.error('Error generating optimized version:', error)
@@ -333,14 +225,11 @@ Note: Original resume text was not available, using analysis data for optimizati
     }
   }
 
-  // Helper function to proceed with extracted data
-  const proceedWithExtractedData = (extractedData: any) => {
-    console.log('Resume data ready:', extractedData)
-    
-    // Store the extracted data in session storage with a fresh flag
-    sessionStorage.setItem('extractedResumeData', JSON.stringify(extractedData))
-    sessionStorage.setItem('extractedDataTimestamp', Date.now().toString())
-    sessionStorage.setItem('isFromAnalysis', 'true') // Flag to indicate this is fresh from analysis
+  // Helper function to proceed with existing data
+  const proceedWithExistingData = () => {
+    // Store the analysis data for the resume optimizer
+    sessionStorage.setItem('analysisId', analysisId || '')
+    sessionStorage.setItem('isFromAnalysis', 'true')
     if (jobDescription) {
       sessionStorage.setItem('analysisJobDescription', jobDescription)
     }
@@ -350,29 +239,21 @@ Note: Original resume text was not available, using analysis data for optimizati
   }
 
   // Helper function to proceed with fresh extraction
-  const proceedWithFreshExtraction = async (resumeText: string, currentCacheKey: string, bypassCache: boolean = false) => {
+  const proceedWithFreshExtraction = async (resumeText: string, bypassCache: boolean = false) => {
     if (bypassCache) {
-      console.log('🔄 FORCE REGENERATION: Running fresh AI extraction (bypassing all caches)...')
+      console.log('🔄 FORCE REGENERATION: Running fresh AI optimization (bypassing existing data)...')
     } else {
-      console.log('No cached data found - running AI extraction...')
+      console.log('No existing data found - running AI optimization...')
     }
     
-    // Get stored document and analysis IDs from session storage
-    const storedDocumentId = sessionStorage.getItem('documentId')
-    const storedAnalysisId = sessionStorage.getItem('analysisId')
-    
-    // Call the extraction API
-    const response = await fetch('/api/extract-resume-data', {
+    // Call the optimization API with analysisId instead of raw text
+    const response = await fetch('/api/optimize-resume', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        resumeText: resumeText,
-        analysisData: analysisData,
-        jobDescription: jobDescription || '',
-        documentId: storedDocumentId || null,
-        analysisId: storedAnalysisId || null,
+        analysisId: analysisId,
         bypassCache: bypassCache
       }),
     })
@@ -380,22 +261,34 @@ Note: Original resume text was not available, using analysis data for optimizati
     const result = await response.json()
 
     if (!response.ok) {
-      throw new Error(result.error || 'Failed to extract resume data')
+      throw new Error(result.error || 'Failed to optimize resume')
     }
 
-    const extractedData = result.data
+    const optimizedData = result.data
     
-    // Cache the result for future use (unless we're bypassing cache)
-    if (!bypassCache) {
-      saveCachedExtraction(currentCacheKey, extractedData)
-      setCachedExtractionData(extractedData) // Update the state to reflect new cached data
-      console.log('Extraction completed and cached for future use')
-    } else {
-      console.log('Extraction completed but not cached due to bypass flag')
+    // Update state to reflect new optimized resume exists
+    setHasOptimizedResume(true)
+    console.log('Optimization completed and saved to database')
+    
+    // Proceed with the optimized data
+    proceedWithOptimizedData(optimizedData, result)
+  }
+
+  // Helper function to proceed with optimized data
+  const proceedWithOptimizedData = (optimizedData: any, result: any) => {
+    console.log('Optimized data ready:', optimizedData)
+    
+    // Store the optimized data in session storage with analysis context
+    sessionStorage.setItem('optimizedResumeData', JSON.stringify(optimizedData))
+    sessionStorage.setItem('optimizedDataTimestamp', Date.now().toString())
+    sessionStorage.setItem('isFromAnalysis', 'true')
+    sessionStorage.setItem('analysisId', analysisId || '')
+    if (jobDescription) {
+      sessionStorage.setItem('analysisJobDescription', jobDescription)
     }
     
-    // Proceed with the extracted data
-    proceedWithExtractedData(extractedData)
+    // Redirect to Resume Optimizer with prefilled parameter
+    router.push('/resume-optimizer?prefilled=true')
   }
 
   // Handle PDF image modal
@@ -421,17 +314,14 @@ Note: Original resume text was not available, using analysis data for optimizati
 
   const handleCoverLetterGenerated = (cached: boolean, usageCount: number) => {
     if (cached) {
-      setCachedCoverLetter({ cached: true, usageCount })
+      setHasCoverLetter(true)
     } else {
       // If a new cover letter was generated, it means there's now a cached version
-      setCachedCoverLetter({ cached: false, usageCount: 1 })
+      setHasCoverLetter(false)
     }
   }
 
   useEffect(() => {
-    // Clean up old cache entries first
-    cleanupOldCaches()
-    
     // Load analysis results from sessionStorage
     const storedAnalysis = sessionStorage.getItem('analysisResults')
     const storedResumeData = sessionStorage.getItem('resumeData')
@@ -439,7 +329,22 @@ Note: Original resume text was not available, using analysis data for optimizati
     const storedAnalysisId = sessionStorage.getItem('analysisId')
     const storedPdfImages = sessionStorage.getItem('pdfImages')
     const storedDocumentId = sessionStorage.getItem('documentId')
+    const storedExtractedResumeId = sessionStorage.getItem('extractedResumeId')
+    const isFromDashboard = sessionStorage.getItem('isFromDashboard') === 'true'
+    const dashboardAnalysisId = sessionStorage.getItem('dashboardAnalysisId')
     
+    console.log('=== ANALYSIS PAGE LOAD DEBUG ===')
+    console.log('Stored analysis:', !!storedAnalysis)
+    console.log('Stored resume data:', !!storedResumeData)
+    console.log('Stored job description:', !!storedJobDescription)
+    console.log('Stored analysis ID:', storedAnalysisId)
+    console.log('Stored document ID:', storedDocumentId)
+    console.log('Stored extracted resume ID:', storedExtractedResumeId)
+    console.log('Stored PDF images:', !!storedPdfImages)
+    console.log('Is from dashboard:', isFromDashboard)
+    console.log('Dashboard analysis ID:', dashboardAnalysisId)
+    
+    // Load resume data first
     if (storedResumeData) {
       try {
         const parsedResumeData = JSON.parse(storedResumeData)
@@ -447,75 +352,123 @@ Note: Original resume text was not available, using analysis data for optimizati
         if (storedDocumentId && !parsedResumeData.documentId) {
           parsedResumeData.documentId = storedDocumentId
         }
+        // Ensure extractedResumeId is included in resumeData
+        if (storedExtractedResumeId && !parsedResumeData.extractedResumeId) {
+          parsedResumeData.extractedResumeId = storedExtractedResumeId
+        }
         setResumeData(parsedResumeData)
+        console.log('Resume data loaded successfully')
       } catch (error) {
         console.error('Failed to parse resume data:', error)
       }
     }
     
+    // Load job description
     if (storedJobDescription) {
       setJobDescription(storedJobDescription)
+      console.log('Job description loaded successfully:', storedJobDescription.length, 'characters')
+    } else {
+      // Fallback: check if job description is stored in analysis data
+      if (storedAnalysis) {
+        try {
+          const analysis = JSON.parse(storedAnalysis)
+          if (analysis.jobDescription) {
+            setJobDescription(analysis.jobDescription)
+            console.log('Job description loaded from analysis data:', analysis.jobDescription.length, 'characters')
+          }
+        } catch (error) {
+          console.error('Failed to parse analysis for job description fallback:', error)
+        }
+      }
     }
 
+    // Load analysis ID
     if (storedAnalysisId) {
       setAnalysisId(storedAnalysisId)
     }
     
+    // Load extracted resume ID
+    if (storedExtractedResumeId) {
+      // Store extracted resume ID for future use
+      sessionStorage.setItem('extractedResumeId', storedExtractedResumeId)
+    }
+    
+    // Load PDF images
     if (storedPdfImages) {
       try {
-        setPdfImages(JSON.parse(storedPdfImages))
+        const parsedImages = JSON.parse(storedPdfImages)
+        setPdfImages(parsedImages)
+        console.log('PDF images loaded successfully:', parsedImages.length, 'images')
       } catch (error) {
         console.error('Failed to parse PDF images:', error)
       }
     }
     
-    if (storedAnalysis) {
-      try {
-        const analysis = JSON.parse(storedAnalysis)
-        setAnalysisData(analysis)
-      } catch (error) {
-        console.error('Failed to parse analysis results:', error)
-        // Fall back to mock data if parsing fails
-        setAnalysisData(getMockData())
-        // Also set mock resume data for demo purposes
-        if (!storedResumeData) {
-          setResumeData(getMockResumeData())
-        }
-      }
-    } else {
-      // Use mock data if no real analysis is available
-      setAnalysisData(getMockData())
-      // Also set mock resume data for demo purposes
-      if (!storedResumeData) {
-        setResumeData(getMockResumeData())
-      }
-    }
-    
+    // Load document ID
     if (storedDocumentId) {
       setDocumentId(storedDocumentId)
     }
     
-    setIsLoading(false)
-  }, [])
-
-  // Generate cache key when data is available
-  useEffect(() => {
-    if (analysisData && resumeData) {
-      const key = generateCacheKey(analysisData, resumeData, jobDescription || '', false) // Don't use fresh flag for checking existing cache
-      setCacheKey(key)
-      console.log('Generated cache key:', key)
-      
-      // Check if we have cached extraction data
-      const cached = loadCachedExtraction(key)
-      if (cached) {
-        setCachedExtractionData(cached)
-        console.log('Found cached extraction data for current analysis:', cached)
+    // Load analysis data
+    if (storedAnalysis) {
+      try {
+        const analysis = JSON.parse(storedAnalysis)
+        setAnalysisData(analysis)
+        console.log('Analysis data loaded successfully')
+      } catch (error) {
+        console.error('Failed to parse analysis results:', error)
+        // Only fall back to mock data if we don't have real data from dashboard
+        if (!isFromDashboard) {
+          setAnalysisData(getMockData())
+          // Only set mock resume data if we don't have real resume data
+          if (!storedResumeData) {
+            setResumeData(getMockResumeData())
+          }
+        }
+      }
+    } else {
+      // Only use mock data if we're not coming from dashboard and have no real data
+      if (!isFromDashboard) {
+        console.log('No stored analysis found, using mock data')
+        setAnalysisData(getMockData())
+        // Only set mock resume data if we don't have real resume data
+        if (!storedResumeData) {
+          setResumeData(getMockResumeData())
+        }
       } else {
-        setCachedExtractionData(null)
-        console.log('No cached extraction data found for current analysis')
+        console.log('Coming from dashboard but no analysis data found - this might be an issue')
+        // Still set mock data but preserve real resume/job data
+        setAnalysisData(getMockData())
       }
     }
-  }, [analysisData, resumeData, jobDescription])
+    
+    // Clean up dashboard flags after loading
+    if (isFromDashboard) {
+      sessionStorage.removeItem('isFromDashboard')
+      sessionStorage.removeItem('dashboardAnalysisId')
+      console.log('Cleaned up dashboard navigation flags')
+    }
+    
+    setIsLoading(false)
+    console.log('=== ANALYSIS PAGE LOAD COMPLETE ===')
+    console.log('Final state - PDF images:', pdfImages.length)
+    console.log('Final state - Job description:', !!jobDescription)
+  }, [])
+
+  // Debug effect to log state changes
+  useEffect(() => {
+    console.log('=== STATE UPDATE DEBUG ===')
+    console.log('PDF images count:', pdfImages.length)
+    console.log('Job description length:', jobDescription?.length || 0)
+    console.log('Analysis data exists:', !!analysisData)
+    console.log('Resume data exists:', !!resumeData)
+    if (pdfImages.length > 0) {
+      console.log('First PDF image preview:', pdfImages[0].substring(0, 50) + '...')
+    }
+    if (jobDescription) {
+      console.log('Job description preview:', jobDescription.substring(0, 100) + '...')
+    }
+  }, [pdfImages, jobDescription, analysisData, resumeData])
 
   const getMockResumeData = () => ({
     text: `John Doe
@@ -709,8 +662,132 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
           </Card>
         </div>
 
-{/* Scoring Breakdown */}
-{analysisData.scoringBreakdown && (
+        {/* Resume and Job Description Overview */}
+        <div className="mb-8 grid md:grid-cols-2 gap-6">
+          {/* Original Resume Section */}
+          <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Image className="h-6 w-6 text-blue-600" />
+                <span className="text-blue-800">Your Resume</span>
+              </CardTitle>
+              <CardDescription>
+                The resume we analyzed for you
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {pdfImages.length > 0 ? (
+                <div className="space-y-4">
+                  {/* Resume Preview Thumbnail */}
+                  <div className="relative bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
+                    <div className="flex justify-center">
+                      <img
+                        src={`data:image/png;base64,${pdfImages[0]}`}
+                        alt="Resume Preview"
+                        className="max-w-full max-h-48 object-contain rounded shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                        onClick={handleOpenImageModal}
+                      />
+                    </div>
+                    {pdfImages.length > 1 && (
+                      <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                        {pdfImages.length} pages
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={handleOpenImageModal}
+                    className="w-full text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 bg-blue-50 hover:bg-blue-100"
+                  >
+                    <Image className="h-4 w-4 mr-2" />
+                    View Full Resume ({pdfImages.length} page{pdfImages.length > 1 ? 's' : ''})
+                  </Button>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="p-4 bg-blue-100 rounded-lg w-fit mx-auto mb-4">
+                    <FileText className="h-12 w-12 text-blue-600" />
+                  </div>
+                  <p className="text-gray-600 mb-2">Resume content analyzed</p>
+                  <p className="text-sm text-gray-500">
+                    {resumeData?.fileName || 'Text-based resume processed'}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Job Description Section */}
+          <Card className="bg-gradient-to-br from-purple-50 to-pink-100 border-purple-200 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Briefcase className="h-6 w-6 text-purple-600" />
+                <span className="text-purple-800">Target Job</span>
+              </CardTitle>
+              <CardDescription>
+                The position you're applying for
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {jobDescription ? (
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-4 border border-purple-200 shadow-sm max-h-48 overflow-y-auto">
+                    <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap">
+                      {jobDescription.length > 500 
+                        ? `${jobDescription.substring(0, 500)}...` 
+                        : jobDescription
+                      }
+                    </div>
+                  </div>
+                  
+                  {jobDescription.length > 500 && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        // Create a modal or expand to show full job description
+                        const modal = document.createElement('div')
+                        modal.innerHTML = `
+                          <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                            <div class="bg-white rounded-lg max-w-4xl max-h-[80vh] overflow-y-auto p-6">
+                              <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">Full Job Description</h3>
+                                <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">
+                                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                  </svg>
+                                </button>
+                              </div>
+                              <div class="prose max-w-none whitespace-pre-wrap">${jobDescription}</div>
+                            </div>
+                          </div>
+                        `
+                        document.body.appendChild(modal)
+                      }}
+                      className="w-full text-purple-600 hover:text-purple-700 border-purple-200 hover:border-purple-300 bg-purple-50 hover:bg-purple-100"
+                    >
+                      <Briefcase className="h-4 w-4 mr-2" />
+                      View Full Job Description
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="p-4 bg-purple-100 rounded-lg w-fit mx-auto mb-4">
+                    <Briefcase className="h-12 w-12 text-purple-600" />
+                  </div>
+                  <p className="text-gray-600 mb-2">No specific job targeted</p>
+                  <p className="text-sm text-gray-500">
+                    General resume analysis performed
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Scoring Breakdown */}
+        {analysisData.scoringBreakdown && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Score Breakdown</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -777,55 +854,6 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
           </div>
         )}
         
-        {/* Original Resume Section */}
-        {pdfImages.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Image className="h-6 w-6 text-blue-500" />
-                <span>Original Resume</span>
-              </CardTitle>
-              <CardDescription>
-                Your uploaded resume for reference
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-center">
-                <Button
-                  variant="outline"
-                  onClick={handleOpenImageModal}
-                  className="text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 bg-blue-50 hover:bg-blue-100"
-                >
-                  <Image className="h-4 w-4 mr-2" />
-                  View Resume ({pdfImages.length} page{pdfImages.length > 1 ? 's' : ''})
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Job Description Section */}
-        {jobDescription && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Briefcase className="h-6 w-6 text-purple-500" />
-                <span>Target Job Description</span>
-              </CardTitle>
-              <CardDescription>
-                The job posting you're targeting with this analysis
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
-                <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap">
-                  {jobDescription}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Analysis */}
           <div className="lg:col-span-2 space-y-6">
@@ -1071,12 +1099,12 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                         <span>Cache Status</span>
                         <div className="flex items-center space-x-1">
                           <div className={`w-2 h-2 rounded-full ${
-                            cachedExtractionData && cachedCoverLetter ? 'bg-green-500' : 
-                            cachedExtractionData || cachedCoverLetter ? 'bg-yellow-500' : 'bg-gray-300'
+                            hasOptimizedResume && hasCoverLetter ? 'bg-green-500' : 
+                            hasOptimizedResume || hasCoverLetter ? 'bg-yellow-500' : 'bg-gray-300'
                           }`}></div>
                           <span className="text-xs text-gray-600">
-                            {cachedExtractionData && cachedCoverLetter ? 'Fully Cached' :
-                             cachedExtractionData || cachedCoverLetter ? 'Partially Cached' : 'Not Cached'}
+                            {hasOptimizedResume && hasCoverLetter ? 'Fully Available' :
+                             hasOptimizedResume || hasCoverLetter ? 'Partially Available' : 'Not Generated'}
                           </span>
                         </div>
                       </div>
@@ -1112,66 +1140,39 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="text-gray-600">Optimized Resume</span>
-                              <span className={`font-medium ${cachedExtractionData ? 'text-blue-600' : 'text-gray-400'}`}>
-                                {cachedExtractionData ? '⚡' : '○'}
+                              <span className={`font-medium ${hasOptimizedResume ? 'text-blue-600' : 'text-gray-400'}`}>
+                                {hasOptimizedResume ? '⚡' : '○'}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="text-gray-600">Cover Letter</span>
-                              <span className={`font-medium ${cachedCoverLetter ? 'text-purple-600' : 'text-gray-400'}`}>
-                                {cachedCoverLetter ? '💾' : '○'}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600">Resume Format</span>
-                              <span className="text-gray-500 text-xs">
-                                {resumeData ? (
-                                  typeof resumeData === 'string' ? 'Text' : 
-                                  resumeData.text ? 'Structured' : 
-                                  resumeData.extractedText ? 'Extracted' : 'Unknown'
-                                ) : 'N/A'}
+                              <span className={`font-medium ${hasCoverLetter ? 'text-purple-600' : 'text-gray-400'}`}>
+                                {hasCoverLetter ? '💾' : '○'}
                               </span>
                             </div>
                           </div>
                           
-                          {/* Additional Details */}
-                          {resumeData && (
+                          {/* Analysis Info */}
+                          {analysisId && (
                             <div className="pt-2 border-t border-gray-200">
                               <div className="text-xs text-gray-500">
-                                <span className="font-medium">Resume Type:</span> {
-                                  typeof resumeData === 'string' ? 'Plain Text' : 
-                                  resumeData.text ? 'Structured Data (text field)' : 
-                                  resumeData.extractedText ? 'Structured Data (extracted field)' : 
-                                  'Unknown Structure'
-                                }
+                                <span className="font-medium">Analysis ID:</span> 
+                                <span className="font-mono text-xs break-all">{analysisId.substring(0, 20)}...</span>
                               </div>
-                            </div>
-                          )}
-                          
-                          {/* Cache Management */}
-                          {cacheKey && cachedExtractionData && (
-                            <div className="pt-2 border-t border-gray-200">
-                              <button 
-                                onClick={() => {
-                                  if (cacheKey) {
-                                    showAlert({
-                                      title: "Clear Local Cache",
-                                      description: "Clear cached extraction data? Next optimization will be slower but fresh.",
-                                      type: "warning",
-                                      confirmText: "Clear Cache",
-                                      cancelText: "Keep Cache",
-                                      showCancel: true,
-                                      onConfirm: () => {
-                                        localStorage.removeItem(cacheKey)
-                                        setCachedExtractionData(null)
-                                      }
-                                    })
-                                  }
-                                }}
-                                className="text-xs text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1 rounded transition-colors"
-                              >
-                                Clear Local Cache
-                              </button>
+                              <div className="text-xs text-gray-500 mt-1">
+                                <span className="font-medium">Database Status:</span> 
+                                <span className={hasOptimizedResume ? 'text-green-600' : 'text-red-600'}>
+                                  {hasOptimizedResume ? 'Optimized resume exists' : 'No optimized resume'}
+                                </span>
+                              </div>
+                              {hasCoverLetter && (
+                                <div className="text-xs text-gray-500 mt-1">
+                                  <span className="font-medium">Cover Letter:</span> 
+                                  <span className="text-purple-600">
+                                    Available in database
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -1190,7 +1191,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Generating...
                       </>
-                    ) : cachedExtractionData ? (
+                    ) : hasOptimizedResume ? (
                       <>
                         <Zap className="h-4 w-4 mr-2" />
                         Generate Optimized Version (Fast)
@@ -1203,8 +1204,8 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                     )}
                   </Button>
                   
-                  {/* Force Regenerate Button - only show if we have cached data */}
-                  {cachedExtractionData && (
+                  {/* Force Regenerate Button - only show if we have existing data */}
+                  {/* {hasOptimizedResume && (
                     <Button 
                       variant="outline"
                       className="w-full border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700" 
@@ -1212,7 +1213,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                       onClick={() => {
                         showAlert({
                           title: "Force Regenerate",
-                          description: "This will bypass all caches and generate a completely fresh optimized version using AI. This may take longer but ensures the latest optimization techniques are applied.",
+                          description: "This will bypass existing data and generate a completely fresh optimized version using AI. This may take longer but ensures the latest optimization techniques are applied.",
                           type: "info",
                           confirmText: "Force Regenerate",
                           cancelText: "Cancel",
@@ -1230,11 +1231,11 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                       ) : (
                         <>
                           <RefreshCw className="h-4 w-4 mr-2" />
-                          Force Regenerate (Bypass Cache)
+                          Force Regenerate (Bypass Database)
                         </>
                       )}
                     </Button>
-                  )}
+                  )} */}
                   
                   <Button 
                     variant="outline" 

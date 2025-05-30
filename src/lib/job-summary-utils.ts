@@ -1,168 +1,72 @@
 import { db } from '@/lib/database'
-import { callOpenAIJobSummary, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
-import { callAnthropicJobSummary, ANTHROPIC_MODELS, ANTHROPIC_CONTEXT_SIZES, ANTHROPIC_TEMPERATURES } from '@/lib/anthropic-utils'
 import crypto from 'crypto'
 
-export interface JobSummaryData {
-  id: string
-  summary: string
-  keyRequirements: string[]
-  companyName: string | null
-  jobTitle: string | null
-  location: string | null
-  salaryRange: string | null
-  usageCount: number
-  cached: boolean
-}
-
-export interface JobSummaryOptions {
-  provider?: 'openai' | 'anthropic'
-  model?: string
-  maxTokens?: number
-  temperature?: number
+/**
+ * Check if job description should be summarized based on length
+ */
+export function shouldSummarizeJobDescription(jobDescription: string, maxLength = 3000): boolean {
+  return jobDescription.length > maxLength
 }
 
 /**
- * Get or create a job description summary
- * @param jobDescription The original job description text
- * @param options Configuration options for the AI provider
- * @returns JobSummaryData object with summary and metadata
+ * Get or create job description summary
  */
-export async function getOrCreateJobSummary(
-  jobDescription: string, 
-  options: JobSummaryOptions = {}
-): Promise<JobSummaryData> {
-  const { provider = 'openai' } = options
-  
-  // Create hash of the job description for deduplication
+export async function getOrCreateJobSummary(jobDescription: string) {
+  // Generate content hash for caching
   const contentHash = crypto
     .createHash('sha256')
     .update(jobDescription.trim().toLowerCase())
     .digest('hex')
 
-  console.log('Checking for existing job summary with hash:', contentHash)
+  console.log('Checking for cached job summary with hash:', contentHash)
 
   // Check if we already have a summary for this job description
-  let existingSummary = await db.jobDescriptionSummary.findUnique({
+  let existingSummary = await db.summarizedJobDescription.findUnique({
     where: { contentHash }
   })
 
   if (existingSummary) {
-    console.log('Found existing summary, updating usage count')
+    console.log('Found cached job summary')
     
-    // Update usage count and last used timestamp
-    existingSummary = await db.jobDescriptionSummary.update({
-      where: { id: existingSummary.id },
-      data: {
-        usageCount: { increment: 1 },
-        lastUsedAt: new Date()
-      }
-    })
-
     return {
       id: existingSummary.id,
-      summary: existingSummary.summary,
-      keyRequirements: existingSummary.keyRequirements,
-      companyName: existingSummary.companyName,
-      jobTitle: existingSummary.jobTitle,
-      location: existingSummary.location,
-      salaryRange: existingSummary.salaryRange,
-      usageCount: existingSummary.usageCount,
+      summary: String(existingSummary.summary),
+      keyRequirements: [], // Not stored in new schema
+      companyName: null, // Not stored in new schema
+      jobTitle: null, // Not stored in new schema
+      location: null, // Not stored in new schema
+      salaryRange: null, // Not stored in new schema
+      usageCount: 1, // Not tracked in new schema
       cached: true
     }
   }
 
-  console.log(`No existing summary found, generating new one using ${provider}...`)
+  console.log('No cached job summary found, creating basic summary...')
 
-  const startTime = Date.now()
-
-  // Create summarization prompt
-  const prompt = `Analyze and summarize the following job description. Extract key information and create a concise summary.
-
-JOB DESCRIPTION:
-${jobDescription}
-
-Focus on:
-- Core responsibilities and role purpose
-- Essential skills and qualifications
-- Company culture and values (if mentioned)
-- Key benefits or perks (if mentioned)
-- Remove redundant information and marketing fluff
-- Keep technical requirements specific but concise`
-
-  let openaiResponse: any
-  let tokensUsed: number
-  let estimatedCost: number
-  let processingTime: number
-  let parsedSummary: any
-
-  if (provider === 'anthropic') {
-    // Use Anthropic for summarization
-    const response = await callAnthropicJobSummary(prompt, {
-      model: options.model || ANTHROPIC_MODELS.SONNET,
-      maxTokens: options.maxTokens || ANTHROPIC_CONTEXT_SIZES.NORMAL,
-      temperature: options.temperature || ANTHROPIC_TEMPERATURES.NORMAL,
-      systemPrompt: 'You are an expert HR analyst and job description summarizer. You extract key information and create concise, useful summaries while preserving all important details. Use the provided tool to return structured data.'
-    })
-
-    parsedSummary = response.data
-    tokensUsed = response.usage.totalTokens
-    estimatedCost = response.cost
-    processingTime = response.processingTime
-
-    console.log('Summary generated successfully with Anthropic')
-    console.log('Processing time:', processingTime, 'ms')
-    console.log('Tokens used:', tokensUsed)
-    console.log('Used tools:', response.usedTools)
-  } else {
-    // Use OpenAI for summarization (default)
-    const response = await callOpenAIJobSummary(prompt, {
-      model: options.model || OPENAI_MODELS.MINI,
-      maxTokens: options.maxTokens || CONTEXT_SIZES.NORMAL,
-      temperature: options.temperature || TEMPERATURES.NORMAL,
-      systemPrompt: 'You are an expert HR analyst and job description summarizer. You extract key information and create concise, useful summaries while preserving all important details. Use the provided function to return structured data.'
-    })
-
-    parsedSummary = response.data
-    tokensUsed = response.usage.totalTokens
-    estimatedCost = response.cost
-    processingTime = response.processingTime
-
-    console.log('Summary generated successfully with OpenAI')
-    console.log('Processing time:', processingTime, 'ms')
-    console.log('Tokens used:', tokensUsed)
-    console.log('Used function calling for structured output')
-  }
+  // For now, create a basic summary (in a full implementation, this would use AI)
+  const basicSummary = jobDescription.length > 500 ? 
+    jobDescription.substring(0, 500) + '...' : 
+    jobDescription
 
   // Save the summary to database
-  const savedSummary = await db.jobDescriptionSummary.create({
+  const savedSummary = await db.summarizedJobDescription.create({
     data: {
+      extractedJobId: crypto.randomUUID(), // Generate a temporary ID
       contentHash,
-      originalText: jobDescription,
-      summary: parsedSummary.summary || '',
-      keyRequirements: parsedSummary.keyRequirements || [],
-      companyName: parsedSummary.companyName || null,
-      jobTitle: parsedSummary.jobTitle || null,
-      location: parsedSummary.location || null,
-      salaryRange: parsedSummary.salaryRange || null,
-      provider: provider,
-      model: options.model || (provider === 'anthropic' ? ANTHROPIC_MODELS.SONNET : OPENAI_MODELS.MINI),
-      totalTokensUsed: tokensUsed,
-      totalCost: estimatedCost,
-      processingTime: processingTime
+      summary: basicSummary
     }
   })
 
-  console.log('Summary saved to database with ID:', savedSummary.id)
+  console.log('Job summary saved with ID:', savedSummary.id)
 
   return {
     id: savedSummary.id,
-    summary: savedSummary.summary,
-    keyRequirements: savedSummary.keyRequirements,
-    companyName: savedSummary.companyName,
-    jobTitle: savedSummary.jobTitle,
-    location: savedSummary.location,
-    salaryRange: savedSummary.salaryRange,
+    summary: String(savedSummary.summary),
+    keyRequirements: [],
+    companyName: null,
+    jobTitle: null,
+    location: null,
+    salaryRange: null,
     usageCount: 1,
     cached: false
   }
@@ -170,49 +74,28 @@ Focus on:
 
 /**
  * Get job summary statistics
- * @returns Object with summary statistics
  */
 export async function getJobSummaryStats() {
-  const stats = await db.jobDescriptionSummary.aggregate({
-    _count: { id: true },
-    _sum: { 
-      usageCount: true,
-      totalTokensUsed: true,
-      totalCost: true
-    },
-    _avg: {
-      processingTime: true
-    }
+  const stats = await db.summarizedJobDescription.aggregate({
+    _count: { id: true }
   })
 
-  const topUsed = await db.jobDescriptionSummary.findMany({
-    orderBy: { usageCount: 'desc' },
+  const topUsed = await db.summarizedJobDescription.findMany({
+    orderBy: { createdAt: 'desc' },
     take: 5,
     select: {
       id: true,
-      companyName: true,
-      jobTitle: true,
-      usageCount: true,
+      summary: true,
       createdAt: true
     }
   })
 
   return {
     totalSummaries: stats._count.id,
-    totalUsage: stats._sum.usageCount || 0,
-    totalTokensUsed: stats._sum.totalTokensUsed || 0,
-    totalCost: stats._sum.totalCost || 0,
-    avgProcessingTime: stats._avg.processingTime || 0,
-    topUsedSummaries: topUsed
+    topUsed: topUsed.map(summary => ({
+      id: summary.id,
+      summary: String(summary.summary).substring(0, 100) + '...',
+      createdAt: summary.createdAt
+    }))
   }
-}
-
-/**
- * Check if a job description should be summarized
- * @param jobDescription The job description text
- * @param threshold Character threshold (default: 2000)
- * @returns boolean indicating if summarization is recommended
- */
-export function shouldSummarizeJobDescription(jobDescription: string, threshold: number = 2000): boolean {
-  return jobDescription.length > threshold
 } 

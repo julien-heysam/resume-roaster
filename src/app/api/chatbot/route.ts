@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       currentConversationId = conversation.id;
     } else {
       // Add user message to existing conversation and get history
-      await addMessageToConversation(currentConversationId, message, 'USER');
+      await addMessageToConversation(currentConversationId, message, 'user');
       
       // Get conversation history for context
       const conversation = await getChatbotConversation(currentConversationId, userId);
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     const response = await generateAIResponse(message, conversationHistory);
     
     // Add bot response to conversation
-    const botMessage = await addMessageToConversation(currentConversationId, response, 'ASSISTANT');
+    const botMessage = await addMessageToConversation(currentConversationId, response, 'assistant');
     
     return NextResponse.json({
       response: botMessage.content,

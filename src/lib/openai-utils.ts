@@ -236,55 +236,61 @@ export async function callOpenAI<T = any>(
         }
       } else {
         // Try to parse as JSON if it looks like JSON, otherwise return as string
-        try {
-          parsedData = parseJSONResponse(content) as T
-          console.log('✅ JSON parsing successful')
-        } catch (parseError) {
-          // Check if content appears incomplete and retry with continuation
-          if (opts.retryOnIncomplete && isContentIncomplete(content)) {
-            console.log('🔄 Content appears incomplete, attempting continuation...')
-            
-            try {
-              const continuationMessages = [
-                ...messages,
-                { role: 'assistant' as const, content },
-                { role: 'user' as const, content: 'Continue please. Complete the JSON response from where you left off.' }
-              ]
-
-              const continuationCompletion = await openai.chat.completions.create({
-                model: opts.model,
-                messages: continuationMessages,
-                max_tokens: Math.min(opts.maxTokens, 20000),
-                temperature: opts.temperature,
-                ...(opts.enforceJSON ? { response_format: { type: 'json_object' as const } } : {})
-              })
-
-              const continuationContent = continuationCompletion.choices[0]?.message?.content || ''
-              finalContent = content + continuationContent
-              usedContinuation = true
-
-              // Update usage and cost
-              const continuationUsage = continuationCompletion.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
-              usage.prompt_tokens += continuationUsage.prompt_tokens
-              usage.completion_tokens += continuationUsage.completion_tokens
-              usage.total_tokens += continuationUsage.total_tokens
-
-              console.log('🔗 Continuation completed, attempting to parse combined content...')
+        // First check if content contains at least one '{' - if not, it's definitely not JSON
+        if (!content.includes('{')) {
+          console.log('✅ No JSON braces found, returning as plain text')
+          parsedData = content as T
+        } else {
+          try {
+            parsedData = parseJSONResponse(content) as T
+            console.log('✅ JSON parsing successful')
+          } catch (parseError) {
+            // Check if content appears incomplete and retry with continuation
+            if (opts.retryOnIncomplete && isContentIncomplete(content)) {
+              console.log('🔄 Content appears incomplete, attempting continuation...')
               
-              if (opts.enforceJSON) {
-                parsedData = JSON.parse(finalContent) as T
-              } else {
-                parsedData = parseJSONResponse(finalContent) as T
+              try {
+                const continuationMessages = [
+                  ...messages,
+                  { role: 'assistant' as const, content },
+                  { role: 'user' as const, content: 'Continue please. Complete the JSON response from where you left off.' }
+                ]
+
+                const continuationCompletion = await openai.chat.completions.create({
+                  model: opts.model,
+                  messages: continuationMessages,
+                  max_tokens: Math.min(opts.maxTokens, 20000),
+                  temperature: opts.temperature,
+                  ...(opts.enforceJSON ? { response_format: { type: 'json_object' as const } } : {})
+                })
+
+                const continuationContent = continuationCompletion.choices[0]?.message?.content || ''
+                finalContent = content + continuationContent
+                usedContinuation = true
+
+                // Update usage and cost
+                const continuationUsage = continuationCompletion.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
+                usage.prompt_tokens += continuationUsage.prompt_tokens
+                usage.completion_tokens += continuationUsage.completion_tokens
+                usage.total_tokens += continuationUsage.total_tokens
+
+                console.log('🔗 Continuation completed, attempting to parse combined content...')
+                
+                if (opts.enforceJSON) {
+                  parsedData = JSON.parse(finalContent) as T
+                } else {
+                  parsedData = parseJSONResponse(finalContent) as T
+                }
+                
+                console.log('✅ JSON parsing successful after continuation')
+              } catch (continuationError) {
+                console.error('❌ Continuation failed:', continuationError)
+                throw new Error('Failed to complete response even with continuation')
               }
-              
-              console.log('✅ JSON parsing successful after continuation')
-            } catch (continuationError) {
-              console.error('❌ Continuation failed:', continuationError)
-              throw new Error('Failed to complete response even with continuation')
+            } else {
+              // Return content as string if not JSON
+              parsedData = content as T
             }
-          } else {
-            // Return content as string if not JSON
-            parsedData = content as T
           }
         }
       }

@@ -239,9 +239,8 @@ import {
 
 // Models
 ANTHROPIC_MODELS.HAIKU      // 'claude-3-haiku-20240307'
-ANTHROPIC_MODELS.SONNET     // 'claude-3-5-sonnet-20241022'
-ANTHROPIC_MODELS.OPUS       // 'claude-3-opus-20240229'
-ANTHROPIC_MODELS.SONNET_4   // 'claude-sonnet-4-20250514'
+ANTHROPIC_MODELS.OPUS       // 'claude-4-opus-20240229'
+ANTHROPIC_MODELS.SONNET   // 'claude-sonnet-4-20250514'
 
 // Context Sizes
 ANTHROPIC_CONTEXT_SIZES.MINI     // 1000

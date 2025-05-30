@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
-import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
-import { getOrCreateOptimizedResume, saveOptimizedResumeToCache } from '@/lib/cache-utils'
-import { legacyParseJSON } from '@/lib/json-utils'
 import { callAnthropicResumeOptimization, ANTHROPIC_MODELS, ANTHROPIC_CONTEXT_SIZES, ANTHROPIC_TEMPERATURES } from '@/lib/anthropic-utils'
+import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,16 +22,16 @@ export async function POST(request: NextRequest) {
       resumeText, 
       analysisData, 
       jobDescription, 
-      documentId, 
-      analysisId
+      analysisId,
+      bypassCache = false
     } = await request.json()
 
     console.log('=== EXTRACT RESUME DATA DEBUG ===')
     console.log('Resume text length:', resumeText?.length || 0)
     console.log('Has analysis data:', !!analysisData)
     console.log('Job description length:', jobDescription?.length || 0)
-    console.log('Document ID:', documentId)
     console.log('Analysis ID:', analysisId)
+    console.log('Bypass cache:', bypassCache)
 
     if (!resumeText) {
       return NextResponse.json(
@@ -63,64 +61,51 @@ export async function POST(request: NextRequest) {
     console.log('Truncated resume text length:', truncatedResumeText.length)
     console.log('Job description length:', jobDescription?.length || 0)
 
-    // Get or create job description summary if provided and long
-    let jobSummaryData = null
-    let effectiveJobDescription = jobDescription || ''
-
-    if (jobDescription && shouldSummarizeJobDescription(jobDescription, 3000)) {
-      console.log('Job description is long, getting/creating summary...')
-      
-      try {
-        jobSummaryData = await getOrCreateJobSummary(jobDescription)
-        effectiveJobDescription = jobSummaryData.summary
-        console.log('Using job summary:', jobSummaryData.cached ? 'cached' : 'newly generated')
-        console.log('Summary length:', effectiveJobDescription.length)
-      } catch (error) {
-        console.error('Error getting job summary:', error)
-        effectiveJobDescription = jobDescription.substring(0, 3000) + '\n\n[Job description truncated for length...]'
-      }
-    }
-
-    console.log('Effective job description length:', effectiveJobDescription.length)
-
     // Use a default template ID for now (we can make this configurable later)
     const templateId = 'modern-professional'
 
-    // Check for cached optimized resume first
-    const cachedOptimizedResume = await getOrCreateOptimizedResume(
-      user.id,
-      truncatedResumeText,
-      jobSummaryData?.id || null,
-      templateId,
-      analysisId,
-      documentId
-    )
+    // Generate content hash for deduplication - include analysis ID to ensure uniqueness per analysis
+    const contentHash = crypto.createHash('sha256')
+      .update(truncatedResumeText + (jobDescription || '') + templateId + (analysisId || ''))
+      .digest('hex')
 
-    if (cachedOptimizedResume) {
-      console.log('Returning cached optimized resume')
-      return NextResponse.json({
-        success: true,
-        data: JSON.parse(cachedOptimizedResume.extractedData),
-        cached: true,
-        usageCount: cachedOptimizedResume.usageCount,
-        metadata: {
-          processingTime: Date.now() - startTime,
-          fromCache: true,
-          atsScore: cachedOptimizedResume.atsScore,
-          keywordsMatched: cachedOptimizedResume.keywordsMatched,
-          optimizationSuggestions: cachedOptimizedResume.optimizationSuggestions
+    // Check for existing optimized resume (unless bypassing)
+    if (!bypassCache) {
+      const existingResume = await db.generatedResume.findFirst({
+        where: {
+          userId: user.id,
+          contentHash: contentHash
+        },
+        orderBy: {
+          createdAt: 'desc'
         }
       })
+
+      if (existingResume) {
+        console.log('Returning existing optimized resume from database')
+        
+        return NextResponse.json({
+          success: true,
+          data: existingResume.data,
+          cached: true,
+          resumeId: existingResume.id,
+          metadata: {
+            atsScore: existingResume.atsScore || 75,
+            keywordsMatched: existingResume.keywordsMatched || [],
+            fromDatabase: true
+          }
+        })
+      }
     }
 
-    console.log('No cached extracted resume found, generating new one...')
+    console.log('No existing optimized resume found, generating new one...')
 
     // Create the extraction prompt
     const prompt = `Extract and structure the following resume data into a comprehensive JSON format:
 
-${effectiveJobDescription ? `
+${jobDescription ? `
 TARGET JOB DESCRIPTION:
-${effectiveJobDescription}
+${jobDescription}
 ` : ''}
 
 RESUME TEXT:
@@ -133,14 +118,6 @@ ANALYSIS INSIGHTS:
 - Areas for Improvement: ${analysisData.weaknesses?.slice(0, 3).join(', ')}
 - Matched Keywords: ${analysisData.keywordMatch?.matched?.slice(0, 5).join(', ')}
 - Missing Keywords: ${analysisData.keywordMatch?.missing?.slice(0, 5).join(', ')}
-` : ''}
-
-${jobSummaryData ? `
-EXTRACTED JOB DETAILS:
-- Company: ${jobSummaryData.companyName || 'Not specified'}
-- Position: ${jobSummaryData.jobTitle || 'Not specified'}
-- Location: ${jobSummaryData.location || 'Not specified'}
-- Key Requirements: ${jobSummaryData.keyRequirements?.slice(0, 5).join(', ') || 'See job description'}
 ` : ''}
 
 IMPORTANT INSTRUCTIONS:
@@ -161,8 +138,8 @@ Please use the optimize_resume_data function to return the structured data.`
     // Use centralized Anthropic utility with function calling
     const response = await callAnthropicResumeOptimization(prompt, {
       model: ANTHROPIC_MODELS.SONNET,
-      maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL,
-      temperature: ANTHROPIC_TEMPERATURES.LOW,
+      maxTokens: 4000,
+      temperature: 0.3,
       systemPrompt: 'You are an expert resume parser and career coach. Extract resume data into structured JSON format that is optimized for ATS systems and tailored for the target job. Use the provided tool to return structured data.'
     })
 
@@ -177,104 +154,87 @@ Please use the optimize_resume_data function to return the structured data.`
     console.log('Used tools:', response.usedTools)
 
     // Calculate ATS score and keyword matching
-    const atsScore = calculateATSScore(extractedData, effectiveJobDescription)
-    const keywordsMatched = extractKeywordsMatched(extractedData, effectiveJobDescription)
-    const optimizationSuggestions = generateOptimizationSuggestions(extractedData, analysisData)
+    const atsScore = calculateATSScore(extractedData, jobDescription || '')
+    const keywordsMatched = extractKeywordsMatched(extractedData, jobDescription || '')
 
-    // Store the extraction in database using LLMConversation
-    let conversationId = null
+    // Generate optimized resume content (HTML/markdown)
+    const optimizedContent = generateOptimizedResumeContent(extractedData, templateId)
+
+    // Store the extraction in database
+    let llmCallId = null
+    let generatedResumeId = null
+    
     try {
-      // Create LLM conversation record
-      const conversation = await db.lLMConversation.create({
+      // Create LLM call record
+      const llmCall = await db.llmCall.create({
         data: {
           userId: user.id,
-          type: 'RESUME_EXTRACTION',
-          title: `Resume Extraction - ${new Date().toLocaleDateString()}`,
           provider: 'anthropic',
           model: ANTHROPIC_MODELS.SONNET,
-          totalTokensUsed: tokensUsed,
-          totalCost: estimatedCost,
+          operationType: 'resume_extraction',
+          totalTokens: tokensUsed,
+          totalCostUsd: estimatedCost,
           status: 'COMPLETED',
           completedAt: new Date()
         }
       })
 
-      conversationId = conversation.id
+      llmCallId = llmCall.id
 
-      // Create messages for the conversation
-      await db.lLMMessage.create({
+      // Create messages for the call
+      await db.llmMessage.create({
         data: {
-          conversationId: conversation.id,
-          role: 'USER',
+          llmCallId: llmCall.id,
+          role: 'user',
           content: prompt,
           messageIndex: 0,
-          inputTokens: response.usage.inputTokens,
-          totalTokens: response.usage.inputTokens
+          totalTokens: Math.floor(tokensUsed * 0.8) // Estimate input tokens
         }
       })
 
-      await db.lLMMessage.create({
+      await db.llmMessage.create({
         data: {
-          conversationId: conversation.id,
-          role: 'ASSISTANT',
+          llmCallId: llmCall.id,
+          role: 'assistant',
           content: JSON.stringify(extractedData),
           messageIndex: 1,
-          outputTokens: response.usage.outputTokens,
-          totalTokens: response.usage.outputTokens,
-          cost: estimatedCost,
-          processingTime: processingTime,
-          finishReason: response.stopReason || 'end_turn',
-          temperature: 0.3,
-          maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL
+          totalTokens: Math.floor(tokensUsed * 0.2) // Estimate output tokens
         }
       })
 
-      console.log('Resume extraction stored in database')
+      // Save the generated resume to database
+      const generatedResume = await db.generatedResume.create({
+        data: {
+          userId: user.id,
+          templateId: templateId,
+          contentHash: contentHash,
+          content: optimizedContent,
+          data: extractedData,
+          atsScore: atsScore,
+          keywordsMatched: keywordsMatched
+        }
+      })
+
+      generatedResumeId = generatedResume.id
+
+      console.log('Resume extraction and optimized resume saved to database')
     } catch (dbError) {
       console.error('Failed to store resume extraction:', dbError)
       // Continue without failing the request
     }
 
-    // Generate optimized resume content (HTML/markdown)
-    const optimizedContent = generateOptimizedResumeContent(extractedData, templateId)
-
-    // Save to cache
-    let cachedResult = null
-    cachedResult = await saveOptimizedResumeToCache(
-      user.id,
-      optimizedContent,
-      JSON.stringify(extractedData),
-      templateId,
-      truncatedResumeText,
-      jobSummaryData?.id || null,
-      atsScore,
-      keywordsMatched,
-      optimizationSuggestions,
-      {
-        tokensUsed,
-        processingTime,
-        estimatedCost,
-        provider: 'anthropic',
-        model: ANTHROPIC_MODELS.SONNET,
-        conversationId: conversationId || undefined
-      },
-      analysisId,
-      documentId
-    )
-    console.log('Optimized resume saved to cache')
-
     return NextResponse.json({
       success: true,
       data: extractedData,
       cached: false,
-      usageCount: 1,
+      resumeId: generatedResumeId,
       metadata: {
         tokensUsed,
         processingTime,
         estimatedCost,
         atsScore,
         keywordsMatched,
-        optimizationSuggestions
+        llmCallId
       }
     })
 
@@ -322,32 +282,6 @@ function extractKeywordsMatched(extractedData: any, jobDescription: string): str
   
   // Remove duplicates and return top 10
   return [...new Set(matched)].slice(0, 10)
-}
-
-function generateOptimizationSuggestions(extractedData: any, analysisData: any): string[] {
-  const suggestions = []
-  
-  if (!extractedData.summary || extractedData.summary.length < 50) {
-    suggestions.push('Add a compelling professional summary')
-  }
-  
-  if (!extractedData.experience?.length) {
-    suggestions.push('Include professional experience section')
-  }
-  
-  if (extractedData.experience?.some((exp: any) => !exp.achievements?.length)) {
-    suggestions.push('Add quantified achievements to experience entries')
-  }
-  
-  if (!extractedData.skills?.technical?.length) {
-    suggestions.push('Include technical skills section')
-  }
-  
-  if (analysisData?.keywordMatch?.missing?.length > 0) {
-    suggestions.push(`Add missing keywords: ${analysisData.keywordMatch.missing.slice(0, 3).join(', ')}`)
-  }
-  
-  return suggestions
 }
 
 function generateOptimizedResumeContent(extractedData: any, templateId: string): string {

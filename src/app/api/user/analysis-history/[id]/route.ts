@@ -20,7 +20,7 @@ export async function DELETE(
     const { id } = await context.params
 
     // First, verify the conversation belongs to the user
-    const conversation = await db.lLMConversation.findFirst({
+    const conversation = await db.llmCall.findFirst({
       where: {
         id,
         userId: session.user.id
@@ -35,7 +35,7 @@ export async function DELETE(
     }
 
     // Delete the conversation and related messages (cascade should handle this)
-    await db.lLMConversation.delete({
+    await db.llmCall.delete({
       where: {
         id
       }

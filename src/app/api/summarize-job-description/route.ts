@@ -1,204 +1,187 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { db } from '@/lib/database'
+import { JobDescriptionService } from '@/lib/database'
 import { callOpenAIJobSummary, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
-import { callAnthropicJobSummary, ANTHROPIC_MODELS, ANTHROPIC_CONTEXT_SIZES, ANTHROPIC_TEMPERATURES } from '@/lib/anthropic-utils'
+import { LLMLogger, MessageRole } from '@/lib/llm-logger'
 import crypto from 'crypto'
+import { db } from '@/lib/database'
 
 export async function POST(request: NextRequest) {
+  let llmCallId: string | null = null
+
   try {
     const session = await getServerSession(authOptions)
-    
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
+    const userId = session?.user?.id
 
-    const { jobDescription, provider = 'openai' } = await request.json()
+    const { jobDescription } = await request.json()
 
-    if (!jobDescription || typeof jobDescription !== 'string') {
+    if (!jobDescription || !jobDescription.trim()) {
       return NextResponse.json(
         { error: 'Job description is required' },
         { status: 400 }
       )
     }
 
-    if (!['openai', 'anthropic'].includes(provider)) {
-      return NextResponse.json(
-        { error: 'Provider must be either "openai" or "anthropic"' },
-        { status: 400 }
-      )
-    }
+    console.log('Processing job description...')
+    console.log('Job description length:', jobDescription.length)
 
-    // Create hash of the job description for deduplication
-    const contentHash = crypto
-      .createHash('sha256')
-      .update(jobDescription.trim().toLowerCase())
+    // Generate content hash for deduplication
+    const jobDescriptionHash = crypto.createHash('sha256')
+      .update(jobDescription.trim())
       .digest('hex')
 
-    console.log('=== JOB DESCRIPTION SUMMARIZATION ===')
-    console.log('Original length:', jobDescription.length)
-    console.log('Content hash:', contentHash)
-    console.log('Provider:', provider)
-
-    // Check if we already have a summary for this job description
-    let existingSummary = await db.jobDescriptionSummary.findUnique({
-      where: { contentHash }
-    })
-
-    if (existingSummary) {
-      console.log('Found existing summary, updating usage count')
+    // Check if job description already exists
+    const existingJobDescription = await JobDescriptionService.findByHash(jobDescriptionHash)
+    
+    let jobDescriptionRecord: NonNullable<typeof existingJobDescription>
+    
+    if (existingJobDescription) {
+      console.log(`Using existing job description with ID: ${existingJobDescription.id}`)
       
-      // Update usage count and last used timestamp
-      existingSummary = await db.jobDescriptionSummary.update({
-        where: { id: existingSummary.id },
+      // Check if we already have a summary for this job description
+      const existingSummary = await db.summarizedJobDescription.findFirst({
+        where: { extractedJobId: existingJobDescription.id }
+      })
+
+      // If we have both job description AND summary, return from cache
+      if (existingSummary) {
+        return NextResponse.json({
+          success: true,
+          extractedJobId: existingJobDescription.id,
+          summarizedJobId: existingSummary.id,
+          fromCache: true
+        })
+      }
+      
+      // If we have job description but no summary, continue to generate summary
+      console.log(`Job description exists but no summary found. Generating summary for job ID: ${existingJobDescription.id}`)
+      jobDescriptionRecord = existingJobDescription
+    } else {
+      // Save the job description to ExtractedJobDescription table
+      jobDescriptionRecord = await JobDescriptionService.create({
+        contentHash: jobDescriptionHash,
+        originalText: jobDescription.trim(),
         data: {
-          usageCount: { increment: 1 },
-          lastUsedAt: new Date()
+          originalText: jobDescription.trim(),
+          extractedAt: new Date().toISOString(),
+          wordCount: jobDescription.trim().split(/\s+/).length,
+          characterCount: jobDescription.trim().length
         }
       })
 
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: existingSummary.id,
-          summary: existingSummary.summary,
-          keyRequirements: existingSummary.keyRequirements,
-          companyName: existingSummary.companyName,
-          jobTitle: existingSummary.jobTitle,
-          location: existingSummary.location,
-          salaryRange: existingSummary.salaryRange,
-          usageCount: existingSummary.usageCount,
-          cached: true,
-          provider: existingSummary.provider
-        }
-      })
+      console.log(`Job description saved with ID: ${jobDescriptionRecord.id}`)
     }
 
-    console.log(`No existing summary found, generating new one using ${provider}...`)
+    // Create LLM call for job description summarization
+    llmCallId = await LLMLogger.createLlmCall({
+      userId: userId || undefined,
+      provider: 'openai',
+      model: OPENAI_MODELS.MINI, // Use OpenAI mini model for summarization
+      operationType: 'job_summarization',
+      extractedJobId: jobDescriptionRecord.id
+    })
 
-    const startTime = Date.now()
-
-    // Create summarization prompt
-    const prompt = `Analyze and summarize the following job description. Extract key information and create a concise summary.
+    // Create job description summary using AI
+    const summaryPrompt = `Please analyze and summarize this job description for resume optimization purposes:
 
 JOB DESCRIPTION:
-${jobDescription}
+${jobDescription.trim()}
 
-Focus on:
-- Core responsibilities and role purpose
-- Essential skills and qualifications
-- Company culture and values (if mentioned)
-- Key benefits or perks (if mentioned)
-- Remove redundant information and marketing fluff
-- Keep technical requirements specific but concise`
+Please extract and organize the following information:
 
-    let response: any
-    let parsedSummary: any
-    let tokensUsed: number
-    let estimatedCost: number
-    let processingTime: number
+1. **Key Requirements** (must-have skills, experience, qualifications, degree, etc.)
+2. **Preferred Qualifications** (nice-to-have skills and experience)
+3. **Core Responsibilities** (main duties and tasks)
+4. **Company Culture & Values** (if mentioned)
+5. **Keywords for ATS** (important terms that should appear in a resume)
 
-    if (provider === 'anthropic') {
-      // Check for API key
-      if (!process.env.ANTHROPIC_API_KEY) {
-        return NextResponse.json(
-          { error: 'Anthropic API key not configured' },
-          { status: 500 }
-        )
-      }
+Format your response as a structured summary that will help optimize a resume for this position.`
 
-      // Use Anthropic for summarization
-      response = await callAnthropicJobSummary(prompt, {
-        model: ANTHROPIC_MODELS.SONNET,
-        maxTokens: ANTHROPIC_CONTEXT_SIZES.MINI,
-        temperature: ANTHROPIC_TEMPERATURES.NORMAL,
-        systemPrompt: 'You are an expert HR analyst and job description summarizer. You extract key information and create concise, useful summaries while preserving all important details. Use the provided tool to return structured data.'
-      })
+    await LLMLogger.logMessage({
+      llmCallId,
+      role: MessageRole.user,
+      content: summaryPrompt,
+      messageIndex: 0
+    })
 
-      console.log('Summary generated successfully with Anthropic')
-      console.log('Used tools:', response.usedTools)
-    } else {
-      // Check for API key
-      if (!process.env.OPENAI_API_KEY) {
-        return NextResponse.json(
-          { error: 'OpenAI API key not configured' },
-          { status: 500 }
-        )
-      }
+    console.log('Generating job description summary...')
 
-      // Use OpenAI for summarization (default)
-      response = await callOpenAIJobSummary(prompt, {
-        model: OPENAI_MODELS.MINI,
-        maxTokens: CONTEXT_SIZES.MINI,
-        temperature: TEMPERATURES.NORMAL,
-        systemPrompt: 'You are an expert HR analyst and job description summarizer. You extract key information and create concise, useful summaries while preserving all important details. Use the provided function to return structured data.'
-      })
+    const startTime = Date.now()
+    const summaryResponse = await callOpenAIJobSummary(summaryPrompt, {
+      model: OPENAI_MODELS.MINI,
+      maxTokens: CONTEXT_SIZES.NORMAL,
+      temperature: TEMPERATURES.NORMAL
+    })
 
-      console.log('Summary generated successfully with OpenAI')
-      console.log('Used function calling for structured output')
-    }
+    const processingTime = Date.now() - startTime
+    const summary = summaryResponse.data.summary
+    const tokensUsed = summaryResponse.usage.totalTokens
+    const estimatedCost = summaryResponse.cost
 
-    parsedSummary = response.data
-    tokensUsed = response.usage.totalTokens
-    estimatedCost = response.cost
-    processingTime = response.processingTime
+    // Log AI response
+    await LLMLogger.logMessage({
+      llmCallId,
+      role: MessageRole.assistant,
+      content: summary,
+      messageIndex: 1,
+      totalTokens: tokensUsed,
+      costUsd: estimatedCost,
+      processingTimeMs: processingTime
+    })
 
-    console.log('Processing time:', processingTime, 'ms')
-    console.log('Tokens used:', tokensUsed)
-    console.log('Cost:', estimatedCost)
+    // Update LLM call as completed
+    await LLMLogger.updateLlmCall({
+      llmCallId,
+      status: 'COMPLETED',
+      totalTokens: tokensUsed,
+      totalCostUsd: estimatedCost,
+      totalProcessingTimeMs: processingTime,
+      completedAt: new Date()
+    })
 
-    // Save the summary to database
-    const savedSummary = await db.jobDescriptionSummary.create({
+    // Save the summary to SummarizedJobDescription table
+    const summaryHash = crypto.createHash('sha256')
+      .update(summary)
+      .digest('hex')
+
+    const summaryRecord = await db.summarizedJobDescription.create({
       data: {
-        contentHash,
-        originalText: jobDescription,
-        summary: parsedSummary.summary || '',
-        keyRequirements: parsedSummary.keyRequirements || [],
-        companyName: parsedSummary.companyName || null,
-        jobTitle: parsedSummary.jobTitle || null,
-        location: parsedSummary.location || null,
-        salaryRange: parsedSummary.salaryRange || null,
-        provider: provider,
-        model: provider === 'anthropic' ? ANTHROPIC_MODELS.SONNET : OPENAI_MODELS.MINI,
-        totalTokensUsed: tokensUsed,
-        totalCost: estimatedCost,
-        processingTime: processingTime
+        extractedJobId: jobDescriptionRecord.id,
+        contentHash: summaryHash,
+        summary: summary
       }
     })
 
-    console.log('Summary saved to database with ID:', savedSummary.id)
+    console.log(`Job description summary saved with ID: ${summaryRecord.id}`)
 
     return NextResponse.json({
       success: true,
-      data: {
-        id: savedSummary.id,
-        summary: savedSummary.summary,
-        keyRequirements: savedSummary.keyRequirements,
-        companyName: savedSummary.companyName,
-        jobTitle: savedSummary.jobTitle,
-        location: savedSummary.location,
-        salaryRange: savedSummary.salaryRange,
-        usageCount: 1,
-        cached: false,
-        provider: provider,
-        metadata: {
-          tokensUsed,
-          processingTime,
-          estimatedCost,
-          originalLength: jobDescription.length,
-          summaryLength: savedSummary.summary.length
-        }
+      extractedJobId: jobDescriptionRecord.id,
+      summarizedJobId: summaryRecord.id,
+      summary: summary,
+      fromCache: false,
+      metadata: {
+        tokensUsed,
+        estimatedCost,
+        processingTime
       }
     })
 
   } catch (error) {
-    console.error('Error summarizing job description:', error)
+    console.error('Job description processing error:', error)
+    
+    // Update LLM call with error if we have an ID
+    if (llmCallId) {
+      await LLMLogger.updateLlmCall({
+        llmCallId,
+        status: 'FAILED',
+        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+      })
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to summarize job description' },
+      { error: 'Failed to process job description' },
       { status: 500 }
     )
   }

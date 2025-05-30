@@ -24,6 +24,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
       include: {
         user: {
           select: { name: true, email: true }
+        },
+        roast: {
+          select: { data: true }
         }
       }
     })
@@ -49,39 +52,40 @@ export async function GET(request: NextRequest, context: RouteContext) {
       data: { viewCount: { increment: 1 } }
     })
 
-    // Parse analysis data
-    const analysisData = JSON.parse(sharedAnalysis.analysisData)
-    const settings = JSON.parse(sharedAnalysis.settings || '{}')
+    // Get the roast data through the relation
+    const roastData = sharedAnalysis.roast?.data || {}
+    const settings = typeof sharedAnalysis.settings === 'string' ? 
+      JSON.parse(sharedAnalysis.settings) : (sharedAnalysis.settings || {})
 
     // Handle both old and new data formats for backward compatibility
     let responseData
-    if (analysisData.analysis) {
-      // New format with comprehensive data
+    if (roastData) {
+      // New format with roast data
       responseData = {
         success: true,
-        analysis: analysisData.analysis,
-        resumeData: analysisData.resumeData,
-        jobDescription: analysisData.jobDescription,
-        pdfImages: analysisData.pdfImages || [],
+        analysis: roastData,
+        resumeData: null, // Not stored separately in new schema
+        jobDescription: null, // Not stored separately in new schema
+        pdfImages: [], // Not stored in new schema
         metadata: {
           sharedBy: sharedAnalysis.user.name || 'Anonymous',
           sharedAt: sharedAnalysis.createdAt,
-          viewCount: sharedAnalysis.viewCount + 1,
+          viewCount: sharedAnalysis.viewCount,
           settings
         }
       }
     } else {
-      // Old format - just analysis data
+      // Fallback for missing data
       responseData = {
         success: true,
-        analysis: analysisData,
+        analysis: { error: 'Analysis data not found' },
         resumeData: null,
         jobDescription: null,
         pdfImages: [],
         metadata: {
           sharedBy: sharedAnalysis.user.name || 'Anonymous',
           sharedAt: sharedAnalysis.createdAt,
-          viewCount: sharedAnalysis.viewCount + 1,
+          viewCount: sharedAnalysis.viewCount,
           settings
         }
       }
