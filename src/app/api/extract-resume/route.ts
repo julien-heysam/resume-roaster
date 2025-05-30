@@ -147,7 +147,7 @@ Please use the optimize_resume_data function to return the structured data.`
           type: 'RESUME_EXTRACTION',
           title: `Resume Extraction - ${new Date().toLocaleDateString()}`,
           provider: 'anthropic',
-          model: 'claude-sonnet-4-20250514',
+          model: ANTHROPIC_MODELS.SONNET,
           totalTokensUsed: tokensUsed,
           totalCost: estimatedCost,
           status: 'COMPLETED',
@@ -164,8 +164,8 @@ Please use the optimize_resume_data function to return the structured data.`
           role: 'USER',
           content: `Extract resume data:\n\nResume length: ${truncatedResumeText.length} chars`,
           messageIndex: 0,
-          inputTokens: tokensUsed,
-          totalTokens: tokensUsed
+          inputTokens: response.usage.inputTokens,
+          totalTokens: response.usage.inputTokens
         }
       })
 
@@ -173,10 +173,10 @@ Please use the optimize_resume_data function to return the structured data.`
         data: {
           conversationId: conversation.id,
           role: 'ASSISTANT',
-          content: extractedData,
+          content: JSON.stringify(extractedData),
           messageIndex: 1,
-          outputTokens: tokensUsed,
-          totalTokens: tokensUsed,
+          outputTokens: response.usage.outputTokens,
+          totalTokens: response.usage.outputTokens,
           cost: estimatedCost,
           processingTime: processingTime,
           finishReason: response.stopReason || 'end_turn',
@@ -203,7 +203,7 @@ Please use the optimize_resume_data function to return the structured data.`
           resumeText: truncatedResumeText,
           extractedData: JSON.stringify(extractedData),
           provider: 'anthropic',
-          model: 'claude-sonnet-4-20250514',
+          model: ANTHROPIC_MODELS.SONNET,
           conversationId: conversationId || null,
           totalTokensUsed: tokensUsed,
           totalCost: estimatedCost,

@@ -409,7 +409,11 @@ export async function callOpenAIResumeOptimization(
                   school: { type: 'string' },
                   graduationDate: { type: 'string' },
                   gpa: { type: 'string' },
-                  location: { type: 'string' }
+                  location: { type: 'string' },
+                  honors: {
+                    type: 'array',
+                    items: { type: 'string' }
+                  }
                 },
                 required: ['degree', 'school']
               }

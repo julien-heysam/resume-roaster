@@ -191,7 +191,7 @@ Please use the optimize_resume_data function to return the structured data.`
           type: 'RESUME_EXTRACTION',
           title: `Resume Extraction - ${new Date().toLocaleDateString()}`,
           provider: 'anthropic',
-          model: 'claude-sonnet-4-20250514',
+          model: ANTHROPIC_MODELS.SONNET,
           totalTokensUsed: tokensUsed,
           totalCost: estimatedCost,
           status: 'COMPLETED',
@@ -208,8 +208,8 @@ Please use the optimize_resume_data function to return the structured data.`
           role: 'USER',
           content: prompt,
           messageIndex: 0,
-          inputTokens: tokensUsed,
-          totalTokens: tokensUsed
+          inputTokens: response.usage.inputTokens,
+          totalTokens: response.usage.inputTokens
         }
       })
 
@@ -219,8 +219,8 @@ Please use the optimize_resume_data function to return the structured data.`
           role: 'ASSISTANT',
           content: JSON.stringify(extractedData),
           messageIndex: 1,
-          outputTokens: tokensUsed,
-          totalTokens: tokensUsed,
+          outputTokens: response.usage.outputTokens,
+          totalTokens: response.usage.outputTokens,
           cost: estimatedCost,
           processingTime: processingTime,
           finishReason: response.stopReason || 'end_turn',
@@ -255,7 +255,7 @@ Please use the optimize_resume_data function to return the structured data.`
         processingTime,
         estimatedCost,
         provider: 'anthropic',
-        model: 'claude-sonnet-4-20250514',
+        model: ANTHROPIC_MODELS.SONNET,
         conversationId: conversationId || undefined
       },
       analysisId,
