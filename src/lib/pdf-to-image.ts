@@ -8,15 +8,21 @@ export async function convertPDFToImages(pdfBuffer: Buffer): Promise<string[]> {
   
   try {
     // Get the microservice URL from environment variables
-    const microserviceUrl = process.env.PDF_CONVERTER_SERVICE_URL || 'https://your-pdf-converter-app.herokuapp.com'
+    const microserviceUrl = process.env.PDF_CONVERTER_SERVICE_URL || 'https://pdf-2-jpg-85b286e7f371.herokuapp.com'
     
     console.log(`📄 Processing PDF: ${Math.round(pdfBuffer.length / 1024)}KB`)
     console.log(`🌐 Using microservice: ${microserviceUrl}`)
     
+    // For server-side usage, we need to use node-fetch or the built-in fetch
+    const fetch = (await import('node-fetch')).default
+    const FormData = (await import('form-data')).default
+    
     // Create FormData with the PDF file
     const formData = new FormData()
-    const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' })
-    formData.append('file', pdfBlob, 'document.pdf')
+    formData.append('file', pdfBuffer, {
+      filename: 'document.pdf',
+      contentType: 'application/pdf'
+    })
     
     console.log('🔄 Sending PDF to microservice...')
     
@@ -24,9 +30,7 @@ export async function convertPDFToImages(pdfBuffer: Buffer): Promise<string[]> {
     const response = await fetch(`${microserviceUrl}/pdf-to-images`, {
       method: 'POST',
       body: formData,
-      headers: {
-        // Don't set Content-Type header - let the browser set it with boundary for multipart/form-data
-      },
+      headers: formData.getHeaders()
     })
     
     if (!response.ok) {
@@ -34,7 +38,12 @@ export async function convertPDFToImages(pdfBuffer: Buffer): Promise<string[]> {
       throw new Error(`HTTP ${response.status}: ${errorText}`)
     }
     
-    const result = await response.json()
+    const result = await response.json() as {
+      success: boolean;
+      images?: string[];
+      page_count?: number;
+      original_filename?: string;
+    }
     
     if (!result.success) {
       throw new Error(`Conversion failed: ${JSON.stringify(result)}`)
