@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -25,6 +25,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get user from database
+    const user = await db.user.findUnique({
+      where: { email: session.user.email }
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
+    }
+
     // Get the base URL for sharing
     const baseUrl = getBaseUrl()
 
@@ -35,12 +47,65 @@ export async function POST(request: NextRequest) {
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + (settings?.expirationDays || 30))
 
+    let roastId = analysisData.roastId
+
+    // If we don't have a roastId, try to find or create a GeneratedRoast record
+    if (!roastId) {
+      console.log('No roastId provided, attempting to find or create GeneratedRoast record')
+      
+      // Try to find an existing GeneratedRoast for this user with similar data
+      const existingRoast = await db.generatedRoast.findFirst({
+        where: {
+          userId: user.id,
+          // We could add more specific matching criteria here if needed
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
+
+      if (existingRoast) {
+        roastId = existingRoast.id
+        console.log('Found existing GeneratedRoast:', roastId)
+      } else {
+        // Create a new GeneratedRoast record for sharing
+        console.log('Creating new GeneratedRoast record for sharing')
+        
+        // Generate a content hash for the analysis data
+        const contentHash = randomBytes(16).toString('hex')
+        
+        const newRoast = await db.generatedRoast.create({
+          data: {
+            userId: user.id,
+            contentHash: contentHash,
+            data: analysisData.analysis || analysisData, // Use the analysis data
+            overallScore: analysisData.analysis?.overallScore || analysisData.overallScore || 0
+          }
+        })
+        
+        roastId = newRoast.id
+        console.log('Created new GeneratedRoast:', roastId)
+      }
+    }
+
+    // Verify the roastId exists in the database
+    const roastExists = await db.generatedRoast.findUnique({
+      where: { id: roastId }
+    })
+
+    if (!roastExists) {
+      return NextResponse.json(
+        { error: 'Invalid analysis reference' },
+        { status: 400 }
+      )
+    }
+
     // Create shareable analysis record
     const sharedAnalysis = await db.sharedAnalysis.create({
       data: {
         id: shareId,
-        userId: session.user.id,
-        roastId: analysisData.roastId || 'unknown',
+        userId: user.id,
+        roastId: roastId, // Now we have a valid roastId
         settings: JSON.stringify(settings || {}),
         expiresAt,
         viewCount: 0

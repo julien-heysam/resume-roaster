@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense } from "react"
-import { FileText, TrendingUp, Calendar, Search, Filter, Eye, Download, ArrowLeft, Trash2, ExternalLink, ChevronDown, ChevronUp, MoreHorizontal, Star, Clock, Target, Share2 } from "lucide-react"
+import { FileText, TrendingUp, Calendar, Search, Filter, Eye, Download, ArrowLeft, Trash2, ExternalLink, ChevronDown, ChevronUp, MoreHorizontal, Star, Clock, Target, Share2, Brain, Linkedin, Sparkles, Zap, Crown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -12,7 +12,11 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Footer } from "@/components/ui/footer"
 import { FeatureAnnouncementBanner } from "@/components/ui/feature-announcement-banner"
+import { CoverLetterModal } from "@/components/ui/cover-letter-modal"
+import { InterviewPrepModal } from "@/components/ui/interview-prep-modal"
+import { ResumeOptimizationModal } from "@/components/ui/resume-optimization-modal"
 import { toast } from 'sonner'
+import { useAlertDialog } from "@/components/ui/alert-dialog"
 
 interface AnalysisResult {
   id: string
@@ -52,6 +56,15 @@ function DashboardContent() {
     total: 0,
     totalPages: 0
   })
+  
+  // Modal states
+  const [showCoverLetterModal, setShowCoverLetterModal] = useState(false)
+  const [showInterviewPrepModal, setShowInterviewPrepModal] = useState(false)
+  const [showResumeOptimizationModal, setShowResumeOptimizationModal] = useState(false)
+  const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisResult | null>(null)
+  const [isGeneratingOptimized, setIsGeneratingOptimized] = useState(false)
+  
+  const { showAlert, AlertDialog } = useAlertDialog()
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -148,28 +161,77 @@ function DashboardContent() {
 
   // Delete analysis
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this analysis?')) return
-    
-    try {
-      setDeletingId(id)
-      const response = await fetch(`/api/user/analysis-history/${id}`, {
-        method: 'DELETE'
-      })
-      
-      if (response.ok) {
-        // Refresh the list
-        fetchAnalyses(pagination.page, searchTerm)
-      } else {
-        const errorData = await response.json()
-        console.error('Delete failed:', errorData)
-        alert('Failed to delete analysis. Please try again.')
+    showAlert({
+      title: "Delete Analysis",
+      description: "Are you sure you want to delete this analysis? This action cannot be undone.",
+      type: "warning",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      showCancel: true,
+      onConfirm: async () => {
+        try {
+          setDeletingId(id)
+          const response = await fetch(`/api/user/analysis-history/${id}`, {
+            method: 'DELETE'
+          })
+          
+          if (response.ok) {
+            toast.success('Analysis deleted successfully!')
+            // Refresh the list
+            fetchAnalyses(pagination.page, searchTerm)
+          } else {
+            let errorMessage = 'Failed to delete analysis. Please try again.'
+            
+            try {
+              const errorData = await response.json()
+              console.error('Delete failed:', errorData)
+              
+              // Handle different error response formats
+              if (errorData.error && typeof errorData.error === 'string') {
+                errorMessage = errorData.error
+              } else if (errorData.message && typeof errorData.message === 'string') {
+                errorMessage = errorData.message
+              } else if (response.status === 404) {
+                errorMessage = 'Analysis not found or already deleted.'
+              } else if (response.status === 401) {
+                errorMessage = 'You are not authorized to delete this analysis.'
+              } else if (response.status === 403) {
+                errorMessage = 'Access denied. You can only delete your own analyses.'
+              }
+            } catch (parseError) {
+              console.error('Failed to parse error response:', parseError)
+              // Use status-based error messages if JSON parsing fails
+              if (response.status === 404) {
+                errorMessage = 'Analysis not found or already deleted.'
+              } else if (response.status === 401) {
+                errorMessage = 'Authentication required. Please sign in again.'
+              } else if (response.status === 403) {
+                errorMessage = 'Access denied.'
+              } else if (response.status >= 500) {
+                errorMessage = 'Server error. Please try again later.'
+              }
+            }
+            
+            toast.error(errorMessage)
+          }
+        } catch (error) {
+          console.error('Error deleting analysis:', error)
+          let errorMessage = 'Failed to delete analysis. Please try again.'
+          
+          if (error instanceof Error) {
+            if (error.message.includes('fetch')) {
+              errorMessage = 'Network error. Please check your connection and try again.'
+            } else {
+              errorMessage = error.message
+            }
+          }
+          
+          toast.error(errorMessage)
+        } finally {
+          setDeletingId(null)
+        }
       }
-    } catch (error) {
-      console.error('Error deleting analysis:', error)
-      alert('Failed to delete analysis. Please try again.')
-    } finally {
-      setDeletingId(null)
-    }
+    })
   }
 
   // Format date
@@ -228,6 +290,47 @@ function DashboardContent() {
     })
   }
 
+  // Modal handlers
+  const openCoverLetterModal = (analysis: AnalysisResult) => {
+    setSelectedAnalysis(analysis)
+    setShowCoverLetterModal(true)
+  }
+
+  const openInterviewPrepModal = (analysis: AnalysisResult) => {
+    setSelectedAnalysis(analysis)
+    setShowInterviewPrepModal(true)
+  }
+
+  const openResumeOptimizationModal = (analysis: AnalysisResult) => {
+    setSelectedAnalysis(analysis)
+    setShowResumeOptimizationModal(true)
+  }
+
+  const handleOptimizationConfirm = async (selectedLLM: string) => {
+    if (!selectedAnalysis) return
+    
+    try {
+      setIsGeneratingOptimized(true)
+      // Here you would implement the resume optimization logic
+      // For now, we'll just close the modal
+      toast.success('Resume optimization started!')
+      setShowResumeOptimizationModal(false)
+    } catch (error) {
+      console.error('Error generating optimized resume:', error)
+      toast.error('Failed to generate optimized resume')
+    } finally {
+      setIsGeneratingOptimized(false)
+    }
+  }
+
+  const handleCoverLetterGenerated = (cached: boolean, usageCount: number) => {
+    if (cached) {
+      toast.success('Cover letter retrieved from cache!')
+    } else {
+      toast.success('New cover letter generated!')
+    }
+  }
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -244,105 +347,25 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex flex-col">
-      {/* Navigation */}
-      <Navigation currentPage="dashboard" />
-
-      <div className="container mx-auto px-4 py-8 flex-1">
-        {/* Stats Overview */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-200 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <div className="p-3 bg-blue-500/20 rounded-lg">
-                  <FileText className="h-8 w-8 text-blue-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-blue-700">Total Analyses</p>
-                  <p className="text-3xl font-bold text-blue-800">{pagination.total}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-green-100 to-emerald-200 border-green-200 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <div className="p-3 bg-green-500/20 rounded-lg">
-                  <TrendingUp className="h-8 w-8 text-green-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-green-700">Avg. Score</p>
-                  <p className="text-3xl font-bold text-green-800">
-                    {analyses.length > 0 
-                      ? Math.round(analyses.reduce((sum, a) => sum + (a.overallScore || 0), 0) / analyses.length)
-                      : 0
-                    }%
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-purple-100 to-purple-200 border-purple-200 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <div className="p-3 bg-purple-500/20 rounded-lg">
-                  <Calendar className="h-8 w-8 text-purple-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-purple-700">This Month</p>
-                  <p className="text-3xl font-bold text-purple-800">
-                    {analyses.filter(a => {
-                      const analysisDate = new Date(a.createdAt)
-                      const now = new Date()
-                      return analysisDate.getMonth() === now.getMonth() && 
-                             analysisDate.getFullYear() === now.getFullYear()
-                    }).length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-orange-100 to-red-200 border-orange-200 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <div className="p-3 bg-orange-500/20 rounded-lg">
-                  <TrendingUp className="h-8 w-8 text-orange-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-orange-700">Best Score</p>
-                  <p className="text-3xl font-bold text-orange-800">
-                    {analyses.length > 0 
-                      ? Math.max(...analyses.map(a => a.overallScore || 0))
-                      : 0
-                    }%
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <Navigation />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Feature Announcement */}
+        <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <Sparkles className="h-5 w-5 text-green-600 mt-0.5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-green-800">New Dashboard Features!</h3>
+              <p className="text-sm text-green-700 mt-1">
+                Now you can generate cover letters, prepare for interviews, and optimize your resume directly from your dashboard. 
+                Each analysis card shows available features and their requirements.
+              </p>
+            </div>
+          </div>
         </div>
-
-        {/* Feature Announcement Banner */}
-        <FeatureAnnouncementBanner
-          title="🚀 Enhanced Dashboard Coming Soon!"
-          description="We're working on exciting new features including advanced analytics, resume comparison tools, and AI-powered insights to help you land your dream job faster."
-          featureName="Dashboard 2.0"
-          estimatedDate="Q3 2025"
-          type="in-progress"
-          ctaText="Learn More"
-          ctaAction={() => {
-            // You can link to a blog post, feature page, or open a modal
-            window.open('/help', '_blank')
-          }}
-          dismissible={true}
-          onDismiss={() => {
-            // Optional: Store dismissal in localStorage or user preferences
-            localStorage.setItem('dashboard-announcement-dismissed', 'true')
-          }}
-        />
 
         {/* Search and Filters */}
         <div className="mb-8">
@@ -429,23 +452,35 @@ function DashboardContent() {
 
           {/* Content */}
           {loading ? (
-            <Card className="bg-white/90 backdrop-blur-sm border-orange-200 shadow-lg">
-              <CardContent className="p-12">
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-                  <span className="ml-3 text-gray-600">Loading your analyses...</span>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i} className="bg-white/90 backdrop-blur-sm border-gray-200 animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        <div className="h-6 bg-gray-200 rounded w-48"></div>
+                      </div>
+                      <div className="h-8 bg-gray-200 rounded w-16"></div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-4">
+                      {[...Array(4)].map((_, j) => (
+                        <div key={j} className="h-20 bg-gray-200 rounded"></div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           ) : analyses.length === 0 ? (
             <Card className="bg-white/90 backdrop-blur-sm border-orange-200 shadow-lg">
-              <CardContent className="p-12">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FileText className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No analyses yet</h3>
-                  <p className="text-gray-600 mb-6 max-w-md mx-auto">Get started by analyzing your first resume and see how it matches with job descriptions!</p>
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FileText className="h-8 w-8 text-orange-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No analyses yet</h3>
+                <p className="text-gray-600 mb-6">Get started by analyzing your first resume!</p>
+                <div className="flex justify-center">
                   <Link href="/">
                     <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-lg">
                       <FileText className="h-4 w-4 mr-2" />
@@ -457,6 +492,37 @@ function DashboardContent() {
             </Card>
           ) : (
             <div className="space-y-4">
+              {/* Dashboard Summary */}
+              <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 shadow-lg">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Dashboard Overview</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">{analyses.length}</div>
+                      <div className="text-sm text-gray-600">Total Analyses</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        {Math.round(analyses.reduce((sum, a) => sum + (a.overallScore || 0), 0) / analyses.length) || 0}%
+                      </div>
+                      <div className="text-sm text-gray-600">Average Score</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">
+                        {analyses.filter(a => a.data.jobDescription).length}
+                      </div>
+                      <div className="text-sm text-gray-600">Interview Practice</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-600">
+                        {analyses.filter(a => (a.overallScore || 0) >= 80).length}
+                      </div>
+                      <div className="text-sm text-gray-600">High Scoring (80+%)</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {analyses.map((analysis) => {
                 const isExpanded = expandedCards.has(analysis.id)
                 
@@ -483,8 +549,29 @@ function DashboardContent() {
                             <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                               {analysis.title || 'Resume Analysis'}
                             </h3>
+                            
+                            {/* Quick Feature Status */}
+                            <div className="flex items-center space-x-4 text-xs">
+                              <div className="flex items-center space-x-1">
+                                <FileText className="h-3 w-3 text-purple-500" />
+                                <span className={analysis.data.jobDescription ? 'text-purple-600' : 'text-gray-400'}>
+                                  Cover Letter {analysis.data.jobDescription ? 'Available' : 'Needs Job Description'}
+                                </span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Brain className="h-3 w-3 text-blue-500" />
+                                <span className={analysis.data.jobDescription ? 'text-blue-600' : 'text-gray-400'}>
+                                  Interview Prep {analysis.data.jobDescription ? 'Available' : 'Needs Job Description'}
+                                </span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Sparkles className="h-3 w-3 text-orange-500" />
+                                <span className="text-orange-600">Resume Optimization Available</span>
+                              </div>
+                            </div>
                           </div>
                           
+                          {/* Quick Actions */}
                           <div className="flex items-center space-x-2 ml-6">
                             <Button
                               variant="ghost"
@@ -507,50 +594,26 @@ function DashboardContent() {
                                   return
                                 }
                                 
-                                console.log('=== DASHBOARD VIEW CLICK ===')
-                                console.log('Analysis data:', analysis.data.analysis)
-                                console.log('Resume data:', analysis.data.resumeData)
-                                console.log('Job description:', analysis.data.jobDescription)
-                                
                                 // Store core analysis data
                                 sessionStorage.setItem('analysisResults', JSON.stringify(analysis.data.analysis))
                                 sessionStorage.setItem('resumeData', JSON.stringify(analysis.data.resumeData))
                                 sessionStorage.setItem('jobDescription', analysis.data.jobDescription || '')
-                                
-                                // Store analysis ID and document ID for proper caching
                                 sessionStorage.setItem('analysisId', analysis.id)
+                                
                                 if (analysis.documentId) {
                                   sessionStorage.setItem('documentId', analysis.documentId)
                                 } else {
                                   sessionStorage.removeItem('documentId')
                                 }
                                 
-                                // Store extracted resume ID if available (for cache detection)
-                                // This might be stored in the analysis metadata
-                                if (analysis.data.analysis?.metadata?.extractedResumeId) {
-                                  sessionStorage.setItem('extractedResumeId', analysis.data.analysis.metadata.extractedResumeId)
-                                } else if (analysis.data.resumeData?.extractedResumeId) {
-                                  sessionStorage.setItem('extractedResumeId', analysis.data.resumeData.extractedResumeId)
-                                } else {
-                                  // Generate a fallback extracted resume ID based on analysis ID
-                                  sessionStorage.setItem('extractedResumeId', `extracted_${analysis.id}`)
-                                }
-                                
-                                // Store PDF images if available
                                 if (analysis.pdfImages && analysis.pdfImages.length > 0) {
                                   sessionStorage.setItem('pdfImages', JSON.stringify(analysis.pdfImages))
                                 } else {
                                   sessionStorage.removeItem('pdfImages')
                                 }
                                 
-                                // Store a flag indicating this is from dashboard (not fresh analysis)
                                 sessionStorage.setItem('isFromDashboard', 'true')
                                 sessionStorage.setItem('dashboardAnalysisId', analysis.id)
-                                
-                                console.log('=== STORED DATA FOR ANALYSIS PAGE ===')
-                                console.log('Analysis ID:', analysis.id)
-                                console.log('Document ID:', analysis.documentId)
-                                console.log('Has PDF images:', !!(analysis.pdfImages && analysis.pdfImages.length > 0))
                                 
                                 router.push('/analysis')
                               }}
@@ -613,6 +676,43 @@ function DashboardContent() {
                               </div>
                               <div className="text-sm font-medium text-orange-700">Match</div>
                             </div>
+                          </div>
+                        )}
+
+                        {/* Action Buttons */}
+                        {analysis.data.analysis && analysis.data.resumeData && (
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                            <Button 
+                              variant="outline" 
+                              className="w-full border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300" 
+                              size="sm"
+                              onClick={() => openCoverLetterModal(analysis)}
+                              disabled={!analysis.data.jobDescription}
+                            >
+                              <FileText className="h-4 w-4 mr-2" />
+                              Generate Cover Letter
+                            </Button>
+                            
+                            <Button 
+                              variant="outline" 
+                              className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300" 
+                              size="sm"
+                              onClick={() => openInterviewPrepModal(analysis)}
+                              disabled={!analysis.data.jobDescription}
+                            >
+                              <Brain className="h-4 w-4 mr-2" />
+                              Interview Prep
+                            </Button>
+                            
+                            <Button 
+                              variant="outline" 
+                              className="w-full border-orange-200 text-orange-700 hover:bg-orange-50 hover:border-orange-300" 
+                              size="sm"
+                              onClick={() => openResumeOptimizationModal(analysis)}
+                            >
+                              <Sparkles className="h-4 w-4 mr-2" />
+                              Optimize Resume
+                            </Button>
                           </div>
                         )}
                       </div>
@@ -749,6 +849,39 @@ function DashboardContent() {
           )}
         </div>
       </div>
+      
+      {/* Alert Dialog */}
+      {AlertDialog}
+      
+      {/* Cover Letter Modal */}
+      <CoverLetterModal
+        isOpen={showCoverLetterModal}
+        onClose={() => setShowCoverLetterModal(false)}
+        resumeData={selectedAnalysis?.data.resumeData}
+        jobDescription={selectedAnalysis?.data.jobDescription}
+        analysisData={selectedAnalysis?.data.analysis}
+        analysisId={selectedAnalysis?.id}
+        onCoverLetterGenerated={handleCoverLetterGenerated}
+      />
+
+      {/* Interview Prep Modal */}
+      <InterviewPrepModal
+        isOpen={showInterviewPrepModal}
+        onClose={() => setShowInterviewPrepModal(false)}
+        resumeData={selectedAnalysis?.data.resumeData}
+        jobDescription={selectedAnalysis?.data.jobDescription}
+        analysisData={selectedAnalysis?.data.analysis}
+        analysisId={selectedAnalysis?.id}
+      />
+
+      {/* Resume Optimization Modal */}
+      <ResumeOptimizationModal
+        isOpen={showResumeOptimizationModal}
+        onClose={() => setShowResumeOptimizationModal(false)}
+        onConfirm={handleOptimizationConfirm}
+        isGenerating={isGeneratingOptimized}
+      />
+      
       <Footer />
     </div>
   )

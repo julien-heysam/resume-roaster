@@ -633,4 +633,131 @@ export const downloadBlob = (blob: Blob, filename: string) => {
   a.click()
   document.body.removeChild(a)
   URL.revokeObjectURL(url)
+}
+
+// Generate Interview Prep PDF
+export const generateInterviewPrepPDF = async (data: {
+  interviewData: any
+  resumeData?: any
+  jobDescription?: string
+}): Promise<Buffer> => {
+  const jsPDF = (await import('jspdf')).default
+  const doc = new jsPDF()
+  
+  let yPosition = 20
+  const pageHeight = doc.internal.pageSize.height
+  const margin = 20
+  const lineHeight = 7
+  
+  // Helper function to add text with word wrapping
+  const addText = (text: string, fontSize: number, isBold: boolean = false, align: 'left' | 'center' | 'right' = 'left') => {
+    doc.setFontSize(fontSize)
+    doc.setFont('helvetica', isBold ? 'bold' : 'normal')
+    
+    const maxWidth = doc.internal.pageSize.width - (margin * 2)
+    const lines = doc.splitTextToSize(text, maxWidth)
+    
+    lines.forEach((line: string) => {
+      if (yPosition > pageHeight - 30) {
+        doc.addPage()
+        yPosition = 20
+      }
+      
+      let xPosition = margin
+      if (align === 'center') {
+        xPosition = (doc.internal.pageSize.width - doc.getTextWidth(line)) / 2
+      } else if (align === 'right') {
+        xPosition = doc.internal.pageSize.width - margin - doc.getTextWidth(line)
+      }
+      
+      doc.text(line, xPosition, yPosition)
+      yPosition += lineHeight
+    })
+  }
+  
+  // Title
+  addText('Interview Preparation Guide', 20, true, 'center')
+  yPosition += 10
+  
+  // Job description if provided
+  if (data.jobDescription) {
+    addText('Target Position', 16, true)
+    yPosition += 5
+    addText(data.jobDescription.substring(0, 200) + '...', 10)
+    yPosition += 10
+  }
+  
+  // Interview Questions
+  if (data.interviewData.questions && data.interviewData.questions.length > 0) {
+    addText('Interview Questions', 16, true)
+    yPosition += 5
+    
+    data.interviewData.questions.forEach((question: any, index: number) => {
+      // Question number and category
+      addText(`${index + 1}. [${question.category.toUpperCase()}] ${question.question}`, 12, true)
+      yPosition += 3
+      
+      // Difficulty
+      addText(`Difficulty: ${question.difficulty}`, 10)
+      yPosition += 3
+      
+      // Suggested answer
+      addText('Suggested Answer:', 11, true)
+      addText(question.suggestedAnswer, 10)
+      yPosition += 5
+      
+      // Tips
+      if (question.tips && question.tips.length > 0) {
+        addText('Tips:', 11, true)
+        question.tips.forEach((tip: string) => {
+          addText(`• ${tip}`, 10)
+        })
+        yPosition += 5
+      }
+      
+      // Follow-up questions
+      if (question.followUpQuestions && question.followUpQuestions.length > 0) {
+        addText('Potential Follow-ups:', 11, true)
+        question.followUpQuestions.forEach((followUp: string) => {
+          addText(`• ${followUp}`, 10)
+        })
+      }
+      
+      yPosition += 10
+    })
+  }
+  
+  // General Tips
+  if (data.interviewData.overallTips && data.interviewData.overallTips.length > 0) {
+    addText('General Interview Tips', 16, true)
+    yPosition += 5
+    
+    data.interviewData.overallTips.forEach((tip: string) => {
+      addText(`• ${tip}`, 10)
+    })
+    yPosition += 10
+  }
+  
+  // Company Research
+  if (data.interviewData.companyResearch && data.interviewData.companyResearch.length > 0) {
+    addText('Company Research', 16, true)
+    yPosition += 5
+    
+    data.interviewData.companyResearch.forEach((item: string) => {
+      addText(`• ${item}`, 10)
+    })
+    yPosition += 10
+  }
+  
+  // Salary Negotiation
+  if (data.interviewData.salaryNegotiation && data.interviewData.salaryNegotiation.length > 0) {
+    addText('Salary Negotiation Tips', 16, true)
+    yPosition += 5
+    
+    data.interviewData.salaryNegotiation.forEach((tip: string) => {
+      addText(`• ${tip}`, 10)
+    })
+  }
+  
+  return Buffer.from(doc.output('arraybuffer'))
 } 

@@ -16,9 +16,12 @@ import {
   Target,
   Loader,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Zap,
+  Crown
 } from "lucide-react"
 import { toast } from 'sonner'
+import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/lib/constants"
 
 interface CoverLetterModalProps {
   isOpen: boolean
@@ -40,10 +43,9 @@ export function CoverLetterModal({
   onCoverLetterGenerated
 }: CoverLetterModalProps) {
   const [selectedTone, setSelectedTone] = useState('professional')
+  const [selectedLLM, setSelectedLLM] = useState<string>(OPENAI_MODELS.MINI)
   const [generatedLetter, setGeneratedLetter] = useState<string | null>(null)
   const [letterMetadata, setLetterMetadata] = useState<any>(null)
-  const [debugInfo, setDebugInfo] = useState<any>(null)
-  const [showDebug, setShowDebug] = useState(false)
   const { generateCoverLetter, isGenerating, error } = useCoverLetter()
 
   const toneOptions = [
@@ -52,20 +54,41 @@ export function CoverLetterModal({
     { value: 'conversational', label: 'Conversational', description: 'Friendly but professional tone' }
   ]
 
+  const llmOptions = [
+    { 
+      value: OPENAI_MODELS.MINI,
+      label: 'GPT-4 Mini', 
+      description: 'Fast and efficient generation',
+      credits: 0.5,
+      icon: Zap,
+      badge: 'Fast'
+    },
+    { 
+      value: ANTHROPIC_MODELS.SONNET, 
+      label: 'Claude Sonnet 4', 
+      description: 'Premium quality with superior accuracy',
+      credits: 1,
+      icon: Crown,
+      badge: 'Premium'
+    }
+  ]
+
   const handleGenerate = async () => {
     if (!jobDescription) {
       toast.error('Job description is required to generate a cover letter')
       return
     }
 
-    const result = await generateCoverLetter(resumeData, jobDescription, analysisData, selectedTone, analysisId)
+    const result = await generateCoverLetter(resumeData, jobDescription, analysisData, selectedTone, analysisId, selectedLLM)
     if (result) {
       setGeneratedLetter(result.coverLetter)
       setLetterMetadata({
         ...result.metadata,
         cached: result.cached,
         usageCount: result.usageCount,
-        wordCount: result.wordCount
+        wordCount: result.wordCount,
+        llmUsed: selectedLLM,
+        creditsUsed: llmOptions.find(llm => llm.value === selectedLLM)?.credits || 0.5
       })
       if (onCoverLetterGenerated) {
         onCoverLetterGenerated(result.cached || false, result.usageCount || 1)
@@ -103,40 +126,6 @@ export function CoverLetterModal({
     setGeneratedLetter(null)
     setLetterMetadata(null)
     onClose()
-  }
-
-  const handleDebug = async () => {
-    if (!jobDescription) {
-      toast.error('Job description is required to debug')
-      return
-    }
-
-    try {
-      const response = await fetch('/api/generate-cover-letter/debug', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          resumeData,
-          jobDescription,
-          analysisData,
-          tone: selectedTone,
-          analysisId
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to get debug info')
-      }
-
-      const result = await response.json()
-      setDebugInfo(result.debug)
-      setShowDebug(true)
-      toast.success('Debug info loaded!')
-    } catch (err) {
-      toast.error('Failed to get debug info')
-    }
   }
 
   return (
@@ -179,6 +168,60 @@ export function CoverLetterModal({
                       </option>
                     ))}
                   </select>
+                </div>
+
+                {/* LLM Selection */}
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-3 block">
+                    Choose AI Model
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {llmOptions.map((llm) => {
+                      const IconComponent = llm.icon
+                      return (
+                        <div
+                          key={llm.value}
+                          className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                            selectedLLM === llm.value
+                              ? 'border-blue-500 bg-blue-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                          onClick={() => setSelectedLLM(llm.value)}
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center space-x-2">
+                              <IconComponent className={`h-5 w-5 ${
+                                llm.value === OPENAI_MODELS.MINI ? 'text-blue-600' : 'text-purple-600'
+                              }`} />
+                              <span className="font-medium text-gray-900">{llm.label}</span>
+                            </div>
+                            <div className="flex flex-col items-end space-y-1">
+                              <Badge variant="outline" className={`text-xs ${
+                                llm.value === OPENAI_MODELS.MINI 
+                                  ? 'bg-blue-100 text-blue-700 border-blue-200' 
+                                  : 'bg-purple-100 text-purple-700 border-purple-200'
+                              }`}>
+                                {llm.badge}
+                              </Badge>
+                              <Badge variant="secondary" className={`text-xs ${
+                                llm.value === OPENAI_MODELS.MINI
+                                  ? 'bg-orange-100 text-orange-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
+                                {llm.credits} Credit{llm.credits !== 1 ? 's' : ''}
+                              </Badge>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-600">{llm.description}</p>
+                          {selectedLLM === llm.value && (
+                            <div className="absolute top-2 left-2">
+                              <CheckCircle className="h-4 w-4 text-blue-500" />
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
 
                 {/* Requirements Check */}
@@ -234,155 +277,6 @@ export function CoverLetterModal({
                     </>
                   )}
                 </Button>
-
-                {/* Debug Button */}
-                <Button 
-                  variant="outline"
-                  onClick={handleDebug}
-                  disabled={!jobDescription || !resumeData}
-                  className="w-full mt-2"
-                >
-                  🐛 Debug Prompt (Show what will be sent to AI)
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Debug Information */}
-          {showDebug && debugInfo && (
-            <Card className="border-blue-200 bg-blue-50">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center space-x-2">
-                    <AlertCircle className="h-5 w-5 text-blue-600" />
-                    <span>Debug Information</span>
-                  </span>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => setShowDebug(false)}
-                  >
-                    ✕
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-white p-3 rounded-lg">
-                    <div className="text-sm text-gray-600">Original Resume</div>
-                    <div className="font-bold text-lg">{debugInfo.originalResumeLength.toLocaleString()}</div>
-                    <div className="text-xs text-gray-500">characters</div>
-                  </div>
-                  <div className="bg-white p-3 rounded-lg">
-                    <div className="text-sm text-gray-600">Job Description</div>
-                    <div className="font-bold text-lg">{debugInfo.originalJobDescriptionLength.toLocaleString()}</div>
-                    <div className="text-xs text-gray-500">
-                      {debugInfo.jobSummaryInfo?.wouldSummarize ? 'will be summarized' : 'characters'}
-                    </div>
-                  </div>
-                  <div className="bg-white p-3 rounded-lg">
-                    <div className="text-sm text-gray-600">Final Prompt</div>
-                    <div className="font-bold text-lg">{debugInfo.promptLength.toLocaleString()}</div>
-                    <div className="text-xs text-gray-500">characters</div>
-                  </div>
-                  <div className="bg-white p-3 rounded-lg">
-                    <div className="text-sm text-gray-600">Est. Tokens</div>
-                    <div className="font-bold text-lg">{debugInfo.estimatedTokens.toLocaleString()}</div>
-                    <div className="text-xs text-gray-500">~tokens</div>
-                  </div>
-                </div>
-
-                {/* Job Summary Info */}
-                {debugInfo.jobSummaryInfo && (
-                  <div className="bg-white p-3 rounded-lg">
-                    <div className="text-sm font-medium text-gray-700 mb-2">Job Description Processing:</div>
-                    <div className="text-xs text-gray-600 space-y-1">
-                      {debugInfo.jobSummaryInfo.wouldSummarize && (
-                        <div className="text-orange-600">
-                          ⚠️ Job description is {debugInfo.originalJobDescriptionLength.toLocaleString()} characters and will be summarized
-                        </div>
-                      )}
-                      {debugInfo.jobSummaryInfo.cached && (
-                        <div className="text-green-600">
-                          ✅ Using cached summary (used {debugInfo.jobSummaryInfo.usageCount} times)
-                        </div>
-                      )}
-                      {debugInfo.jobSummaryInfo.exists && (
-                        <div>
-                          <div>Summary length: {debugInfo.jobSummaryInfo.summaryLength} characters</div>
-                          {debugInfo.jobSummaryInfo.companyName && (
-                            <div>Company: {debugInfo.jobSummaryInfo.companyName}</div>
-                          )}
-                          {debugInfo.jobSummaryInfo.jobTitle && (
-                            <div>Position: {debugInfo.jobSummaryInfo.jobTitle}</div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Cover Letter Cache Info */}
-                {debugInfo.coverLetterCacheInfo && (
-                  <div className="bg-white p-3 rounded-lg">
-                    <div className="text-sm font-medium text-gray-700 mb-2">Cover Letter Cache Status:</div>
-                    <div className="text-xs text-gray-600 space-y-1">
-                      <div>Content Hash: <span className="font-mono text-xs">{debugInfo.coverLetterCacheInfo.hash.substring(0, 16)}...</span></div>
-                      {debugInfo.coverLetterCacheInfo.exists ? (
-                        <div className="text-green-600">
-                          ✅ Found cached cover letter (used {debugInfo.coverLetterCacheInfo.usageCount} times)
-                          <div>Word count: {debugInfo.coverLetterCacheInfo.wordCount}</div>
-                          {debugInfo.coverLetterCacheInfo.lastUsed && (
-                            <div>Last used: {new Date(debugInfo.coverLetterCacheInfo.lastUsed).toLocaleString()}</div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="text-blue-600">
-                          ℹ️ No cached version found - will generate new cover letter
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Resume Data Info */}
-                <div className="bg-white p-3 rounded-lg">
-                  <div className="text-sm font-medium text-gray-700 mb-2">Resume Data Structure:</div>
-                  <div className="text-xs text-gray-600">
-                    <div>Type: {debugInfo.resumeDataType}</div>
-                    {debugInfo.resumeDataKeys !== 'N/A' && (
-                      <div>Keys: {Array.isArray(debugInfo.resumeDataKeys) ? debugInfo.resumeDataKeys.join(', ') : debugInfo.resumeDataKeys}</div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Prompt Preview */}
-                <div className="bg-white p-3 rounded-lg">
-                  <div className="text-sm font-medium text-gray-700 mb-2">System Prompt:</div>
-                  <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border max-h-20 overflow-y-auto">
-                    {debugInfo.systemPrompt}
-                  </div>
-                </div>
-
-                <div className="bg-white p-3 rounded-lg">
-                  <div className="text-sm font-medium text-gray-700 mb-2">User Prompt (first 1000 chars):</div>
-                  <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border max-h-40 overflow-y-auto">
-                    {debugInfo.prompt.substring(0, 1000)}
-                    {debugInfo.prompt.length > 1000 && '...'}
-                  </div>
-                </div>
-
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    navigator.clipboard.writeText(JSON.stringify(debugInfo, null, 2))
-                    toast.success('Debug info copied to clipboard!')
-                  }}
-                >
-                  Copy Full Debug Info
-                </Button>
               </CardContent>
             </Card>
           )}
@@ -412,6 +306,21 @@ export function CoverLetterModal({
                           <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
                             <CheckCircle className="h-3 w-3 mr-1" />
                             Cached ({letterMetadata.usageCount} uses)
+                          </Badge>
+                        )}
+                        {letterMetadata.llmUsed && (
+                          <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
+                            {letterMetadata.llmUsed === OPENAI_MODELS.MINI ? (
+                              <Zap className="h-3 w-3 mr-1" />
+                            ) : (
+                              <Crown className="h-3 w-3 mr-1" />
+                            )}
+                            {letterMetadata.llmUsed === OPENAI_MODELS.MINI ? 'GPT-4 Mini' : 'Claude Sonnet'}
+                          </Badge>
+                        )}
+                        {letterMetadata.creditsUsed && (
+                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                            {letterMetadata.creditsUsed} Credit{letterMetadata.creditsUsed !== 1 ? 's' : ''}
                           </Badge>
                         )}
                       </div>

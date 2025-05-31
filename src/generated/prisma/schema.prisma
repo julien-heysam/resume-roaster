@@ -45,6 +45,8 @@ model User {
   generatedRoasts       GeneratedRoast[]
   generatedCoverLetters GeneratedCoverLetter[]
   generatedResumes      GeneratedResume[]
+  interviewPreps        InterviewPrep[]
+  interviewEvaluations  InterviewEvaluation[]
   sharedAnalyses        SharedAnalysis[]
   invoices              Invoice[]
 
@@ -95,6 +97,7 @@ model LlmCall {
   generatedRoastId       String? @map("generated_roast_id")
   generatedCoverLetterId String? @map("generated_cover_letter_id")
   generatedResumeId      String? @map("generated_resume_id")
+  interviewPrepId        String? @map("interview_prep_id")
 
   createdAt   DateTime  @default(now()) @map("created_at")
   completedAt DateTime? @map("completed_at")
@@ -107,6 +110,7 @@ model LlmCall {
   generatedRoast       GeneratedRoast?          @relation(fields: [generatedRoastId], references: [id], onDelete: SetNull)
   generatedCoverLetter GeneratedCoverLetter?    @relation(fields: [generatedCoverLetterId], references: [id], onDelete: SetNull)
   generatedResume      GeneratedResume?         @relation(fields: [generatedResumeId], references: [id], onDelete: SetNull)
+  interviewPrep        InterviewPrep?           @relation(fields: [interviewPrepId], references: [id], onDelete: SetNull)
   messages             LlmMessage[]
 
   @@index([userId])
@@ -179,6 +183,7 @@ model Resume {
   generatedRoasts       GeneratedRoast[]
   generatedCoverLetters GeneratedCoverLetter[]
   generatedResumes      GeneratedResume[]
+  interviewPreps        InterviewPrep[]
 
   @@index([userId])
   @@index([fileHash])
@@ -200,6 +205,7 @@ model ExtractedResume {
   generatedRoasts       GeneratedRoast[]
   generatedCoverLetters GeneratedCoverLetter[]
   generatedResumes      GeneratedResume[]
+  interviewPreps        InterviewPrep[]
 
   @@index([contentHash])
   @@map("extracted_resumes")
@@ -207,10 +213,9 @@ model ExtractedResume {
 
 model ExtractedJobDescription {
   id           String   @id @default(cuid())
-  contentHash  String   @unique @map("content_hash") // For deduplication based on original text
+  contentHash  String   @unique @map("content_hash") // For deduplication
   originalText String   @map("original_text") @db.Text
-  url          String? // Job posting URL
-  data         Json // Structured job data (title, company, requirements, etc.)
+  data         Json // Structured job data
   createdAt    DateTime @default(now()) @map("created_at")
 
   // Relations
@@ -219,6 +224,7 @@ model ExtractedJobDescription {
   generatedRoasts           GeneratedRoast[]
   generatedCoverLetters     GeneratedCoverLetter[]
   generatedResumes          GeneratedResume[]
+  interviewPreps            InterviewPrep[]
 
   @@index([contentHash])
   @@map("extracted_job_descriptions")
@@ -330,6 +336,54 @@ model GeneratedResume {
   @@map("generated_resumes")
 }
 
+// Interview Prep
+model InterviewPrep {
+  id                String   @id @default(cuid())
+  userId            String?  @map("user_id")
+  resumeId          String?  @map("resume_id")
+  extractedResumeId String?  @map("extracted_resume_id")
+  extractedJobId    String?  @map("extracted_job_id")
+  contentHash       String   @unique @map("content_hash") // For deduplication
+  data              Json // Interview questions and answers
+  difficulty        String   @default("medium") // easy, medium, hard
+  category          String   @default("general") // general, technical, behavioral, situational
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user            User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resume          Resume?                  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  extractedResume ExtractedResume?         @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
+  extractedJob    ExtractedJobDescription? @relation(fields: [extractedJobId], references: [id], onDelete: SetNull)
+  llmCalls        LlmCall[]
+
+  @@index([userId])
+  @@index([contentHash])
+  @@index([difficulty])
+  @@index([category])
+  @@map("interview_prep")
+}
+
+model InterviewEvaluation {
+  id             String   @id @default(cuid())
+  analysisId     String   @map("analysis_id") // Links to SharedAnalysis
+  userId         String?  @map("user_id")
+  evaluationType String   @map("evaluation_type") // 'session' or 'individual'
+  data           Json // Evaluation results
+  questionsCount Int      @map("questions_count")
+  overallScore   Int      @map("overall_score")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user     User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  analysis SharedAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@index([userId])
+  @@index([evaluationType])
+  @@index([createdAt])
+  @@map("interview_evaluations")
+}
+
 // Sharing
 model SharedAnalysis {
   id        String   @id // Custom shareable ID
@@ -341,8 +395,9 @@ model SharedAnalysis {
   createdAt DateTime @default(now()) @map("created_at")
 
   // Relations
-  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  roast GeneratedRoast @relation(fields: [roastId], references: [id], onDelete: Cascade)
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roast                GeneratedRoast        @relation(fields: [roastId], references: [id], onDelete: Cascade)
+  interviewEvaluations InterviewEvaluation[]
 
   @@index([userId])
   @@index([expiresAt])

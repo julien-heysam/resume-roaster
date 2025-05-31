@@ -1,11 +1,12 @@
 import { db } from '@/lib/database'
 import crypto from 'crypto'
+import { OPENAI_MODELS } from './constants'
 
 // Simple cache utilities for the new schema
-export function generateCoverLetterHash(resumeText: string, jobSummaryId: string | null, tone: string, analysisId?: string): string {
+export function generateCoverLetterHash(resumeText: string, jobSummaryId: string | null, tone: string, analysisId?: string, llm?: string): string {
   return crypto
     .createHash('sha256')
-    .update(`${resumeText}-${jobSummaryId || 'no-job'}-${tone}-${analysisId || 'no-analysis'}`)
+    .update(`${resumeText}-${jobSummaryId || 'no-job'}-${tone}-${analysisId || 'no-analysis'}-${llm || OPENAI_MODELS.MINI}`)
     .digest('hex')
 }
 
@@ -17,8 +18,8 @@ export function generateOptimizedResumeHash(resumeData: any, jobDescription: str
 }
 
 // Simplified cache check for cover letters
-export async function checkCachedCoverLetter(resumeText: string, jobSummaryId: string | null, tone: string, analysisId?: string) {
-  const contentHash = generateCoverLetterHash(resumeText, jobSummaryId, tone, analysisId)
+export async function checkCachedCoverLetter(resumeText: string, jobSummaryId: string | null, tone: string, analysisId?: string, llm?: string) {
+  const contentHash = generateCoverLetterHash(resumeText, jobSummaryId, tone, analysisId, llm)
 
   const existingCoverLetter = await db.generatedCoverLetter.findUnique({
     where: { contentHash }
@@ -72,9 +73,10 @@ export async function saveCoverLetterToCache(
   tone: string, 
   content: string,
   userId?: string,
-  analysisId?: string
+  analysisId?: string,
+  llm?: string
 ) {
-  const contentHash = generateCoverLetterHash(resumeText, jobSummaryId, tone, analysisId)
+  const contentHash = generateCoverLetterHash(resumeText, jobSummaryId, tone, analysisId, llm)
 
   return await db.generatedCoverLetter.create({
     data: {

@@ -4,7 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { getOrCreateJobSummary, shouldSummarizeJobDescription } from '@/lib/job-summary-utils'
 import { checkCachedCoverLetter, saveCoverLetterToCache } from '@/lib/cache-utils'
-import { callOpenAIText, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
+import { callOpenAIText, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
+import { callAnthropicText, ANTHROPIC_MODELS } from '@/lib/anthropic-utils'
+import { OPENAI_MODELS } from '@/lib/constants'
 import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
@@ -18,7 +20,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { resumeData, jobDescription, analysisData, tone = 'professional', analysisId } = await request.json()
+    const { resumeData, jobDescription, analysisData, tone = 'professional', analysisId, llm = OPENAI_MODELS.MINI } = await request.json()
 
     if (!resumeData || !jobDescription) {
       return NextResponse.json(
@@ -83,7 +85,8 @@ export async function POST(request: NextRequest) {
       truncatedResumeText,
       jobSummaryData?.id || null,
       tone,
-      analysisId
+      analysisId,
+      llm
     )
 
     if (cachedCoverLetter) {
@@ -148,18 +151,30 @@ Generate only the cover letter content without any additional formatting or expl
     console.log('Estimated tokens (rough):', Math.ceil(prompt.length / 4))
     console.log('=== END DEBUG ===')
 
-    // Call OpenAI API using the centralized utility
-    const openaiResponse = await callOpenAIText(prompt, {
-      model: OPENAI_MODELS.MINI,
-      maxTokens: CONTEXT_SIZES.MINI,
-      temperature: TEMPERATURES.HIGH,
-      systemPrompt: 'You are an expert career coach and professional writer specializing in creating compelling cover letters that get results. Write cover letters that are personalized, engaging, and demonstrate clear value to employers.'
-    })
+    // Call the appropriate AI service based on selected LLM
+    let aiResponse
+    if (llm === ANTHROPIC_MODELS.SONNET) {
+      // Use Anthropic Claude
+      aiResponse = await callAnthropicText(prompt, {
+        model: ANTHROPIC_MODELS.SONNET,
+        maxTokens: 4000,
+        temperature: 0.7,
+        systemPrompt: 'You are an expert career coach and professional writer specializing in creating compelling cover letters that get results. Write cover letters that are personalized, engaging, and demonstrate clear value to employers.'
+      })
+    } else {
+      // Use OpenAI GPT-4 Mini (default)
+      aiResponse = await callOpenAIText(prompt, {
+        model: OPENAI_MODELS.MINI,
+        maxTokens: CONTEXT_SIZES.MINI,
+        temperature: TEMPERATURES.HIGH,
+        systemPrompt: 'You are an expert career coach and professional writer specializing in creating compelling cover letters that get results. Write cover letters that are personalized, engaging, and demonstrate clear value to employers.'
+      })
+    }
 
-    const coverLetter = openaiResponse.data
-    const tokensUsed = openaiResponse.usage.totalTokens
-    const estimatedCost = openaiResponse.cost
-    const processingTime = openaiResponse.processingTime
+    const coverLetter = aiResponse.data
+    const tokensUsed = aiResponse.usage.totalTokens
+    const estimatedCost = aiResponse.cost
+    const processingTime = aiResponse.processingTime
 
     if (!coverLetter) {
       return NextResponse.json(
@@ -175,8 +190,8 @@ Generate only the cover letter content without any additional formatting or expl
       const llmCall = await db.llmCall.create({
         data: {
           userId: user.id,
-          provider: 'openai',
-          model: 'gpt-4o-mini',
+          provider: llm === ANTHROPIC_MODELS.SONNET ? 'anthropic' : 'openai',
+          model: llm === ANTHROPIC_MODELS.SONNET ? ANTHROPIC_MODELS.SONNET : OPENAI_MODELS.MINI,
           operationType: 'cover_letter_generation',
           totalTokens: tokensUsed,
           totalCostUsd: estimatedCost,
@@ -222,7 +237,8 @@ Generate only the cover letter content without any additional formatting or expl
       tone,
       coverLetter,
       user.id,
-      analysisId
+      analysisId,
+      llm
     )
 
     return NextResponse.json({

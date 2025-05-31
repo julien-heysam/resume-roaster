@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { LLMLogger, MessageRole } from '@/lib/llm-logger'
 import { ANTHROPIC_MODELS, ANTHROPIC_CONTEXT_SIZES, ANTHROPIC_TEMPERATURES, callAnthropicResumeOptimization } from '@/lib/anthropic-utils'
+import { callOpenAIText, callOpenAIResumeOptimization, CONTEXT_SIZES, TEMPERATURES } from '@/lib/openai-utils'
+import { OPENAI_MODELS } from '@/lib/constants'
 import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
@@ -19,7 +21,8 @@ export async function POST(request: NextRequest) {
 
     const { 
       analysisId,
-      bypassCache = false
+      bypassCache = false,
+      llm = 'gpt-4.1-mini'
     } = await request.json()
 
     if (!analysisId) {
@@ -179,12 +182,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate content hash for deduplication - include analysis ID to ensure uniqueness per analysis
+    // Generate content hash for deduplication - include analysis ID and LLM to ensure uniqueness per analysis and model
     const contentHash = crypto.createHash('sha256')
-      .update(resumeContent + jobContent + analysisId)
+      .update(resumeContent + jobContent + analysisId + llm)
       .digest('hex')
 
-    console.log('Content hash for analysis:', analysisId, 'is:', contentHash)
+    console.log('Content hash for analysis:', analysisId, 'with LLM:', llm, 'is:', contentHash)
 
     // Check for existing optimized resume (unless bypassing)
     if (!bypassCache) {
@@ -256,18 +259,41 @@ Please use the optimize_resume_data function to return the structured optimizati
 
     console.log('Optimization prompt length:', prompt.length)
 
-    // Use centralized Anthropic utility with function calling
-    const response = await callAnthropicResumeOptimization(prompt, {
-      model: ANTHROPIC_MODELS.SONNET,
-      maxTokens: 4000,
-      temperature: 0.3,
-      systemPrompt: 'You are an expert resume optimizer specializing in CONCISE, high-impact resumes. Create optimized resume content that is brief, quantified, and tailored to specific job requirements. Prioritize brevity and impact over lengthy descriptions. Use the provided tool to return structured optimization results with concise content.'
-    })
+    // Use the selected AI service
+    let response
+    let optimizedData
+    let processingTime
+    let tokensUsed
+    let estimatedCost
 
-    const optimizedData = response.data
-    const processingTime = response.processingTime
-    const tokensUsed = response.usage.totalTokens
-    const estimatedCost = response.cost
+    if (llm === ANTHROPIC_MODELS.SONNET) {
+      // Use Anthropic Claude with function calling
+      response = await callAnthropicResumeOptimization(prompt, {
+        model: ANTHROPIC_MODELS.SONNET,
+        maxTokens:  CONTEXT_SIZES.NORMAL,
+        temperature: TEMPERATURES.NORMAL,
+        systemPrompt: 'You are an expert resume optimizer specializing in CONCISE, high-impact resumes. Create optimized resume content that is brief, quantified, and tailored to specific job requirements. Prioritize brevity and impact over lengthy descriptions. Use the provided tool to return structured optimization results with concise content.'
+      })
+      
+      optimizedData = response.data
+      processingTime = response.processingTime
+      tokensUsed = response.usage.totalTokens
+      estimatedCost = response.cost
+    } else {
+      // Use OpenAI GPT-4 Mini with function calling (same as Anthropic)
+      const openAIResponse = await callOpenAIResumeOptimization(prompt, {
+        model: OPENAI_MODELS.MINI,
+        maxTokens: CONTEXT_SIZES.NORMAL,
+        temperature: TEMPERATURES.NORMAL,
+        systemPrompt:'You are an expert resume optimizer specializing in CONCISE, high-impact resumes. Create optimized resume content that is brief, quantified, and tailored to specific job requirements. Prioritize brevity and impact over lengthy descriptions. Use the provided tool to return structured optimization results with concise content.'
+      })
+      
+      // Function calling returns structured data directly (same as Anthropic)
+      optimizedData = openAIResponse.data
+      processingTime = openAIResponse.processingTime
+      tokensUsed = openAIResponse.usage.totalTokens
+      estimatedCost = openAIResponse.cost
+    }
 
     console.log('Resume optimization completed successfully')
     console.log('Processing time:', processingTime, 'ms')
@@ -289,8 +315,8 @@ Please use the optimize_resume_data function to return the structured optimizati
       const llmCall = await db.llmCall.create({
         data: {
           userId: user.id,
-          provider: 'anthropic',
-          model: ANTHROPIC_MODELS.SONNET,
+          provider: llm === ANTHROPIC_MODELS.SONNET ? 'anthropic' : 'openai',
+          model: llm === ANTHROPIC_MODELS.SONNET ? ANTHROPIC_MODELS.SONNET : OPENAI_MODELS.MINI,
           operationType: 'resume_optimization',
           totalTokens: tokensUsed,
           totalCostUsd: estimatedCost,
