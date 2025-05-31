@@ -314,6 +314,57 @@ export class UserService {
     })
   }
 
+  // Get credit cost for a model
+  static getModelCreditCost(model: string): number {
+    // Map models to credit costs based on new system
+    const creditCosts: Record<string, number> = {
+      // OpenAI models
+      'gpt-4.1-nano': 1,
+      'gpt-4.1-mini': 4,
+      'gpt-4.1': 8,
+      'o4-mini-high': 12,
+      // Anthropic models
+      'claude-3-5-haiku-20241022': 1,
+      'claude-sonnet-4-20250514': 8,
+      'claude-opus-4-20250514': 12,
+    }
+    
+    return creditCosts[model] || 4 // Default to 4 credits if model not found
+  }
+
+  // Check if user can afford a specific model
+  static async checkModelAffordability(userId: string, model: string) {
+    const creditCost = this.getModelCreditCost(model)
+    const limits = await this.checkRoastLimit(userId)
+    
+    return {
+      canAfford: limits.canRoast && limits.remaining >= creditCost,
+      creditCost,
+      remaining: limits.remaining,
+      tier: limits.tier
+    }
+  }
+
+  // Deduct credits for a specific model usage
+  static async deductModelCredits(userId: string, model: string) {
+    const creditCost = this.getModelCreditCost(model)
+    
+    // Check if user can afford this
+    const affordability = await this.checkModelAffordability(userId, model)
+    if (!affordability.canAfford) {
+      throw new Error(`Insufficient credits. Need ${creditCost} credits, have ${affordability.remaining}`)
+    }
+
+    // Deduct credits by incrementing roast count by the credit cost
+    return await db.user.update({
+      where: { id: userId },
+      data: {
+        monthlyRoasts: { increment: creditCost },
+        totalRoasts: { increment: creditCost }
+      }
+    })
+  }
+
   // Check user's remaining roasts
   static async checkRoastLimit(userId: string) {
     const user = await db.user.findUnique({
@@ -341,7 +392,7 @@ export class UserService {
 
     // Get limits based on subscription tier
     const MONTHLY_LIMITS = {
-      FREE: 3,
+      FREE: 5,
       PLUS: 100,
       PREMIUM: -1 // Unlimited
     } as const
@@ -359,7 +410,7 @@ export class UserService {
     }
   }
 
-  // Increment roast count
+  // Increment roast count (legacy method for backward compatibility)
   static async incrementRoastCount(userId: string) {
     return await db.user.update({
       where: { id: userId },

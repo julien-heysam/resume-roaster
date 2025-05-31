@@ -97,7 +97,7 @@ export function useSubscription() {
     switch (action) {
       case 'roast':
         if (subscription.tier === 'FREE') {
-          return subscription.monthlyRoasts < 3
+          return subscription.monthlyRoasts < 5
         }
         if (subscription.tier === 'PLUS') {
           return subscription.monthlyRoasts < 100
@@ -119,7 +119,7 @@ export function useSubscription() {
 
     switch (subscription.tier) {
       case 'FREE':
-        return Math.max(0, 3 - subscription.monthlyRoasts)
+        return Math.max(0, 5 - subscription.monthlyRoasts)
       case 'PLUS':
         return Math.max(0, 100 - subscription.monthlyRoasts)
       case 'PREMIUM':

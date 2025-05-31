@@ -599,3 +599,151 @@ export async function callAnthropicInterviewPrep(
     toolChoice: { type: 'tool', name: 'generate_interview_prep' }
   })
 } 
+
+
+export async function callAnthropicResumeAnalysis(
+  userPrompt: string,
+  options: Omit<AnthropicCallOptions, 'tools' | 'toolChoice'> = {}
+): Promise<AnthropicResponse<any>> {
+  const resumeAnalysisTool: Anthropic.Tool = {
+    name: 'analyze_resume',
+    description: 'Analyze a resume against a job description and provide detailed scoring and feedback',
+    input_schema: {
+      type: 'object',
+      properties: {
+        overallScore: {
+          type: 'number',
+          description: 'Overall score from 0-100 based on resume quality and job match',
+          minimum: 0,
+          maximum: 100
+        },
+        scoringBreakdown: {
+          type: 'object',
+          description: 'Detailed breakdown of scoring components',
+          properties: {
+            skills: {
+              type: 'number',
+              description: 'Skills match score out of 40 points',
+              minimum: 0,
+              maximum: 40
+            },
+            experience: {
+              type: 'number',
+              description: 'Experience relevance score out of 35 points',
+              minimum: 0,
+              maximum: 35
+            },
+            achievements: {
+              type: 'number',
+              description: 'Achievement alignment score out of 20 points',
+              minimum: 0,
+              maximum: 20
+            },
+            presentation: {
+              type: 'number',
+              description: 'Presentation quality score out of 5 points',
+              minimum: 0,
+              maximum: 5
+            }
+          },
+          required: ['skills', 'experience', 'achievements', 'presentation']
+        },
+        scoreJustification: {
+          type: 'string',
+          description: 'Detailed markdown-formatted explanation of the score with emojis and professional tone'
+        },
+        scoreLabel: {
+          type: 'string',
+          enum: ['Exceptional Match', 'Strong Match', 'Good Match', 'Fair Match', 'Weak Match', 'Poor Match'],
+          description: 'Label describing the overall score level'
+        },
+        strengths: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'List of 3-5 strong points that give competitive advantage',
+          minItems: 3,
+          maxItems: 5
+        },
+        weaknesses: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'List of 3-7 critical issues that need attention',
+          minItems: 3,
+          maxItems: 7
+        },
+        suggestions: {
+          type: 'array',
+          description: 'Specific actionable improvement suggestions',
+          items: {
+            type: 'object',
+            properties: {
+              section: {
+                type: 'string',
+                description: 'Resume section this suggestion applies to'
+              },
+              issue: {
+                type: 'string',
+                description: 'Specific issue identified'
+              },
+              solution: {
+                type: 'string',
+                description: 'Actionable solution with examples'
+              },
+              priority: {
+                type: 'string',
+                enum: ['critical', 'high', 'medium', 'low'],
+                description: 'Priority level for this improvement'
+              }
+            },
+            required: ['section', 'issue', 'solution', 'priority']
+          }
+        },
+        keywordMatch: {
+          type: 'object',
+          description: 'Keyword analysis for ATS optimization',
+          properties: {
+            matched: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Keywords found in both resume and job description'
+            },
+            missing: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Important keywords missing from resume'
+            },
+            matchPercentage: {
+              type: 'number',
+              description: 'Percentage of important keywords matched',
+              minimum: 0,
+              maximum: 100
+            }
+          },
+          required: ['matched', 'missing', 'matchPercentage']
+        },
+        atsIssues: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'List of ATS compatibility issues found'
+        }
+      },
+      required: [
+        'overallScore',
+        'scoringBreakdown', 
+        'scoreJustification',
+        'scoreLabel',
+        'strengths',
+        'weaknesses',
+        'suggestions',
+        'keywordMatch',
+        'atsIssues'
+      ]
+    }
+  }
+
+  return callAnthropic(userPrompt, {
+    ...options,
+    tools: [resumeAnalysisTool],
+    toolChoice: { type: 'tool', name: 'analyze_resume' }
+  })
+} 

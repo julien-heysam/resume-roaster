@@ -177,13 +177,13 @@ Deduction-based scoring:
 - No evidence of skill proficiency: -3 points each
 ```
 
-**2. Experience Relevance (30 points max)**
+**2. Experience Relevance (35 points max)**
 ```
 Adjustment-based scoring:
-- Perfect role match: Keep 30 points
-- Similar role, different industry: -5 to -10 points
-- Different role, similar skills: -10 to -15 points
-- Entry-level for senior position: -20 points
+- Perfect role match: Keep 35 points
+- Similar role, different industry: -5 to -12 points
+- Different role, similar skills: -12 to -18 points
+- Entry-level for senior position: -25 points
 - Years of experience gap: -3 per year short
 ```
 
@@ -195,13 +195,13 @@ Addition-based scoring:
 - Generic responsibilities only: +0 points
 ```
 
-**4. Presentation Quality (10 points max)**
+**4. Presentation Quality (5 points max)**
 ```
 Deduction-based scoring:
-- Poor formatting: -3 points
-- Typos/grammar errors: -2 per error
-- Missing key sections: -2 each
-- Wall of text/poor readability: -3 points
+- Poor formatting: -2 points
+- Typos/grammar errors: -1 per error
+- Missing key sections: -1 each
+- Wall of text/poor readability: -2 points
 ```
 
 ### Analysis Results Structure
@@ -212,9 +212,9 @@ interface AnalysisData {
   scoreLabel: string               // "Strong Match", "Needs Improvement", etc.
   scoringBreakdown: {              // Detailed component scores
     skills: number                 // Raw score out of 40
-    experience: number             // Raw score out of 30
+    experience: number             // Raw score out of 35
     achievements: number           // Raw score out of 20
-    presentation: number           // Raw score out of 10
+    presentation: number           // Raw score out of 5
   }
   scoreJustification: string       // Markdown-formatted explanation
   strengths: string[]              // 3-5 strong points
@@ -250,16 +250,40 @@ interface AnalysisData {
 
 ### AI Model Integration
 
-**Anthropic Models:**
-- `claude-3-5-haiku-20241022` - Fast responses ($0.00025/$0.00125 per 1K tokens)
-- `claude-sonnet-4-20250514` - Main analysis model ($0.003/$0.015 per 1K tokens)
-- `claude-opus-4-20250514` - Premium analysis ($0.015/$0.075 per 1K tokens)
+**Credit System:**
+Resume Roaster uses a tiered credit system where different AI models cost different amounts of credits based on their capabilities:
 
 **OpenAI Models:**
-- `gpt-4.1-nano` - Basic operations
-- `gpt-4.1-mini` - Standard analysis
-- `gpt-4.1` - Advanced features
-- `o4-mini-high` - Premium operations
+- `gpt-4.1-nano` - Basic operations (1 credit)
+- `gpt-4.1-mini` - Standard analysis (4 credits)
+- `gpt-4.1` - Advanced features (8 credits)
+- `o4-mini-high` - Premium operations (12 credits)
+
+**Anthropic Models:**
+- `claude-3-5-haiku-20241022` - Fast responses (1 credit)
+- `claude-sonnet-4-20250514` - Main analysis model (8 credits)
+- `claude-opus-4-20250514` - Premium analysis (12 credits)
+
+**Credit Cost Mapping:**
+```typescript
+export const MODEL_CREDIT_COSTS = {
+  // OpenAI models
+  'gpt-4.1-nano': 1,      // OpenAI Nano
+  'gpt-4.1-mini': 4,      // OpenAI Mini  
+  'gpt-4.1': 8,           // OpenAI Normal
+  'o4-mini-high': 12,     // OpenAI Large
+  // Anthropic models
+  'claude-3-5-haiku-20241022': 1,     // Claude Haiku
+  'claude-sonnet-4-20250514': 8,      // Claude Sonnet 4
+  'claude-opus-4-20250514': 12,       // Claude Opus 4
+} as const
+```
+
+**Model Selection Guidelines:**
+- **1 Credit (Nano/Haiku)**: Basic tasks, simple formatting, quick responses
+- **4 Credits (Mini)**: Standard resume analysis, cover letter generation
+- **8 Credits (Sonnet)**: Advanced analysis, complex reasoning, premium quality
+- **12 Credits (Opus)**: Ultimate quality, most complex tasks, highest accuracy
 
 ### Caching Strategy
 
@@ -354,19 +378,27 @@ function generateOptimizedResumeHash(
 ### Subscription Tiers
 
 **FREE Tier:**
-- **Monthly Credits**: 3 resume roasts
+- **Monthly Credits**: 10 credits
 - **Features**: AI PDF extraction, basic analysis, email support
 - **Price**: $0
+- **Usage**: Can perform 10 basic operations (1-credit models) or 2-3 mini operations (4-credit models)
 
 **PLUS Tier:**
-- **Monthly Credits**: 100 resume roasts
+- **Monthly Credits**: 200 credits
 - **Features**: All FREE + document history, cover letter generation, ATS optimization
 - **Price**: $9.99/month or $99.99/year (17% savings)
+- **Usage**: Mix of model tiers - approximately 50 mini operations or 25 premium operations or 16 ultimate operations
 
 **PREMIUM Tier:**
 - **Monthly Credits**: Unlimited
 - **Features**: All PLUS + team tools, API access, custom branding, dedicated support
 - **Price**: $49.99/month or $499.99/year
+- **Usage**: No credit restrictions, use any model tier without limits
+
+**Credit Usage Examples:**
+- **Basic User (10 credits)**: 10 nano analyses OR 2 mini analyses OR 1 premium analysis
+- **Plus User (200 credits)**: 200 nano analyses OR 50 mini analyses OR 25 premium analyses OR 16 ultimate analyses
+- **Mixed Usage**: 5 mini (20 credits) + 10 premium (80 credits) + 8 ultimate (96 credits) = 196 credits total
 
 ### Payment Processing
 
@@ -398,7 +430,7 @@ model User {
 
 **Limit Enforcement:**
 - Automatic monthly counter resets
-- Tier-based limits (FREE: 3, PLUS: 100, PREMIUM: unlimited)
+- Tier-based limits (FREE: 10, PLUS: 200, PREMIUM: unlimited)
 - Real-time usage tracking and validation
 
 ### Webhook Events
@@ -688,8 +720,8 @@ model LlmCall {
 
 ```prisma
 enum SubscriptionTier {
-  FREE      // 3 roasts/month
-  PLUS      // 100 roasts/month
+  FREE      // 10 roasts/month
+  PLUS      // 200 roasts/month
   PREMIUM   // Unlimited roasts
 }
 ```

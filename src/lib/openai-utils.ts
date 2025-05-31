@@ -777,92 +777,230 @@ export async function callOpenAIBatchAnswerEvaluation(
   userPrompt: string,
   options: Omit<OpenAICallOptions, 'tools' | 'toolChoice' | 'enforceJSON'> = {}
 ): Promise<OpenAIResponse<any>> {
-  const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
-    {
-      type: 'function',
-      function: {
-        name: 'evaluate_practice_session',
-        description: 'Evaluate a complete interview practice session with multiple questions and answers',
-        parameters: {
-          type: 'object',
-          properties: {
-            overallScore: {
-              type: 'integer',
-              description: 'Overall session score from 0-100',
-              minimum: 0,
-              maximum: 100
-            },
-            questionEvaluations: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  questionId: { type: 'string' },
-                  score: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 100
-                  },
-                  strengths: {
-                    type: 'array',
-                    items: { type: 'string', maxLength: 80 },
-                    maxItems: 2
-                  },
-                  improvements: {
-                    type: 'array',
-                    items: { type: 'string', maxLength: 80 },
-                    maxItems: 2
-                  },
-                  feedback: {
-                    type: 'string',
-                    maxLength: 150
-                  }
-                },
-                required: ['questionId', 'score', 'feedback']
-              }
-            },
-            sessionSummary: {
+  const batchEvaluationTool: OpenAI.Chat.Completions.ChatCompletionTool = {
+    type: 'function',
+    function: {
+      name: 'evaluate_interview_answers',
+      description: 'Evaluate multiple interview answers and provide comprehensive feedback',
+      parameters: {
+        type: 'object',
+        properties: {
+          overallScore: {
+            type: 'number',
+            description: 'Overall interview performance score (0-100)',
+            minimum: 0,
+            maximum: 100
+          },
+          questionEvaluations: {
+            type: 'array',
+            description: 'Individual evaluations for each question',
+            items: {
               type: 'object',
               properties: {
-                strongestAreas: {
-                  type: 'array',
-                  items: { type: 'string', maxLength: 60 },
-                  description: 'Top 2-3 areas where the candidate performed well',
-                  maxItems: 3
+                questionId: { type: 'string', description: 'ID of the question' },
+                score: { 
+                  type: 'number', 
+                  description: 'Score for this answer (0-100)',
+                  minimum: 0,
+                  maximum: 100
                 },
-                improvementAreas: {
+                feedback: { type: 'string', description: 'Detailed feedback for this answer' },
+                strengths: {
                   type: 'array',
-                  items: { type: 'string', maxLength: 60 },
-                  description: 'Top 2-3 areas that need the most improvement',
-                  maxItems: 3
+                  items: { type: 'string' },
+                  description: 'Strengths in this answer'
                 },
-                nextSteps: {
+                improvements: {
                   type: 'array',
-                  items: { type: 'string', maxLength: 80 },
-                  description: 'Specific actionable next steps for improvement',
-                  maxItems: 3
-                },
-                overallFeedback: {
-                  type: 'string',
-                  description: 'Encouraging summary of the practice session (2-3 sentences)',
-                  maxLength: 300
+                  items: { type: 'string' },
+                  description: 'Areas for improvement'
                 }
               },
-              required: ['strongestAreas', 'improvementAreas', 'nextSteps', 'overallFeedback']
+              required: ['questionId', 'score', 'feedback', 'strengths', 'improvements']
             }
           },
-          required: ['overallScore', 'questionEvaluations', 'sessionSummary']
-        }
+          sessionSummary: {
+            type: 'object',
+            description: 'Overall session summary and recommendations',
+            properties: {
+              overallFeedback: { type: 'string', description: 'General feedback on performance' },
+              keyStrengths: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Key strengths demonstrated'
+              },
+              areasForImprovement: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Main areas needing improvement'
+              },
+              nextSteps: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Recommended next steps for improvement'
+              }
+            },
+            required: ['overallFeedback', 'keyStrengths', 'areasForImprovement', 'nextSteps']
+          }
+        },
+        required: ['overallScore', 'questionEvaluations', 'sessionSummary']
       }
     }
-  ]
+  }
 
   return callOpenAI(userPrompt, {
     ...options,
-    model: OPENAI_MODELS.MINI, // Use Mini model for more complex batch evaluation
-    maxTokens: CONTEXT_SIZES.LARGE, // Need more tokens for multiple evaluations
-    temperature: TEMPERATURES.LOW, // Consistent evaluation
-    tools,
-    toolChoice: { type: 'function', function: { name: 'evaluate_practice_session' } }
+    tools: [batchEvaluationTool],
+    toolChoice: { type: 'function', function: { name: 'evaluate_interview_answers' } }
+  })
+}
+
+export async function callOpenAIResumeAnalysis(
+  userPrompt: string,
+  options: Omit<OpenAICallOptions, 'tools' | 'toolChoice' | 'enforceJSON'> = {}
+): Promise<OpenAIResponse<any>> {
+  const resumeAnalysisTool: OpenAI.Chat.Completions.ChatCompletionTool = {
+    type: 'function',
+    function: {
+      name: 'analyze_resume',
+      description: 'Analyze a resume against a job description and provide detailed scoring and feedback',
+      parameters: {
+        type: 'object',
+        properties: {
+          overallScore: {
+            type: 'number',
+            description: 'Overall score from 0-100 based on resume quality and job match',
+            minimum: 0,
+            maximum: 100
+          },
+          scoringBreakdown: {
+            type: 'object',
+            description: 'Detailed breakdown of scoring components',
+            properties: {
+              skills: {
+                type: 'number',
+                description: 'Skills match score out of 40 points',
+                minimum: 0,
+                maximum: 40
+              },
+              experience: {
+                type: 'number',
+                description: 'Experience relevance score out of 35 points',
+                minimum: 0,
+                maximum: 35
+              },
+              achievements: {
+                type: 'number',
+                description: 'Achievement alignment score out of 20 points',
+                minimum: 0,
+                maximum: 20
+              },
+              presentation: {
+                type: 'number',
+                description: 'Presentation quality score out of 5 points',
+                minimum: 0,
+                maximum: 5
+              }
+            },
+            required: ['skills', 'experience', 'achievements', 'presentation']
+          },
+          scoreJustification: {
+            type: 'string',
+            description: 'Detailed markdown-formatted explanation of the score with emojis and professional tone'
+          },
+          scoreLabel: {
+            type: 'string',
+            enum: ['Exceptional Match', 'Strong Match', 'Good Match', 'Fair Match', 'Weak Match', 'Poor Match'],
+            description: 'Label describing the overall score level'
+          },
+          strengths: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'List of 3-5 strong points that give competitive advantage',
+            minItems: 3,
+            maxItems: 5
+          },
+          weaknesses: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'List of 3-7 critical issues that need attention',
+            minItems: 3,
+            maxItems: 7
+          },
+          suggestions: {
+            type: 'array',
+            description: 'Specific actionable improvement suggestions',
+            items: {
+              type: 'object',
+              properties: {
+                section: {
+                  type: 'string',
+                  description: 'Resume section this suggestion applies to'
+                },
+                issue: {
+                  type: 'string',
+                  description: 'Specific issue identified'
+                },
+                solution: {
+                  type: 'string',
+                  description: 'Actionable solution with examples'
+                },
+                priority: {
+                  type: 'string',
+                  enum: ['critical', 'high', 'medium', 'low'],
+                  description: 'Priority level for this improvement'
+                }
+              },
+              required: ['section', 'issue', 'solution', 'priority']
+            }
+          },
+          keywordMatch: {
+            type: 'object',
+            description: 'Keyword analysis for ATS optimization',
+            properties: {
+              matched: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Keywords found in both resume and job description'
+              },
+              missing: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Important keywords missing from resume'
+              },
+              matchPercentage: {
+                type: 'number',
+                description: 'Percentage of important keywords matched',
+                minimum: 0,
+                maximum: 100
+              }
+            },
+            required: ['matched', 'missing', 'matchPercentage']
+          },
+          atsIssues: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'List of ATS compatibility issues found'
+          }
+        },
+        required: [
+          'overallScore',
+          'scoringBreakdown', 
+          'scoreJustification',
+          'scoreLabel',
+          'strengths',
+          'weaknesses',
+          'suggestions',
+          'keywordMatch',
+          'atsIssues'
+        ]
+      }
+    }
+  }
+
+  return callOpenAI(userPrompt, {
+    ...options,
+    tools: [resumeAnalysisTool],
+    toolChoice: { type: 'function', function: { name: 'analyze_resume' } }
   })
 } 

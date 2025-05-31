@@ -4,227 +4,256 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Zap, FileText, Sparkles, Clock, DollarSign, Brain, Crown } from 'lucide-react'
+import { 
+  Zap, 
+  FileText, 
+  Sparkles, 
+  Clock, 
+  CheckCircle,
+  Rocket,
+  Car,
+  Turtle,
+  AlertCircle
+} from 'lucide-react'
+import { OPENAI_MODELS, ANTHROPIC_MODELS, getModelCreditCost } from '@/lib/constants'
 
 interface ExtractionMethodSelectorProps {
   isRegistered: boolean
-  onMethodSelect: (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai') => void
+  onMethodSelect: (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai', model?: string) => void
   selectedMethod?: 'basic' | 'ai'
   selectedProvider?: 'anthropic' | 'openai'
+  selectedModel?: string
   disabled?: boolean
 }
 
 export function ExtractionMethodSelector({ 
   isRegistered, 
   onMethodSelect, 
-  selectedMethod,
-  selectedProvider,
+  selectedMethod = 'ai', // Default to AI extraction
+  selectedProvider = 'openai', // Default to OpenAI Mini
+  selectedModel,
   disabled = false 
 }: ExtractionMethodSelectorProps) {
-  const [hoveredMethod, setHoveredMethod] = useState<string | null>(null)
+  const [currentMethod, setCurrentMethod] = useState<'basic' | 'ai'>(selectedMethod)
+  const [currentModel, setCurrentModel] = useState<string>(selectedModel || OPENAI_MODELS.MINI)
 
-  if (!isRegistered) {
-    return (
-      <div className="mb-6">
-        <Card className="border-blue-200 bg-blue-50">
-          <CardHeader className="pb-3">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-blue-600" />
-              <CardTitle className="text-lg text-blue-900">Basic PDF Extraction</CardTitle>
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800">Free</Badge>
-            </div>
-            <CardDescription className="text-blue-700">
-              Available for all users - simple text extraction from PDF files
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-2 text-sm text-blue-700">
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4" />
-                <span>Fast processing (5-10 seconds)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <DollarSign className="h-4 w-4" />
-                <span>Completely free</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <FileText className="h-4 w-4" />
-                <span>Basic text extraction without formatting</span>
-              </div>
-            </div>
-            <div className="mt-4 p-3 bg-blue-100 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Sign up</strong> to unlock AI-powered extraction with advanced formatting and better accuracy!
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+  const extractionOptions = [
+    {
+      id: 'basic',
+      type: 'basic' as const,
+      title: 'Free Extraction',
+      description: 'Basic text extraction for simple tasks',
+      icon: FileText,
+      credits: 0,
+      badge: 'Free',
+      recommended: false,
+      color: 'bg-green-50 border-green-200'
+    },
+    { 
+      id: 'openai-nano',
+      type: 'ai' as const,
+      provider: 'openai' as const,
+      model: OPENAI_MODELS.NANO,
+      title: 'OpenAI Nano', 
+      description: 'Basic generation for simple tasks',
+      credits: getModelCreditCost(OPENAI_MODELS.NANO),
+      icon: Rocket,
+      badge: 'Basic',
+      recommended: true,
+      color: 'bg-purple-50 border-purple-200'
+    },
+    { 
+      id: 'openai-mini',
+      type: 'ai' as const,
+      provider: 'openai' as const,
+      model: OPENAI_MODELS.MINI,
+      title: 'OpenAI Mini', 
+      description: 'Fast and efficient generation',
+      credits: getModelCreditCost(OPENAI_MODELS.MINI),
+      icon: Zap,
+      badge: 'Fast',
+      recommended: false,
+      color: 'bg-blue-50 border-blue-200'
+    },
+    { 
+      id: 'claude-sonnet',
+      type: 'ai' as const,
+      provider: 'anthropic' as const,
+      model: ANTHROPIC_MODELS.SONNET,
+      title: 'Claude Sonnet 4', 
+      description: 'Premium quality with superior accuracy',
+      credits: getModelCreditCost(ANTHROPIC_MODELS.SONNET),
+      icon: Car,
+      badge: 'Premium',
+      recommended: false,
+      color: 'bg-purple-50 border-purple-200'
+    },
+    { 
+      id: 'claude-opus',
+      type: 'ai' as const,
+      provider: 'anthropic' as const,
+      model: ANTHROPIC_MODELS.OPUS,
+      title: 'Claude Opus 4', 
+      description: 'Ultimate quality for complex generation',
+      credits: getModelCreditCost(ANTHROPIC_MODELS.OPUS),
+      icon: Turtle,
+      badge: 'Ultimate',
+      recommended: false,
+      color: 'bg-purple-50 border-purple-200'
+    }
+  ]
+
+  const handleMethodSelect = (option: any) => {
+    setCurrentMethod(option.type)
+    if (option.type === 'ai') {
+      setCurrentModel(option.model)
+    }
+    // Don't call the API here - just update the selection
   }
 
+  const handleStartExtraction = () => {
+    const option = getSelectedOption()
+    if (option) {
+      if (option.type === 'ai') {
+        onMethodSelect(option.type, option.provider, option.model)
+      } else {
+        onMethodSelect(option.type)
+      }
+    }
+  }
+
+  const getSelectedOption = () => {
+    if (currentMethod === 'basic') {
+      return extractionOptions.find(opt => opt.type === 'basic')
+    } else {
+      return extractionOptions.find(opt => opt.model === currentModel) || extractionOptions.find(opt => opt.id === 'openai-mini')
+    }
+  }
+
+  const selectedOption = getSelectedOption()
+
   return (
-    <div className="mb-6">
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">Choose Extraction Method</h3>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Basic Extraction */}
-        <Card 
-          className={`cursor-pointer transition-all duration-200 ${
-            selectedMethod === 'basic' 
-              ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50' 
-              : hoveredMethod === 'basic'
-              ? 'border-blue-300 shadow-md'
-              : 'border-gray-200 hover:border-gray-300'
-          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={() => !disabled && onMethodSelect('basic')}
-          onMouseEnter={() => !disabled && setHoveredMethod('basic')}
-          onMouseLeave={() => setHoveredMethod(null)}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FileText className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-lg">Basic Extraction</CardTitle>
-              </div>
-              <Badge variant="secondary" className="bg-green-100 text-green-800">Free</Badge>
-            </div>
-            <CardDescription>
-              Fast and simple text extraction from PDF files
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-2 text-sm text-gray-600">
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4 text-green-600" />
-                <span>Fast processing (5-10 seconds)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <DollarSign className="h-4 w-4 text-green-600" />
-                <span>No credits used</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <FileText className="h-4 w-4 text-blue-600" />
-                <span>Plain text extraction</span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-xs text-gray-500">
-                Best for: Simple resumes, quick processing, preserving credits
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* GPT-4 Mini AI Extraction */}
-        <Card 
-          className={`cursor-pointer transition-all duration-200 ${
-            selectedMethod === 'ai' && selectedProvider === 'openai'
-              ? 'ring-2 ring-orange-500 border-orange-500 bg-orange-50' 
-              : hoveredMethod === 'openai'
-              ? 'border-orange-300 shadow-md'
-              : 'border-gray-200 hover:border-gray-300'
-          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={() => !disabled && onMethodSelect('ai', 'openai')}
-          onMouseEnter={() => !disabled && setHoveredMethod('openai')}
-          onMouseLeave={() => setHoveredMethod(null)}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Brain className="h-5 w-5 text-orange-600" />
-                <CardTitle className="text-lg">GPT-4 Mini</CardTitle>
-              </div>
-              <Badge variant="secondary" className="bg-orange-100 text-orange-800">0.5 Credits</Badge>
-            </div>
-            <CardDescription>
-              AI-powered extraction with smart formatting (Affordable)
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-2 text-sm text-gray-600">
-              <div className="flex items-center space-x-2">
-                <Zap className="h-4 w-4 text-orange-600" />
-                <span>AI processing (10-20 seconds)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <DollarSign className="h-4 w-4 text-orange-600" />
-                <span>Uses 0.5 credits (~$0.01-0.025)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Sparkles className="h-4 w-4 text-orange-600" />
-                <span>Formatted markdown output</span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-xs text-gray-500">
-                Best for: Budget-conscious users, good formatting, faster processing
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Claude Sonnet 4 AI Extraction */}
-        <Card 
-          className={`cursor-pointer transition-all duration-200 ${
-            selectedMethod === 'ai' && selectedProvider === 'anthropic'
-              ? 'ring-2 ring-purple-500 border-purple-500 bg-purple-50' 
-              : hoveredMethod === 'anthropic'
-              ? 'border-purple-300 shadow-md'
-              : 'border-gray-200 hover:border-gray-300'
-          } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={() => !disabled && onMethodSelect('ai', 'anthropic')}
-          onMouseEnter={() => !disabled && setHoveredMethod('anthropic')}
-          onMouseLeave={() => setHoveredMethod(null)}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Crown className="h-5 w-5 text-purple-600" />
-                <CardTitle className="text-lg">Claude Sonnet 4</CardTitle>
-              </div>
-              <Badge variant="secondary" className="bg-purple-100 text-purple-800">1 Credit</Badge>
-            </div>
-            <CardDescription>
-              Premium AI extraction with superior accuracy (Best Quality)
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-2 text-sm text-gray-600">
-              <div className="flex items-center space-x-2">
-                <Zap className="h-4 w-4 text-purple-600" />
-                <span>Premium AI processing (15-30 seconds)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <DollarSign className="h-4 w-4 text-purple-600" />
-                <span>Uses 1 credit (~$0.02-0.05)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Sparkles className="h-4 w-4 text-purple-600" />
-                <span>Superior formatting & accuracy</span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-xs text-gray-500">
-                Best for: Complex resumes, highest quality, direct PDF processing
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {selectedMethod && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-700">
-            <strong>Selected:</strong> {
-              selectedMethod === 'basic' 
-                ? 'Basic Extraction - Fast and free text extraction' 
-                : selectedProvider === 'openai'
-                ? 'GPT-4 Mini - AI processing with smart formatting (0.5 credits)'
-                : 'Claude Sonnet 4 - Premium AI processing with superior accuracy (1 credit)'
-            }
-          </p>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <div className="flex items-center space-x-2 text-blue-600">
+          <FileText className="h-5 w-5" />
+          <CardTitle>PDF Extraction Method</CardTitle>
         </div>
-      )}
-    </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Method Selection */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Choose Extraction Method
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {extractionOptions.map((option) => {
+              const IconComponent = option.icon
+              const isSelected = (currentMethod === 'basic' && option.type === 'basic') || 
+                               (currentMethod === 'ai' && option.model === currentModel)
+              
+              return (
+                <div
+                  key={option.id}
+                  className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                    isSelected
+                      ? 'border-blue-500 bg-blue-50'
+                      : `border-gray-200 hover:border-gray-300 ${option.color}`
+                  } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={() => !disabled && handleMethodSelect(option)}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <IconComponent className="h-5 w-5 text-purple-600" />
+                      <span className="font-medium text-gray-900 text-sm">{option.title}</span>
+                    </div>
+                    <div className="flex flex-col items-end space-y-1">
+                      <Badge 
+                        variant="outline" 
+                        className={`text-xs ${
+                          option.badge === 'Free' ? 'bg-green-100 text-green-700 border-green-200' :
+                          option.badge === 'Basic' ? 'bg-purple-100 text-purple-700 border-purple-200' :
+                          option.badge === 'Fast' ? 'bg-blue-100 text-blue-700 border-blue-200' :
+                          option.badge === 'Premium' ? 'bg-purple-100 text-purple-700 border-purple-200' :
+                          'bg-purple-100 text-purple-700 border-purple-200'
+                        }`}
+                      >
+                        {option.badge}
+                      </Badge>
+                      {option.recommended && (
+                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800 border-green-200">
+                          Recommended
+                        </Badge>
+                      )}
+                      <Badge 
+                        variant="secondary" 
+                        className={`text-xs ${
+                          option.credits === 0 ? 'bg-green-100 text-green-800' :
+                          option.credits <= 2 ? 'bg-orange-100 text-orange-800' :
+                          'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {option.credits === 0 ? 'Free' : `${option.credits} Credit${option.credits !== 1 ? 's' : ''}`}
+                      </Badge>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600">{option.description}</p>
+                  {isSelected && (
+                    <div className="absolute top-2 left-2">
+                      <CheckCircle className="h-4 w-4 text-blue-500" />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Requirements Check */}
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <CheckCircle className="h-4 w-4 text-green-500" />
+            <span className="text-sm">PDF file uploaded</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            {isRegistered ? (
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            ) : (
+              <AlertCircle className="h-4 w-4 text-orange-500" />
+            )}
+            <span className="text-sm">
+              {isRegistered ? 'Account registered - all methods available' : 'Guest mode - only free extraction available'}
+            </span>
+          </div>
+        </div>
+
+        {!isRegistered && currentMethod === 'ai' && (
+          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-sm text-yellow-800">
+              <AlertCircle className="h-4 w-4 inline mr-1" />
+              AI extraction requires a registered account. Please sign up to access premium extraction methods.
+            </p>
+          </div>
+        )}
+
+        <Button 
+          onClick={handleStartExtraction}
+          disabled={disabled || (!isRegistered && currentMethod === 'ai')}
+          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+        >
+          {disabled ? (
+            <>
+              <Clock className="h-4 w-4 mr-2" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4 mr-2" />
+              Start Extraction
+            </>
+          )}
+        </Button>
+      </CardContent>
+    </Card>
   )
 } 

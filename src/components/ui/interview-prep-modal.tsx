@@ -28,7 +28,9 @@ import {
   BarChart3,
   AlertCircle,
   Zap,
-  Crown
+  Rocket,
+  Car,
+  Turtle
 } from "lucide-react"
 import { toast } from 'sonner'
 import { useSubscription } from "@/hooks/useSubscription"
@@ -88,20 +90,40 @@ export function InterviewPrepModal({
 
   const llmOptions = [
     { 
+      value: OPENAI_MODELS.NANO,
+      label: 'OpenAI Nano', 
+      description: 'Basic generation for simple tasks',
+      credits: 1,
+      icon: Rocket,
+      badge: 'Basic',
+      recommended: false
+    },
+    { 
       value: OPENAI_MODELS.MINI,
-      label: 'GPT-4 Mini', 
+      label: 'OpenAI Mini', 
       description: 'Fast and efficient generation',
-      credits: 0.5,
+      credits: 4,
       icon: Zap,
-      badge: 'Fast'
+      badge: 'Fast',
+      recommended: true
     },
     { 
       value: ANTHROPIC_MODELS.SONNET, 
       label: 'Claude Sonnet 4', 
       description: 'Premium quality with superior accuracy',
-      credits: 1,
-      icon: Crown,
-      badge: 'Premium'
+      credits: 8,
+      icon: Car,
+      badge: 'Premium',
+      recommended: false
+    },
+    { 
+      value: ANTHROPIC_MODELS.OPUS, 
+      label: 'Claude Opus 4', 
+      description: 'Ultimate quality for complex generation',
+      credits: 12,
+      icon: Turtle,
+      badge: 'Ultimate',
+      recommended: false
     }
   ]
 
@@ -481,6 +503,11 @@ export function InterviewPrepModal({
                                   }`}>
                                     {llm.badge}
                                   </Badge>
+                                  {llm.recommended && (
+                                    <Badge variant="secondary" className="text-xs bg-green-100 text-green-800 border-green-200">
+                                      Recommended
+                                    </Badge>
+                                  )}
                                   <Badge variant="secondary" className={`text-xs ${
                                     llm.value === OPENAI_MODELS.MINI
                                       ? 'bg-orange-100 text-orange-800'

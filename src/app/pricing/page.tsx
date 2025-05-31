@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, Crown, Zap, Star, ArrowRight } from "lucide-react"
+import { Check, Crown, Zap, Star, ArrowRight, Rocket, Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -24,37 +24,34 @@ export default function PricingPage() {
       price: { monthly: 0, yearly: 0 },
       description: "Perfect for trying out Resume Roaster",
       features: [
-        "3 credits per month",
-        "Basic AI feedback",
-        "PDF/DOCX upload support",
-        "Markdown export",
-        "Email support"
+        "10 credits per month",
+        "AI resume analysis",
+        "Basic PDF extraction",
+        "Email support",
+        "Resume optimization",
+        "Cover letter generation"
       ],
-      limitations: [
-        "Limited roasts per month",
-        "Basic feedback only",
-        "No priority support"
-      ],
-      cta: "Get Started",
+      limitations: [],
+      cta: "Get Started Free",
       popular: false,
       tier: "FREE"
     },
     {
       name: "Plus",
       price: { monthly: 9.99, yearly: 99.99 },
-      description: "For serious job seekers who want the best",
+      description: "Best for active job seekers",
       features: [
-        "100 credits per month",
-        "Advanced AI analysis",
-        "Job-specific optimization",
-        "ATS compatibility check",
-        "Multiple export formats",
-        "Priority email support",
-        "Resume templates",
-        "Interview tips"
+        "200 credits per month",
+        "Everything in Free",
+        "Priority AI processing",
+        "Advanced PDF extraction",
+        "Document history",
+        "ATS optimization",
+        "Interview preparation",
+        "Priority support"
       ],
       limitations: [],
-      cta: "Upgrade to Plus",
+      cta: "Start Plus Trial",
       popular: true,
       tier: "PLUS"
     },
@@ -65,13 +62,9 @@ export default function PricingPage() {
       features: [
         "Everything in Plus",
         "Unlimited credits per month",
-        "Team management",
         "Bulk resume processing",
-        "Custom branding",
-        "API access",
         "Dedicated support",
-        "Custom integrations",
-        "Analytics dashboard"
+        "More coming soon"
       ],
       limitations: [],
       cta: "Upgrade to Premium",
@@ -235,8 +228,64 @@ export default function PricingPage() {
 
         {/* FAQ Section */}
         <div className="mt-20 max-w-3xl mx-auto">
+          {/* <h2 className="text-3xl font-bold text-center mb-12">Credit System & Model Tiers</h2> */}
+          
+          {/* Credit System Explanation */}
+          <div className="mb-12 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+            <h3 className="text-xl font-semibold mb-4 text-center">How Our Credit System Works</h3>
+            <p className="text-gray-700 mb-6 text-center">
+              Different AI models cost different amounts of credits based on their capabilities and processing power.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Rocket className="h-5 w-5 text-blue-600" />
+                  <span className="font-semibold">OpenAI Models</span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Nano (Basic)</span>
+                    <Badge variant="outline">1 Credit</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Mini (Fast)</span>
+                    <Badge variant="outline">4 Credits</Badge>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Car className="h-5 w-5 text-purple-600" />
+                  <span className="font-semibold">Claude Models</span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Sonnet 4 (Premium)</span>
+                    <Badge variant="outline">8 Credits</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Opus 4 (Ultimate)</span>
+                    <Badge variant="outline">12 Credits</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                <strong>Example:</strong> With 200 credits, you could generate 50 mini analyses, 25 premium analyses, or 16 ultimate analyses.
+              </p>
+            </div>
+          </div>
+
           <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">How do credits work?</h3>
+              <p className="text-gray-600">Credits are consumed based on the AI model you choose. More advanced models provide better results but cost more credits. You can always see the credit cost before using any feature.</p>
+            </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">Can I cancel anytime?</h3>
               <p className="text-gray-600">Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period.</p>
@@ -247,7 +296,7 @@ export default function PricingPage() {
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">Is there a free trial?</h3>
-              <p className="text-gray-600">Our Free plan gives you 3 credits per month to try out the service. No credit card required!</p>
+              <p className="text-gray-600">Our Free plan gives you 10 credits per month to try out the service. No credit card required!</p>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">How does the AI analysis work?</h3>

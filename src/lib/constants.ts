@@ -12,6 +12,35 @@ export const ANTHROPIC_MODELS = {
   OPUS: 'claude-opus-4-20250514',
 } as const
 
+// Credit costs for each model tier
+export const MODEL_CREDIT_COSTS = {
+  // OpenAI models
+  [OPENAI_MODELS.NANO]: 1,
+  [OPENAI_MODELS.MINI]: 4,
+  [OPENAI_MODELS.NORMAL]: 8,
+  [OPENAI_MODELS.LARGE]: 12,
+  // Anthropic models
+  [ANTHROPIC_MODELS.HAIKU]: 1,
+  [ANTHROPIC_MODELS.SONNET]: 8,
+  [ANTHROPIC_MODELS.OPUS]: 12,
+} as const
+
+// Model tier labels for UI
+export const MODEL_TIER_LABELS = {
+  [OPENAI_MODELS.NANO]: 'OpenAI Nano',
+  [OPENAI_MODELS.MINI]: 'OpenAI Mini',
+  [OPENAI_MODELS.NORMAL]: 'Claude Sonnet 4',
+  [OPENAI_MODELS.LARGE]: 'Claude Opus 4',
+  [ANTHROPIC_MODELS.HAIKU]: 'Claude Haiku',
+  [ANTHROPIC_MODELS.SONNET]: 'Claude Sonnet 4',
+  [ANTHROPIC_MODELS.OPUS]: 'Claude Opus 4',
+} as const
+
+// Helper function to get credit cost for a model
+export function getModelCreditCost(model: string): number {
+  return MODEL_CREDIT_COSTS[model as keyof typeof MODEL_CREDIT_COSTS] || 1
+}
+
 // Context size constants
 export const CONTEXT_SIZES = {
   MINI: 1000,

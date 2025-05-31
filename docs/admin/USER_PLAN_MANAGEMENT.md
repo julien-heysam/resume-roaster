@@ -6,9 +6,9 @@ This guide explains how to manually update user subscription plans in Resume Roa
 
 Users have subscription tiers that control their access to features:
 
-- **FREE**: 3 roasts per month
-- **PRO**: 100 roasts per month + premium features
-- **ENTERPRISE**: Unlimited roasts + all features
+- **FREE**: 5 roasts per month
+- **PLUS**: 100 roasts per month + premium features
+- **PREMIUM**: Unlimited roasts + all features
 
 When changing plans, you may need to update several database fields and reset usage counters.
 
@@ -195,8 +195,8 @@ Usage counters are automatically reset in these cases:
 
 | Tier | Monthly Roasts | Features |
 |------|----------------|----------|
-| FREE | 3 | Basic analysis |
-| PRO | 100 | Premium analysis, history, downloads |
+| FREE | 5 | Basic analysis |
+| PRO | 40 | Premium analysis, history, downloads |
 | ENTERPRISE | Unlimited | All features + API access |
 
 ## Direct Database Updates

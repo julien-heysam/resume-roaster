@@ -15,6 +15,18 @@ BRAVE_SEARCH_API_KEY=your_brave_search_api_key_here
 3. Create a new API key
 4. Copy the key to your `.env.local` file
 
+### Pinecone API Key (for Documentation Indexing)
+```bash
+PINECONE_API_KEY=your_pinecone_api_key_here
+```
+
+**How to get a Pinecone API key:**
+1. Go to [Pinecone](https://www.pinecone.io/)
+2. Sign up for an account
+3. Create a new project and index named `documents`
+4. Get your API key from the dashboard
+5. Copy the key to your `.env.local` file
+
 ### Other Required Variables
 ```bash
 # NextAuth configuration

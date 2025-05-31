@@ -106,7 +106,7 @@ export function RoastLimitBanner({
               </p>
               <p className="text-xs text-yellow-700 mt-1">
                 {tier === 'FREE' 
-                  ? 'Upgrade to Plus for 100 credits/month' 
+                  ? 'Upgrade to Plus for 200 credits/month' 
                   : 'Your plan resets monthly'
                 }
               </p>

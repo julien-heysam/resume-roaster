@@ -17,31 +17,32 @@ import {
   Car,
   Target,
   TrendingUp,
-  Award
+  Award,
+  BarChart3
 } from "lucide-react"
 import { toast } from 'sonner'
 import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/lib/constants"
 
-interface ResumeOptimizationModalProps {
+interface ResumeAnalysisModalProps {
   isOpen: boolean
   onClose: () => void
   onConfirm: (selectedLLM: string) => void
-  isGenerating?: boolean
+  isAnalyzing?: boolean
 }
 
-export function ResumeOptimizationModal({ 
+export function ResumeAnalysisModal({ 
   isOpen, 
   onClose, 
   onConfirm,
-  isGenerating = false
-}: ResumeOptimizationModalProps) {
+  isAnalyzing = false
+}: ResumeAnalysisModalProps) {
   const [selectedLLM, setSelectedLLM] = useState<string>(ANTHROPIC_MODELS.SONNET)
 
   const llmOptions = [
     { 
       value: OPENAI_MODELS.NANO, 
       label: 'OpenAI Nano', 
-      description: 'Basic optimization for simple tasks',
+      description: 'Basic analysis for simple evaluations',
       credits: 1,
       icon: Rocket,
       badge: 'Basic',
@@ -50,7 +51,7 @@ export function ResumeOptimizationModal({
     { 
       value: OPENAI_MODELS.MINI, 
       label: 'OpenAI Mini', 
-      description: 'Fast and efficient optimization',
+      description: 'Fast and efficient analysis',
       credits: 4,
       icon: Zap,
       badge: 'Fast',
@@ -68,7 +69,7 @@ export function ResumeOptimizationModal({
     { 
       value: ANTHROPIC_MODELS.OPUS, 
       label: 'Claude Opus 4', 
-      description: 'Ultimate quality for complex optimization',
+      description: 'Ultimate quality for complex analysis',
       credits: 12,
       icon: Turtle,
       badge: 'Ultimate',
@@ -81,7 +82,7 @@ export function ResumeOptimizationModal({
   }
 
   const handleClose = () => {
-    if (!isGenerating) {
+    if (!isAnalyzing) {
       onClose()
     }
   }
@@ -91,8 +92,8 @@ export function ResumeOptimizationModal({
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0">
         <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle className="flex items-center space-x-2">
-            <Sparkles className="h-6 w-6 text-orange-500" />
-            <span>Resume Optimization</span>
+            <BarChart3 className="h-6 w-6 text-blue-500" />
+            <span>Resume Analysis</span>
           </DialogTitle>
         </DialogHeader>
 
@@ -100,15 +101,15 @@ export function ResumeOptimizationModal({
           <div className="space-y-6">
             {/* Hero Section */}
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="h-8 w-8 text-orange-600" />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                AI-Powered Resume Optimization
+                AI-Powered Resume Analysis
               </h3>
               <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                Get personalized resume optimization based on your resume and the target job. 
-                Enhance your keywords, formatting, and content to stand out from other candidates.
+                Get detailed scoring and feedback on your resume against the target job. 
+                Receive actionable insights to improve your chances of landing interviews.
               </p>
             </div>
 
@@ -117,37 +118,37 @@ export function ResumeOptimizationModal({
               <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
                 <CardContent className="p-4 text-center">
                   <Target className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                  <h4 className="font-semibold text-blue-900 mb-1">Targeted Keywords</h4>
-                  <p className="text-sm text-blue-700">Optimized for your specific job posting</p>
+                  <h4 className="font-semibold text-blue-900 mb-1">Detailed Scoring</h4>
+                  <p className="text-sm text-blue-700">Skills, experience, achievements & presentation</p>
                 </CardContent>
               </Card>
               
               <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
                 <CardContent className="p-4 text-center">
                   <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                  <h4 className="font-semibold text-green-900 mb-1">Enhanced Content</h4>
-                  <p className="text-sm text-green-700">Improved formatting and structure</p>
+                  <h4 className="font-semibold text-green-900 mb-1">Actionable Feedback</h4>
+                  <p className="text-sm text-green-700">Specific suggestions for improvement</p>
                 </CardContent>
               </Card>
               
               <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
                 <CardContent className="p-4 text-center">
                   <Award className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                  <h4 className="font-semibold text-purple-900 mb-1">ATS Optimized</h4>
-                  <p className="text-sm text-purple-700">Passes applicant tracking systems</p>
+                  <h4 className="font-semibold text-purple-900 mb-1">ATS Analysis</h4>
+                  <p className="text-sm text-purple-700">Keyword matching and compatibility</p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Generation Settings */}
+            {/* Analysis Settings */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Sparkles className="h-5 w-5 text-orange-600" />
-                  <span>Generate Your Resume Optimization</span>
+                  <BarChart3 className="h-5 w-5 text-blue-600" />
+                  <span>Start Your Resume Analysis</span>
                 </CardTitle>
                 <CardDescription>
-                  Create personalized resume optimization based on your resume and the job description
+                  Choose your preferred AI model for analyzing your resume against the job description
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -164,18 +165,18 @@ export function ResumeOptimizationModal({
                           key={llm.value}
                           className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${
                             selectedLLM === llm.value
-                              ? 'border-orange-500 bg-orange-50'
+                              ? 'border-blue-500 bg-blue-50'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                           onClick={() => setSelectedLLM(llm.value)}
                         >
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex items-center space-x-2">
-                              <IconComponent className="h-5 w-5 text-orange-600" />
+                              <IconComponent className="h-5 w-5 text-blue-600" />
                               <span className="font-medium text-gray-900">{llm.label}</span>
                             </div>
                             <div className="flex flex-col items-end space-y-1">
-                              <Badge variant="outline" className="text-xs bg-orange-100 text-orange-700 border-orange-200">
+                              <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
                                 {llm.badge}
                               </Badge>
                               {llm.recommended && (
@@ -191,7 +192,7 @@ export function ResumeOptimizationModal({
                           <p className="text-sm text-gray-600">{llm.description}</p>
                           {selectedLLM === llm.value && (
                             <div className="absolute top-2 left-2">
-                              <CheckCircle className="h-4 w-4 text-orange-500" />
+                              <CheckCircle className="h-4 w-4 text-blue-500" />
                             </div>
                           )}
                         </div>
@@ -202,19 +203,31 @@ export function ResumeOptimizationModal({
 
                 {/* Requirements Check */}
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-900 mb-3">Requirements Check</h4>
+                  <h4 className="font-medium text-gray-900 mb-3">Analysis Components</h4>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm">Resume data available</span>
+                      <span className="text-sm">Skills match scoring (40 points)</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm">Job description available</span>
+                      <span className="text-sm">Experience relevance (35 points)</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span className="text-sm">Achievement quality (20 points)</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span className="text-sm">Presentation format (5 points)</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm">Analysis insights will be included</span>
+                      <span className="text-sm">ATS keyword analysis</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm">Actionable improvement suggestions</span>
                     </div>
                   </div>
                 </div>
@@ -222,19 +235,19 @@ export function ResumeOptimizationModal({
                 {/* Action Button */}
                 <Button 
                   onClick={handleConfirm}
-                  disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
+                  disabled={isAnalyzing}
+                  className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
                   size="lg"
                 >
-                  {isGenerating ? (
+                  {isAnalyzing ? (
                     <>
                       <Loader className="h-5 w-5 mr-2 animate-spin" />
-                      Generating Optimization...
+                      Analyzing Resume...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5 mr-2" />
-                      Generate Optimized Resume
+                      <BarChart3 className="h-5 w-5 mr-2" />
+                      Start Analysis
                     </>
                   )}
                 </Button>

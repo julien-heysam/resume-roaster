@@ -63,10 +63,11 @@ export async function POST(request: NextRequest) {
 
     // Use a default template ID for now (we can make this configurable later)
     const templateId = 'modern-professional'
+    const llmModel = ANTHROPIC_MODELS.SONNET // This route uses Claude Sonnet
 
-    // Generate content hash for deduplication - include analysis ID to ensure uniqueness per analysis
+    // Generate content hash for deduplication - include analysis ID and LLM to ensure uniqueness per analysis and model
     const contentHash = crypto.createHash('sha256')
-      .update(truncatedResumeText + (jobDescription || '') + templateId + (analysisId || ''))
+      .update(truncatedResumeText + (jobDescription || '') + templateId + (analysisId || '') + llmModel)
       .digest('hex')
 
     // Check for existing optimized resume (unless bypassing)

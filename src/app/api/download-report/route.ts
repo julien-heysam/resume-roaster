@@ -83,15 +83,15 @@ ${scoreJustification}
 ${scoringBreakdown ? `
 DETAILED SCORING BREAKDOWN:
 • Skills Match: ${Math.round((scoringBreakdown.skills / 40) * 100)}/100 (${scoringBreakdown.skills}/40 points)
-• Experience Relevance: ${Math.round((scoringBreakdown.experience / 30) * 100)}/100 (${scoringBreakdown.experience}/30 points)
+• Experience Relevance: ${Math.round((scoringBreakdown.experience / 35) * 100)}/100 (${scoringBreakdown.experience}/35 points)
 • Achievement Quality: ${Math.round((scoringBreakdown.achievements / 20) * 100)}/100 (${scoringBreakdown.achievements}/20 points)
-• Presentation & Format: ${Math.round((scoringBreakdown.presentation / 10) * 100)}/100 (${scoringBreakdown.presentation}/10 points)
+• Presentation & Format: ${Math.round((scoringBreakdown.presentation / 5) * 100)}/100 (${scoringBreakdown.presentation}/5 points)
 
 SCORING METHODOLOGY:
 - Skills Match: Up to 40 points (40% of total score)
-- Experience Relevance: Up to 30 points (30% of total score)
+- Experience Relevance: Up to 35 points (35% of total score)
 - Achievement Quality: Up to 20 points (20% of total score)
-- Presentation & Format: Up to 10 points (10% of total score)
+- Presentation & Format: Up to 5 points (5% of total score)
 ` : ''}
 
 ================================================================================

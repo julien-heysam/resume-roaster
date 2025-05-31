@@ -11,6 +11,7 @@ import { AnalysisLoading } from "@/components/ui/analysis-loading"
 import { Navigation } from "@/components/ui/navigation"
 import { useAlertDialog } from "@/components/ui/alert-dialog"
 import { ExtractionMethodSelector } from "@/components/ExtractionMethodSelector"
+import { ResumeAnalysisModal } from "@/components/ui/resume-analysis-modal"
 import { useRoastLimit } from "@/hooks/useRoastLimit"
 import { useFileExtraction } from "@/hooks/useFileExtraction"
 import { useRouter } from "next/navigation"
@@ -21,8 +22,15 @@ export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [step, setStep] = useState<'upload' | 'method-select' | 'extracted' | 'analyzing'>('upload')
   const [analysisProgress, setAnalysisProgress] = useState(0)
-  const [selectedExtractionMethod, setSelectedExtractionMethod] = useState<'basic' | 'ai'>('basic')
-  const [selectedProvider, setSelectedProvider] = useState<'anthropic' | 'openai'>('anthropic')
+  const [selectedExtractionMethod, setSelectedExtractionMethod] = useState<'basic' | 'ai'>('ai')
+  const [selectedProvider, setSelectedProvider] = useState<'anthropic' | 'openai'>('openai')
+  const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined)
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false)
+  const [pendingAnalysisData, setPendingAnalysisData] = useState<{
+    resumeData: any
+    jobDescription: string
+    analysisName?: string
+  } | null>(null)
   const { data: session } = useSession()
   const { showAlert, AlertDialog } = useAlertDialog()
   
@@ -101,14 +109,17 @@ export default function Home() {
     }
   }
 
-  const handleExtractionMethodSelect = async (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai') => {
+  const handleExtractionMethodSelect = async (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai', model?: string) => {
     setSelectedExtractionMethod(method)
     if (provider) {
       setSelectedProvider(provider)
     }
+    if (model) {
+      setSelectedModel(model)
+    }
     
     if (selectedFile) {
-      const extractionProvider = method === 'ai' ? (provider || 'anthropic') : 'anthropic'
+      const extractionProvider = method === 'ai' ? (provider || 'openai') : 'openai'
       const extracted = await extractFile(selectedFile, session?.user?.id, method, extractionProvider)
       if (extracted) {
         setStep('extracted')
@@ -133,11 +144,12 @@ export default function Home() {
     setSelectedFile(null)
     setStep('upload')
     setAnalysisProgress(0)
-    setSelectedExtractionMethod('basic')
-    setSelectedProvider('anthropic')
+    setSelectedExtractionMethod('ai')
+    setSelectedProvider('openai')
+    setSelectedModel(undefined)
   }
 
-  const handleRerun = async (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai') => {
+  const handleRerun = async (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai', model?: string) => {
     if (!selectedFile) {
       showAlert({
         title: "No File Selected",
@@ -152,6 +164,9 @@ export default function Home() {
       setSelectedExtractionMethod(method)
       if (provider) {
         setSelectedProvider(provider)
+      }
+      if (model) {
+        setSelectedModel(model)
       }
 
       // Re-run extraction with new settings and bypass cache to force fresh extraction
@@ -203,19 +218,29 @@ export default function Home() {
       return
     }
 
+    // Store the analysis data and show modal for model selection
+    setPendingAnalysisData({ resumeData, jobDescription, analysisName })
+    setShowAnalysisModal(true)
+  }
+
+  const handleAnalysisConfirm = async (selectedLLM: string) => {
+    if (!pendingAnalysisData) return
+
+    const { resumeData, jobDescription, analysisName } = pendingAnalysisData
+    
+    setShowAnalysisModal(false)
+    setStep('analyzing')
+    setAnalysisProgress(0)
+
+    // Simulate progress updates
+    const progressInterval = setInterval(() => {
+      setAnalysisProgress(prev => {
+        if (prev >= 95) return prev
+        return prev + Math.random() * 5
+      })
+    }, 1000)
+
     try {
-      // Show loading state
-      setStep('analyzing')
-      setAnalysisProgress(0)
-
-      // Simulate progress updates
-      const progressInterval = setInterval(() => {
-        setAnalysisProgress(prev => {
-          if (prev >= 95) return prev
-          return prev + Math.random() * 5
-        })
-      }, 1000)
-
       // Step 1: Process job description first
       console.log('Processing job description...')
       const jobProcessResponse = await fetch('/api/summarize-job-description', {
@@ -263,7 +288,7 @@ export default function Home() {
         console.log('Summarized resume created:', summarizeResumeResult)
       }
 
-      // Step 3: Call the analysis API with the extracted job ID
+      // Step 3: Call the analysis API with the selected model
       const response = await fetch('/api/analyze-resume', {
         method: 'POST',
         headers: {
@@ -272,9 +297,10 @@ export default function Home() {
         body: JSON.stringify({
           resumeData,
           jobDescription: jobDescription.trim(),
-          extractedJobId: jobProcessResult.extractedJobId, // Pass the job ID
-          summarizedResumeId: summarizeResumeResult?.summarizedResumeId || null, // Pass the summarized resume ID
-          analysisName: analysisName?.trim()
+          extractedJobId: jobProcessResult.extractedJobId,
+          summarizedResumeId: summarizeResumeResult?.summarizedResumeId || null,
+          analysisName: analysisName?.trim(),
+          selectedLLM // Pass the selected model
         }),
       })
 
@@ -326,6 +352,8 @@ export default function Home() {
       // Reset to previous step on error
       setStep('extracted')
       setAnalysisProgress(0)
+    } finally {
+      setPendingAnalysisData(null)
     }
   }
 
@@ -457,6 +485,7 @@ export default function Home() {
                     onMethodSelect={handleExtractionMethodSelect}
                     selectedMethod={selectedExtractionMethod}
                     selectedProvider={selectedProvider}
+                    selectedModel={selectedModel}
                     disabled={isExtracting}
                   />
                   
@@ -531,6 +560,7 @@ export default function Home() {
                       onRerun={handleRerun}
                       currentMethod={selectedExtractionMethod}
                       currentProvider={selectedProvider}
+                      currentModel={selectedModel}
                       isProcessing={isExtracting}
                       isAnalyzing={false}
                     />
@@ -621,6 +651,17 @@ export default function Home() {
       
       {/* Alert Dialog */}
       {AlertDialog}
+
+      {/* Resume Analysis Modal */}
+      <ResumeAnalysisModal
+        isOpen={showAnalysisModal}
+        onClose={() => {
+          setShowAnalysisModal(false)
+          setPendingAnalysisData(null)
+        }}
+        onConfirm={handleAnalysisConfirm}
+        isAnalyzing={false}
+      />
     </div>
   )
 }

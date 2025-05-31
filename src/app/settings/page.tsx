@@ -199,12 +199,12 @@ export default function SettingsPage() {
                           <div 
                             className={`h-2 rounded-full transition-all ${
                               subscription?.tier === 'FREE' 
-                                ? getUsageColor(3 - (subscription?.monthlyRoasts || 0), 3)
+                                ? getUsageColor(5 - (subscription?.monthlyRoasts || 0), 5)
                                 : getUsageColor(100 - (subscription?.monthlyRoasts || 0), 100)
                             }`}
                             style={{
                               width: subscription?.tier === 'FREE' 
-                                ? `${Math.min(((subscription?.monthlyRoasts || 0) / 3) * 100, 100)}%`
+                                ? `${Math.min(((subscription?.monthlyRoasts || 0) / 5) * 100, 100)}%`
                                 : `${Math.min(((subscription?.monthlyRoasts || 0) / 100) * 100, 100)}%`
                             }}
                           />

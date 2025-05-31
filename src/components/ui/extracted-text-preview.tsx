@@ -39,9 +39,10 @@ interface ExtractedTextPreviewProps {
   images?: string[]
   onProceed?: (resumeData: ExtractedResumeData, jobDescription: string, analysisName?: string) => void
   onClear?: () => void
-  onRerun?: (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai') => void
+  onRerun?: (method: 'basic' | 'ai', provider?: 'anthropic' | 'openai', model?: string) => void
   currentMethod?: 'basic' | 'ai'
   currentProvider?: 'anthropic' | 'openai'
+  currentModel?: string
   isProcessing?: boolean
   isAnalyzing?: boolean
 }
@@ -54,6 +55,7 @@ export function ExtractedTextPreview({
   onRerun,
   currentMethod,
   currentProvider,
+  currentModel,
   isProcessing = false,
   isAnalyzing = false 
 }: ExtractedTextPreviewProps) {
@@ -111,7 +113,7 @@ export function ExtractedTextPreview({
   const handleRerun = () => {
     if (onRerun && !isProcessing && !isAnalyzing && !isStartingAnalysis && !isRerunning && currentMethod) {
       setIsRerunning(true)
-      onRerun(currentMethod, currentProvider)
+      onRerun(currentMethod, currentProvider, currentModel)
       // Reset loading state after a delay (the parent component should handle the actual completion)
       setTimeout(() => setIsRerunning(false), 30000) // 30 second timeout
     }

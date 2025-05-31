@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/database'
 import { generateCoverLetterHash } from '@/lib/cache-utils'
 import crypto from 'crypto'
+import { OPENAI_MODELS } from '@/lib/constants'
 
 export async function POST(request: NextRequest) {
   try {
@@ -85,7 +86,8 @@ export async function POST(request: NextRequest) {
         truncatedResumeText,
         jobSummaryInfo?.id || null,
         tone,
-        analysisId
+        analysisId,
+        OPENAI_MODELS.MINI // Pass the default LLM for debug purposes
       )
 
       const existingCoverLetter = await db.generatedCoverLetter.findUnique({

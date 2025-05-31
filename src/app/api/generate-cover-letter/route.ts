@@ -90,17 +90,15 @@ export async function POST(request: NextRequest) {
     )
 
     if (cachedCoverLetter) {
-      console.log('Returning cached cover letter')
+      console.log('Found cached cover letter, returning it...')
+      const processingTime = Date.now() - startTime
       
       return NextResponse.json({
         success: true,
         data: {
-          coverLetter: cachedCoverLetter.coverLetter,
-          tone: tone,
-          wordCount: cachedCoverLetter.coverLetter.split(' ').length,
-          cached: true,
-          usageCount: cachedCoverLetter.usageCount,
-          metadata: cachedCoverLetter.metadata
+          ...cachedCoverLetter,
+          processingTime,
+          wordCount: cachedCoverLetter.coverLetter.split(' ').length
         }
       })
     }

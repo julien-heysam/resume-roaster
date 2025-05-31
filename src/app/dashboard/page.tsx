@@ -347,6 +347,21 @@ function DashboardContent() {
     }
   }
 
+  const getMaxPointsForCategory = (category: string): number => {
+    switch (category) {
+      case 'skills': return 40
+      case 'experience': return 35
+      case 'achievements': return 20
+      case 'presentation': return 5
+      default: return 100
+    }
+  }
+
+  const calculateCategoryPercentage = (category: string, score: number): number => {
+    const maxPoints = getMaxPointsForCategory(category)
+    return Math.round((score / maxPoints) * 100)
+  }
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -745,26 +760,29 @@ function DashboardContent() {
                                   Score Breakdown
                                 </h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                  {Object.entries(analysis.data.analysis.scoringBreakdown).map(([category, score]) => (
-                                    <div key={category} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                                      <div className="text-sm font-medium text-gray-700 mb-3">
-                                        {formatCategoryName(category)}
+                                  {Object.entries(analysis.data.analysis.scoringBreakdown).map(([category, score]) => {
+                                    const percentage = calculateCategoryPercentage(category, Number(score))
+                                    return (
+                                      <div key={category} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                                        <div className="text-sm font-medium text-gray-700 mb-3">
+                                          {formatCategoryName(category)}
+                                        </div>
+                                        <div className="text-3xl font-bold text-gray-900 mb-3">
+                                          {percentage}%
+                                        </div>
+                                        <div className="w-full bg-gray-200 rounded-full h-2">
+                                          <div 
+                                            className={`h-2 rounded-full transition-all duration-500 ${
+                                              percentage >= 80 ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
+                                              percentage >= 60 ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : 
+                                              'bg-gradient-to-r from-red-500 to-pink-500'
+                                            }`}
+                                            style={{ width: `${percentage}%` }}
+                                          ></div>
+                                        </div>
                                       </div>
-                                      <div className="text-3xl font-bold text-gray-900 mb-3">
-                                        {String(score)}%
-                                      </div>
-                                      <div className="w-full bg-gray-200 rounded-full h-2">
-                                        <div 
-                                          className={`h-2 rounded-full transition-all duration-500 ${
-                                            Number(score) >= 80 ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
-                                            Number(score) >= 60 ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : 
-                                            'bg-gradient-to-r from-red-500 to-pink-500'
-                                          }`}
-                                          style={{ width: `${score}%` }}
-                                        ></div>
-                                      </div>
-                                    </div>
-                                  ))}
+                                    )
+                                  })}
                                 </div>
                               </div>
                             ) : (

@@ -522,9 +522,9 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
     scoreLabel: "Needs Improvement",
     scoringBreakdown: {
       skills: 30,        // 30/40 = 75%
-      experience: 19,    // 19/30 = 63%
+      experience: 22,    // 22/35 = 63%
       achievements: 9,   // 9/20 = 45%
-      presentation: 8    // 8/10 = 80%
+      presentation: 4    // 4/5 = 80%
     },
     scoreJustification: "Your resume shows solid technical skills and professional presentation, but lacks quantified achievements and specific metrics that would make you stand out to hiring managers. The experience section needs more impact-driven content.",
     strengths: [
@@ -828,8 +828,8 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                     </div>
                     <p className="text-sm font-medium text-indigo-700 mb-2">Experience</p>
                     <div className="relative">
-                      <div className="text-3xl font-bold text-indigo-800 mb-2">{Math.round((analysisData.scoringBreakdown.experience / 30) * 100)}%</div>
-                      <Progress value={Math.round((analysisData.scoringBreakdown.experience / 30) * 100)} className="h-2" />
+                      <div className="text-3xl font-bold text-indigo-800 mb-2">{Math.round((analysisData.scoringBreakdown.experience / 35) * 100)}%</div>
+                      <Progress value={Math.round((analysisData.scoringBreakdown.experience / 35) * 100)} className="h-2" />
                     </div>
                   </div>
                 </CardContent>
@@ -858,8 +858,8 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                     </div>
                     <p className="text-sm font-medium text-pink-700 mb-2">Presentation</p>
                     <div className="relative">
-                      <div className="text-3xl font-bold text-pink-800 mb-2">{Math.round((analysisData.scoringBreakdown.presentation / 10) * 100)}%</div>
-                      <Progress value={Math.round((analysisData.scoringBreakdown.presentation / 10) * 100)} className="h-2" />
+                      <div className="text-3xl font-bold text-pink-800 mb-2">{Math.round((analysisData.scoringBreakdown.presentation / 5) * 100)}%</div>
+                      <Progress value={Math.round((analysisData.scoringBreakdown.presentation / 5) * 100)} className="h-2" />
                     </div>
                   </div>
                 </CardContent>
@@ -1166,29 +1166,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                             </div>
                           </div>
                           
-                          {/* Analysis Info */}
-                          {/* {analysisId && (
-                            <div className="pt-2 border-t border-gray-200">
-                              <div className="text-xs text-gray-500">
-                                <span className="font-medium">Analysis ID:</span> 
-                                <span className="font-mono text-xs break-all">{analysisId.substring(0, 20)}...</span>
-                              </div>
-                              <div className="text-xs text-gray-500 mt-1">
-                                <span className="font-medium">Database Status:</span> 
-                                <span className={hasOptimizedResume ? 'text-green-600' : 'text-red-600'}>
-                                  {hasOptimizedResume ? 'Optimized resume exists' : 'No optimized resume'}
-                                </span>
-                              </div>
-                              {hasCoverLetter && (
-                                <div className="text-xs text-gray-500 mt-1">
-                                  <span className="font-medium">Cover Letter:</span> 
-                                  <span className="text-purple-600">
-                                    Available in database
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          )} */}
+                          
                         </div>
                       </div>
                     )}

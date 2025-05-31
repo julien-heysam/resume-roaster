@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import { LLMLogger, MessageRole } from '@/lib/llm-logger'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db, GeneratedRoastService } from '@/lib/database'
-import { parseJSONResponse } from '@/lib/json-utils'
 import crypto from 'crypto'
-import { ANTHROPIC_MODELS } from '@/lib/anthropic-utils'
+import { callAnthropicResumeAnalysis } from '@/lib/anthropic-utils'
+import { callOpenAIResumeAnalysis } from '@/lib/openai-utils'
+import { ANTHROPIC_MODELS, OPENAI_MODELS } from '@/lib/constants'
 
 const ANALYSIS_PROMPT = `You are an expert resume reviewer and career coach. Your task is to analyze a resume against a specific job description and provide brutally honest, actionable feedback.
 
@@ -29,12 +29,12 @@ Start with 40 points and deduct:
 - Outdated skill versions: -3 points each
 - No evidence of skill proficiency: -3 points each
 
-### Experience Relevance (30 points max)
-Start with 30 points and adjust:
-- Perfect role match: Keep 30
-- Similar role, different industry: -5 to -10
-- Different role, similar skills: -10 to -15
-- Entry-level for senior position: -20
+### Experience Relevance (35 points max)
+Start with 35 points and adjust:
+- Perfect role match: Keep 35
+- Similar role, different industry: -5 to -12
+- Different role, similar skills: -12 to -18
+- Entry-level for senior position: -25
 - Years of experience gap: -3 per year short
 
 ### Achievement Alignment (20 points max)
@@ -44,12 +44,12 @@ Start with 0 and add:
 - Generic responsibilities only: +0
 - Maximum 20 points
 
-### Presentation Quality (10 points max)
-Start with 10 and deduct:
-- Poor formatting: -3
-- Typos/grammar errors: -2 per error
-- Missing key sections: -2 each
-- Wall of text/poor readability: -3
+### Presentation Quality (5 points max)
+Start with 5 and deduct:
+- Poor formatting: -2
+- Typos/grammar errors: -1 per error
+- Missing key sections: -1 each
+- Wall of text/poor readability: -2
 
 **SCORE CALIBRATION EXAMPLES**:
 - 95: Fortune 500 exec applying to similar role, perfect match
@@ -121,42 +121,13 @@ Note any industry norms being violated or opportunities missed
 - Highlight what would make recruiter pause (good or bad)
 - Suggest ways to stand out from other candidates
 
-Be direct, honest, and constructive. Vary your scores based on actual merit - not every resume is a 72!
-
-Respond with a JSON object in this exact format:
-{
-  "overallScore": number,
-  "scoringBreakdown": {
-    "skills": number,        // Raw score out of 40 points
-    "experience": number,    // Raw score out of 30 points  
-    "achievements": number,  // Raw score out of 20 points
-    "presentation": number   // Raw score out of 10 points
-  },
-  "scoreJustification": markdown string,
-  "scoreLabel": "Exceptional Match" | "Strong Match" | "Good Match" | "Fair Match" | "Weak Match" | "Poor Match",
-  "strengths": [string],
-  "weaknesses": [string],
-  "suggestions": [
-    {
-      "section": string,
-      "issue": string,
-      "solution": string,
-      "priority": "critical" | "high" | "medium" | "low"
-    }
-  ],
-  "keywordMatch": {
-    "matched": [string],
-    "missing": [string],
-    "matchPercentage": number
-  },
-  "atsIssues": [string]
-}`
+Be direct, honest, and constructive.`
 
 export async function POST(request: NextRequest) {
   let llmCallId: string | null = null
 
   try {
-    const { resumeData, jobDescription, analysisName, extractedJobId, summarizedResumeId } = await request.json()
+    const { resumeData, jobDescription, analysisName, extractedJobId, summarizedResumeId, selectedLLM } = await request.json()
 
     if (!resumeData || !jobDescription) {
       return NextResponse.json(
@@ -165,14 +136,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: 'ANTHROPIC_API_KEY not found in environment variables.' },
-        { status: 500 }
-      )
-    }
+    // Validate selected LLM
+    const validModels = [...Object.values(OPENAI_MODELS), ...Object.values(ANTHROPIC_MODELS)]
+    const modelToUse = selectedLLM && validModels.includes(selectedLLM) ? selectedLLM : ANTHROPIC_MODELS.SONNET
 
     console.log('Starting resume analysis...')
+    console.log('Selected LLM:', modelToUse)
     console.log('Extracted Job ID:', extractedJobId)
     console.log('Summarized Resume ID:', summarizedResumeId)
 
@@ -183,36 +152,16 @@ export async function POST(request: NextRequest) {
     // Generate analysis title
     let analysisTitle = analysisName?.trim() || `Analysis ${Date.now()}`
 
-    // Fetch summarized resume data if summarizedResumeId is provided
+    // For analysis, we should use the original resume content to properly evaluate presentation
+    // The summarized data is JSON and won't give accurate presentation scoring
     let resumeContent = ''
     if (summarizedResumeId) {
-      console.log('Fetching summarized resume data...')
-      try {
-        const summarizedResume = await db.summarizedResume.findUnique({
-          where: { id: summarizedResumeId }
-        })
-        
-        if (summarizedResume && summarizedResume.summary) {
-          // Use the structured summary data
-          resumeContent = typeof summarizedResume.summary === 'string' 
-            ? summarizedResume.summary 
-            : JSON.stringify(summarizedResume.summary, null, 2)
-          console.log('Using summarized resume data')
-        } else {
-          console.warn('Summarized resume not found, falling back to original data')
-          resumeContent = typeof resumeData === 'string' ? resumeData : 
-                         resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
-        }
-      } catch (error) {
-        console.error('Error fetching summarized resume:', error)
-        resumeContent = typeof resumeData === 'string' ? resumeData : 
-                       resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
-      }
-    } else {
-      // Fallback to original resume data
-      resumeContent = typeof resumeData === 'string' ? resumeData : 
-                     resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
+      console.log('Found summarized resume, but using original content for analysis')
     }
+    
+    // Always use original resume content for proper presentation scoring
+    resumeContent = typeof resumeData === 'string' ? resumeData : 
+                   resumeData.text || resumeData.extractedText || JSON.stringify(resumeData)
 
     // Fetch summarized job description if extractedJobId is provided
     let jobContent = jobDescription
@@ -242,19 +191,18 @@ export async function POST(request: NextRequest) {
     console.log('Resume content length:', resumeContent.length)
     console.log('Job content length:', jobContent.length)
 
-    // Initialize Anthropic client
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY
-    })
+    // Determine provider based on model
+    const isAnthropicModel = Object.values(ANTHROPIC_MODELS).includes(modelToUse as any)
+    const provider = isAnthropicModel ? 'anthropic' : 'openai'
 
     // Create LLM call for logging
     llmCallId = await LLMLogger.createLlmCall({
       userId: userId ?? undefined,
-      provider: 'anthropic',
-      model: ANTHROPIC_MODELS.SONNET,
+      provider,
+      model: modelToUse,
       operationType: 'resume_analysis',
       resumeId: resumeData.resumeId || undefined,
-      extractedJobId: extractedJobId || undefined // Link to the job description
+      extractedJobId: extractedJobId || undefined
     })
 
     const userPrompt = `Please analyze this resume against the job description:
@@ -274,82 +222,53 @@ Please provide a comprehensive analysis following the framework above.`
       messageIndex: 0
     })
 
-    console.log('Sending request to Anthropic...')
+    console.log(`Sending request to ${provider.toUpperCase()}...`)
 
     const startTime = Date.now()
     
-    const message = await anthropic.messages.create({
-      model: ANTHROPIC_MODELS.SONNET,
-      max_tokens: 4000,
-      temperature: 0.3,
-      system: ANALYSIS_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: userPrompt
-        }
-      ]
-    })
+    let response: any
+    if (isAnthropicModel) {
+      response = await callAnthropicResumeAnalysis(userPrompt, {
+        model: modelToUse,
+        systemPrompt: ANALYSIS_PROMPT,
+        maxTokens: 4000,
+        temperature: 0.3
+      })
+    } else {
+      response = await callOpenAIResumeAnalysis(userPrompt, {
+        model: modelToUse,
+        systemPrompt: ANALYSIS_PROMPT,
+        maxTokens: 4000,
+        temperature: 0.3
+      })
+    }
 
     const processingTime = Date.now() - startTime
 
-    // Extract text content from the response
-    const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
+    // Extract analysis data from response
+    const analysisData = response.data
     
-    // Calculate costs (approximate - Claude Sonnet pricing as of 2024)
-    const inputTokens = message.usage.input_tokens
-    const outputTokens = message.usage.output_tokens
+    // Calculate costs and tokens
+    const inputTokens = isAnthropicModel ? response.usage.inputTokens : response.usage.promptTokens
+    const outputTokens = isAnthropicModel ? response.usage.outputTokens : response.usage.completionTokens
     const totalTokens = inputTokens + outputTokens
-    
-    // Anthropic Claude 3 Sonnet pricing (per 1M tokens)
-    const inputCostPer1M = 3.00  // $3 per 1M input tokens
-    const outputCostPer1M = 15.00 // $15 per 1M output tokens
-    
-    const inputCost = (inputTokens / 1000000) * inputCostPer1M
-    const outputCost = (outputTokens / 1000000) * outputCostPer1M
-    const totalCost = inputCost + outputCost
+    const totalCost = response.cost
 
     // Log AI response
     await LLMLogger.logMessage({
       llmCallId,
       role: MessageRole.assistant,
-      content: responseText,
+      content: JSON.stringify(analysisData),
       messageIndex: 1,
       inputTokens,
       outputTokens,
       totalTokens,
       costUsd: totalCost,
       processingTimeMs: processingTime,
-      finishReason: message.stop_reason || 'stop',
+      finishReason: isAnthropicModel ? response.stopReason : response.finishReason,
       temperature: 0.3,
       maxTokens: 4000
     })
-    
-    let analysisData: any
-    
-    try {
-      analysisData = parseJSONResponse(responseText)
-    } catch (parseError) {
-      console.error('All parsing methods failed:', parseError)
-      console.log('Raw response:', responseText)
-      
-      // Update LLM call with error
-      await LLMLogger.updateLlmCall({
-        llmCallId,
-        status: 'FAILED',
-        errorMessage: 'Failed to parse analysis results - AI response could not be converted to valid JSON',
-        totalTokens,
-        totalCostUsd: totalCost
-      })
-      
-      return NextResponse.json(
-        { 
-          error: 'Failed to parse analysis results. The AI response could not be converted to valid JSON.',
-          details: 'Please try again or contact support if the issue persists.'
-        },
-        { status: 500 }
-      )
-    }
     
     // Validate required fields
     if (!analysisData.overallScore || !analysisData.strengths || !analysisData.weaknesses) {
@@ -389,7 +308,7 @@ Please provide a comprehensive analysis following the framework above.`
       userId: userId ?? undefined,
       resumeId: resumeData.resumeId || undefined,
       extractedResumeId: resumeData.extractedResumeId || undefined,
-      extractedJobId: extractedJobId || undefined, // Use the provided job ID
+      extractedJobId: extractedJobId || undefined,
       contentHash,
       data: analysisData,
       overallScore: analysisData.overallScore
@@ -406,8 +325,8 @@ Please provide a comprehensive analysis following the framework above.`
         totalTokens,
         totalCost,
         processingTime,
-        provider: 'anthropic',
-        model: ANTHROPIC_MODELS.SONNET
+        provider,
+        model: modelToUse
       }
     })
 
@@ -427,7 +346,7 @@ Please provide a comprehensive analysis following the framework above.`
     if (error instanceof Error) {
       if (error.message.includes('API key') || error.message.includes('401')) {
         return NextResponse.json(
-          { error: 'AI service configuration error. Please check your ANTHROPIC_API_KEY.' },
+          { error: 'AI service configuration error. Please check your API keys.' },
           { status: 500 }
         )
       }

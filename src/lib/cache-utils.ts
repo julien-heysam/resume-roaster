@@ -10,10 +10,10 @@ export function generateCoverLetterHash(resumeText: string, jobSummaryId: string
     .digest('hex')
 }
 
-export function generateOptimizedResumeHash(resumeData: any, jobDescription: string, templateId: string, analysisId?: string): string {
+export function generateOptimizedResumeHash(resumeData: any, jobDescription: string, templateId: string, analysisId?: string, llm?: string): string {
   return crypto
     .createHash('sha256')
-    .update(`${JSON.stringify(resumeData)}-${jobDescription}-${templateId}-${analysisId || 'no-analysis'}`)
+    .update(`${JSON.stringify(resumeData)}-${jobDescription}-${templateId}-${analysisId || 'no-analysis'}-${llm || OPENAI_MODELS.MINI}`)
     .digest('hex')
 }
 
@@ -42,8 +42,8 @@ export async function checkCachedCoverLetter(resumeText: string, jobSummaryId: s
 }
 
 // Simplified cache check for optimized resumes
-export async function checkCachedOptimizedResume(resumeData: any, jobDescription: string, templateId: string, analysisId?: string) {
-  const contentHash = generateOptimizedResumeHash(resumeData, jobDescription, templateId, analysisId)
+export async function checkCachedOptimizedResume(resumeData: any, jobDescription: string, templateId: string, analysisId?: string, llm?: string) {
+  const contentHash = generateOptimizedResumeHash(resumeData, jobDescription, templateId, analysisId, llm)
 
   const existingResume = await db.generatedResume.findUnique({
     where: { contentHash }
@@ -83,7 +83,7 @@ export async function saveCoverLetterToCache(
       userId: userId || null,
       contentHash,
       content,
-      metadata: { tone, summary: resumeText.substring(0, 100) + '...' } // Basic metadata
+      metadata: { tone, summary: resumeText.substring(0, 100) + '...', llm: llm || OPENAI_MODELS.MINI } // Include LLM in metadata
     }
   })
 }
@@ -95,9 +95,10 @@ export async function saveOptimizedResumeToCache(
   templateId: string,
   content: string,
   userId?: string,
-  analysisId?: string
+  analysisId?: string,
+  llm?: string
 ) {
-  const contentHash = generateOptimizedResumeHash(resumeData, jobDescription, templateId, analysisId)
+  const contentHash = generateOptimizedResumeHash(resumeData, jobDescription, templateId, analysisId, llm)
 
   return await db.generatedResume.create({
     data: {

@@ -7,6 +7,7 @@ import {
   getChatbotConversations,
   getChatbotConversation 
 } from '@/lib/chatbot-db';
+import { documentationIndexer } from '@/lib/documentation-indexer';
 
 interface ChatMessage {
   content: string;
@@ -35,12 +36,26 @@ Areas of expertise:
 - Career transition strategies
 - Skills highlighting and quantifying achievements
 
+When you have access to relevant documentation about Resume Roaster's features and capabilities, use that information to provide accurate, up-to-date guidance about the platform's functionality.
+
 Respond in a friendly, professional tone that builds confidence while providing valuable insights.`;
 
 async function generateAIResponse(userMessage: string, conversationHistory: ChatMessage[] = []): Promise<string> {
   try {
+    // Search for relevant documentation
+    const relevantDocs = await documentationIndexer.searchDocumentation(userMessage, 10);
+    
     // Prepare conversation history for context
     let contextPrompt = userMessage;
+    
+    // Add relevant documentation context if found
+    if (relevantDocs.length > 0) {
+      const docContext = relevantDocs
+        .map(doc => `**${doc.section}${doc.subsection ? ` - ${doc.subsection}` : ''}**:\n${doc.content}`)
+        .join('\n\n');
+      
+      contextPrompt = `RELEVANT DOCUMENTATION:\n${docContext}\n\n---\n\nUser Question: ${userMessage}`;
+    }
     
     // Add recent conversation history (last 10 messages for context)
     const recentHistory = conversationHistory.slice(-10);
@@ -49,7 +64,7 @@ async function generateAIResponse(userMessage: string, conversationHistory: Chat
         `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
       ).join('\n');
       
-      contextPrompt = `Previous conversation:\n${historyText}\n\nCurrent message: ${userMessage}`;
+      contextPrompt = `Previous conversation:\n${historyText}\n\n${contextPrompt}`;
     }
 
     const response = await callOpenAIText(contextPrompt, {
