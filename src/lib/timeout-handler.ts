@@ -30,7 +30,7 @@ export async function fetchWithTimeout(
   config: TimeoutConfig = {}
 ): Promise<Response> {
   const {
-    timeout = 60000, // 60 seconds - maximum allowed on Hobby plan
+    timeout = 800000, // 800 seconds - maximum allowed on Pro plan
     retries = 1,
     retryDelay = 2000 // 2 seconds
   } = config
@@ -167,7 +167,7 @@ export async function handleAIRequest<T>(
         body: JSON.stringify(data),
       },
       {
-        timeout: 55000, // 55 seconds to stay under Vercel's 60s limit with buffer
+        timeout: 780000, // 780 seconds (13 minutes) to stay under Vercel's 800s limit with buffer
         retries: 2,
         retryDelay: 3000
       }

@@ -9,28 +9,28 @@
   },
   "functions": {
     "src/app/api/analyze-resume/route.ts": {
-      "maxDuration": 60,
-      "memory": 512
+      "maxDuration": 800,
+      "memory": 1024
     },
     "src/app/api/extract-pdf-ai/route.ts": {
-      "maxDuration": 60,
-      "memory": 512
+      "maxDuration": 800,
+      "memory": 1024
     },
     "src/app/api/extract-job-description/route.ts": {
-      "maxDuration": 60,
-      "memory": 512
+      "maxDuration": 800,
+      "memory": 1024
     },
     "src/app/api/generate-optimized-resume/route.ts": {
-      "maxDuration": 60,
-      "memory": 512
+      "maxDuration": 800,
+      "memory": 1024
     },
     "src/app/api/extract-resume-data/route.ts": {
-      "maxDuration": 60,
-      "memory": 512
+      "maxDuration": 800,
+      "memory": 1024
     },
     "src/app/api/**/*.ts": {
-      "maxDuration": 60,
-      "memory": 512
+      "maxDuration": 800,
+      "memory": 1024
     }
   },
   "regions": ["iad1"],

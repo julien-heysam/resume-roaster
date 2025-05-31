@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
     if (aiRoutes.some(route => pathname.startsWith(route))) {
       // Add headers to help with timeout handling
       const response = NextResponse.next()
-      response.headers.set('X-Timeout-Warning', 'This operation may take up to 60 seconds')
+      response.headers.set('X-Timeout-Warning', 'This operation may take up to 800 seconds (13+ minutes)')
       response.headers.set('X-Content-Type-Options', 'nosniff')
       return response
     }
