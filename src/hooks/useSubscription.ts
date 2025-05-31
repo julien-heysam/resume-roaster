@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
 
@@ -15,32 +15,62 @@ export interface SubscriptionData {
 }
 
 export function useSubscription() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch subscription data
-  const fetchSubscription = async () => {
+  // Fetch subscription data with cache busting
+  const fetchSubscription = useCallback(async (bustCache = false) => {
     if (!session?.user?.email) {
       setLoading(false)
       return
     }
 
     try {
-      const response = await fetch('/api/user/subscription')
+      setError(null)
+      
+      // Add cache busting parameter for production environments
+      const url = bustCache 
+        ? `/api/user/subscription?t=${Date.now()}` 
+        : '/api/user/subscription'
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
+      
       if (response.ok) {
         const data = await response.json()
         setSubscription(data)
+        
+        // Store in sessionStorage for immediate access
+        sessionStorage.setItem('subscription-data', JSON.stringify(data))
+        sessionStorage.setItem('subscription-timestamp', Date.now().toString())
       } else {
-        setError('Failed to fetch subscription data')
+        const errorData = await response.json()
+        setError(errorData.error || 'Failed to fetch subscription data')
       }
     } catch (err) {
+      console.error('Subscription fetch error:', err)
       setError('Network error')
     } finally {
       setLoading(false)
     }
-  }
+  }, [session?.user?.email])
+
+  // Force refresh subscription data (useful after admin updates)
+  const forceRefresh = useCallback(async () => {
+    setLoading(true)
+    // Clear any cached data
+    sessionStorage.removeItem('subscription-data')
+    sessionStorage.removeItem('subscription-timestamp')
+    await fetchSubscription(true)
+  }, [fetchSubscription])
 
   // Create checkout session for upgrade
   const createCheckoutSession = async (priceId: string, tier: string, billingCycle: string) => {
@@ -147,9 +177,61 @@ export function useSubscription() {
     return 'active'
   }
 
+  // Check for cached data on mount
   useEffect(() => {
+    if (status === 'loading') return
+
+    if (!session?.user?.email) {
+      setLoading(false)
+      return
+    }
+
+    // Try to load from cache first for immediate UI update
+    const cachedData = sessionStorage.getItem('subscription-data')
+    const cachedTimestamp = sessionStorage.getItem('subscription-timestamp')
+    
+    if (cachedData && cachedTimestamp) {
+      const age = Date.now() - parseInt(cachedTimestamp)
+      // Use cached data if it's less than 30 seconds old
+      if (age < 30000) {
+        try {
+          setSubscription(JSON.parse(cachedData))
+          setLoading(false)
+          return
+        } catch (e) {
+          // Invalid cached data, proceed with fetch
+        }
+      }
+    }
+
     fetchSubscription()
-  }, [session])
+  }, [session, status, fetchSubscription])
+
+  // Listen for storage events (for cross-tab updates)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'subscription-data' && e.newValue) {
+        try {
+          setSubscription(JSON.parse(e.newValue))
+        } catch (error) {
+          console.error('Error parsing subscription data from storage:', error)
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
+  // Listen for custom events (for same-tab updates)
+  useEffect(() => {
+    const handleSubscriptionUpdate = () => {
+      forceRefresh()
+    }
+
+    window.addEventListener('subscription-updated', handleSubscriptionUpdate)
+    return () => window.removeEventListener('subscription-updated', handleSubscriptionUpdate)
+  }, [forceRefresh])
 
   return {
     subscription,
@@ -161,5 +243,6 @@ export function useSubscription() {
     getRemainingUsage,
     getSubscriptionStatus,
     refetch: fetchSubscription,
+    forceRefresh,
   }
 } 

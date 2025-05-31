@@ -45,6 +45,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log(`Admin updating user plan: ${user.email} from ${user.subscriptionTier} to ${subscriptionTier}`)
+
     // Prepare update data
     const updateData: any = {
       subscriptionTier: subscriptionTier as 'FREE' | 'PLUS' | 'PREMIUM',
@@ -66,37 +68,72 @@ export async function POST(request: NextRequest) {
     if (resetUsage || (subscriptionTier === 'FREE' && user.subscriptionTier !== 'FREE')) {
       updateData.monthlyRoasts = 0
       updateData.lastRoastReset = new Date()
+      console.log(`Resetting usage counters for user ${user.email}`)
     }
 
-    // Update user
-    const updatedUser = await db.user.update({
-      where: { id: user.id },
-      data: updateData,
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        subscriptionTier: true,
-        subscriptionId: true,
-        customerId: true,
-        subscriptionEndsAt: true,
-        monthlyRoasts: true,
-        totalRoasts: true,
-        lastRoastReset: true,
-        updatedAt: true
-      }
+    // Update user with transaction for consistency
+    const updatedUser = await db.$transaction(async (tx) => {
+      const result = await tx.user.update({
+        where: { id: user.id },
+        data: updateData,
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          subscriptionTier: true,
+          subscriptionId: true,
+          customerId: true,
+          subscriptionEndsAt: true,
+          monthlyRoasts: true,
+          totalRoasts: true,
+          lastRoastReset: true,
+          updatedAt: true
+        }
+      })
+
+      // Log the successful update
+      console.log(`Successfully updated user ${user.email} to ${subscriptionTier}:`, {
+        oldTier: user.subscriptionTier,
+        newTier: result.subscriptionTier,
+        monthlyRoasts: result.monthlyRoasts,
+        updatedAt: result.updatedAt
+      })
+
+      return result
     })
 
-    return NextResponse.json({
+    // Create response with cache invalidation headers
+    const response = NextResponse.json({
       success: true,
       message: `User ${user.email} plan updated to ${subscriptionTier}`,
       user: updatedUser
     })
 
+    // Add headers to prevent caching of this response
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+    response.headers.set('Surrogate-Control', 'no-store')
+
+    return response
+
   } catch (error) {
     console.error('Admin update user plan error:', error)
+    
+    // More detailed error logging for production debugging
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      })
+    }
+
     return NextResponse.json(
-      { error: 'Failed to update user plan' },
+      { 
+        error: 'Failed to update user plan',
+        details: process.env.NODE_ENV === 'development' ? error : undefined
+      },
       { status: 500 }
     )
   }
@@ -181,10 +218,17 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       user
     })
+
+    // Add cache control headers
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+
+    return response
 
   } catch (error) {
     console.error('Admin get user error:', error)
