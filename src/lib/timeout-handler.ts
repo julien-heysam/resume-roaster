@@ -17,6 +17,7 @@ export class RetryError extends Error {
   constructor(message: string, public readonly attempts: number) {
     super(message)
     this.name = 'RetryError'
+    this.attempts = attempts
   }
 }
 
@@ -29,7 +30,7 @@ export async function fetchWithTimeout(
   config: TimeoutConfig = {}
 ): Promise<Response> {
   const {
-    timeout = 60000, // 60 seconds default
+    timeout = 60000, // 60 seconds - maximum allowed on Hobby plan
     retries = 1,
     retryDelay = 2000 // 2 seconds
   } = config
@@ -166,7 +167,7 @@ export async function handleAIRequest<T>(
         body: JSON.stringify(data),
       },
       {
-        timeout: 65000, // 65 seconds to account for Vercel's 60s limit + buffer
+        timeout: 55000, // 55 seconds to stay under Vercel's 60s limit with buffer
         retries: 2,
         retryDelay: 3000
       }

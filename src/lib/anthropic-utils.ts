@@ -65,7 +65,7 @@ const DEFAULT_OPTIONS = {
   model: ANTHROPIC_MODELS.SONNET,
   maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL,
   temperature: ANTHROPIC_TEMPERATURES.NORMAL,
-  timeout: 240000, // 4 minutes
+  timeout: 60000, // 60 seconds - maximum allowed on Hobby plan
   systemPrompt: ''
 } as const
 

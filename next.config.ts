@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   serverExternalPackages: ['@prisma/client'],
+  // Set maximum duration for all API routes to 60 seconds (Hobby plan limit)
+  maxDuration: 60,
   // Optimize for production
   experimental: {
     // Enable optimizations

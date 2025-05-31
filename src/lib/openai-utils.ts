@@ -67,7 +67,7 @@ const DEFAULT_OPTIONS = {
   model: OPENAI_MODELS.MINI,
   maxTokens: CONTEXT_SIZES.NORMAL,
   temperature: TEMPERATURES.NORMAL,
-  timeout: 240000, // 4 minutes
+  timeout: 60000, // 60 seconds - maximum allowed on Hobby plan
   enforceJSON: false,
   systemPrompt: '',
   retryOnIncomplete: true
