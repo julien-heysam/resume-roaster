@@ -33,45 +33,11 @@ interface ExtractedResumeData {
 const extractTextFromPDFBasic = async (filePath: string, originalName?: string): Promise<string> => {
   console.log(`Starting basic PDF extraction for: ${originalName || filePath}`)
   
-  let fileBuffer: Buffer
-  try {
-    fileBuffer = await fs.readFile(filePath)
-    console.log(`Successfully read file buffer: ${fileBuffer.length} bytes`)
-  } catch (error) {
-    console.error('Failed to read PDF file:', error)
-    throw new Error(`Failed to read PDF file: ${error instanceof Error ? error.message : 'Unknown error'}`)
-  }
-  
-  // Try pdf-parse first (more reliable in serverless environments)
-  try {
-    console.log('Attempting extraction with pdf-parse...')
-    const pdfParse = await import('pdf-parse')
-    
-    // Use the buffer directly to avoid path issues
-    const data = await pdfParse.default(fileBuffer)
-    
-    if (data.text && data.text.trim().length > 0) {
-      console.log(`Successfully extracted ${data.text.length} characters with pdf-parse`)
-      return data.text.trim()
-    } else {
-      console.log('pdf-parse returned empty text')
-    }
-  } catch (error) {
-    console.log('pdf-parse failed:', error instanceof Error ? error.message : 'Unknown error')
-  }
-
-  // Try node-poppler as fallback (may not work in serverless)
+  // Try node-poppler first (most reliable for PDF text extraction)
   try {
     console.log('Attempting extraction with node-poppler...')
     const { Poppler } = await import('node-poppler')
-    
-    // Check if poppler is available in the environment
     const poppler = new Poppler()
-    
-    // Verify the poppler instance is properly initialized
-    if (!poppler) {
-      throw new Error('Poppler instance not created')
-    }
     
     // Extract text using poppler's pdfToText method
     const text = await poppler.pdfToText(filePath)
@@ -79,108 +45,26 @@ const extractTextFromPDFBasic = async (filePath: string, originalName?: string):
     if (text && text.trim().length > 0) {
       console.log(`Successfully extracted ${text.length} characters with node-poppler`)
       return text.trim()
-    } else {
-      console.log('node-poppler returned empty text')
     }
   } catch (error) {
-    console.log('node-poppler failed:', error instanceof Error ? error.message : 'Unknown error')
+    console.log('node-poppler failed, trying pdf-parse...', error)
   }
 
-  // Try pdfjs-dist as final fallback
+  // Fallback to pdf-parse
   try {
-    console.log('Attempting extraction with pdfjs-dist...')
-    const pdfjsLib = await import('pdfjs-dist')
+    console.log('Attempting extraction with pdf-parse...')
+    const pdfParse = await import('pdf-parse')
+    const data = await pdfParse.default(await fs.readFile(filePath))
     
-    // Convert buffer to Uint8Array
-    const uint8Array = new Uint8Array(fileBuffer)
-    
-    // Load the PDF document
-    const loadingTask = pdfjsLib.getDocument({ data: uint8Array })
-    const pdf = await loadingTask.promise
-    
-    let fullText = ''
-    
-    // Extract text from each page
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      try {
-        const page = await pdf.getPage(pageNum)
-        const textContent = await page.getTextContent()
-        const pageText = textContent.items
-          .map((item: any) => item.str || '')
-          .join(' ')
-        fullText += pageText + '\n'
-      } catch (pageError) {
-        console.warn(`Failed to extract text from page ${pageNum}:`, pageError)
-        // Continue with other pages
-      }
-    }
-    
-    if (fullText && fullText.trim().length > 0) {
-      console.log(`Successfully extracted ${fullText.length} characters with pdfjs-dist`)
-      return fullText.trim()
-    } else {
-      console.log('pdfjs-dist returned empty text')
+    if (data.text && data.text.trim().length > 0) {
+      console.log(`Successfully extracted ${data.text.length} characters with pdf-parse`)
+      return data.text.trim()
     }
   } catch (error) {
-    console.log('pdfjs-dist failed:', error instanceof Error ? error.message : 'Unknown error')
+    console.log('pdf-parse failed:', error)
   }
 
-  // If all extraction methods fail, use fallback
-  console.log('All PDF extraction methods failed, using fallback...')
-  return await fallbackPDFExtraction(filePath, originalName, fileBuffer)
-}
-
-// Enhanced fallback PDF extraction method for production environments
-const fallbackPDFExtraction = async (filePath: string, originalName?: string, fileBuffer?: Buffer): Promise<string> => {
-  try {
-    const stats = await fs.stat(filePath)
-    const sizeKB = Math.round(stats.size / 1024)
-    
-    // Use original name if provided, otherwise extract from path
-    const displayName = originalName || filePath.split('/').pop() || 'document.pdf'
-    
-    // Check if we're in a production environment
-    const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1'
-    const environment = isProduction ? 'production' : 'development'
-    
-    // For now, return a meaningful placeholder that can still be processed
-    // This allows the document to be indexed with basic metadata
-    const fallbackText = `PDF Document: ${displayName}
-
-File Size: ${sizeKB}KB
-Environment: ${environment}
-Uploaded: ${new Date().toISOString()}
-
-Note: This PDF has been successfully uploaded and saved. Text extraction encountered a technical issue in the ${environment} environment, but the document is ready for future processing. 
-
-Common causes in production:
-- Missing system dependencies for PDF processing libraries
-- Serverless environment limitations
-- PDF may be image-based (scanned) and requires OCR
-- PDF may be password-protected or have security restrictions
-
-The file contains ${sizeKB}KB of data and can be re-processed once PDF extraction issues are resolved. This document is now searchable by filename and basic metadata.
-
-To resolve this issue:
-1. Try uploading the PDF again
-2. Ensure the PDF is text-based (not scanned images)
-3. Check if the PDF has any password protection
-4. Contact support if the issue persists`
-    
-    console.log(`Using fallback extraction for PDF: ${displayName} (${sizeKB}KB) in ${environment} environment`)
-    return fallbackText
-  } catch (error) {
-    console.error('Fallback PDF extraction failed:', error)
-    
-    // Last resort fallback
-    const displayName = originalName || 'document.pdf'
-    return `PDF Document: ${displayName}
-
-This PDF was uploaded successfully but text extraction failed. The document has been saved and can be processed manually or re-uploaded for another extraction attempt.
-
-Upload Time: ${new Date().toISOString()}
-Status: Extraction failed - manual review required`
-  }
+  throw new Error('Failed to extract text from PDF using all available methods')
 }
 
 export async function POST(request: NextRequest) {
@@ -282,7 +166,6 @@ export async function POST(request: NextRequest) {
     let estimatedCost = 0
 
     console.log('Extracting text from PDF...')
-    console.log(`Environment: ${process.env.NODE_ENV}, Vercel: ${process.env.VERCEL}, Platform: ${process.platform}`)
     
     // Create temporary file for processing
     const tempDir = os.tmpdir()
@@ -291,11 +174,6 @@ export async function POST(request: NextRequest) {
     try {
       // Write buffer to temporary file
       await fs.writeFile(tempFilePath, buffer)
-      console.log(`Temporary file created: ${tempFilePath}`)
-      
-      // Verify file was written correctly
-      const tempStats = await fs.stat(tempFilePath)
-      console.log(`Temp file size: ${tempStats.size} bytes (original: ${buffer.length} bytes)`)
       
       // Extract text using basic methods
       extractedText = await extractTextFromPDFBasic(tempFilePath, file.name)
@@ -309,27 +187,10 @@ export async function POST(request: NextRequest) {
         pdfImages = []
       }
       
-    } catch (extractionError) {
-      console.error('PDF extraction failed:', extractionError)
-      
-      // Log detailed error information for debugging
-      console.error('Error details:', {
-        message: extractionError instanceof Error ? extractionError.message : 'Unknown error',
-        stack: extractionError instanceof Error ? extractionError.stack : undefined,
-        fileName: file.name,
-        fileSize: file.size,
-        tempFilePath: tempFilePath,
-        environment: process.env.NODE_ENV,
-        platform: process.platform,
-        vercel: process.env.VERCEL
-      })
-      
-      throw extractionError
     } finally {
       // Clean up temporary file
       try {
         await fs.unlink(tempFilePath)
-        console.log(`Cleaned up temporary file: ${tempFilePath}`)
       } catch (cleanupError) {
         console.warn('Failed to clean up temp file:', cleanupError)
       }
