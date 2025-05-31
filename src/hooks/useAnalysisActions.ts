@@ -79,7 +79,8 @@ export function useAnalysisActions() {
     settings?: ShareSettings,
     resumeData?: any,
     jobDescription?: string,
-    pdfImages?: string[]
+    pdfImages?: string[],
+    analysisId?: string
   ) => {
     if (isSharing) return null
 
@@ -90,7 +91,8 @@ export function useAnalysisActions() {
         analysis: analysisData,
         resumeData,
         jobDescription,
-        pdfImages: pdfImages || []
+        pdfImages: pdfImages || [],
+        roastId: analysisId // Include the analysis ID for the foreign key
       }
 
       const response = await fetch('/api/share-analysis', {

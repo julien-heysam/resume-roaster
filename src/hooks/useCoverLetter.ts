@@ -1,3 +1,4 @@
+import { OPENAI_MODELS } from '@/lib/constants'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -16,7 +17,7 @@ interface CoverLetterData {
 }
 
 interface UseCoverLetterReturn {
-  generateCoverLetter: (resumeData: any, jobDescription: string, analysisData?: any, tone?: string, analysisId?: string) => Promise<CoverLetterData | null>
+  generateCoverLetter: (resumeData: any, jobDescription: string, analysisData?: any, tone?: string, analysisId?: string, llm?: string) => Promise<CoverLetterData | null>
   isGenerating: boolean
   error: string | null
 }
@@ -30,7 +31,8 @@ export function useCoverLetter(): UseCoverLetterReturn {
     jobDescription: string,
     analysisData?: any,
     tone: string = 'professional',
-    analysisId?: string
+    analysisId?: string,
+    llm: string = OPENAI_MODELS.MINI
   ): Promise<CoverLetterData | null> => {
     if (!resumeData || !jobDescription) {
       const errorMsg = 'Resume data and job description are required'
@@ -53,7 +55,8 @@ export function useCoverLetter(): UseCoverLetterReturn {
           jobDescription,
           analysisData,
           tone,
-          analysisId
+          analysisId,
+          llm
         }),
       })
 

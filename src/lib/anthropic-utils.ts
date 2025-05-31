@@ -450,35 +450,152 @@ export async function callAnthropicPDFExtraction(
   userPrompt: string,
   options: Omit<AnthropicCallOptions, 'tools' | 'toolChoice'> = {}
 ): Promise<AnthropicResponse<any>> {
-  const tools: Anthropic.Tool[] = [
-    {
-      name: 'extract_resume_content',
-      description: 'Extracts and formats resume content from PDF as clean, professional markdown',
-      input_schema: {
-        type: 'object',
-        properties: {
-          markdown: {
-            type: 'string',
-            description: 'The extracted content formatted as clean markdown'
+  const pdfExtractionTool: Anthropic.Tool = {
+    name: 'extract_resume_data',
+    description: 'Extract structured data from a resume PDF',
+    input_schema: {
+      type: 'object',
+      properties: {
+        personalInfo: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            email: { type: 'string' },
+            phone: { type: 'string' },
+            location: { type: 'string' },
+            linkedin: { type: 'string' },
+            github: { type: 'string' },
+            portfolio: { type: 'string' }
           },
-          summary: {
-            type: 'string',
-            description: 'A brief summary of the resume content'
-          },
-          sections: {
-            type: 'array',
-            items: { type: 'string' },
-            description: 'Array of main sections found in the resume'
+          required: ['name']
+        },
+        summary: { type: 'string' },
+        experience: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              company: { type: 'string' },
+              location: { type: 'string' },
+              startDate: { type: 'string' },
+              endDate: { type: 'string' },
+              description: { type: 'array', items: { type: 'string' } },
+              achievements: { type: 'array', items: { type: 'string' } }
+            },
+            required: ['title', 'company', 'startDate', 'endDate']
           }
         },
-        required: ['markdown', 'summary', 'sections']
-      }
+        education: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              degree: { type: 'string' },
+              school: { type: 'string' },
+              location: { type: 'string' },
+              graduationDate: { type: 'string' },
+              gpa: { type: 'string' },
+              honors: { type: 'array', items: { type: 'string' } }
+            },
+            required: ['degree', 'school', 'graduationDate']
+          }
+        },
+        skills: {
+          type: 'object',
+          properties: {
+            technical: { type: 'array', items: { type: 'string' } },
+            soft: { type: 'array', items: { type: 'string' } },
+            languages: { type: 'array', items: { type: 'string' } },
+            certifications: { type: 'array', items: { type: 'string' } }
+          }
+        },
+        projects: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              description: { type: 'string' },
+              technologies: { type: 'array', items: { type: 'string' } },
+              link: { type: 'string' }
+            },
+            required: ['name', 'description', 'technologies']
+          }
+        }
+      },
+      required: ['personalInfo', 'experience', 'education', 'skills']
     }
-  ]
+  }
 
   return callAnthropic(userPrompt, {
     ...options,
-    tools,
-    toolChoice: { type: 'tool', name: 'extract_resume_content' }
+    tools: [pdfExtractionTool],
+    toolChoice: { type: 'tool', name: 'extract_resume_data' }
+  })
+}
+
+/**
+ * Generate interview preparation using Anthropic with structured tool output
+ */
+export async function callAnthropicInterviewPrep(
+  userPrompt: string,
+  options: Omit<AnthropicCallOptions, 'tools' | 'toolChoice'> = {}
+): Promise<AnthropicResponse<any>> {
+  const interviewPrepTool: Anthropic.Tool = {
+    name: 'generate_interview_prep',
+    description: 'Generate personalized interview questions and preparation materials',
+    input_schema: {
+      type: 'object',
+      properties: {
+        questions: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              question: { type: 'string' },
+              category: { 
+                type: 'string',
+                enum: ['behavioral', 'technical', 'situational', 'general']
+              },
+              difficulty: { 
+                type: 'string',
+                enum: ['easy', 'medium', 'hard']
+              },
+              suggestedAnswer: { type: 'string' },
+              tips: { 
+                type: 'array',
+                items: { type: 'string' }
+              },
+              followUpQuestions: { 
+                type: 'array',
+                items: { type: 'string' }
+              }
+            },
+            required: ['id', 'question', 'category', 'difficulty', 'suggestedAnswer', 'tips']
+          }
+        },
+        overallTips: {
+          type: 'array',
+          items: { type: 'string' }
+        },
+        companyResearch: {
+          type: 'array',
+          items: { type: 'string' }
+        },
+        salaryNegotiation: {
+          type: 'array',
+          items: { type: 'string' }
+        }
+      },
+      required: ['questions', 'overallTips']
+    }
+  }
+
+  return callAnthropic(userPrompt, {
+    ...options,
+    tools: [interviewPrepTool],
+    toolChoice: { type: 'tool', name: 'generate_interview_prep' }
   })
 } 

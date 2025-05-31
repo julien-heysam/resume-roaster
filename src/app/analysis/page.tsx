@@ -31,7 +31,9 @@ import {
   ChevronRight,
   Briefcase,
   Info,
-  RefreshCw
+  RefreshCw,
+  Linkedin,
+  Brain
 } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -41,6 +43,9 @@ import { useAnalysisActions } from "@/hooks/useAnalysisActions"
 import { useSubscription } from "@/hooks/useSubscription"
 import { Footer } from "@/components/ui/footer"
 import { CoverLetterModal } from "@/components/ui/cover-letter-modal"
+import { Navigation } from "@/components/ui/navigation"
+import { ResumeOptimizationModal } from "@/components/ui/resume-optimization-modal"
+import { InterviewPrepModal } from "@/components/ui/interview-prep-modal"
 
 interface AnalysisData {
   overallScore: number
@@ -83,6 +88,8 @@ export default function AnalysisPage() {
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showCoverLetterModal, setShowCoverLetterModal] = useState(false)
+  const [showResumeOptimizationModal, setShowResumeOptimizationModal] = useState(false)
+  const [showInterviewPrepModal, setShowInterviewPrepModal] = useState(false)
   
   const { downloadReport, shareAnalysis, isDownloading, isSharing } = useAnalysisActions()
   const { subscription } = useSubscription()
@@ -116,8 +123,8 @@ export default function AnalysisPage() {
     checkExistingContent()
   }, [analysisId])
 
-  // Handle generating optimized version
-  const handleGenerateOptimized = async (bypassCache: boolean = false) => {
+  // Handle generating optimized version - shows LLM selection modal
+  const handleGenerateOptimized = async () => {
     // Check if we have analysis data
     if (!analysisData) {
       showAlert({
@@ -145,6 +152,13 @@ export default function AnalysisPage() {
       return
     }
 
+    // Show the LLM selection modal
+    setShowResumeOptimizationModal(true)
+  }
+
+  // Handle LLM selection and proceed with optimization
+  const handleOptimizationConfirm = async (selectedLLM: string) => {
+    setShowResumeOptimizationModal(false)
     setIsGeneratingOptimized(true)
     
     try {
@@ -162,15 +176,15 @@ export default function AnalysisPage() {
         // If we still don't have text, create a basic structure from analysis
         resumeText = `Resume Analysis Results:
         
-Overall Score: ${analysisData.overallScore}/100
-Strengths: ${analysisData.strengths.join(', ')}
-Areas for Improvement: ${analysisData.weaknesses.join(', ')}
+Overall Score: ${analysisData?.overallScore}/100
+Strengths: ${analysisData?.strengths.join(', ')}
+Areas for Improvement: ${analysisData?.weaknesses.join(', ')}
 
 Note: Original resume text was not available, using analysis data for optimization.`
       }
 
-      // Check if we have existing optimized resume (unless bypassing)
-      if (!bypassCache && hasOptimizedResume) {
+      // Check if we have existing optimized resume
+      if (hasOptimizedResume) {
         showAlert({
           title: "🚀 Existing Optimized Resume Found!",
           description: "Found an existing optimized resume for this analysis! Would you like to use the existing one or generate a new one?",
@@ -184,14 +198,14 @@ Note: Original resume text was not available, using analysis data for optimizati
           },
           onCancel: () => {
             // User wants fresh processing
-            proceedWithFreshExtraction(resumeText, true) // Pass bypassCache=true
+            proceedWithFreshExtraction(resumeText, selectedLLM, true) // Pass bypassCache=true
           }
         })
         return
       }
       
-      // No existing data or bypassing, proceed with fresh extraction
-      await proceedWithFreshExtraction(resumeText, bypassCache)
+      // No existing data, proceed with fresh extraction
+      await proceedWithFreshExtraction(resumeText, selectedLLM, false)
       
     } catch (error) {
       console.error('Error generating optimized version:', error)
@@ -239,7 +253,7 @@ Note: Original resume text was not available, using analysis data for optimizati
   }
 
   // Helper function to proceed with fresh extraction
-  const proceedWithFreshExtraction = async (resumeText: string, bypassCache: boolean = false) => {
+  const proceedWithFreshExtraction = async (resumeText: string, selectedLLM: string, bypassCache: boolean = false) => {
     if (bypassCache) {
       console.log('🔄 FORCE REGENERATION: Running fresh AI optimization (bypassing existing data)...')
     } else {
@@ -254,7 +268,8 @@ Note: Original resume text was not available, using analysis data for optimizati
       },
       body: JSON.stringify({
         analysisId: analysisId,
-        bypassCache: bypassCache
+        bypassCache: bypassCache,
+        llm: selectedLLM
       }),
     })
 
@@ -608,39 +623,38 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-3 text-gray-600 hover:text-orange-500 transition-colors">
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back to Upload</span>
-            </Link>
-            <div className="flex items-center space-x-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => shareAnalysis(analysisData, undefined, resumeData, jobDescription, pdfImages)}
-                disabled={isSharing || !analysisData}
-              >
-                <Share2 className="h-4 w-4 mr-2" />
-                {isSharing ? 'Creating Link...' : 'Share Results'}
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => downloadReport(analysisData, resumeData, jobDescription)}
-                disabled={isDownloading || !analysisData}
-              >
-                <Download className="h-4 w-4 mr-2" />
-                {isDownloading ? 'Generating...' : 'Download Report'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation currentPage="analysis" />
 
       <div className="container mx-auto px-4 py-8">
+        {/* Action Bar */}
+        <div className="mb-6 flex items-center justify-between">
+          <Link href="/" className="flex items-center space-x-3 text-gray-600 hover:text-orange-500 transition-colors">
+            <ArrowLeft className="h-5 w-5" />
+            <span>Back to Upload</span>
+          </Link>
+          <div className="flex items-center space-x-3">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => shareAnalysis(analysisData, undefined, resumeData, jobDescription, pdfImages, analysisId)}
+              disabled={isSharing || !analysisData}
+            >
+              <Share2 className="h-4 w-4 mr-2" />
+              {isSharing ? 'Creating Link...' : 'Share Results'}
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => downloadReport(analysisData, resumeData, jobDescription)}
+              disabled={isDownloading || !analysisData}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {isDownloading ? 'Generating...' : 'Download Report'}
+            </Button>
+          </div>
+        </div>
+
         {/* Score Overview */}
         <div className="mb-8">
           <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
@@ -1153,7 +1167,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                           </div>
                           
                           {/* Analysis Info */}
-                          {analysisId && (
+                          {/* {analysisId && (
                             <div className="pt-2 border-t border-gray-200">
                               <div className="text-xs text-gray-500">
                                 <span className="font-medium">Analysis ID:</span> 
@@ -1174,7 +1188,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                                 </div>
                               )}
                             </div>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     )}
@@ -1183,7 +1197,7 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                   <Button 
                     className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium" 
                     size="sm" 
-                    onClick={() => handleGenerateOptimized(false)}
+                    onClick={() => handleGenerateOptimized()}
                     disabled={isGeneratingOptimized}
                   >
                     {isGeneratingOptimized ? (
@@ -1247,10 +1261,22 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
                     Get Cover Letter
                   </Button>
                   
-                  <Button variant="outline" className="w-full" size="sm">
-                    LinkedIn Optimization
+                  <Button 
+                    variant="outline" 
+                    className="w-full opacity-60 cursor-not-allowed" 
+                    size="sm"
+                    disabled
+                  >
+                    <Linkedin className="h-4 w-4 mr-2" />
+                    LinkedIn Optimization (Coming Soon)
                   </Button>
-                  <Button variant="outline" className="w-full" size="sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    size="sm"
+                    onClick={() => setShowInterviewPrepModal(true)}
+                  >
+                    <Brain className="h-4 w-4 mr-2" />
                     Interview Prep
                   </Button>
                 </div>
@@ -1317,6 +1343,24 @@ JavaScript, React, Node.js, HTML, CSS, Git, MongoDB, Express.js`,
         analysisData={analysisData}
         analysisId={analysisId}
         onCoverLetterGenerated={handleCoverLetterGenerated}
+      />
+
+      {/* Resume Optimization Modal */}
+      <ResumeOptimizationModal
+        isOpen={showResumeOptimizationModal}
+        onClose={() => setShowResumeOptimizationModal(false)}
+        onConfirm={handleOptimizationConfirm}
+        isGenerating={isGeneratingOptimized}
+      />
+
+      {/* Interview Prep Modal */}
+      <InterviewPrepModal
+        isOpen={showInterviewPrepModal}
+        onClose={() => setShowInterviewPrepModal(false)}
+        resumeData={resumeData}
+        jobDescription={jobDescription}
+        analysisData={analysisData}
+        analysisId={analysisId}
       />
 
       {/* PDF Images Modal */}

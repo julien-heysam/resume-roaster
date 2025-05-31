@@ -19,23 +19,23 @@ export async function DELETE(
 
     const { id } = await context.params
 
-    // First, verify the conversation belongs to the user
-    const conversation = await db.llmCall.findFirst({
+    // First, verify the analysis belongs to the user
+    const analysis = await db.generatedRoast.findFirst({
       where: {
         id,
         userId: session.user.id
       }
     })
 
-    if (!conversation) {
+    if (!analysis) {
       return NextResponse.json(
         { error: 'Analysis not found or access denied' },
         { status: 404 }
       )
     }
 
-    // Delete the conversation and related messages (cascade should handle this)
-    await db.llmCall.delete({
+    // Delete the analysis (cascade should handle related records)
+    await db.generatedRoast.delete({
       where: {
         id
       }

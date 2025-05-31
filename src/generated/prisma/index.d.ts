@@ -74,6 +74,16 @@ export type GeneratedCoverLetter = $Result.DefaultSelection<Prisma.$GeneratedCov
  */
 export type GeneratedResume = $Result.DefaultSelection<Prisma.$GeneratedResumePayload>
 /**
+ * Model InterviewPrep
+ * 
+ */
+export type InterviewPrep = $Result.DefaultSelection<Prisma.$InterviewPrepPayload>
+/**
+ * Model InterviewEvaluation
+ * 
+ */
+export type InterviewEvaluation = $Result.DefaultSelection<Prisma.$InterviewEvaluationPayload>
+/**
  * Model SharedAnalysis
  * 
  */
@@ -407,6 +417,26 @@ export class PrismaClient<
     * ```
     */
   get generatedResume(): Prisma.GeneratedResumeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.interviewPrep`: Exposes CRUD operations for the **InterviewPrep** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InterviewPreps
+    * const interviewPreps = await prisma.interviewPrep.findMany()
+    * ```
+    */
+  get interviewPrep(): Prisma.InterviewPrepDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.interviewEvaluation`: Exposes CRUD operations for the **InterviewEvaluation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InterviewEvaluations
+    * const interviewEvaluations = await prisma.interviewEvaluation.findMany()
+    * ```
+    */
+  get interviewEvaluation(): Prisma.InterviewEvaluationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.sharedAnalysis`: Exposes CRUD operations for the **SharedAnalysis** model.
@@ -889,6 +919,8 @@ export namespace Prisma {
     GeneratedRoast: 'GeneratedRoast',
     GeneratedCoverLetter: 'GeneratedCoverLetter',
     GeneratedResume: 'GeneratedResume',
+    InterviewPrep: 'InterviewPrep',
+    InterviewEvaluation: 'InterviewEvaluation',
     SharedAnalysis: 'SharedAnalysis',
     Invoice: 'Invoice',
     Announcement: 'Announcement'
@@ -910,7 +942,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "llmCall" | "llmMessage" | "resume" | "extractedResume" | "extractedJobDescription" | "summarizedResume" | "summarizedJobDescription" | "generatedRoast" | "generatedCoverLetter" | "generatedResume" | "sharedAnalysis" | "invoice" | "announcement"
+      modelProps: "user" | "session" | "llmCall" | "llmMessage" | "resume" | "extractedResume" | "extractedJobDescription" | "summarizedResume" | "summarizedJobDescription" | "generatedRoast" | "generatedCoverLetter" | "generatedResume" | "interviewPrep" | "interviewEvaluation" | "sharedAnalysis" | "invoice" | "announcement"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1802,6 +1834,154 @@ export namespace Prisma {
           }
         }
       }
+      InterviewPrep: {
+        payload: Prisma.$InterviewPrepPayload<ExtArgs>
+        fields: Prisma.InterviewPrepFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InterviewPrepFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InterviewPrepFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>
+          }
+          findFirst: {
+            args: Prisma.InterviewPrepFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InterviewPrepFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>
+          }
+          findMany: {
+            args: Prisma.InterviewPrepFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>[]
+          }
+          create: {
+            args: Prisma.InterviewPrepCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>
+          }
+          createMany: {
+            args: Prisma.InterviewPrepCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InterviewPrepCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>[]
+          }
+          delete: {
+            args: Prisma.InterviewPrepDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>
+          }
+          update: {
+            args: Prisma.InterviewPrepUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>
+          }
+          deleteMany: {
+            args: Prisma.InterviewPrepDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InterviewPrepUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InterviewPrepUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>[]
+          }
+          upsert: {
+            args: Prisma.InterviewPrepUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPrepPayload>
+          }
+          aggregate: {
+            args: Prisma.InterviewPrepAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInterviewPrep>
+          }
+          groupBy: {
+            args: Prisma.InterviewPrepGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InterviewPrepGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InterviewPrepCountArgs<ExtArgs>
+            result: $Utils.Optional<InterviewPrepCountAggregateOutputType> | number
+          }
+        }
+      }
+      InterviewEvaluation: {
+        payload: Prisma.$InterviewEvaluationPayload<ExtArgs>
+        fields: Prisma.InterviewEvaluationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InterviewEvaluationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InterviewEvaluationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>
+          }
+          findFirst: {
+            args: Prisma.InterviewEvaluationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InterviewEvaluationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>
+          }
+          findMany: {
+            args: Prisma.InterviewEvaluationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>[]
+          }
+          create: {
+            args: Prisma.InterviewEvaluationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>
+          }
+          createMany: {
+            args: Prisma.InterviewEvaluationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InterviewEvaluationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>[]
+          }
+          delete: {
+            args: Prisma.InterviewEvaluationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>
+          }
+          update: {
+            args: Prisma.InterviewEvaluationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>
+          }
+          deleteMany: {
+            args: Prisma.InterviewEvaluationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InterviewEvaluationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InterviewEvaluationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>[]
+          }
+          upsert: {
+            args: Prisma.InterviewEvaluationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewEvaluationPayload>
+          }
+          aggregate: {
+            args: Prisma.InterviewEvaluationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInterviewEvaluation>
+          }
+          groupBy: {
+            args: Prisma.InterviewEvaluationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InterviewEvaluationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InterviewEvaluationCountArgs<ExtArgs>
+            result: $Utils.Optional<InterviewEvaluationCountAggregateOutputType> | number
+          }
+        }
+      }
       SharedAnalysis: {
         payload: Prisma.$SharedAnalysisPayload<ExtArgs>
         fields: Prisma.SharedAnalysisFieldRefs
@@ -2120,6 +2300,8 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastOmit
     generatedCoverLetter?: GeneratedCoverLetterOmit
     generatedResume?: GeneratedResumeOmit
+    interviewPrep?: InterviewPrepOmit
+    interviewEvaluation?: InterviewEvaluationOmit
     sharedAnalysis?: SharedAnalysisOmit
     invoice?: InvoiceOmit
     announcement?: AnnouncementOmit
@@ -2223,6 +2405,8 @@ export namespace Prisma {
     generatedRoasts: number
     generatedCoverLetters: number
     generatedResumes: number
+    interviewPreps: number
+    interviewEvaluations: number
     sharedAnalyses: number
     invoices: number
   }
@@ -2234,6 +2418,8 @@ export namespace Prisma {
     generatedRoasts?: boolean | UserCountOutputTypeCountGeneratedRoastsArgs
     generatedCoverLetters?: boolean | UserCountOutputTypeCountGeneratedCoverLettersArgs
     generatedResumes?: boolean | UserCountOutputTypeCountGeneratedResumesArgs
+    interviewPreps?: boolean | UserCountOutputTypeCountInterviewPrepsArgs
+    interviewEvaluations?: boolean | UserCountOutputTypeCountInterviewEvaluationsArgs
     sharedAnalyses?: boolean | UserCountOutputTypeCountSharedAnalysesArgs
     invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
   }
@@ -2294,6 +2480,20 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountInterviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewPrepWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInterviewEvaluationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewEvaluationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountSharedAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SharedAnalysisWhereInput
   }
@@ -2347,6 +2547,7 @@ export namespace Prisma {
     generatedRoasts: number
     generatedCoverLetters: number
     generatedResumes: number
+    interviewPreps: number
   }
 
   export type ResumeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2355,6 +2556,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | ResumeCountOutputTypeCountGeneratedRoastsArgs
     generatedCoverLetters?: boolean | ResumeCountOutputTypeCountGeneratedCoverLettersArgs
     generatedResumes?: boolean | ResumeCountOutputTypeCountGeneratedResumesArgs
+    interviewPreps?: boolean | ResumeCountOutputTypeCountInterviewPrepsArgs
   }
 
   // Custom InputTypes
@@ -2403,6 +2605,13 @@ export namespace Prisma {
     where?: GeneratedResumeWhereInput
   }
 
+  /**
+   * ResumeCountOutputType without action
+   */
+  export type ResumeCountOutputTypeCountInterviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewPrepWhereInput
+  }
+
 
   /**
    * Count Type ExtractedResumeCountOutputType
@@ -2414,6 +2623,7 @@ export namespace Prisma {
     generatedRoasts: number
     generatedCoverLetters: number
     generatedResumes: number
+    interviewPreps: number
   }
 
   export type ExtractedResumeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2422,6 +2632,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | ExtractedResumeCountOutputTypeCountGeneratedRoastsArgs
     generatedCoverLetters?: boolean | ExtractedResumeCountOutputTypeCountGeneratedCoverLettersArgs
     generatedResumes?: boolean | ExtractedResumeCountOutputTypeCountGeneratedResumesArgs
+    interviewPreps?: boolean | ExtractedResumeCountOutputTypeCountInterviewPrepsArgs
   }
 
   // Custom InputTypes
@@ -2470,6 +2681,13 @@ export namespace Prisma {
     where?: GeneratedResumeWhereInput
   }
 
+  /**
+   * ExtractedResumeCountOutputType without action
+   */
+  export type ExtractedResumeCountOutputTypeCountInterviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewPrepWhereInput
+  }
+
 
   /**
    * Count Type ExtractedJobDescriptionCountOutputType
@@ -2481,6 +2699,7 @@ export namespace Prisma {
     generatedRoasts: number
     generatedCoverLetters: number
     generatedResumes: number
+    interviewPreps: number
   }
 
   export type ExtractedJobDescriptionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2489,6 +2708,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | ExtractedJobDescriptionCountOutputTypeCountGeneratedRoastsArgs
     generatedCoverLetters?: boolean | ExtractedJobDescriptionCountOutputTypeCountGeneratedCoverLettersArgs
     generatedResumes?: boolean | ExtractedJobDescriptionCountOutputTypeCountGeneratedResumesArgs
+    interviewPreps?: boolean | ExtractedJobDescriptionCountOutputTypeCountInterviewPrepsArgs
   }
 
   // Custom InputTypes
@@ -2535,6 +2755,13 @@ export namespace Prisma {
    */
   export type ExtractedJobDescriptionCountOutputTypeCountGeneratedResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GeneratedResumeWhereInput
+  }
+
+  /**
+   * ExtractedJobDescriptionCountOutputType without action
+   */
+  export type ExtractedJobDescriptionCountOutputTypeCountInterviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewPrepWhereInput
   }
 
 
@@ -2637,6 +2864,68 @@ export namespace Prisma {
    */
   export type GeneratedResumeCountOutputTypeCountLlmCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LlmCallWhereInput
+  }
+
+
+  /**
+   * Count Type InterviewPrepCountOutputType
+   */
+
+  export type InterviewPrepCountOutputType = {
+    llmCalls: number
+  }
+
+  export type InterviewPrepCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    llmCalls?: boolean | InterviewPrepCountOutputTypeCountLlmCallsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * InterviewPrepCountOutputType without action
+   */
+  export type InterviewPrepCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrepCountOutputType
+     */
+    select?: InterviewPrepCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * InterviewPrepCountOutputType without action
+   */
+  export type InterviewPrepCountOutputTypeCountLlmCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LlmCallWhereInput
+  }
+
+
+  /**
+   * Count Type SharedAnalysisCountOutputType
+   */
+
+  export type SharedAnalysisCountOutputType = {
+    interviewEvaluations: number
+  }
+
+  export type SharedAnalysisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    interviewEvaluations?: boolean | SharedAnalysisCountOutputTypeCountInterviewEvaluationsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SharedAnalysisCountOutputType without action
+   */
+  export type SharedAnalysisCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharedAnalysisCountOutputType
+     */
+    select?: SharedAnalysisCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SharedAnalysisCountOutputType without action
+   */
+  export type SharedAnalysisCountOutputTypeCountInterviewEvaluationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewEvaluationWhereInput
   }
 
 
@@ -2932,6 +3221,8 @@ export namespace Prisma {
     generatedRoasts?: boolean | User$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | User$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | User$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | User$interviewPrepsArgs<ExtArgs>
+    interviewEvaluations?: boolean | User$interviewEvaluationsArgs<ExtArgs>
     sharedAnalyses?: boolean | User$sharedAnalysesArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -2999,6 +3290,8 @@ export namespace Prisma {
     generatedRoasts?: boolean | User$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | User$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | User$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | User$interviewPrepsArgs<ExtArgs>
+    interviewEvaluations?: boolean | User$interviewEvaluationsArgs<ExtArgs>
     sharedAnalyses?: boolean | User$sharedAnalysesArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -3015,6 +3308,8 @@ export namespace Prisma {
       generatedRoasts: Prisma.$GeneratedRoastPayload<ExtArgs>[]
       generatedCoverLetters: Prisma.$GeneratedCoverLetterPayload<ExtArgs>[]
       generatedResumes: Prisma.$GeneratedResumePayload<ExtArgs>[]
+      interviewPreps: Prisma.$InterviewPrepPayload<ExtArgs>[]
+      interviewEvaluations: Prisma.$InterviewEvaluationPayload<ExtArgs>[]
       sharedAnalyses: Prisma.$SharedAnalysisPayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
     }
@@ -3434,6 +3729,8 @@ export namespace Prisma {
     generatedRoasts<T extends User$generatedRoastsArgs<ExtArgs> = {}>(args?: Subset<T, User$generatedRoastsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedRoastPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedCoverLetters<T extends User$generatedCoverLettersArgs<ExtArgs> = {}>(args?: Subset<T, User$generatedCoverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedCoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedResumes<T extends User$generatedResumesArgs<ExtArgs> = {}>(args?: Subset<T, User$generatedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    interviewPreps<T extends User$interviewPrepsArgs<ExtArgs> = {}>(args?: Subset<T, User$interviewPrepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    interviewEvaluations<T extends User$interviewEvaluationsArgs<ExtArgs> = {}>(args?: Subset<T, User$interviewEvaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sharedAnalyses<T extends User$sharedAnalysesArgs<ExtArgs> = {}>(args?: Subset<T, User$sharedAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharedAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends User$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -4009,6 +4306,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GeneratedResumeScalarFieldEnum | GeneratedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * User.interviewPreps
+   */
+  export type User$interviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    where?: InterviewPrepWhereInput
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    cursor?: InterviewPrepWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewPrepScalarFieldEnum | InterviewPrepScalarFieldEnum[]
+  }
+
+  /**
+   * User.interviewEvaluations
+   */
+  export type User$interviewEvaluationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    where?: InterviewEvaluationWhereInput
+    orderBy?: InterviewEvaluationOrderByWithRelationInput | InterviewEvaluationOrderByWithRelationInput[]
+    cursor?: InterviewEvaluationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewEvaluationScalarFieldEnum | InterviewEvaluationScalarFieldEnum[]
   }
 
   /**
@@ -5183,6 +5528,7 @@ export namespace Prisma {
     generatedRoastId: string | null
     generatedCoverLetterId: string | null
     generatedResumeId: string | null
+    interviewPrepId: string | null
     createdAt: Date | null
     completedAt: Date | null
   }
@@ -5206,6 +5552,7 @@ export namespace Prisma {
     generatedRoastId: string | null
     generatedCoverLetterId: string | null
     generatedResumeId: string | null
+    interviewPrepId: string | null
     createdAt: Date | null
     completedAt: Date | null
   }
@@ -5229,6 +5576,7 @@ export namespace Prisma {
     generatedRoastId: number
     generatedCoverLetterId: number
     generatedResumeId: number
+    interviewPrepId: number
     createdAt: number
     completedAt: number
     _all: number
@@ -5270,6 +5618,7 @@ export namespace Prisma {
     generatedRoastId?: true
     generatedCoverLetterId?: true
     generatedResumeId?: true
+    interviewPrepId?: true
     createdAt?: true
     completedAt?: true
   }
@@ -5293,6 +5642,7 @@ export namespace Prisma {
     generatedRoastId?: true
     generatedCoverLetterId?: true
     generatedResumeId?: true
+    interviewPrepId?: true
     createdAt?: true
     completedAt?: true
   }
@@ -5316,6 +5666,7 @@ export namespace Prisma {
     generatedRoastId?: true
     generatedCoverLetterId?: true
     generatedResumeId?: true
+    interviewPrepId?: true
     createdAt?: true
     completedAt?: true
     _all?: true
@@ -5426,6 +5777,7 @@ export namespace Prisma {
     generatedRoastId: string | null
     generatedCoverLetterId: string | null
     generatedResumeId: string | null
+    interviewPrepId: string | null
     createdAt: Date
     completedAt: Date | null
     _count: LlmCallCountAggregateOutputType | null
@@ -5468,6 +5820,7 @@ export namespace Prisma {
     generatedRoastId?: boolean
     generatedCoverLetterId?: boolean
     generatedResumeId?: boolean
+    interviewPrepId?: boolean
     createdAt?: boolean
     completedAt?: boolean
     user?: boolean | LlmCall$userArgs<ExtArgs>
@@ -5477,6 +5830,7 @@ export namespace Prisma {
     generatedRoast?: boolean | LlmCall$generatedRoastArgs<ExtArgs>
     generatedCoverLetter?: boolean | LlmCall$generatedCoverLetterArgs<ExtArgs>
     generatedResume?: boolean | LlmCall$generatedResumeArgs<ExtArgs>
+    interviewPrep?: boolean | LlmCall$interviewPrepArgs<ExtArgs>
     messages?: boolean | LlmCall$messagesArgs<ExtArgs>
     _count?: boolean | LlmCallCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["llmCall"]>
@@ -5500,6 +5854,7 @@ export namespace Prisma {
     generatedRoastId?: boolean
     generatedCoverLetterId?: boolean
     generatedResumeId?: boolean
+    interviewPrepId?: boolean
     createdAt?: boolean
     completedAt?: boolean
     user?: boolean | LlmCall$userArgs<ExtArgs>
@@ -5509,6 +5864,7 @@ export namespace Prisma {
     generatedRoast?: boolean | LlmCall$generatedRoastArgs<ExtArgs>
     generatedCoverLetter?: boolean | LlmCall$generatedCoverLetterArgs<ExtArgs>
     generatedResume?: boolean | LlmCall$generatedResumeArgs<ExtArgs>
+    interviewPrep?: boolean | LlmCall$interviewPrepArgs<ExtArgs>
   }, ExtArgs["result"]["llmCall"]>
 
   export type LlmCallSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5530,6 +5886,7 @@ export namespace Prisma {
     generatedRoastId?: boolean
     generatedCoverLetterId?: boolean
     generatedResumeId?: boolean
+    interviewPrepId?: boolean
     createdAt?: boolean
     completedAt?: boolean
     user?: boolean | LlmCall$userArgs<ExtArgs>
@@ -5539,6 +5896,7 @@ export namespace Prisma {
     generatedRoast?: boolean | LlmCall$generatedRoastArgs<ExtArgs>
     generatedCoverLetter?: boolean | LlmCall$generatedCoverLetterArgs<ExtArgs>
     generatedResume?: boolean | LlmCall$generatedResumeArgs<ExtArgs>
+    interviewPrep?: boolean | LlmCall$interviewPrepArgs<ExtArgs>
   }, ExtArgs["result"]["llmCall"]>
 
   export type LlmCallSelectScalar = {
@@ -5560,11 +5918,12 @@ export namespace Prisma {
     generatedRoastId?: boolean
     generatedCoverLetterId?: boolean
     generatedResumeId?: boolean
+    interviewPrepId?: boolean
     createdAt?: boolean
     completedAt?: boolean
   }
 
-  export type LlmCallOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "model" | "operationType" | "totalInputTokens" | "totalOutputTokens" | "totalTokens" | "totalCostUsd" | "totalProcessingTimeMs" | "status" | "errorMessage" | "resumeId" | "extractedResumeId" | "extractedJobId" | "generatedRoastId" | "generatedCoverLetterId" | "generatedResumeId" | "createdAt" | "completedAt", ExtArgs["result"]["llmCall"]>
+  export type LlmCallOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "model" | "operationType" | "totalInputTokens" | "totalOutputTokens" | "totalTokens" | "totalCostUsd" | "totalProcessingTimeMs" | "status" | "errorMessage" | "resumeId" | "extractedResumeId" | "extractedJobId" | "generatedRoastId" | "generatedCoverLetterId" | "generatedResumeId" | "interviewPrepId" | "createdAt" | "completedAt", ExtArgs["result"]["llmCall"]>
   export type LlmCallInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | LlmCall$userArgs<ExtArgs>
     resume?: boolean | LlmCall$resumeArgs<ExtArgs>
@@ -5573,6 +5932,7 @@ export namespace Prisma {
     generatedRoast?: boolean | LlmCall$generatedRoastArgs<ExtArgs>
     generatedCoverLetter?: boolean | LlmCall$generatedCoverLetterArgs<ExtArgs>
     generatedResume?: boolean | LlmCall$generatedResumeArgs<ExtArgs>
+    interviewPrep?: boolean | LlmCall$interviewPrepArgs<ExtArgs>
     messages?: boolean | LlmCall$messagesArgs<ExtArgs>
     _count?: boolean | LlmCallCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -5584,6 +5944,7 @@ export namespace Prisma {
     generatedRoast?: boolean | LlmCall$generatedRoastArgs<ExtArgs>
     generatedCoverLetter?: boolean | LlmCall$generatedCoverLetterArgs<ExtArgs>
     generatedResume?: boolean | LlmCall$generatedResumeArgs<ExtArgs>
+    interviewPrep?: boolean | LlmCall$interviewPrepArgs<ExtArgs>
   }
   export type LlmCallIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | LlmCall$userArgs<ExtArgs>
@@ -5593,6 +5954,7 @@ export namespace Prisma {
     generatedRoast?: boolean | LlmCall$generatedRoastArgs<ExtArgs>
     generatedCoverLetter?: boolean | LlmCall$generatedCoverLetterArgs<ExtArgs>
     generatedResume?: boolean | LlmCall$generatedResumeArgs<ExtArgs>
+    interviewPrep?: boolean | LlmCall$interviewPrepArgs<ExtArgs>
   }
 
   export type $LlmCallPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5605,6 +5967,7 @@ export namespace Prisma {
       generatedRoast: Prisma.$GeneratedRoastPayload<ExtArgs> | null
       generatedCoverLetter: Prisma.$GeneratedCoverLetterPayload<ExtArgs> | null
       generatedResume: Prisma.$GeneratedResumePayload<ExtArgs> | null
+      interviewPrep: Prisma.$InterviewPrepPayload<ExtArgs> | null
       messages: Prisma.$LlmMessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -5626,6 +5989,7 @@ export namespace Prisma {
       generatedRoastId: string | null
       generatedCoverLetterId: string | null
       generatedResumeId: string | null
+      interviewPrepId: string | null
       createdAt: Date
       completedAt: Date | null
     }, ExtArgs["result"]["llmCall"]>
@@ -6029,6 +6393,7 @@ export namespace Prisma {
     generatedRoast<T extends LlmCall$generatedRoastArgs<ExtArgs> = {}>(args?: Subset<T, LlmCall$generatedRoastArgs<ExtArgs>>): Prisma__GeneratedRoastClient<$Result.GetResult<Prisma.$GeneratedRoastPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     generatedCoverLetter<T extends LlmCall$generatedCoverLetterArgs<ExtArgs> = {}>(args?: Subset<T, LlmCall$generatedCoverLetterArgs<ExtArgs>>): Prisma__GeneratedCoverLetterClient<$Result.GetResult<Prisma.$GeneratedCoverLetterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     generatedResume<T extends LlmCall$generatedResumeArgs<ExtArgs> = {}>(args?: Subset<T, LlmCall$generatedResumeArgs<ExtArgs>>): Prisma__GeneratedResumeClient<$Result.GetResult<Prisma.$GeneratedResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    interviewPrep<T extends LlmCall$interviewPrepArgs<ExtArgs> = {}>(args?: Subset<T, LlmCall$interviewPrepArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     messages<T extends LlmCall$messagesArgs<ExtArgs> = {}>(args?: Subset<T, LlmCall$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LlmMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -6077,6 +6442,7 @@ export namespace Prisma {
     readonly generatedRoastId: FieldRef<"LlmCall", 'String'>
     readonly generatedCoverLetterId: FieldRef<"LlmCall", 'String'>
     readonly generatedResumeId: FieldRef<"LlmCall", 'String'>
+    readonly interviewPrepId: FieldRef<"LlmCall", 'String'>
     readonly createdAt: FieldRef<"LlmCall", 'DateTime'>
     readonly completedAt: FieldRef<"LlmCall", 'DateTime'>
   }
@@ -6605,6 +6971,25 @@ export namespace Prisma {
      */
     include?: GeneratedResumeInclude<ExtArgs> | null
     where?: GeneratedResumeWhereInput
+  }
+
+  /**
+   * LlmCall.interviewPrep
+   */
+  export type LlmCall$interviewPrepArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    where?: InterviewPrepWhereInput
   }
 
   /**
@@ -8082,6 +8467,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | Resume$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | Resume$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | Resume$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | Resume$interviewPrepsArgs<ExtArgs>
     _count?: boolean | ResumeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resume"]>
 
@@ -8128,6 +8514,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | Resume$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | Resume$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | Resume$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | Resume$interviewPrepsArgs<ExtArgs>
     _count?: boolean | ResumeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ResumeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8146,6 +8533,7 @@ export namespace Prisma {
       generatedRoasts: Prisma.$GeneratedRoastPayload<ExtArgs>[]
       generatedCoverLetters: Prisma.$GeneratedCoverLetterPayload<ExtArgs>[]
       generatedResumes: Prisma.$GeneratedResumePayload<ExtArgs>[]
+      interviewPreps: Prisma.$InterviewPrepPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8556,6 +8944,7 @@ export namespace Prisma {
     generatedRoasts<T extends Resume$generatedRoastsArgs<ExtArgs> = {}>(args?: Subset<T, Resume$generatedRoastsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedRoastPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedCoverLetters<T extends Resume$generatedCoverLettersArgs<ExtArgs> = {}>(args?: Subset<T, Resume$generatedCoverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedCoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedResumes<T extends Resume$generatedResumesArgs<ExtArgs> = {}>(args?: Subset<T, Resume$generatedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    interviewPreps<T extends Resume$interviewPrepsArgs<ExtArgs> = {}>(args?: Subset<T, Resume$interviewPrepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9128,6 +9517,30 @@ export namespace Prisma {
   }
 
   /**
+   * Resume.interviewPreps
+   */
+  export type Resume$interviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    where?: InterviewPrepWhereInput
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    cursor?: InterviewPrepWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewPrepScalarFieldEnum | InterviewPrepScalarFieldEnum[]
+  }
+
+  /**
    * Resume without action
    */
   export type ResumeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9312,6 +9725,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | ExtractedResume$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | ExtractedResume$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | ExtractedResume$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | ExtractedResume$interviewPrepsArgs<ExtArgs>
     _count?: boolean | ExtractedResumeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["extractedResume"]>
 
@@ -9349,6 +9763,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | ExtractedResume$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | ExtractedResume$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | ExtractedResume$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | ExtractedResume$interviewPrepsArgs<ExtArgs>
     _count?: boolean | ExtractedResumeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ExtractedResumeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9367,6 +9782,7 @@ export namespace Prisma {
       generatedRoasts: Prisma.$GeneratedRoastPayload<ExtArgs>[]
       generatedCoverLetters: Prisma.$GeneratedCoverLetterPayload<ExtArgs>[]
       generatedResumes: Prisma.$GeneratedResumePayload<ExtArgs>[]
+      interviewPreps: Prisma.$InterviewPrepPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9774,6 +10190,7 @@ export namespace Prisma {
     generatedRoasts<T extends ExtractedResume$generatedRoastsArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$generatedRoastsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedRoastPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedCoverLetters<T extends ExtractedResume$generatedCoverLettersArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$generatedCoverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedCoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedResumes<T extends ExtractedResume$generatedResumesArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$generatedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    interviewPreps<T extends ExtractedResume$interviewPrepsArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedResume$interviewPrepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10324,6 +10741,30 @@ export namespace Prisma {
   }
 
   /**
+   * ExtractedResume.interviewPreps
+   */
+  export type ExtractedResume$interviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    where?: InterviewPrepWhereInput
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    cursor?: InterviewPrepWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewPrepScalarFieldEnum | InterviewPrepScalarFieldEnum[]
+  }
+
+  /**
    * ExtractedResume without action
    */
   export type ExtractedResumeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10356,7 +10797,6 @@ export namespace Prisma {
     id: string | null
     contentHash: string | null
     originalText: string | null
-    url: string | null
     createdAt: Date | null
   }
 
@@ -10364,7 +10804,6 @@ export namespace Prisma {
     id: string | null
     contentHash: string | null
     originalText: string | null
-    url: string | null
     createdAt: Date | null
   }
 
@@ -10372,7 +10811,6 @@ export namespace Prisma {
     id: number
     contentHash: number
     originalText: number
-    url: number
     data: number
     createdAt: number
     _all: number
@@ -10383,7 +10821,6 @@ export namespace Prisma {
     id?: true
     contentHash?: true
     originalText?: true
-    url?: true
     createdAt?: true
   }
 
@@ -10391,7 +10828,6 @@ export namespace Prisma {
     id?: true
     contentHash?: true
     originalText?: true
-    url?: true
     createdAt?: true
   }
 
@@ -10399,7 +10835,6 @@ export namespace Prisma {
     id?: true
     contentHash?: true
     originalText?: true
-    url?: true
     data?: true
     createdAt?: true
     _all?: true
@@ -10481,7 +10916,6 @@ export namespace Prisma {
     id: string
     contentHash: string
     originalText: string
-    url: string | null
     data: JsonValue
     createdAt: Date
     _count: ExtractedJobDescriptionCountAggregateOutputType | null
@@ -10507,7 +10941,6 @@ export namespace Prisma {
     id?: boolean
     contentHash?: boolean
     originalText?: boolean
-    url?: boolean
     data?: boolean
     createdAt?: boolean
     llmCalls?: boolean | ExtractedJobDescription$llmCallsArgs<ExtArgs>
@@ -10515,6 +10948,7 @@ export namespace Prisma {
     generatedRoasts?: boolean | ExtractedJobDescription$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | ExtractedJobDescription$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | ExtractedJobDescription$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | ExtractedJobDescription$interviewPrepsArgs<ExtArgs>
     _count?: boolean | ExtractedJobDescriptionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["extractedJobDescription"]>
 
@@ -10522,7 +10956,6 @@ export namespace Prisma {
     id?: boolean
     contentHash?: boolean
     originalText?: boolean
-    url?: boolean
     data?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["extractedJobDescription"]>
@@ -10531,7 +10964,6 @@ export namespace Prisma {
     id?: boolean
     contentHash?: boolean
     originalText?: boolean
-    url?: boolean
     data?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["extractedJobDescription"]>
@@ -10540,18 +10972,18 @@ export namespace Prisma {
     id?: boolean
     contentHash?: boolean
     originalText?: boolean
-    url?: boolean
     data?: boolean
     createdAt?: boolean
   }
 
-  export type ExtractedJobDescriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contentHash" | "originalText" | "url" | "data" | "createdAt", ExtArgs["result"]["extractedJobDescription"]>
+  export type ExtractedJobDescriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contentHash" | "originalText" | "data" | "createdAt", ExtArgs["result"]["extractedJobDescription"]>
   export type ExtractedJobDescriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     llmCalls?: boolean | ExtractedJobDescription$llmCallsArgs<ExtArgs>
     summarizedJobDescriptions?: boolean | ExtractedJobDescription$summarizedJobDescriptionsArgs<ExtArgs>
     generatedRoasts?: boolean | ExtractedJobDescription$generatedRoastsArgs<ExtArgs>
     generatedCoverLetters?: boolean | ExtractedJobDescription$generatedCoverLettersArgs<ExtArgs>
     generatedResumes?: boolean | ExtractedJobDescription$generatedResumesArgs<ExtArgs>
+    interviewPreps?: boolean | ExtractedJobDescription$interviewPrepsArgs<ExtArgs>
     _count?: boolean | ExtractedJobDescriptionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ExtractedJobDescriptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10565,12 +10997,12 @@ export namespace Prisma {
       generatedRoasts: Prisma.$GeneratedRoastPayload<ExtArgs>[]
       generatedCoverLetters: Prisma.$GeneratedCoverLetterPayload<ExtArgs>[]
       generatedResumes: Prisma.$GeneratedResumePayload<ExtArgs>[]
+      interviewPreps: Prisma.$InterviewPrepPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       contentHash: string
       originalText: string
-      url: string | null
       data: Prisma.JsonValue
       createdAt: Date
     }, ExtArgs["result"]["extractedJobDescription"]>
@@ -10972,6 +11404,7 @@ export namespace Prisma {
     generatedRoasts<T extends ExtractedJobDescription$generatedRoastsArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedJobDescription$generatedRoastsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedRoastPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedCoverLetters<T extends ExtractedJobDescription$generatedCoverLettersArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedJobDescription$generatedCoverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedCoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedResumes<T extends ExtractedJobDescription$generatedResumesArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedJobDescription$generatedResumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    interviewPreps<T extends ExtractedJobDescription$interviewPrepsArgs<ExtArgs> = {}>(args?: Subset<T, ExtractedJobDescription$interviewPrepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11004,7 +11437,6 @@ export namespace Prisma {
     readonly id: FieldRef<"ExtractedJobDescription", 'String'>
     readonly contentHash: FieldRef<"ExtractedJobDescription", 'String'>
     readonly originalText: FieldRef<"ExtractedJobDescription", 'String'>
-    readonly url: FieldRef<"ExtractedJobDescription", 'String'>
     readonly data: FieldRef<"ExtractedJobDescription", 'Json'>
     readonly createdAt: FieldRef<"ExtractedJobDescription", 'DateTime'>
   }
@@ -11512,6 +11944,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GeneratedResumeScalarFieldEnum | GeneratedResumeScalarFieldEnum[]
+  }
+
+  /**
+   * ExtractedJobDescription.interviewPreps
+   */
+  export type ExtractedJobDescription$interviewPrepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    where?: InterviewPrepWhereInput
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    cursor?: InterviewPrepWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewPrepScalarFieldEnum | InterviewPrepScalarFieldEnum[]
   }
 
   /**
@@ -17494,6 +17950,2413 @@ export namespace Prisma {
 
 
   /**
+   * Model InterviewPrep
+   */
+
+  export type AggregateInterviewPrep = {
+    _count: InterviewPrepCountAggregateOutputType | null
+    _min: InterviewPrepMinAggregateOutputType | null
+    _max: InterviewPrepMaxAggregateOutputType | null
+  }
+
+  export type InterviewPrepMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    resumeId: string | null
+    extractedResumeId: string | null
+    extractedJobId: string | null
+    contentHash: string | null
+    difficulty: string | null
+    category: string | null
+    createdAt: Date | null
+  }
+
+  export type InterviewPrepMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    resumeId: string | null
+    extractedResumeId: string | null
+    extractedJobId: string | null
+    contentHash: string | null
+    difficulty: string | null
+    category: string | null
+    createdAt: Date | null
+  }
+
+  export type InterviewPrepCountAggregateOutputType = {
+    id: number
+    userId: number
+    resumeId: number
+    extractedResumeId: number
+    extractedJobId: number
+    contentHash: number
+    data: number
+    difficulty: number
+    category: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type InterviewPrepMinAggregateInputType = {
+    id?: true
+    userId?: true
+    resumeId?: true
+    extractedResumeId?: true
+    extractedJobId?: true
+    contentHash?: true
+    difficulty?: true
+    category?: true
+    createdAt?: true
+  }
+
+  export type InterviewPrepMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    resumeId?: true
+    extractedResumeId?: true
+    extractedJobId?: true
+    contentHash?: true
+    difficulty?: true
+    category?: true
+    createdAt?: true
+  }
+
+  export type InterviewPrepCountAggregateInputType = {
+    id?: true
+    userId?: true
+    resumeId?: true
+    extractedResumeId?: true
+    extractedJobId?: true
+    contentHash?: true
+    data?: true
+    difficulty?: true
+    category?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type InterviewPrepAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewPrep to aggregate.
+     */
+    where?: InterviewPrepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewPreps to fetch.
+     */
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InterviewPrepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewPreps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewPreps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InterviewPreps
+    **/
+    _count?: true | InterviewPrepCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InterviewPrepMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InterviewPrepMaxAggregateInputType
+  }
+
+  export type GetInterviewPrepAggregateType<T extends InterviewPrepAggregateArgs> = {
+        [P in keyof T & keyof AggregateInterviewPrep]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInterviewPrep[P]>
+      : GetScalarType<T[P], AggregateInterviewPrep[P]>
+  }
+
+
+
+
+  export type InterviewPrepGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewPrepWhereInput
+    orderBy?: InterviewPrepOrderByWithAggregationInput | InterviewPrepOrderByWithAggregationInput[]
+    by: InterviewPrepScalarFieldEnum[] | InterviewPrepScalarFieldEnum
+    having?: InterviewPrepScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InterviewPrepCountAggregateInputType | true
+    _min?: InterviewPrepMinAggregateInputType
+    _max?: InterviewPrepMaxAggregateInputType
+  }
+
+  export type InterviewPrepGroupByOutputType = {
+    id: string
+    userId: string | null
+    resumeId: string | null
+    extractedResumeId: string | null
+    extractedJobId: string | null
+    contentHash: string
+    data: JsonValue
+    difficulty: string
+    category: string
+    createdAt: Date
+    _count: InterviewPrepCountAggregateOutputType | null
+    _min: InterviewPrepMinAggregateOutputType | null
+    _max: InterviewPrepMaxAggregateOutputType | null
+  }
+
+  type GetInterviewPrepGroupByPayload<T extends InterviewPrepGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InterviewPrepGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InterviewPrepGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InterviewPrepGroupByOutputType[P]>
+            : GetScalarType<T[P], InterviewPrepGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InterviewPrepSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    resumeId?: boolean
+    extractedResumeId?: boolean
+    extractedJobId?: boolean
+    contentHash?: boolean
+    data?: boolean
+    difficulty?: boolean
+    category?: boolean
+    createdAt?: boolean
+    user?: boolean | InterviewPrep$userArgs<ExtArgs>
+    resume?: boolean | InterviewPrep$resumeArgs<ExtArgs>
+    extractedResume?: boolean | InterviewPrep$extractedResumeArgs<ExtArgs>
+    extractedJob?: boolean | InterviewPrep$extractedJobArgs<ExtArgs>
+    llmCalls?: boolean | InterviewPrep$llmCallsArgs<ExtArgs>
+    _count?: boolean | InterviewPrepCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewPrep"]>
+
+  export type InterviewPrepSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    resumeId?: boolean
+    extractedResumeId?: boolean
+    extractedJobId?: boolean
+    contentHash?: boolean
+    data?: boolean
+    difficulty?: boolean
+    category?: boolean
+    createdAt?: boolean
+    user?: boolean | InterviewPrep$userArgs<ExtArgs>
+    resume?: boolean | InterviewPrep$resumeArgs<ExtArgs>
+    extractedResume?: boolean | InterviewPrep$extractedResumeArgs<ExtArgs>
+    extractedJob?: boolean | InterviewPrep$extractedJobArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewPrep"]>
+
+  export type InterviewPrepSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    resumeId?: boolean
+    extractedResumeId?: boolean
+    extractedJobId?: boolean
+    contentHash?: boolean
+    data?: boolean
+    difficulty?: boolean
+    category?: boolean
+    createdAt?: boolean
+    user?: boolean | InterviewPrep$userArgs<ExtArgs>
+    resume?: boolean | InterviewPrep$resumeArgs<ExtArgs>
+    extractedResume?: boolean | InterviewPrep$extractedResumeArgs<ExtArgs>
+    extractedJob?: boolean | InterviewPrep$extractedJobArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewPrep"]>
+
+  export type InterviewPrepSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    resumeId?: boolean
+    extractedResumeId?: boolean
+    extractedJobId?: boolean
+    contentHash?: boolean
+    data?: boolean
+    difficulty?: boolean
+    category?: boolean
+    createdAt?: boolean
+  }
+
+  export type InterviewPrepOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "resumeId" | "extractedResumeId" | "extractedJobId" | "contentHash" | "data" | "difficulty" | "category" | "createdAt", ExtArgs["result"]["interviewPrep"]>
+  export type InterviewPrepInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | InterviewPrep$userArgs<ExtArgs>
+    resume?: boolean | InterviewPrep$resumeArgs<ExtArgs>
+    extractedResume?: boolean | InterviewPrep$extractedResumeArgs<ExtArgs>
+    extractedJob?: boolean | InterviewPrep$extractedJobArgs<ExtArgs>
+    llmCalls?: boolean | InterviewPrep$llmCallsArgs<ExtArgs>
+    _count?: boolean | InterviewPrepCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type InterviewPrepIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | InterviewPrep$userArgs<ExtArgs>
+    resume?: boolean | InterviewPrep$resumeArgs<ExtArgs>
+    extractedResume?: boolean | InterviewPrep$extractedResumeArgs<ExtArgs>
+    extractedJob?: boolean | InterviewPrep$extractedJobArgs<ExtArgs>
+  }
+  export type InterviewPrepIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | InterviewPrep$userArgs<ExtArgs>
+    resume?: boolean | InterviewPrep$resumeArgs<ExtArgs>
+    extractedResume?: boolean | InterviewPrep$extractedResumeArgs<ExtArgs>
+    extractedJob?: boolean | InterviewPrep$extractedJobArgs<ExtArgs>
+  }
+
+  export type $InterviewPrepPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InterviewPrep"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      resume: Prisma.$ResumePayload<ExtArgs> | null
+      extractedResume: Prisma.$ExtractedResumePayload<ExtArgs> | null
+      extractedJob: Prisma.$ExtractedJobDescriptionPayload<ExtArgs> | null
+      llmCalls: Prisma.$LlmCallPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      resumeId: string | null
+      extractedResumeId: string | null
+      extractedJobId: string | null
+      contentHash: string
+      data: Prisma.JsonValue
+      difficulty: string
+      category: string
+      createdAt: Date
+    }, ExtArgs["result"]["interviewPrep"]>
+    composites: {}
+  }
+
+  type InterviewPrepGetPayload<S extends boolean | null | undefined | InterviewPrepDefaultArgs> = $Result.GetResult<Prisma.$InterviewPrepPayload, S>
+
+  type InterviewPrepCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InterviewPrepFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InterviewPrepCountAggregateInputType | true
+    }
+
+  export interface InterviewPrepDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InterviewPrep'], meta: { name: 'InterviewPrep' } }
+    /**
+     * Find zero or one InterviewPrep that matches the filter.
+     * @param {InterviewPrepFindUniqueArgs} args - Arguments to find a InterviewPrep
+     * @example
+     * // Get one InterviewPrep
+     * const interviewPrep = await prisma.interviewPrep.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InterviewPrepFindUniqueArgs>(args: SelectSubset<T, InterviewPrepFindUniqueArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InterviewPrep that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InterviewPrepFindUniqueOrThrowArgs} args - Arguments to find a InterviewPrep
+     * @example
+     * // Get one InterviewPrep
+     * const interviewPrep = await prisma.interviewPrep.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InterviewPrepFindUniqueOrThrowArgs>(args: SelectSubset<T, InterviewPrepFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewPrep that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewPrepFindFirstArgs} args - Arguments to find a InterviewPrep
+     * @example
+     * // Get one InterviewPrep
+     * const interviewPrep = await prisma.interviewPrep.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InterviewPrepFindFirstArgs>(args?: SelectSubset<T, InterviewPrepFindFirstArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewPrep that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewPrepFindFirstOrThrowArgs} args - Arguments to find a InterviewPrep
+     * @example
+     * // Get one InterviewPrep
+     * const interviewPrep = await prisma.interviewPrep.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InterviewPrepFindFirstOrThrowArgs>(args?: SelectSubset<T, InterviewPrepFindFirstOrThrowArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InterviewPreps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewPrepFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InterviewPreps
+     * const interviewPreps = await prisma.interviewPrep.findMany()
+     * 
+     * // Get first 10 InterviewPreps
+     * const interviewPreps = await prisma.interviewPrep.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const interviewPrepWithIdOnly = await prisma.interviewPrep.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InterviewPrepFindManyArgs>(args?: SelectSubset<T, InterviewPrepFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InterviewPrep.
+     * @param {InterviewPrepCreateArgs} args - Arguments to create a InterviewPrep.
+     * @example
+     * // Create one InterviewPrep
+     * const InterviewPrep = await prisma.interviewPrep.create({
+     *   data: {
+     *     // ... data to create a InterviewPrep
+     *   }
+     * })
+     * 
+     */
+    create<T extends InterviewPrepCreateArgs>(args: SelectSubset<T, InterviewPrepCreateArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InterviewPreps.
+     * @param {InterviewPrepCreateManyArgs} args - Arguments to create many InterviewPreps.
+     * @example
+     * // Create many InterviewPreps
+     * const interviewPrep = await prisma.interviewPrep.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InterviewPrepCreateManyArgs>(args?: SelectSubset<T, InterviewPrepCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InterviewPreps and returns the data saved in the database.
+     * @param {InterviewPrepCreateManyAndReturnArgs} args - Arguments to create many InterviewPreps.
+     * @example
+     * // Create many InterviewPreps
+     * const interviewPrep = await prisma.interviewPrep.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InterviewPreps and only return the `id`
+     * const interviewPrepWithIdOnly = await prisma.interviewPrep.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InterviewPrepCreateManyAndReturnArgs>(args?: SelectSubset<T, InterviewPrepCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InterviewPrep.
+     * @param {InterviewPrepDeleteArgs} args - Arguments to delete one InterviewPrep.
+     * @example
+     * // Delete one InterviewPrep
+     * const InterviewPrep = await prisma.interviewPrep.delete({
+     *   where: {
+     *     // ... filter to delete one InterviewPrep
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InterviewPrepDeleteArgs>(args: SelectSubset<T, InterviewPrepDeleteArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InterviewPrep.
+     * @param {InterviewPrepUpdateArgs} args - Arguments to update one InterviewPrep.
+     * @example
+     * // Update one InterviewPrep
+     * const interviewPrep = await prisma.interviewPrep.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InterviewPrepUpdateArgs>(args: SelectSubset<T, InterviewPrepUpdateArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InterviewPreps.
+     * @param {InterviewPrepDeleteManyArgs} args - Arguments to filter InterviewPreps to delete.
+     * @example
+     * // Delete a few InterviewPreps
+     * const { count } = await prisma.interviewPrep.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InterviewPrepDeleteManyArgs>(args?: SelectSubset<T, InterviewPrepDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewPreps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewPrepUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InterviewPreps
+     * const interviewPrep = await prisma.interviewPrep.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InterviewPrepUpdateManyArgs>(args: SelectSubset<T, InterviewPrepUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewPreps and returns the data updated in the database.
+     * @param {InterviewPrepUpdateManyAndReturnArgs} args - Arguments to update many InterviewPreps.
+     * @example
+     * // Update many InterviewPreps
+     * const interviewPrep = await prisma.interviewPrep.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InterviewPreps and only return the `id`
+     * const interviewPrepWithIdOnly = await prisma.interviewPrep.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InterviewPrepUpdateManyAndReturnArgs>(args: SelectSubset<T, InterviewPrepUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InterviewPrep.
+     * @param {InterviewPrepUpsertArgs} args - Arguments to update or create a InterviewPrep.
+     * @example
+     * // Update or create a InterviewPrep
+     * const interviewPrep = await prisma.interviewPrep.upsert({
+     *   create: {
+     *     // ... data to create a InterviewPrep
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InterviewPrep we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InterviewPrepUpsertArgs>(args: SelectSubset<T, InterviewPrepUpsertArgs<ExtArgs>>): Prisma__InterviewPrepClient<$Result.GetResult<Prisma.$InterviewPrepPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InterviewPreps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewPrepCountArgs} args - Arguments to filter InterviewPreps to count.
+     * @example
+     * // Count the number of InterviewPreps
+     * const count = await prisma.interviewPrep.count({
+     *   where: {
+     *     // ... the filter for the InterviewPreps we want to count
+     *   }
+     * })
+    **/
+    count<T extends InterviewPrepCountArgs>(
+      args?: Subset<T, InterviewPrepCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InterviewPrepCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InterviewPrep.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewPrepAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InterviewPrepAggregateArgs>(args: Subset<T, InterviewPrepAggregateArgs>): Prisma.PrismaPromise<GetInterviewPrepAggregateType<T>>
+
+    /**
+     * Group by InterviewPrep.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewPrepGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InterviewPrepGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InterviewPrepGroupByArgs['orderBy'] }
+        : { orderBy?: InterviewPrepGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InterviewPrepGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInterviewPrepGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InterviewPrep model
+   */
+  readonly fields: InterviewPrepFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InterviewPrep.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InterviewPrepClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends InterviewPrep$userArgs<ExtArgs> = {}>(args?: Subset<T, InterviewPrep$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    resume<T extends InterviewPrep$resumeArgs<ExtArgs> = {}>(args?: Subset<T, InterviewPrep$resumeArgs<ExtArgs>>): Prisma__ResumeClient<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    extractedResume<T extends InterviewPrep$extractedResumeArgs<ExtArgs> = {}>(args?: Subset<T, InterviewPrep$extractedResumeArgs<ExtArgs>>): Prisma__ExtractedResumeClient<$Result.GetResult<Prisma.$ExtractedResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    extractedJob<T extends InterviewPrep$extractedJobArgs<ExtArgs> = {}>(args?: Subset<T, InterviewPrep$extractedJobArgs<ExtArgs>>): Prisma__ExtractedJobDescriptionClient<$Result.GetResult<Prisma.$ExtractedJobDescriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    llmCalls<T extends InterviewPrep$llmCallsArgs<ExtArgs> = {}>(args?: Subset<T, InterviewPrep$llmCallsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LlmCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InterviewPrep model
+   */
+  interface InterviewPrepFieldRefs {
+    readonly id: FieldRef<"InterviewPrep", 'String'>
+    readonly userId: FieldRef<"InterviewPrep", 'String'>
+    readonly resumeId: FieldRef<"InterviewPrep", 'String'>
+    readonly extractedResumeId: FieldRef<"InterviewPrep", 'String'>
+    readonly extractedJobId: FieldRef<"InterviewPrep", 'String'>
+    readonly contentHash: FieldRef<"InterviewPrep", 'String'>
+    readonly data: FieldRef<"InterviewPrep", 'Json'>
+    readonly difficulty: FieldRef<"InterviewPrep", 'String'>
+    readonly category: FieldRef<"InterviewPrep", 'String'>
+    readonly createdAt: FieldRef<"InterviewPrep", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InterviewPrep findUnique
+   */
+  export type InterviewPrepFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewPrep to fetch.
+     */
+    where: InterviewPrepWhereUniqueInput
+  }
+
+  /**
+   * InterviewPrep findUniqueOrThrow
+   */
+  export type InterviewPrepFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewPrep to fetch.
+     */
+    where: InterviewPrepWhereUniqueInput
+  }
+
+  /**
+   * InterviewPrep findFirst
+   */
+  export type InterviewPrepFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewPrep to fetch.
+     */
+    where?: InterviewPrepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewPreps to fetch.
+     */
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewPreps.
+     */
+    cursor?: InterviewPrepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewPreps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewPreps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewPreps.
+     */
+    distinct?: InterviewPrepScalarFieldEnum | InterviewPrepScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewPrep findFirstOrThrow
+   */
+  export type InterviewPrepFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewPrep to fetch.
+     */
+    where?: InterviewPrepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewPreps to fetch.
+     */
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewPreps.
+     */
+    cursor?: InterviewPrepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewPreps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewPreps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewPreps.
+     */
+    distinct?: InterviewPrepScalarFieldEnum | InterviewPrepScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewPrep findMany
+   */
+  export type InterviewPrepFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewPreps to fetch.
+     */
+    where?: InterviewPrepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewPreps to fetch.
+     */
+    orderBy?: InterviewPrepOrderByWithRelationInput | InterviewPrepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InterviewPreps.
+     */
+    cursor?: InterviewPrepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewPreps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewPreps.
+     */
+    skip?: number
+    distinct?: InterviewPrepScalarFieldEnum | InterviewPrepScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewPrep create
+   */
+  export type InterviewPrepCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InterviewPrep.
+     */
+    data: XOR<InterviewPrepCreateInput, InterviewPrepUncheckedCreateInput>
+  }
+
+  /**
+   * InterviewPrep createMany
+   */
+  export type InterviewPrepCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InterviewPreps.
+     */
+    data: InterviewPrepCreateManyInput | InterviewPrepCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InterviewPrep createManyAndReturn
+   */
+  export type InterviewPrepCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * The data used to create many InterviewPreps.
+     */
+    data: InterviewPrepCreateManyInput | InterviewPrepCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewPrep update
+   */
+  export type InterviewPrepUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InterviewPrep.
+     */
+    data: XOR<InterviewPrepUpdateInput, InterviewPrepUncheckedUpdateInput>
+    /**
+     * Choose, which InterviewPrep to update.
+     */
+    where: InterviewPrepWhereUniqueInput
+  }
+
+  /**
+   * InterviewPrep updateMany
+   */
+  export type InterviewPrepUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InterviewPreps.
+     */
+    data: XOR<InterviewPrepUpdateManyMutationInput, InterviewPrepUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewPreps to update
+     */
+    where?: InterviewPrepWhereInput
+    /**
+     * Limit how many InterviewPreps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewPrep updateManyAndReturn
+   */
+  export type InterviewPrepUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * The data used to update InterviewPreps.
+     */
+    data: XOR<InterviewPrepUpdateManyMutationInput, InterviewPrepUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewPreps to update
+     */
+    where?: InterviewPrepWhereInput
+    /**
+     * Limit how many InterviewPreps to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewPrep upsert
+   */
+  export type InterviewPrepUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InterviewPrep to update in case it exists.
+     */
+    where: InterviewPrepWhereUniqueInput
+    /**
+     * In case the InterviewPrep found by the `where` argument doesn't exist, create a new InterviewPrep with this data.
+     */
+    create: XOR<InterviewPrepCreateInput, InterviewPrepUncheckedCreateInput>
+    /**
+     * In case the InterviewPrep was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InterviewPrepUpdateInput, InterviewPrepUncheckedUpdateInput>
+  }
+
+  /**
+   * InterviewPrep delete
+   */
+  export type InterviewPrepDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+    /**
+     * Filter which InterviewPrep to delete.
+     */
+    where: InterviewPrepWhereUniqueInput
+  }
+
+  /**
+   * InterviewPrep deleteMany
+   */
+  export type InterviewPrepDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewPreps to delete
+     */
+    where?: InterviewPrepWhereInput
+    /**
+     * Limit how many InterviewPreps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewPrep.user
+   */
+  export type InterviewPrep$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * InterviewPrep.resume
+   */
+  export type InterviewPrep$resumeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Resume
+     */
+    select?: ResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Resume
+     */
+    omit?: ResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumeInclude<ExtArgs> | null
+    where?: ResumeWhereInput
+  }
+
+  /**
+   * InterviewPrep.extractedResume
+   */
+  export type InterviewPrep$extractedResumeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedResume
+     */
+    select?: ExtractedResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedResume
+     */
+    omit?: ExtractedResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedResumeInclude<ExtArgs> | null
+    where?: ExtractedResumeWhereInput
+  }
+
+  /**
+   * InterviewPrep.extractedJob
+   */
+  export type InterviewPrep$extractedJobArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExtractedJobDescription
+     */
+    select?: ExtractedJobDescriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExtractedJobDescription
+     */
+    omit?: ExtractedJobDescriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExtractedJobDescriptionInclude<ExtArgs> | null
+    where?: ExtractedJobDescriptionWhereInput
+  }
+
+  /**
+   * InterviewPrep.llmCalls
+   */
+  export type InterviewPrep$llmCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LlmCall
+     */
+    select?: LlmCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LlmCall
+     */
+    omit?: LlmCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LlmCallInclude<ExtArgs> | null
+    where?: LlmCallWhereInput
+    orderBy?: LlmCallOrderByWithRelationInput | LlmCallOrderByWithRelationInput[]
+    cursor?: LlmCallWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LlmCallScalarFieldEnum | LlmCallScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewPrep without action
+   */
+  export type InterviewPrepDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewPrep
+     */
+    select?: InterviewPrepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewPrep
+     */
+    omit?: InterviewPrepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewPrepInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InterviewEvaluation
+   */
+
+  export type AggregateInterviewEvaluation = {
+    _count: InterviewEvaluationCountAggregateOutputType | null
+    _avg: InterviewEvaluationAvgAggregateOutputType | null
+    _sum: InterviewEvaluationSumAggregateOutputType | null
+    _min: InterviewEvaluationMinAggregateOutputType | null
+    _max: InterviewEvaluationMaxAggregateOutputType | null
+  }
+
+  export type InterviewEvaluationAvgAggregateOutputType = {
+    questionsCount: number | null
+    overallScore: number | null
+  }
+
+  export type InterviewEvaluationSumAggregateOutputType = {
+    questionsCount: number | null
+    overallScore: number | null
+  }
+
+  export type InterviewEvaluationMinAggregateOutputType = {
+    id: string | null
+    analysisId: string | null
+    userId: string | null
+    evaluationType: string | null
+    questionsCount: number | null
+    overallScore: number | null
+    createdAt: Date | null
+  }
+
+  export type InterviewEvaluationMaxAggregateOutputType = {
+    id: string | null
+    analysisId: string | null
+    userId: string | null
+    evaluationType: string | null
+    questionsCount: number | null
+    overallScore: number | null
+    createdAt: Date | null
+  }
+
+  export type InterviewEvaluationCountAggregateOutputType = {
+    id: number
+    analysisId: number
+    userId: number
+    evaluationType: number
+    data: number
+    questionsCount: number
+    overallScore: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type InterviewEvaluationAvgAggregateInputType = {
+    questionsCount?: true
+    overallScore?: true
+  }
+
+  export type InterviewEvaluationSumAggregateInputType = {
+    questionsCount?: true
+    overallScore?: true
+  }
+
+  export type InterviewEvaluationMinAggregateInputType = {
+    id?: true
+    analysisId?: true
+    userId?: true
+    evaluationType?: true
+    questionsCount?: true
+    overallScore?: true
+    createdAt?: true
+  }
+
+  export type InterviewEvaluationMaxAggregateInputType = {
+    id?: true
+    analysisId?: true
+    userId?: true
+    evaluationType?: true
+    questionsCount?: true
+    overallScore?: true
+    createdAt?: true
+  }
+
+  export type InterviewEvaluationCountAggregateInputType = {
+    id?: true
+    analysisId?: true
+    userId?: true
+    evaluationType?: true
+    data?: true
+    questionsCount?: true
+    overallScore?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type InterviewEvaluationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewEvaluation to aggregate.
+     */
+    where?: InterviewEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewEvaluations to fetch.
+     */
+    orderBy?: InterviewEvaluationOrderByWithRelationInput | InterviewEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InterviewEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewEvaluations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InterviewEvaluations
+    **/
+    _count?: true | InterviewEvaluationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InterviewEvaluationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InterviewEvaluationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InterviewEvaluationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InterviewEvaluationMaxAggregateInputType
+  }
+
+  export type GetInterviewEvaluationAggregateType<T extends InterviewEvaluationAggregateArgs> = {
+        [P in keyof T & keyof AggregateInterviewEvaluation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInterviewEvaluation[P]>
+      : GetScalarType<T[P], AggregateInterviewEvaluation[P]>
+  }
+
+
+
+
+  export type InterviewEvaluationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewEvaluationWhereInput
+    orderBy?: InterviewEvaluationOrderByWithAggregationInput | InterviewEvaluationOrderByWithAggregationInput[]
+    by: InterviewEvaluationScalarFieldEnum[] | InterviewEvaluationScalarFieldEnum
+    having?: InterviewEvaluationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InterviewEvaluationCountAggregateInputType | true
+    _avg?: InterviewEvaluationAvgAggregateInputType
+    _sum?: InterviewEvaluationSumAggregateInputType
+    _min?: InterviewEvaluationMinAggregateInputType
+    _max?: InterviewEvaluationMaxAggregateInputType
+  }
+
+  export type InterviewEvaluationGroupByOutputType = {
+    id: string
+    analysisId: string
+    userId: string | null
+    evaluationType: string
+    data: JsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt: Date
+    _count: InterviewEvaluationCountAggregateOutputType | null
+    _avg: InterviewEvaluationAvgAggregateOutputType | null
+    _sum: InterviewEvaluationSumAggregateOutputType | null
+    _min: InterviewEvaluationMinAggregateOutputType | null
+    _max: InterviewEvaluationMaxAggregateOutputType | null
+  }
+
+  type GetInterviewEvaluationGroupByPayload<T extends InterviewEvaluationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InterviewEvaluationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InterviewEvaluationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InterviewEvaluationGroupByOutputType[P]>
+            : GetScalarType<T[P], InterviewEvaluationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InterviewEvaluationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    analysisId?: boolean
+    userId?: boolean
+    evaluationType?: boolean
+    data?: boolean
+    questionsCount?: boolean
+    overallScore?: boolean
+    createdAt?: boolean
+    user?: boolean | InterviewEvaluation$userArgs<ExtArgs>
+    analysis?: boolean | SharedAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewEvaluation"]>
+
+  export type InterviewEvaluationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    analysisId?: boolean
+    userId?: boolean
+    evaluationType?: boolean
+    data?: boolean
+    questionsCount?: boolean
+    overallScore?: boolean
+    createdAt?: boolean
+    user?: boolean | InterviewEvaluation$userArgs<ExtArgs>
+    analysis?: boolean | SharedAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewEvaluation"]>
+
+  export type InterviewEvaluationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    analysisId?: boolean
+    userId?: boolean
+    evaluationType?: boolean
+    data?: boolean
+    questionsCount?: boolean
+    overallScore?: boolean
+    createdAt?: boolean
+    user?: boolean | InterviewEvaluation$userArgs<ExtArgs>
+    analysis?: boolean | SharedAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewEvaluation"]>
+
+  export type InterviewEvaluationSelectScalar = {
+    id?: boolean
+    analysisId?: boolean
+    userId?: boolean
+    evaluationType?: boolean
+    data?: boolean
+    questionsCount?: boolean
+    overallScore?: boolean
+    createdAt?: boolean
+  }
+
+  export type InterviewEvaluationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "analysisId" | "userId" | "evaluationType" | "data" | "questionsCount" | "overallScore" | "createdAt", ExtArgs["result"]["interviewEvaluation"]>
+  export type InterviewEvaluationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | InterviewEvaluation$userArgs<ExtArgs>
+    analysis?: boolean | SharedAnalysisDefaultArgs<ExtArgs>
+  }
+  export type InterviewEvaluationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | InterviewEvaluation$userArgs<ExtArgs>
+    analysis?: boolean | SharedAnalysisDefaultArgs<ExtArgs>
+  }
+  export type InterviewEvaluationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | InterviewEvaluation$userArgs<ExtArgs>
+    analysis?: boolean | SharedAnalysisDefaultArgs<ExtArgs>
+  }
+
+  export type $InterviewEvaluationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InterviewEvaluation"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      analysis: Prisma.$SharedAnalysisPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      analysisId: string
+      userId: string | null
+      evaluationType: string
+      data: Prisma.JsonValue
+      questionsCount: number
+      overallScore: number
+      createdAt: Date
+    }, ExtArgs["result"]["interviewEvaluation"]>
+    composites: {}
+  }
+
+  type InterviewEvaluationGetPayload<S extends boolean | null | undefined | InterviewEvaluationDefaultArgs> = $Result.GetResult<Prisma.$InterviewEvaluationPayload, S>
+
+  type InterviewEvaluationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InterviewEvaluationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InterviewEvaluationCountAggregateInputType | true
+    }
+
+  export interface InterviewEvaluationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InterviewEvaluation'], meta: { name: 'InterviewEvaluation' } }
+    /**
+     * Find zero or one InterviewEvaluation that matches the filter.
+     * @param {InterviewEvaluationFindUniqueArgs} args - Arguments to find a InterviewEvaluation
+     * @example
+     * // Get one InterviewEvaluation
+     * const interviewEvaluation = await prisma.interviewEvaluation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InterviewEvaluationFindUniqueArgs>(args: SelectSubset<T, InterviewEvaluationFindUniqueArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InterviewEvaluation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InterviewEvaluationFindUniqueOrThrowArgs} args - Arguments to find a InterviewEvaluation
+     * @example
+     * // Get one InterviewEvaluation
+     * const interviewEvaluation = await prisma.interviewEvaluation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InterviewEvaluationFindUniqueOrThrowArgs>(args: SelectSubset<T, InterviewEvaluationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewEvaluation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewEvaluationFindFirstArgs} args - Arguments to find a InterviewEvaluation
+     * @example
+     * // Get one InterviewEvaluation
+     * const interviewEvaluation = await prisma.interviewEvaluation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InterviewEvaluationFindFirstArgs>(args?: SelectSubset<T, InterviewEvaluationFindFirstArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewEvaluation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewEvaluationFindFirstOrThrowArgs} args - Arguments to find a InterviewEvaluation
+     * @example
+     * // Get one InterviewEvaluation
+     * const interviewEvaluation = await prisma.interviewEvaluation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InterviewEvaluationFindFirstOrThrowArgs>(args?: SelectSubset<T, InterviewEvaluationFindFirstOrThrowArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InterviewEvaluations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewEvaluationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InterviewEvaluations
+     * const interviewEvaluations = await prisma.interviewEvaluation.findMany()
+     * 
+     * // Get first 10 InterviewEvaluations
+     * const interviewEvaluations = await prisma.interviewEvaluation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const interviewEvaluationWithIdOnly = await prisma.interviewEvaluation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InterviewEvaluationFindManyArgs>(args?: SelectSubset<T, InterviewEvaluationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InterviewEvaluation.
+     * @param {InterviewEvaluationCreateArgs} args - Arguments to create a InterviewEvaluation.
+     * @example
+     * // Create one InterviewEvaluation
+     * const InterviewEvaluation = await prisma.interviewEvaluation.create({
+     *   data: {
+     *     // ... data to create a InterviewEvaluation
+     *   }
+     * })
+     * 
+     */
+    create<T extends InterviewEvaluationCreateArgs>(args: SelectSubset<T, InterviewEvaluationCreateArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InterviewEvaluations.
+     * @param {InterviewEvaluationCreateManyArgs} args - Arguments to create many InterviewEvaluations.
+     * @example
+     * // Create many InterviewEvaluations
+     * const interviewEvaluation = await prisma.interviewEvaluation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InterviewEvaluationCreateManyArgs>(args?: SelectSubset<T, InterviewEvaluationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InterviewEvaluations and returns the data saved in the database.
+     * @param {InterviewEvaluationCreateManyAndReturnArgs} args - Arguments to create many InterviewEvaluations.
+     * @example
+     * // Create many InterviewEvaluations
+     * const interviewEvaluation = await prisma.interviewEvaluation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InterviewEvaluations and only return the `id`
+     * const interviewEvaluationWithIdOnly = await prisma.interviewEvaluation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InterviewEvaluationCreateManyAndReturnArgs>(args?: SelectSubset<T, InterviewEvaluationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InterviewEvaluation.
+     * @param {InterviewEvaluationDeleteArgs} args - Arguments to delete one InterviewEvaluation.
+     * @example
+     * // Delete one InterviewEvaluation
+     * const InterviewEvaluation = await prisma.interviewEvaluation.delete({
+     *   where: {
+     *     // ... filter to delete one InterviewEvaluation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InterviewEvaluationDeleteArgs>(args: SelectSubset<T, InterviewEvaluationDeleteArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InterviewEvaluation.
+     * @param {InterviewEvaluationUpdateArgs} args - Arguments to update one InterviewEvaluation.
+     * @example
+     * // Update one InterviewEvaluation
+     * const interviewEvaluation = await prisma.interviewEvaluation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InterviewEvaluationUpdateArgs>(args: SelectSubset<T, InterviewEvaluationUpdateArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InterviewEvaluations.
+     * @param {InterviewEvaluationDeleteManyArgs} args - Arguments to filter InterviewEvaluations to delete.
+     * @example
+     * // Delete a few InterviewEvaluations
+     * const { count } = await prisma.interviewEvaluation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InterviewEvaluationDeleteManyArgs>(args?: SelectSubset<T, InterviewEvaluationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewEvaluations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewEvaluationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InterviewEvaluations
+     * const interviewEvaluation = await prisma.interviewEvaluation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InterviewEvaluationUpdateManyArgs>(args: SelectSubset<T, InterviewEvaluationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewEvaluations and returns the data updated in the database.
+     * @param {InterviewEvaluationUpdateManyAndReturnArgs} args - Arguments to update many InterviewEvaluations.
+     * @example
+     * // Update many InterviewEvaluations
+     * const interviewEvaluation = await prisma.interviewEvaluation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InterviewEvaluations and only return the `id`
+     * const interviewEvaluationWithIdOnly = await prisma.interviewEvaluation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InterviewEvaluationUpdateManyAndReturnArgs>(args: SelectSubset<T, InterviewEvaluationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InterviewEvaluation.
+     * @param {InterviewEvaluationUpsertArgs} args - Arguments to update or create a InterviewEvaluation.
+     * @example
+     * // Update or create a InterviewEvaluation
+     * const interviewEvaluation = await prisma.interviewEvaluation.upsert({
+     *   create: {
+     *     // ... data to create a InterviewEvaluation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InterviewEvaluation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InterviewEvaluationUpsertArgs>(args: SelectSubset<T, InterviewEvaluationUpsertArgs<ExtArgs>>): Prisma__InterviewEvaluationClient<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InterviewEvaluations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewEvaluationCountArgs} args - Arguments to filter InterviewEvaluations to count.
+     * @example
+     * // Count the number of InterviewEvaluations
+     * const count = await prisma.interviewEvaluation.count({
+     *   where: {
+     *     // ... the filter for the InterviewEvaluations we want to count
+     *   }
+     * })
+    **/
+    count<T extends InterviewEvaluationCountArgs>(
+      args?: Subset<T, InterviewEvaluationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InterviewEvaluationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InterviewEvaluation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewEvaluationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InterviewEvaluationAggregateArgs>(args: Subset<T, InterviewEvaluationAggregateArgs>): Prisma.PrismaPromise<GetInterviewEvaluationAggregateType<T>>
+
+    /**
+     * Group by InterviewEvaluation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewEvaluationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InterviewEvaluationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InterviewEvaluationGroupByArgs['orderBy'] }
+        : { orderBy?: InterviewEvaluationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InterviewEvaluationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInterviewEvaluationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InterviewEvaluation model
+   */
+  readonly fields: InterviewEvaluationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InterviewEvaluation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InterviewEvaluationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends InterviewEvaluation$userArgs<ExtArgs> = {}>(args?: Subset<T, InterviewEvaluation$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    analysis<T extends SharedAnalysisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SharedAnalysisDefaultArgs<ExtArgs>>): Prisma__SharedAnalysisClient<$Result.GetResult<Prisma.$SharedAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InterviewEvaluation model
+   */
+  interface InterviewEvaluationFieldRefs {
+    readonly id: FieldRef<"InterviewEvaluation", 'String'>
+    readonly analysisId: FieldRef<"InterviewEvaluation", 'String'>
+    readonly userId: FieldRef<"InterviewEvaluation", 'String'>
+    readonly evaluationType: FieldRef<"InterviewEvaluation", 'String'>
+    readonly data: FieldRef<"InterviewEvaluation", 'Json'>
+    readonly questionsCount: FieldRef<"InterviewEvaluation", 'Int'>
+    readonly overallScore: FieldRef<"InterviewEvaluation", 'Int'>
+    readonly createdAt: FieldRef<"InterviewEvaluation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InterviewEvaluation findUnique
+   */
+  export type InterviewEvaluationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewEvaluation to fetch.
+     */
+    where: InterviewEvaluationWhereUniqueInput
+  }
+
+  /**
+   * InterviewEvaluation findUniqueOrThrow
+   */
+  export type InterviewEvaluationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewEvaluation to fetch.
+     */
+    where: InterviewEvaluationWhereUniqueInput
+  }
+
+  /**
+   * InterviewEvaluation findFirst
+   */
+  export type InterviewEvaluationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewEvaluation to fetch.
+     */
+    where?: InterviewEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewEvaluations to fetch.
+     */
+    orderBy?: InterviewEvaluationOrderByWithRelationInput | InterviewEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewEvaluations.
+     */
+    cursor?: InterviewEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewEvaluations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewEvaluations.
+     */
+    distinct?: InterviewEvaluationScalarFieldEnum | InterviewEvaluationScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewEvaluation findFirstOrThrow
+   */
+  export type InterviewEvaluationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewEvaluation to fetch.
+     */
+    where?: InterviewEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewEvaluations to fetch.
+     */
+    orderBy?: InterviewEvaluationOrderByWithRelationInput | InterviewEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewEvaluations.
+     */
+    cursor?: InterviewEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewEvaluations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewEvaluations.
+     */
+    distinct?: InterviewEvaluationScalarFieldEnum | InterviewEvaluationScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewEvaluation findMany
+   */
+  export type InterviewEvaluationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewEvaluations to fetch.
+     */
+    where?: InterviewEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewEvaluations to fetch.
+     */
+    orderBy?: InterviewEvaluationOrderByWithRelationInput | InterviewEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InterviewEvaluations.
+     */
+    cursor?: InterviewEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewEvaluations.
+     */
+    skip?: number
+    distinct?: InterviewEvaluationScalarFieldEnum | InterviewEvaluationScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewEvaluation create
+   */
+  export type InterviewEvaluationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InterviewEvaluation.
+     */
+    data: XOR<InterviewEvaluationCreateInput, InterviewEvaluationUncheckedCreateInput>
+  }
+
+  /**
+   * InterviewEvaluation createMany
+   */
+  export type InterviewEvaluationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InterviewEvaluations.
+     */
+    data: InterviewEvaluationCreateManyInput | InterviewEvaluationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InterviewEvaluation createManyAndReturn
+   */
+  export type InterviewEvaluationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * The data used to create many InterviewEvaluations.
+     */
+    data: InterviewEvaluationCreateManyInput | InterviewEvaluationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewEvaluation update
+   */
+  export type InterviewEvaluationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InterviewEvaluation.
+     */
+    data: XOR<InterviewEvaluationUpdateInput, InterviewEvaluationUncheckedUpdateInput>
+    /**
+     * Choose, which InterviewEvaluation to update.
+     */
+    where: InterviewEvaluationWhereUniqueInput
+  }
+
+  /**
+   * InterviewEvaluation updateMany
+   */
+  export type InterviewEvaluationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InterviewEvaluations.
+     */
+    data: XOR<InterviewEvaluationUpdateManyMutationInput, InterviewEvaluationUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewEvaluations to update
+     */
+    where?: InterviewEvaluationWhereInput
+    /**
+     * Limit how many InterviewEvaluations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewEvaluation updateManyAndReturn
+   */
+  export type InterviewEvaluationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * The data used to update InterviewEvaluations.
+     */
+    data: XOR<InterviewEvaluationUpdateManyMutationInput, InterviewEvaluationUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewEvaluations to update
+     */
+    where?: InterviewEvaluationWhereInput
+    /**
+     * Limit how many InterviewEvaluations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewEvaluation upsert
+   */
+  export type InterviewEvaluationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InterviewEvaluation to update in case it exists.
+     */
+    where: InterviewEvaluationWhereUniqueInput
+    /**
+     * In case the InterviewEvaluation found by the `where` argument doesn't exist, create a new InterviewEvaluation with this data.
+     */
+    create: XOR<InterviewEvaluationCreateInput, InterviewEvaluationUncheckedCreateInput>
+    /**
+     * In case the InterviewEvaluation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InterviewEvaluationUpdateInput, InterviewEvaluationUncheckedUpdateInput>
+  }
+
+  /**
+   * InterviewEvaluation delete
+   */
+  export type InterviewEvaluationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    /**
+     * Filter which InterviewEvaluation to delete.
+     */
+    where: InterviewEvaluationWhereUniqueInput
+  }
+
+  /**
+   * InterviewEvaluation deleteMany
+   */
+  export type InterviewEvaluationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewEvaluations to delete
+     */
+    where?: InterviewEvaluationWhereInput
+    /**
+     * Limit how many InterviewEvaluations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewEvaluation.user
+   */
+  export type InterviewEvaluation$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * InterviewEvaluation without action
+   */
+  export type InterviewEvaluationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model SharedAnalysis
    */
 
@@ -17705,6 +20568,8 @@ export namespace Prisma {
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     roast?: boolean | GeneratedRoastDefaultArgs<ExtArgs>
+    interviewEvaluations?: boolean | SharedAnalysis$interviewEvaluationsArgs<ExtArgs>
+    _count?: boolean | SharedAnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sharedAnalysis"]>
 
   export type SharedAnalysisSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -17745,6 +20610,8 @@ export namespace Prisma {
   export type SharedAnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     roast?: boolean | GeneratedRoastDefaultArgs<ExtArgs>
+    interviewEvaluations?: boolean | SharedAnalysis$interviewEvaluationsArgs<ExtArgs>
+    _count?: boolean | SharedAnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SharedAnalysisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -17760,6 +20627,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       roast: Prisma.$GeneratedRoastPayload<ExtArgs>
+      interviewEvaluations: Prisma.$InterviewEvaluationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18165,6 +21033,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     roast<T extends GeneratedRoastDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GeneratedRoastDefaultArgs<ExtArgs>>): Prisma__GeneratedRoastClient<$Result.GetResult<Prisma.$GeneratedRoastPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    interviewEvaluations<T extends SharedAnalysis$interviewEvaluationsArgs<ExtArgs> = {}>(args?: Subset<T, SharedAnalysis$interviewEvaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -18594,6 +21463,30 @@ export namespace Prisma {
      * Limit how many SharedAnalyses to delete.
      */
     limit?: number
+  }
+
+  /**
+   * SharedAnalysis.interviewEvaluations
+   */
+  export type SharedAnalysis$interviewEvaluationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewEvaluation
+     */
+    select?: InterviewEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewEvaluation
+     */
+    omit?: InterviewEvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewEvaluationInclude<ExtArgs> | null
+    where?: InterviewEvaluationWhereInput
+    orderBy?: InterviewEvaluationOrderByWithRelationInput | InterviewEvaluationOrderByWithRelationInput[]
+    cursor?: InterviewEvaluationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewEvaluationScalarFieldEnum | InterviewEvaluationScalarFieldEnum[]
   }
 
   /**
@@ -20984,6 +23877,7 @@ export namespace Prisma {
     generatedRoastId: 'generatedRoastId',
     generatedCoverLetterId: 'generatedCoverLetterId',
     generatedResumeId: 'generatedResumeId',
+    interviewPrepId: 'interviewPrepId',
     createdAt: 'createdAt',
     completedAt: 'completedAt'
   };
@@ -21041,7 +23935,6 @@ export namespace Prisma {
     id: 'id',
     contentHash: 'contentHash',
     originalText: 'originalText',
-    url: 'url',
     data: 'data',
     createdAt: 'createdAt'
   };
@@ -21118,6 +24011,36 @@ export namespace Prisma {
   };
 
   export type GeneratedResumeScalarFieldEnum = (typeof GeneratedResumeScalarFieldEnum)[keyof typeof GeneratedResumeScalarFieldEnum]
+
+
+  export const InterviewPrepScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    resumeId: 'resumeId',
+    extractedResumeId: 'extractedResumeId',
+    extractedJobId: 'extractedJobId',
+    contentHash: 'contentHash',
+    data: 'data',
+    difficulty: 'difficulty',
+    category: 'category',
+    createdAt: 'createdAt'
+  };
+
+  export type InterviewPrepScalarFieldEnum = (typeof InterviewPrepScalarFieldEnum)[keyof typeof InterviewPrepScalarFieldEnum]
+
+
+  export const InterviewEvaluationScalarFieldEnum: {
+    id: 'id',
+    analysisId: 'analysisId',
+    userId: 'userId',
+    evaluationType: 'evaluationType',
+    data: 'data',
+    questionsCount: 'questionsCount',
+    overallScore: 'overallScore',
+    createdAt: 'createdAt'
+  };
+
+  export type InterviewEvaluationScalarFieldEnum = (typeof InterviewEvaluationScalarFieldEnum)[keyof typeof InterviewEvaluationScalarFieldEnum]
 
 
   export const SharedAnalysisScalarFieldEnum: {
@@ -21414,6 +24337,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
+    interviewEvaluations?: InterviewEvaluationListRelationFilter
     sharedAnalyses?: SharedAnalysisListRelationFilter
     invoices?: InvoiceListRelationFilter
   }
@@ -21440,6 +24365,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastOrderByRelationAggregateInput
     generatedCoverLetters?: GeneratedCoverLetterOrderByRelationAggregateInput
     generatedResumes?: GeneratedResumeOrderByRelationAggregateInput
+    interviewPreps?: InterviewPrepOrderByRelationAggregateInput
+    interviewEvaluations?: InterviewEvaluationOrderByRelationAggregateInput
     sharedAnalyses?: SharedAnalysisOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
   }
@@ -21469,6 +24396,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
+    interviewEvaluations?: InterviewEvaluationListRelationFilter
     sharedAnalyses?: SharedAnalysisListRelationFilter
     invoices?: InvoiceListRelationFilter
   }, "id" | "email">
@@ -21594,6 +24523,7 @@ export namespace Prisma {
     generatedRoastId?: StringNullableFilter<"LlmCall"> | string | null
     generatedCoverLetterId?: StringNullableFilter<"LlmCall"> | string | null
     generatedResumeId?: StringNullableFilter<"LlmCall"> | string | null
+    interviewPrepId?: StringNullableFilter<"LlmCall"> | string | null
     createdAt?: DateTimeFilter<"LlmCall"> | Date | string
     completedAt?: DateTimeNullableFilter<"LlmCall"> | Date | string | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -21603,6 +24533,7 @@ export namespace Prisma {
     generatedRoast?: XOR<GeneratedRoastNullableScalarRelationFilter, GeneratedRoastWhereInput> | null
     generatedCoverLetter?: XOR<GeneratedCoverLetterNullableScalarRelationFilter, GeneratedCoverLetterWhereInput> | null
     generatedResume?: XOR<GeneratedResumeNullableScalarRelationFilter, GeneratedResumeWhereInput> | null
+    interviewPrep?: XOR<InterviewPrepNullableScalarRelationFilter, InterviewPrepWhereInput> | null
     messages?: LlmMessageListRelationFilter
   }
 
@@ -21625,6 +24556,7 @@ export namespace Prisma {
     generatedRoastId?: SortOrderInput | SortOrder
     generatedCoverLetterId?: SortOrderInput | SortOrder
     generatedResumeId?: SortOrderInput | SortOrder
+    interviewPrepId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
@@ -21634,6 +24566,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastOrderByWithRelationInput
     generatedCoverLetter?: GeneratedCoverLetterOrderByWithRelationInput
     generatedResume?: GeneratedResumeOrderByWithRelationInput
+    interviewPrep?: InterviewPrepOrderByWithRelationInput
     messages?: LlmMessageOrderByRelationAggregateInput
   }
 
@@ -21659,6 +24592,7 @@ export namespace Prisma {
     generatedRoastId?: StringNullableFilter<"LlmCall"> | string | null
     generatedCoverLetterId?: StringNullableFilter<"LlmCall"> | string | null
     generatedResumeId?: StringNullableFilter<"LlmCall"> | string | null
+    interviewPrepId?: StringNullableFilter<"LlmCall"> | string | null
     createdAt?: DateTimeFilter<"LlmCall"> | Date | string
     completedAt?: DateTimeNullableFilter<"LlmCall"> | Date | string | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -21668,6 +24602,7 @@ export namespace Prisma {
     generatedRoast?: XOR<GeneratedRoastNullableScalarRelationFilter, GeneratedRoastWhereInput> | null
     generatedCoverLetter?: XOR<GeneratedCoverLetterNullableScalarRelationFilter, GeneratedCoverLetterWhereInput> | null
     generatedResume?: XOR<GeneratedResumeNullableScalarRelationFilter, GeneratedResumeWhereInput> | null
+    interviewPrep?: XOR<InterviewPrepNullableScalarRelationFilter, InterviewPrepWhereInput> | null
     messages?: LlmMessageListRelationFilter
   }, "id">
 
@@ -21690,6 +24625,7 @@ export namespace Prisma {
     generatedRoastId?: SortOrderInput | SortOrder
     generatedCoverLetterId?: SortOrderInput | SortOrder
     generatedResumeId?: SortOrderInput | SortOrder
+    interviewPrepId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     _count?: LlmCallCountOrderByAggregateInput
@@ -21721,6 +24657,7 @@ export namespace Prisma {
     generatedRoastId?: StringNullableWithAggregatesFilter<"LlmCall"> | string | null
     generatedCoverLetterId?: StringNullableWithAggregatesFilter<"LlmCall"> | string | null
     generatedResumeId?: StringNullableWithAggregatesFilter<"LlmCall"> | string | null
+    interviewPrepId?: StringNullableWithAggregatesFilter<"LlmCall"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"LlmCall"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"LlmCall"> | Date | string | null
   }
@@ -21851,6 +24788,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
   }
 
   export type ResumeOrderByWithRelationInput = {
@@ -21868,6 +24806,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastOrderByRelationAggregateInput
     generatedCoverLetters?: GeneratedCoverLetterOrderByRelationAggregateInput
     generatedResumes?: GeneratedResumeOrderByRelationAggregateInput
+    interviewPreps?: InterviewPrepOrderByRelationAggregateInput
   }
 
   export type ResumeWhereUniqueInput = Prisma.AtLeast<{
@@ -21888,6 +24827,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
   }, "id" | "fileHash">
 
   export type ResumeOrderByWithAggregationInput = {
@@ -21933,6 +24873,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
   }
 
   export type ExtractedResumeOrderByWithRelationInput = {
@@ -21947,6 +24888,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastOrderByRelationAggregateInput
     generatedCoverLetters?: GeneratedCoverLetterOrderByRelationAggregateInput
     generatedResumes?: GeneratedResumeOrderByRelationAggregateInput
+    interviewPreps?: InterviewPrepOrderByRelationAggregateInput
   }
 
   export type ExtractedResumeWhereUniqueInput = Prisma.AtLeast<{
@@ -21964,6 +24906,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
   }, "id" | "contentHash">
 
   export type ExtractedResumeOrderByWithAggregationInput = {
@@ -21995,7 +24938,6 @@ export namespace Prisma {
     id?: StringFilter<"ExtractedJobDescription"> | string
     contentHash?: StringFilter<"ExtractedJobDescription"> | string
     originalText?: StringFilter<"ExtractedJobDescription"> | string
-    url?: StringNullableFilter<"ExtractedJobDescription"> | string | null
     data?: JsonFilter<"ExtractedJobDescription">
     createdAt?: DateTimeFilter<"ExtractedJobDescription"> | Date | string
     llmCalls?: LlmCallListRelationFilter
@@ -22003,13 +24945,13 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
   }
 
   export type ExtractedJobDescriptionOrderByWithRelationInput = {
     id?: SortOrder
     contentHash?: SortOrder
     originalText?: SortOrder
-    url?: SortOrderInput | SortOrder
     data?: SortOrder
     createdAt?: SortOrder
     llmCalls?: LlmCallOrderByRelationAggregateInput
@@ -22017,6 +24959,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastOrderByRelationAggregateInput
     generatedCoverLetters?: GeneratedCoverLetterOrderByRelationAggregateInput
     generatedResumes?: GeneratedResumeOrderByRelationAggregateInput
+    interviewPreps?: InterviewPrepOrderByRelationAggregateInput
   }
 
   export type ExtractedJobDescriptionWhereUniqueInput = Prisma.AtLeast<{
@@ -22026,7 +24969,6 @@ export namespace Prisma {
     OR?: ExtractedJobDescriptionWhereInput[]
     NOT?: ExtractedJobDescriptionWhereInput | ExtractedJobDescriptionWhereInput[]
     originalText?: StringFilter<"ExtractedJobDescription"> | string
-    url?: StringNullableFilter<"ExtractedJobDescription"> | string | null
     data?: JsonFilter<"ExtractedJobDescription">
     createdAt?: DateTimeFilter<"ExtractedJobDescription"> | Date | string
     llmCalls?: LlmCallListRelationFilter
@@ -22034,13 +24976,13 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastListRelationFilter
     generatedCoverLetters?: GeneratedCoverLetterListRelationFilter
     generatedResumes?: GeneratedResumeListRelationFilter
+    interviewPreps?: InterviewPrepListRelationFilter
   }, "id" | "contentHash">
 
   export type ExtractedJobDescriptionOrderByWithAggregationInput = {
     id?: SortOrder
     contentHash?: SortOrder
     originalText?: SortOrder
-    url?: SortOrderInput | SortOrder
     data?: SortOrder
     createdAt?: SortOrder
     _count?: ExtractedJobDescriptionCountOrderByAggregateInput
@@ -22055,7 +24997,6 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ExtractedJobDescription"> | string
     contentHash?: StringWithAggregatesFilter<"ExtractedJobDescription"> | string
     originalText?: StringWithAggregatesFilter<"ExtractedJobDescription"> | string
-    url?: StringNullableWithAggregatesFilter<"ExtractedJobDescription"> | string | null
     data?: JsonWithAggregatesFilter<"ExtractedJobDescription">
     createdAt?: DateTimeWithAggregatesFilter<"ExtractedJobDescription"> | Date | string
   }
@@ -22458,6 +25399,173 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"GeneratedResume"> | Date | string
   }
 
+  export type InterviewPrepWhereInput = {
+    AND?: InterviewPrepWhereInput | InterviewPrepWhereInput[]
+    OR?: InterviewPrepWhereInput[]
+    NOT?: InterviewPrepWhereInput | InterviewPrepWhereInput[]
+    id?: StringFilter<"InterviewPrep"> | string
+    userId?: StringNullableFilter<"InterviewPrep"> | string | null
+    resumeId?: StringNullableFilter<"InterviewPrep"> | string | null
+    extractedResumeId?: StringNullableFilter<"InterviewPrep"> | string | null
+    extractedJobId?: StringNullableFilter<"InterviewPrep"> | string | null
+    contentHash?: StringFilter<"InterviewPrep"> | string
+    data?: JsonFilter<"InterviewPrep">
+    difficulty?: StringFilter<"InterviewPrep"> | string
+    category?: StringFilter<"InterviewPrep"> | string
+    createdAt?: DateTimeFilter<"InterviewPrep"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    resume?: XOR<ResumeNullableScalarRelationFilter, ResumeWhereInput> | null
+    extractedResume?: XOR<ExtractedResumeNullableScalarRelationFilter, ExtractedResumeWhereInput> | null
+    extractedJob?: XOR<ExtractedJobDescriptionNullableScalarRelationFilter, ExtractedJobDescriptionWhereInput> | null
+    llmCalls?: LlmCallListRelationFilter
+  }
+
+  export type InterviewPrepOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    resumeId?: SortOrderInput | SortOrder
+    extractedResumeId?: SortOrderInput | SortOrder
+    extractedJobId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    data?: SortOrder
+    difficulty?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    resume?: ResumeOrderByWithRelationInput
+    extractedResume?: ExtractedResumeOrderByWithRelationInput
+    extractedJob?: ExtractedJobDescriptionOrderByWithRelationInput
+    llmCalls?: LlmCallOrderByRelationAggregateInput
+  }
+
+  export type InterviewPrepWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contentHash?: string
+    AND?: InterviewPrepWhereInput | InterviewPrepWhereInput[]
+    OR?: InterviewPrepWhereInput[]
+    NOT?: InterviewPrepWhereInput | InterviewPrepWhereInput[]
+    userId?: StringNullableFilter<"InterviewPrep"> | string | null
+    resumeId?: StringNullableFilter<"InterviewPrep"> | string | null
+    extractedResumeId?: StringNullableFilter<"InterviewPrep"> | string | null
+    extractedJobId?: StringNullableFilter<"InterviewPrep"> | string | null
+    data?: JsonFilter<"InterviewPrep">
+    difficulty?: StringFilter<"InterviewPrep"> | string
+    category?: StringFilter<"InterviewPrep"> | string
+    createdAt?: DateTimeFilter<"InterviewPrep"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    resume?: XOR<ResumeNullableScalarRelationFilter, ResumeWhereInput> | null
+    extractedResume?: XOR<ExtractedResumeNullableScalarRelationFilter, ExtractedResumeWhereInput> | null
+    extractedJob?: XOR<ExtractedJobDescriptionNullableScalarRelationFilter, ExtractedJobDescriptionWhereInput> | null
+    llmCalls?: LlmCallListRelationFilter
+  }, "id" | "contentHash">
+
+  export type InterviewPrepOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    resumeId?: SortOrderInput | SortOrder
+    extractedResumeId?: SortOrderInput | SortOrder
+    extractedJobId?: SortOrderInput | SortOrder
+    contentHash?: SortOrder
+    data?: SortOrder
+    difficulty?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    _count?: InterviewPrepCountOrderByAggregateInput
+    _max?: InterviewPrepMaxOrderByAggregateInput
+    _min?: InterviewPrepMinOrderByAggregateInput
+  }
+
+  export type InterviewPrepScalarWhereWithAggregatesInput = {
+    AND?: InterviewPrepScalarWhereWithAggregatesInput | InterviewPrepScalarWhereWithAggregatesInput[]
+    OR?: InterviewPrepScalarWhereWithAggregatesInput[]
+    NOT?: InterviewPrepScalarWhereWithAggregatesInput | InterviewPrepScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InterviewPrep"> | string
+    userId?: StringNullableWithAggregatesFilter<"InterviewPrep"> | string | null
+    resumeId?: StringNullableWithAggregatesFilter<"InterviewPrep"> | string | null
+    extractedResumeId?: StringNullableWithAggregatesFilter<"InterviewPrep"> | string | null
+    extractedJobId?: StringNullableWithAggregatesFilter<"InterviewPrep"> | string | null
+    contentHash?: StringWithAggregatesFilter<"InterviewPrep"> | string
+    data?: JsonWithAggregatesFilter<"InterviewPrep">
+    difficulty?: StringWithAggregatesFilter<"InterviewPrep"> | string
+    category?: StringWithAggregatesFilter<"InterviewPrep"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"InterviewPrep"> | Date | string
+  }
+
+  export type InterviewEvaluationWhereInput = {
+    AND?: InterviewEvaluationWhereInput | InterviewEvaluationWhereInput[]
+    OR?: InterviewEvaluationWhereInput[]
+    NOT?: InterviewEvaluationWhereInput | InterviewEvaluationWhereInput[]
+    id?: StringFilter<"InterviewEvaluation"> | string
+    analysisId?: StringFilter<"InterviewEvaluation"> | string
+    userId?: StringNullableFilter<"InterviewEvaluation"> | string | null
+    evaluationType?: StringFilter<"InterviewEvaluation"> | string
+    data?: JsonFilter<"InterviewEvaluation">
+    questionsCount?: IntFilter<"InterviewEvaluation"> | number
+    overallScore?: IntFilter<"InterviewEvaluation"> | number
+    createdAt?: DateTimeFilter<"InterviewEvaluation"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    analysis?: XOR<SharedAnalysisScalarRelationFilter, SharedAnalysisWhereInput>
+  }
+
+  export type InterviewEvaluationOrderByWithRelationInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    evaluationType?: SortOrder
+    data?: SortOrder
+    questionsCount?: SortOrder
+    overallScore?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    analysis?: SharedAnalysisOrderByWithRelationInput
+  }
+
+  export type InterviewEvaluationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: InterviewEvaluationWhereInput | InterviewEvaluationWhereInput[]
+    OR?: InterviewEvaluationWhereInput[]
+    NOT?: InterviewEvaluationWhereInput | InterviewEvaluationWhereInput[]
+    analysisId?: StringFilter<"InterviewEvaluation"> | string
+    userId?: StringNullableFilter<"InterviewEvaluation"> | string | null
+    evaluationType?: StringFilter<"InterviewEvaluation"> | string
+    data?: JsonFilter<"InterviewEvaluation">
+    questionsCount?: IntFilter<"InterviewEvaluation"> | number
+    overallScore?: IntFilter<"InterviewEvaluation"> | number
+    createdAt?: DateTimeFilter<"InterviewEvaluation"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    analysis?: XOR<SharedAnalysisScalarRelationFilter, SharedAnalysisWhereInput>
+  }, "id">
+
+  export type InterviewEvaluationOrderByWithAggregationInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    evaluationType?: SortOrder
+    data?: SortOrder
+    questionsCount?: SortOrder
+    overallScore?: SortOrder
+    createdAt?: SortOrder
+    _count?: InterviewEvaluationCountOrderByAggregateInput
+    _avg?: InterviewEvaluationAvgOrderByAggregateInput
+    _max?: InterviewEvaluationMaxOrderByAggregateInput
+    _min?: InterviewEvaluationMinOrderByAggregateInput
+    _sum?: InterviewEvaluationSumOrderByAggregateInput
+  }
+
+  export type InterviewEvaluationScalarWhereWithAggregatesInput = {
+    AND?: InterviewEvaluationScalarWhereWithAggregatesInput | InterviewEvaluationScalarWhereWithAggregatesInput[]
+    OR?: InterviewEvaluationScalarWhereWithAggregatesInput[]
+    NOT?: InterviewEvaluationScalarWhereWithAggregatesInput | InterviewEvaluationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InterviewEvaluation"> | string
+    analysisId?: StringWithAggregatesFilter<"InterviewEvaluation"> | string
+    userId?: StringNullableWithAggregatesFilter<"InterviewEvaluation"> | string | null
+    evaluationType?: StringWithAggregatesFilter<"InterviewEvaluation"> | string
+    data?: JsonWithAggregatesFilter<"InterviewEvaluation">
+    questionsCount?: IntWithAggregatesFilter<"InterviewEvaluation"> | number
+    overallScore?: IntWithAggregatesFilter<"InterviewEvaluation"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"InterviewEvaluation"> | Date | string
+  }
+
   export type SharedAnalysisWhereInput = {
     AND?: SharedAnalysisWhereInput | SharedAnalysisWhereInput[]
     OR?: SharedAnalysisWhereInput[]
@@ -22471,6 +25579,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SharedAnalysis"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     roast?: XOR<GeneratedRoastScalarRelationFilter, GeneratedRoastWhereInput>
+    interviewEvaluations?: InterviewEvaluationListRelationFilter
   }
 
   export type SharedAnalysisOrderByWithRelationInput = {
@@ -22483,6 +25592,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
     roast?: GeneratedRoastOrderByWithRelationInput
+    interviewEvaluations?: InterviewEvaluationOrderByRelationAggregateInput
   }
 
   export type SharedAnalysisWhereUniqueInput = Prisma.AtLeast<{
@@ -22498,6 +25608,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SharedAnalysis"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     roast?: XOR<GeneratedRoastScalarRelationFilter, GeneratedRoastWhereInput>
+    interviewEvaluations?: InterviewEvaluationListRelationFilter
   }, "id">
 
   export type SharedAnalysisOrderByWithAggregationInput = {
@@ -22744,6 +25855,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
@@ -22770,6 +25883,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -22796,6 +25911,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
@@ -22822,6 +25939,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -22956,6 +26075,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -22978,6 +26098,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -23004,6 +26125,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -23026,6 +26148,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -23050,6 +26173,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -23089,6 +26213,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -23232,6 +26357,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateInput = {
@@ -23248,6 +26374,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUpdateInput = {
@@ -23264,6 +26391,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateInput = {
@@ -23280,6 +26408,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeCreateManyInput = {
@@ -23325,6 +26454,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUncheckedCreateInput = {
@@ -23338,6 +26468,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUpdateInput = {
@@ -23351,6 +26482,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateInput = {
@@ -23364,6 +26496,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeCreateManyInput = {
@@ -23393,7 +26526,6 @@ export namespace Prisma {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallCreateNestedManyWithoutExtractedJobInput
@@ -23401,13 +26533,13 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionUncheckedCreateInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutExtractedJobInput
@@ -23415,13 +26547,13 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUpdateManyWithoutExtractedJobNestedInput
@@ -23429,13 +26561,13 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type ExtractedJobDescriptionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUncheckedUpdateManyWithoutExtractedJobNestedInput
@@ -23443,13 +26575,13 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type ExtractedJobDescriptionCreateManyInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
@@ -23458,7 +26590,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23467,7 +26598,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23866,6 +26996,172 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewPrepCreateInput = {
+    id?: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutInterviewPrepsInput
+    resume?: ResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutInterviewPrepsInput
+    llmCalls?: LlmCallCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutInterviewPrepsNestedInput
+    resume?: ResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedJob?: ExtractedJobDescriptionUpdateOneWithoutInterviewPrepsNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepCreateManyInput = {
+    id?: string
+    userId?: string | null
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+  }
+
+  export type InterviewPrepUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewPrepUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewEvaluationCreateInput = {
+    id?: string
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutInterviewEvaluationsInput
+    analysis: SharedAnalysisCreateNestedOneWithoutInterviewEvaluationsInput
+  }
+
+  export type InterviewEvaluationUncheckedCreateInput = {
+    id?: string
+    analysisId: string
+    userId?: string | null
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+  }
+
+  export type InterviewEvaluationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutInterviewEvaluationsNestedInput
+    analysis?: SharedAnalysisUpdateOneRequiredWithoutInterviewEvaluationsNestedInput
+  }
+
+  export type InterviewEvaluationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    analysisId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewEvaluationCreateManyInput = {
+    id?: string
+    analysisId: string
+    userId?: string | null
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+  }
+
+  export type InterviewEvaluationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewEvaluationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    analysisId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type SharedAnalysisCreateInput = {
     id: string
     settings?: NullableJsonNullValueInput | InputJsonValue
@@ -23874,6 +27170,7 @@ export namespace Prisma {
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutSharedAnalysesInput
     roast: GeneratedRoastCreateNestedOneWithoutSharedAnalysesInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutAnalysisInput
   }
 
   export type SharedAnalysisUncheckedCreateInput = {
@@ -23884,6 +27181,7 @@ export namespace Prisma {
     viewCount?: number
     expiresAt: Date | string
     createdAt?: Date | string
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type SharedAnalysisUpdateInput = {
@@ -23894,6 +27192,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutSharedAnalysesNestedInput
     roast?: GeneratedRoastUpdateOneRequiredWithoutSharedAnalysesNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutAnalysisNestedInput
   }
 
   export type SharedAnalysisUncheckedUpdateInput = {
@@ -23904,6 +27203,7 @@ export namespace Prisma {
     viewCount?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type SharedAnalysisCreateManyInput = {
@@ -24270,6 +27570,18 @@ export namespace Prisma {
     none?: GeneratedResumeWhereInput
   }
 
+  export type InterviewPrepListRelationFilter = {
+    every?: InterviewPrepWhereInput
+    some?: InterviewPrepWhereInput
+    none?: InterviewPrepWhereInput
+  }
+
+  export type InterviewEvaluationListRelationFilter = {
+    every?: InterviewEvaluationWhereInput
+    some?: InterviewEvaluationWhereInput
+    none?: InterviewEvaluationWhereInput
+  }
+
   export type SharedAnalysisListRelationFilter = {
     every?: SharedAnalysisWhereInput
     some?: SharedAnalysisWhereInput
@@ -24308,6 +27620,14 @@ export namespace Prisma {
   }
 
   export type GeneratedResumeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InterviewPrepOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InterviewEvaluationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -24566,6 +27886,11 @@ export namespace Prisma {
     isNot?: GeneratedResumeWhereInput | null
   }
 
+  export type InterviewPrepNullableScalarRelationFilter = {
+    is?: InterviewPrepWhereInput | null
+    isNot?: InterviewPrepWhereInput | null
+  }
+
   export type LlmMessageListRelationFilter = {
     every?: LlmMessageWhereInput
     some?: LlmMessageWhereInput
@@ -24595,6 +27920,7 @@ export namespace Prisma {
     generatedRoastId?: SortOrder
     generatedCoverLetterId?: SortOrder
     generatedResumeId?: SortOrder
+    interviewPrepId?: SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrder
   }
@@ -24626,6 +27952,7 @@ export namespace Prisma {
     generatedRoastId?: SortOrder
     generatedCoverLetterId?: SortOrder
     generatedResumeId?: SortOrder
+    interviewPrepId?: SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrder
   }
@@ -24649,6 +27976,7 @@ export namespace Prisma {
     generatedRoastId?: SortOrder
     generatedCoverLetterId?: SortOrder
     generatedResumeId?: SortOrder
+    interviewPrepId?: SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrder
   }
@@ -25027,7 +28355,6 @@ export namespace Prisma {
     id?: SortOrder
     contentHash?: SortOrder
     originalText?: SortOrder
-    url?: SortOrder
     data?: SortOrder
     createdAt?: SortOrder
   }
@@ -25036,7 +28363,6 @@ export namespace Prisma {
     id?: SortOrder
     contentHash?: SortOrder
     originalText?: SortOrder
-    url?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -25044,7 +28370,6 @@ export namespace Prisma {
     id?: SortOrder
     contentHash?: SortOrder
     originalText?: SortOrder
-    url?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -25228,6 +28553,89 @@ export namespace Prisma {
 
   export type GeneratedResumeSumOrderByAggregateInput = {
     atsScore?: SortOrder
+  }
+
+  export type InterviewPrepCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    resumeId?: SortOrder
+    extractedResumeId?: SortOrder
+    extractedJobId?: SortOrder
+    contentHash?: SortOrder
+    data?: SortOrder
+    difficulty?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InterviewPrepMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    resumeId?: SortOrder
+    extractedResumeId?: SortOrder
+    extractedJobId?: SortOrder
+    contentHash?: SortOrder
+    difficulty?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InterviewPrepMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    resumeId?: SortOrder
+    extractedResumeId?: SortOrder
+    extractedJobId?: SortOrder
+    contentHash?: SortOrder
+    difficulty?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SharedAnalysisScalarRelationFilter = {
+    is?: SharedAnalysisWhereInput
+    isNot?: SharedAnalysisWhereInput
+  }
+
+  export type InterviewEvaluationCountOrderByAggregateInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    userId?: SortOrder
+    evaluationType?: SortOrder
+    data?: SortOrder
+    questionsCount?: SortOrder
+    overallScore?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InterviewEvaluationAvgOrderByAggregateInput = {
+    questionsCount?: SortOrder
+    overallScore?: SortOrder
+  }
+
+  export type InterviewEvaluationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    userId?: SortOrder
+    evaluationType?: SortOrder
+    questionsCount?: SortOrder
+    overallScore?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InterviewEvaluationMinOrderByAggregateInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    userId?: SortOrder
+    evaluationType?: SortOrder
+    questionsCount?: SortOrder
+    overallScore?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type InterviewEvaluationSumOrderByAggregateInput = {
+    questionsCount?: SortOrder
+    overallScore?: SortOrder
   }
 
   export type GeneratedRoastScalarRelationFilter = {
@@ -25473,6 +28881,20 @@ export namespace Prisma {
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
   }
 
+  export type InterviewPrepCreateNestedManyWithoutUserInput = {
+    create?: XOR<InterviewPrepCreateWithoutUserInput, InterviewPrepUncheckedCreateWithoutUserInput> | InterviewPrepCreateWithoutUserInput[] | InterviewPrepUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutUserInput | InterviewPrepCreateOrConnectWithoutUserInput[]
+    createMany?: InterviewPrepCreateManyUserInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+  }
+
+  export type InterviewEvaluationCreateNestedManyWithoutUserInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutUserInput, InterviewEvaluationUncheckedCreateWithoutUserInput> | InterviewEvaluationCreateWithoutUserInput[] | InterviewEvaluationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutUserInput | InterviewEvaluationCreateOrConnectWithoutUserInput[]
+    createMany?: InterviewEvaluationCreateManyUserInputEnvelope
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+  }
+
   export type SharedAnalysisCreateNestedManyWithoutUserInput = {
     create?: XOR<SharedAnalysisCreateWithoutUserInput, SharedAnalysisUncheckedCreateWithoutUserInput> | SharedAnalysisCreateWithoutUserInput[] | SharedAnalysisUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SharedAnalysisCreateOrConnectWithoutUserInput | SharedAnalysisCreateOrConnectWithoutUserInput[]
@@ -25527,6 +28949,20 @@ export namespace Prisma {
     connectOrCreate?: GeneratedResumeCreateOrConnectWithoutUserInput | GeneratedResumeCreateOrConnectWithoutUserInput[]
     createMany?: GeneratedResumeCreateManyUserInputEnvelope
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
+  }
+
+  export type InterviewPrepUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<InterviewPrepCreateWithoutUserInput, InterviewPrepUncheckedCreateWithoutUserInput> | InterviewPrepCreateWithoutUserInput[] | InterviewPrepUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutUserInput | InterviewPrepCreateOrConnectWithoutUserInput[]
+    createMany?: InterviewPrepCreateManyUserInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+  }
+
+  export type InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutUserInput, InterviewEvaluationUncheckedCreateWithoutUserInput> | InterviewEvaluationCreateWithoutUserInput[] | InterviewEvaluationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutUserInput | InterviewEvaluationCreateOrConnectWithoutUserInput[]
+    createMany?: InterviewEvaluationCreateManyUserInputEnvelope
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
   }
 
   export type SharedAnalysisUncheckedCreateNestedManyWithoutUserInput = {
@@ -25655,6 +29091,34 @@ export namespace Prisma {
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
   }
 
+  export type InterviewPrepUpdateManyWithoutUserNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutUserInput, InterviewPrepUncheckedCreateWithoutUserInput> | InterviewPrepCreateWithoutUserInput[] | InterviewPrepUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutUserInput | InterviewPrepCreateOrConnectWithoutUserInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutUserInput | InterviewPrepUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: InterviewPrepCreateManyUserInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutUserInput | InterviewPrepUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutUserInput | InterviewPrepUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+  }
+
+  export type InterviewEvaluationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutUserInput, InterviewEvaluationUncheckedCreateWithoutUserInput> | InterviewEvaluationCreateWithoutUserInput[] | InterviewEvaluationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutUserInput | InterviewEvaluationCreateOrConnectWithoutUserInput[]
+    upsert?: InterviewEvaluationUpsertWithWhereUniqueWithoutUserInput | InterviewEvaluationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: InterviewEvaluationCreateManyUserInputEnvelope
+    set?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    disconnect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    delete?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    update?: InterviewEvaluationUpdateWithWhereUniqueWithoutUserInput | InterviewEvaluationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: InterviewEvaluationUpdateManyWithWhereWithoutUserInput | InterviewEvaluationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: InterviewEvaluationScalarWhereInput | InterviewEvaluationScalarWhereInput[]
+  }
+
   export type SharedAnalysisUpdateManyWithoutUserNestedInput = {
     create?: XOR<SharedAnalysisCreateWithoutUserInput, SharedAnalysisUncheckedCreateWithoutUserInput> | SharedAnalysisCreateWithoutUserInput[] | SharedAnalysisUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SharedAnalysisCreateOrConnectWithoutUserInput | SharedAnalysisCreateOrConnectWithoutUserInput[]
@@ -25767,6 +29231,34 @@ export namespace Prisma {
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
   }
 
+  export type InterviewPrepUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutUserInput, InterviewPrepUncheckedCreateWithoutUserInput> | InterviewPrepCreateWithoutUserInput[] | InterviewPrepUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutUserInput | InterviewPrepCreateOrConnectWithoutUserInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutUserInput | InterviewPrepUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: InterviewPrepCreateManyUserInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutUserInput | InterviewPrepUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutUserInput | InterviewPrepUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+  }
+
+  export type InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutUserInput, InterviewEvaluationUncheckedCreateWithoutUserInput> | InterviewEvaluationCreateWithoutUserInput[] | InterviewEvaluationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutUserInput | InterviewEvaluationCreateOrConnectWithoutUserInput[]
+    upsert?: InterviewEvaluationUpsertWithWhereUniqueWithoutUserInput | InterviewEvaluationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: InterviewEvaluationCreateManyUserInputEnvelope
+    set?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    disconnect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    delete?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    update?: InterviewEvaluationUpdateWithWhereUniqueWithoutUserInput | InterviewEvaluationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: InterviewEvaluationUpdateManyWithWhereWithoutUserInput | InterviewEvaluationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: InterviewEvaluationScalarWhereInput | InterviewEvaluationScalarWhereInput[]
+  }
+
   export type SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SharedAnalysisCreateWithoutUserInput, SharedAnalysisUncheckedCreateWithoutUserInput> | SharedAnalysisCreateWithoutUserInput[] | SharedAnalysisUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SharedAnalysisCreateOrConnectWithoutUserInput | SharedAnalysisCreateOrConnectWithoutUserInput[]
@@ -25849,6 +29341,12 @@ export namespace Prisma {
     create?: XOR<GeneratedResumeCreateWithoutLlmCallsInput, GeneratedResumeUncheckedCreateWithoutLlmCallsInput>
     connectOrCreate?: GeneratedResumeCreateOrConnectWithoutLlmCallsInput
     connect?: GeneratedResumeWhereUniqueInput
+  }
+
+  export type InterviewPrepCreateNestedOneWithoutLlmCallsInput = {
+    create?: XOR<InterviewPrepCreateWithoutLlmCallsInput, InterviewPrepUncheckedCreateWithoutLlmCallsInput>
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutLlmCallsInput
+    connect?: InterviewPrepWhereUniqueInput
   }
 
   export type LlmMessageCreateNestedManyWithoutLlmCallInput = {
@@ -25955,6 +29453,16 @@ export namespace Prisma {
     update?: XOR<XOR<GeneratedResumeUpdateToOneWithWhereWithoutLlmCallsInput, GeneratedResumeUpdateWithoutLlmCallsInput>, GeneratedResumeUncheckedUpdateWithoutLlmCallsInput>
   }
 
+  export type InterviewPrepUpdateOneWithoutLlmCallsNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutLlmCallsInput, InterviewPrepUncheckedCreateWithoutLlmCallsInput>
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutLlmCallsInput
+    upsert?: InterviewPrepUpsertWithoutLlmCallsInput
+    disconnect?: InterviewPrepWhereInput | boolean
+    delete?: InterviewPrepWhereInput | boolean
+    connect?: InterviewPrepWhereUniqueInput
+    update?: XOR<XOR<InterviewPrepUpdateToOneWithWhereWithoutLlmCallsInput, InterviewPrepUpdateWithoutLlmCallsInput>, InterviewPrepUncheckedUpdateWithoutLlmCallsInput>
+  }
+
   export type LlmMessageUpdateManyWithoutLlmCallNestedInput = {
     create?: XOR<LlmMessageCreateWithoutLlmCallInput, LlmMessageUncheckedCreateWithoutLlmCallInput> | LlmMessageCreateWithoutLlmCallInput[] | LlmMessageUncheckedCreateWithoutLlmCallInput[]
     connectOrCreate?: LlmMessageCreateOrConnectWithoutLlmCallInput | LlmMessageCreateOrConnectWithoutLlmCallInput[]
@@ -26054,6 +29562,13 @@ export namespace Prisma {
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
   }
 
+  export type InterviewPrepCreateNestedManyWithoutResumeInput = {
+    create?: XOR<InterviewPrepCreateWithoutResumeInput, InterviewPrepUncheckedCreateWithoutResumeInput> | InterviewPrepCreateWithoutResumeInput[] | InterviewPrepUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutResumeInput | InterviewPrepCreateOrConnectWithoutResumeInput[]
+    createMany?: InterviewPrepCreateManyResumeInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+  }
+
   export type LlmCallUncheckedCreateNestedManyWithoutResumeInput = {
     create?: XOR<LlmCallCreateWithoutResumeInput, LlmCallUncheckedCreateWithoutResumeInput> | LlmCallCreateWithoutResumeInput[] | LlmCallUncheckedCreateWithoutResumeInput[]
     connectOrCreate?: LlmCallCreateOrConnectWithoutResumeInput | LlmCallCreateOrConnectWithoutResumeInput[]
@@ -26087,6 +29602,13 @@ export namespace Prisma {
     connectOrCreate?: GeneratedResumeCreateOrConnectWithoutResumeInput | GeneratedResumeCreateOrConnectWithoutResumeInput[]
     createMany?: GeneratedResumeCreateManyResumeInputEnvelope
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
+  }
+
+  export type InterviewPrepUncheckedCreateNestedManyWithoutResumeInput = {
+    create?: XOR<InterviewPrepCreateWithoutResumeInput, InterviewPrepUncheckedCreateWithoutResumeInput> | InterviewPrepCreateWithoutResumeInput[] | InterviewPrepUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutResumeInput | InterviewPrepCreateOrConnectWithoutResumeInput[]
+    createMany?: InterviewPrepCreateManyResumeInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
   }
 
   export type ResumeUpdateimagesInput = {
@@ -26174,6 +29696,20 @@ export namespace Prisma {
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
   }
 
+  export type InterviewPrepUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutResumeInput, InterviewPrepUncheckedCreateWithoutResumeInput> | InterviewPrepCreateWithoutResumeInput[] | InterviewPrepUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutResumeInput | InterviewPrepCreateOrConnectWithoutResumeInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutResumeInput | InterviewPrepUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: InterviewPrepCreateManyResumeInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutResumeInput | InterviewPrepUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutResumeInput | InterviewPrepUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+  }
+
   export type LlmCallUncheckedUpdateManyWithoutResumeNestedInput = {
     create?: XOR<LlmCallCreateWithoutResumeInput, LlmCallUncheckedCreateWithoutResumeInput> | LlmCallCreateWithoutResumeInput[] | LlmCallUncheckedCreateWithoutResumeInput[]
     connectOrCreate?: LlmCallCreateOrConnectWithoutResumeInput | LlmCallCreateOrConnectWithoutResumeInput[]
@@ -26244,6 +29780,20 @@ export namespace Prisma {
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
   }
 
+  export type InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutResumeInput, InterviewPrepUncheckedCreateWithoutResumeInput> | InterviewPrepCreateWithoutResumeInput[] | InterviewPrepUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutResumeInput | InterviewPrepCreateOrConnectWithoutResumeInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutResumeInput | InterviewPrepUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: InterviewPrepCreateManyResumeInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutResumeInput | InterviewPrepUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutResumeInput | InterviewPrepUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+  }
+
   export type ResumeCreateNestedOneWithoutExtractedResumesInput = {
     create?: XOR<ResumeCreateWithoutExtractedResumesInput, ResumeUncheckedCreateWithoutExtractedResumesInput>
     connectOrCreate?: ResumeCreateOrConnectWithoutExtractedResumesInput
@@ -26285,6 +29835,13 @@ export namespace Prisma {
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
   }
 
+  export type InterviewPrepCreateNestedManyWithoutExtractedResumeInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedResumeInput, InterviewPrepUncheckedCreateWithoutExtractedResumeInput> | InterviewPrepCreateWithoutExtractedResumeInput[] | InterviewPrepUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedResumeInput | InterviewPrepCreateOrConnectWithoutExtractedResumeInput[]
+    createMany?: InterviewPrepCreateManyExtractedResumeInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+  }
+
   export type LlmCallUncheckedCreateNestedManyWithoutExtractedResumeInput = {
     create?: XOR<LlmCallCreateWithoutExtractedResumeInput, LlmCallUncheckedCreateWithoutExtractedResumeInput> | LlmCallCreateWithoutExtractedResumeInput[] | LlmCallUncheckedCreateWithoutExtractedResumeInput[]
     connectOrCreate?: LlmCallCreateOrConnectWithoutExtractedResumeInput | LlmCallCreateOrConnectWithoutExtractedResumeInput[]
@@ -26318,6 +29875,13 @@ export namespace Prisma {
     connectOrCreate?: GeneratedResumeCreateOrConnectWithoutExtractedResumeInput | GeneratedResumeCreateOrConnectWithoutExtractedResumeInput[]
     createMany?: GeneratedResumeCreateManyExtractedResumeInputEnvelope
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
+  }
+
+  export type InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedResumeInput, InterviewPrepUncheckedCreateWithoutExtractedResumeInput> | InterviewPrepCreateWithoutExtractedResumeInput[] | InterviewPrepUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedResumeInput | InterviewPrepCreateOrConnectWithoutExtractedResumeInput[]
+    createMany?: InterviewPrepCreateManyExtractedResumeInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
   }
 
   export type ResumeUpdateOneRequiredWithoutExtractedResumesNestedInput = {
@@ -26398,6 +29962,20 @@ export namespace Prisma {
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
   }
 
+  export type InterviewPrepUpdateManyWithoutExtractedResumeNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedResumeInput, InterviewPrepUncheckedCreateWithoutExtractedResumeInput> | InterviewPrepCreateWithoutExtractedResumeInput[] | InterviewPrepUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedResumeInput | InterviewPrepCreateOrConnectWithoutExtractedResumeInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutExtractedResumeInput | InterviewPrepUpsertWithWhereUniqueWithoutExtractedResumeInput[]
+    createMany?: InterviewPrepCreateManyExtractedResumeInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutExtractedResumeInput | InterviewPrepUpdateWithWhereUniqueWithoutExtractedResumeInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutExtractedResumeInput | InterviewPrepUpdateManyWithWhereWithoutExtractedResumeInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+  }
+
   export type LlmCallUncheckedUpdateManyWithoutExtractedResumeNestedInput = {
     create?: XOR<LlmCallCreateWithoutExtractedResumeInput, LlmCallUncheckedCreateWithoutExtractedResumeInput> | LlmCallCreateWithoutExtractedResumeInput[] | LlmCallUncheckedCreateWithoutExtractedResumeInput[]
     connectOrCreate?: LlmCallCreateOrConnectWithoutExtractedResumeInput | LlmCallCreateOrConnectWithoutExtractedResumeInput[]
@@ -26468,6 +30046,20 @@ export namespace Prisma {
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
   }
 
+  export type InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedResumeInput, InterviewPrepUncheckedCreateWithoutExtractedResumeInput> | InterviewPrepCreateWithoutExtractedResumeInput[] | InterviewPrepUncheckedCreateWithoutExtractedResumeInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedResumeInput | InterviewPrepCreateOrConnectWithoutExtractedResumeInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutExtractedResumeInput | InterviewPrepUpsertWithWhereUniqueWithoutExtractedResumeInput[]
+    createMany?: InterviewPrepCreateManyExtractedResumeInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutExtractedResumeInput | InterviewPrepUpdateWithWhereUniqueWithoutExtractedResumeInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutExtractedResumeInput | InterviewPrepUpdateManyWithWhereWithoutExtractedResumeInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+  }
+
   export type LlmCallCreateNestedManyWithoutExtractedJobInput = {
     create?: XOR<LlmCallCreateWithoutExtractedJobInput, LlmCallUncheckedCreateWithoutExtractedJobInput> | LlmCallCreateWithoutExtractedJobInput[] | LlmCallUncheckedCreateWithoutExtractedJobInput[]
     connectOrCreate?: LlmCallCreateOrConnectWithoutExtractedJobInput | LlmCallCreateOrConnectWithoutExtractedJobInput[]
@@ -26503,6 +30095,13 @@ export namespace Prisma {
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
   }
 
+  export type InterviewPrepCreateNestedManyWithoutExtractedJobInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedJobInput, InterviewPrepUncheckedCreateWithoutExtractedJobInput> | InterviewPrepCreateWithoutExtractedJobInput[] | InterviewPrepUncheckedCreateWithoutExtractedJobInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedJobInput | InterviewPrepCreateOrConnectWithoutExtractedJobInput[]
+    createMany?: InterviewPrepCreateManyExtractedJobInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+  }
+
   export type LlmCallUncheckedCreateNestedManyWithoutExtractedJobInput = {
     create?: XOR<LlmCallCreateWithoutExtractedJobInput, LlmCallUncheckedCreateWithoutExtractedJobInput> | LlmCallCreateWithoutExtractedJobInput[] | LlmCallUncheckedCreateWithoutExtractedJobInput[]
     connectOrCreate?: LlmCallCreateOrConnectWithoutExtractedJobInput | LlmCallCreateOrConnectWithoutExtractedJobInput[]
@@ -26536,6 +30135,13 @@ export namespace Prisma {
     connectOrCreate?: GeneratedResumeCreateOrConnectWithoutExtractedJobInput | GeneratedResumeCreateOrConnectWithoutExtractedJobInput[]
     createMany?: GeneratedResumeCreateManyExtractedJobInputEnvelope
     connect?: GeneratedResumeWhereUniqueInput | GeneratedResumeWhereUniqueInput[]
+  }
+
+  export type InterviewPrepUncheckedCreateNestedManyWithoutExtractedJobInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedJobInput, InterviewPrepUncheckedCreateWithoutExtractedJobInput> | InterviewPrepCreateWithoutExtractedJobInput[] | InterviewPrepUncheckedCreateWithoutExtractedJobInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedJobInput | InterviewPrepCreateOrConnectWithoutExtractedJobInput[]
+    createMany?: InterviewPrepCreateManyExtractedJobInputEnvelope
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
   }
 
   export type LlmCallUpdateManyWithoutExtractedJobNestedInput = {
@@ -26608,6 +30214,20 @@ export namespace Prisma {
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
   }
 
+  export type InterviewPrepUpdateManyWithoutExtractedJobNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedJobInput, InterviewPrepUncheckedCreateWithoutExtractedJobInput> | InterviewPrepCreateWithoutExtractedJobInput[] | InterviewPrepUncheckedCreateWithoutExtractedJobInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedJobInput | InterviewPrepCreateOrConnectWithoutExtractedJobInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutExtractedJobInput | InterviewPrepUpsertWithWhereUniqueWithoutExtractedJobInput[]
+    createMany?: InterviewPrepCreateManyExtractedJobInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutExtractedJobInput | InterviewPrepUpdateWithWhereUniqueWithoutExtractedJobInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutExtractedJobInput | InterviewPrepUpdateManyWithWhereWithoutExtractedJobInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+  }
+
   export type LlmCallUncheckedUpdateManyWithoutExtractedJobNestedInput = {
     create?: XOR<LlmCallCreateWithoutExtractedJobInput, LlmCallUncheckedCreateWithoutExtractedJobInput> | LlmCallCreateWithoutExtractedJobInput[] | LlmCallUncheckedCreateWithoutExtractedJobInput[]
     connectOrCreate?: LlmCallCreateOrConnectWithoutExtractedJobInput | LlmCallCreateOrConnectWithoutExtractedJobInput[]
@@ -26676,6 +30296,20 @@ export namespace Prisma {
     update?: GeneratedResumeUpdateWithWhereUniqueWithoutExtractedJobInput | GeneratedResumeUpdateWithWhereUniqueWithoutExtractedJobInput[]
     updateMany?: GeneratedResumeUpdateManyWithWhereWithoutExtractedJobInput | GeneratedResumeUpdateManyWithWhereWithoutExtractedJobInput[]
     deleteMany?: GeneratedResumeScalarWhereInput | GeneratedResumeScalarWhereInput[]
+  }
+
+  export type InterviewPrepUncheckedUpdateManyWithoutExtractedJobNestedInput = {
+    create?: XOR<InterviewPrepCreateWithoutExtractedJobInput, InterviewPrepUncheckedCreateWithoutExtractedJobInput> | InterviewPrepCreateWithoutExtractedJobInput[] | InterviewPrepUncheckedCreateWithoutExtractedJobInput[]
+    connectOrCreate?: InterviewPrepCreateOrConnectWithoutExtractedJobInput | InterviewPrepCreateOrConnectWithoutExtractedJobInput[]
+    upsert?: InterviewPrepUpsertWithWhereUniqueWithoutExtractedJobInput | InterviewPrepUpsertWithWhereUniqueWithoutExtractedJobInput[]
+    createMany?: InterviewPrepCreateManyExtractedJobInputEnvelope
+    set?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    disconnect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    delete?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    connect?: InterviewPrepWhereUniqueInput | InterviewPrepWhereUniqueInput[]
+    update?: InterviewPrepUpdateWithWhereUniqueWithoutExtractedJobInput | InterviewPrepUpdateWithWhereUniqueWithoutExtractedJobInput[]
+    updateMany?: InterviewPrepUpdateManyWithWhereWithoutExtractedJobInput | InterviewPrepUpdateManyWithWhereWithoutExtractedJobInput[]
+    deleteMany?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
   }
 
   export type ExtractedResumeCreateNestedOneWithoutSummarizedResumesInput = {
@@ -27075,6 +30709,142 @@ export namespace Prisma {
     deleteMany?: LlmCallScalarWhereInput | LlmCallScalarWhereInput[]
   }
 
+  export type UserCreateNestedOneWithoutInterviewPrepsInput = {
+    create?: XOR<UserCreateWithoutInterviewPrepsInput, UserUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInterviewPrepsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ResumeCreateNestedOneWithoutInterviewPrepsInput = {
+    create?: XOR<ResumeCreateWithoutInterviewPrepsInput, ResumeUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: ResumeCreateOrConnectWithoutInterviewPrepsInput
+    connect?: ResumeWhereUniqueInput
+  }
+
+  export type ExtractedResumeCreateNestedOneWithoutInterviewPrepsInput = {
+    create?: XOR<ExtractedResumeCreateWithoutInterviewPrepsInput, ExtractedResumeUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutInterviewPrepsInput
+    connect?: ExtractedResumeWhereUniqueInput
+  }
+
+  export type ExtractedJobDescriptionCreateNestedOneWithoutInterviewPrepsInput = {
+    create?: XOR<ExtractedJobDescriptionCreateWithoutInterviewPrepsInput, ExtractedJobDescriptionUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: ExtractedJobDescriptionCreateOrConnectWithoutInterviewPrepsInput
+    connect?: ExtractedJobDescriptionWhereUniqueInput
+  }
+
+  export type LlmCallCreateNestedManyWithoutInterviewPrepInput = {
+    create?: XOR<LlmCallCreateWithoutInterviewPrepInput, LlmCallUncheckedCreateWithoutInterviewPrepInput> | LlmCallCreateWithoutInterviewPrepInput[] | LlmCallUncheckedCreateWithoutInterviewPrepInput[]
+    connectOrCreate?: LlmCallCreateOrConnectWithoutInterviewPrepInput | LlmCallCreateOrConnectWithoutInterviewPrepInput[]
+    createMany?: LlmCallCreateManyInterviewPrepInputEnvelope
+    connect?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+  }
+
+  export type LlmCallUncheckedCreateNestedManyWithoutInterviewPrepInput = {
+    create?: XOR<LlmCallCreateWithoutInterviewPrepInput, LlmCallUncheckedCreateWithoutInterviewPrepInput> | LlmCallCreateWithoutInterviewPrepInput[] | LlmCallUncheckedCreateWithoutInterviewPrepInput[]
+    connectOrCreate?: LlmCallCreateOrConnectWithoutInterviewPrepInput | LlmCallCreateOrConnectWithoutInterviewPrepInput[]
+    createMany?: LlmCallCreateManyInterviewPrepInputEnvelope
+    connect?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneWithoutInterviewPrepsNestedInput = {
+    create?: XOR<UserCreateWithoutInterviewPrepsInput, UserUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInterviewPrepsInput
+    upsert?: UserUpsertWithoutInterviewPrepsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInterviewPrepsInput, UserUpdateWithoutInterviewPrepsInput>, UserUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type ResumeUpdateOneWithoutInterviewPrepsNestedInput = {
+    create?: XOR<ResumeCreateWithoutInterviewPrepsInput, ResumeUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: ResumeCreateOrConnectWithoutInterviewPrepsInput
+    upsert?: ResumeUpsertWithoutInterviewPrepsInput
+    disconnect?: ResumeWhereInput | boolean
+    delete?: ResumeWhereInput | boolean
+    connect?: ResumeWhereUniqueInput
+    update?: XOR<XOR<ResumeUpdateToOneWithWhereWithoutInterviewPrepsInput, ResumeUpdateWithoutInterviewPrepsInput>, ResumeUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type ExtractedResumeUpdateOneWithoutInterviewPrepsNestedInput = {
+    create?: XOR<ExtractedResumeCreateWithoutInterviewPrepsInput, ExtractedResumeUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: ExtractedResumeCreateOrConnectWithoutInterviewPrepsInput
+    upsert?: ExtractedResumeUpsertWithoutInterviewPrepsInput
+    disconnect?: ExtractedResumeWhereInput | boolean
+    delete?: ExtractedResumeWhereInput | boolean
+    connect?: ExtractedResumeWhereUniqueInput
+    update?: XOR<XOR<ExtractedResumeUpdateToOneWithWhereWithoutInterviewPrepsInput, ExtractedResumeUpdateWithoutInterviewPrepsInput>, ExtractedResumeUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type ExtractedJobDescriptionUpdateOneWithoutInterviewPrepsNestedInput = {
+    create?: XOR<ExtractedJobDescriptionCreateWithoutInterviewPrepsInput, ExtractedJobDescriptionUncheckedCreateWithoutInterviewPrepsInput>
+    connectOrCreate?: ExtractedJobDescriptionCreateOrConnectWithoutInterviewPrepsInput
+    upsert?: ExtractedJobDescriptionUpsertWithoutInterviewPrepsInput
+    disconnect?: ExtractedJobDescriptionWhereInput | boolean
+    delete?: ExtractedJobDescriptionWhereInput | boolean
+    connect?: ExtractedJobDescriptionWhereUniqueInput
+    update?: XOR<XOR<ExtractedJobDescriptionUpdateToOneWithWhereWithoutInterviewPrepsInput, ExtractedJobDescriptionUpdateWithoutInterviewPrepsInput>, ExtractedJobDescriptionUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type LlmCallUpdateManyWithoutInterviewPrepNestedInput = {
+    create?: XOR<LlmCallCreateWithoutInterviewPrepInput, LlmCallUncheckedCreateWithoutInterviewPrepInput> | LlmCallCreateWithoutInterviewPrepInput[] | LlmCallUncheckedCreateWithoutInterviewPrepInput[]
+    connectOrCreate?: LlmCallCreateOrConnectWithoutInterviewPrepInput | LlmCallCreateOrConnectWithoutInterviewPrepInput[]
+    upsert?: LlmCallUpsertWithWhereUniqueWithoutInterviewPrepInput | LlmCallUpsertWithWhereUniqueWithoutInterviewPrepInput[]
+    createMany?: LlmCallCreateManyInterviewPrepInputEnvelope
+    set?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    disconnect?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    delete?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    connect?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    update?: LlmCallUpdateWithWhereUniqueWithoutInterviewPrepInput | LlmCallUpdateWithWhereUniqueWithoutInterviewPrepInput[]
+    updateMany?: LlmCallUpdateManyWithWhereWithoutInterviewPrepInput | LlmCallUpdateManyWithWhereWithoutInterviewPrepInput[]
+    deleteMany?: LlmCallScalarWhereInput | LlmCallScalarWhereInput[]
+  }
+
+  export type LlmCallUncheckedUpdateManyWithoutInterviewPrepNestedInput = {
+    create?: XOR<LlmCallCreateWithoutInterviewPrepInput, LlmCallUncheckedCreateWithoutInterviewPrepInput> | LlmCallCreateWithoutInterviewPrepInput[] | LlmCallUncheckedCreateWithoutInterviewPrepInput[]
+    connectOrCreate?: LlmCallCreateOrConnectWithoutInterviewPrepInput | LlmCallCreateOrConnectWithoutInterviewPrepInput[]
+    upsert?: LlmCallUpsertWithWhereUniqueWithoutInterviewPrepInput | LlmCallUpsertWithWhereUniqueWithoutInterviewPrepInput[]
+    createMany?: LlmCallCreateManyInterviewPrepInputEnvelope
+    set?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    disconnect?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    delete?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    connect?: LlmCallWhereUniqueInput | LlmCallWhereUniqueInput[]
+    update?: LlmCallUpdateWithWhereUniqueWithoutInterviewPrepInput | LlmCallUpdateWithWhereUniqueWithoutInterviewPrepInput[]
+    updateMany?: LlmCallUpdateManyWithWhereWithoutInterviewPrepInput | LlmCallUpdateManyWithWhereWithoutInterviewPrepInput[]
+    deleteMany?: LlmCallScalarWhereInput | LlmCallScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutInterviewEvaluationsInput = {
+    create?: XOR<UserCreateWithoutInterviewEvaluationsInput, UserUncheckedCreateWithoutInterviewEvaluationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInterviewEvaluationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SharedAnalysisCreateNestedOneWithoutInterviewEvaluationsInput = {
+    create?: XOR<SharedAnalysisCreateWithoutInterviewEvaluationsInput, SharedAnalysisUncheckedCreateWithoutInterviewEvaluationsInput>
+    connectOrCreate?: SharedAnalysisCreateOrConnectWithoutInterviewEvaluationsInput
+    connect?: SharedAnalysisWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutInterviewEvaluationsNestedInput = {
+    create?: XOR<UserCreateWithoutInterviewEvaluationsInput, UserUncheckedCreateWithoutInterviewEvaluationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInterviewEvaluationsInput
+    upsert?: UserUpsertWithoutInterviewEvaluationsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInterviewEvaluationsInput, UserUpdateWithoutInterviewEvaluationsInput>, UserUncheckedUpdateWithoutInterviewEvaluationsInput>
+  }
+
+  export type SharedAnalysisUpdateOneRequiredWithoutInterviewEvaluationsNestedInput = {
+    create?: XOR<SharedAnalysisCreateWithoutInterviewEvaluationsInput, SharedAnalysisUncheckedCreateWithoutInterviewEvaluationsInput>
+    connectOrCreate?: SharedAnalysisCreateOrConnectWithoutInterviewEvaluationsInput
+    upsert?: SharedAnalysisUpsertWithoutInterviewEvaluationsInput
+    connect?: SharedAnalysisWhereUniqueInput
+    update?: XOR<XOR<SharedAnalysisUpdateToOneWithWhereWithoutInterviewEvaluationsInput, SharedAnalysisUpdateWithoutInterviewEvaluationsInput>, SharedAnalysisUncheckedUpdateWithoutInterviewEvaluationsInput>
+  }
+
   export type UserCreateNestedOneWithoutSharedAnalysesInput = {
     create?: XOR<UserCreateWithoutSharedAnalysesInput, UserUncheckedCreateWithoutSharedAnalysesInput>
     connectOrCreate?: UserCreateOrConnectWithoutSharedAnalysesInput
@@ -27085,6 +30855,20 @@ export namespace Prisma {
     create?: XOR<GeneratedRoastCreateWithoutSharedAnalysesInput, GeneratedRoastUncheckedCreateWithoutSharedAnalysesInput>
     connectOrCreate?: GeneratedRoastCreateOrConnectWithoutSharedAnalysesInput
     connect?: GeneratedRoastWhereUniqueInput
+  }
+
+  export type InterviewEvaluationCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutAnalysisInput, InterviewEvaluationUncheckedCreateWithoutAnalysisInput> | InterviewEvaluationCreateWithoutAnalysisInput[] | InterviewEvaluationUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutAnalysisInput | InterviewEvaluationCreateOrConnectWithoutAnalysisInput[]
+    createMany?: InterviewEvaluationCreateManyAnalysisInputEnvelope
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+  }
+
+  export type InterviewEvaluationUncheckedCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutAnalysisInput, InterviewEvaluationUncheckedCreateWithoutAnalysisInput> | InterviewEvaluationCreateWithoutAnalysisInput[] | InterviewEvaluationUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutAnalysisInput | InterviewEvaluationCreateOrConnectWithoutAnalysisInput[]
+    createMany?: InterviewEvaluationCreateManyAnalysisInputEnvelope
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutSharedAnalysesNestedInput = {
@@ -27101,6 +30885,34 @@ export namespace Prisma {
     upsert?: GeneratedRoastUpsertWithoutSharedAnalysesInput
     connect?: GeneratedRoastWhereUniqueInput
     update?: XOR<XOR<GeneratedRoastUpdateToOneWithWhereWithoutSharedAnalysesInput, GeneratedRoastUpdateWithoutSharedAnalysesInput>, GeneratedRoastUncheckedUpdateWithoutSharedAnalysesInput>
+  }
+
+  export type InterviewEvaluationUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutAnalysisInput, InterviewEvaluationUncheckedCreateWithoutAnalysisInput> | InterviewEvaluationCreateWithoutAnalysisInput[] | InterviewEvaluationUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutAnalysisInput | InterviewEvaluationCreateOrConnectWithoutAnalysisInput[]
+    upsert?: InterviewEvaluationUpsertWithWhereUniqueWithoutAnalysisInput | InterviewEvaluationUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: InterviewEvaluationCreateManyAnalysisInputEnvelope
+    set?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    disconnect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    delete?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    update?: InterviewEvaluationUpdateWithWhereUniqueWithoutAnalysisInput | InterviewEvaluationUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: InterviewEvaluationUpdateManyWithWhereWithoutAnalysisInput | InterviewEvaluationUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: InterviewEvaluationScalarWhereInput | InterviewEvaluationScalarWhereInput[]
+  }
+
+  export type InterviewEvaluationUncheckedUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<InterviewEvaluationCreateWithoutAnalysisInput, InterviewEvaluationUncheckedCreateWithoutAnalysisInput> | InterviewEvaluationCreateWithoutAnalysisInput[] | InterviewEvaluationUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutAnalysisInput | InterviewEvaluationCreateOrConnectWithoutAnalysisInput[]
+    upsert?: InterviewEvaluationUpsertWithWhereUniqueWithoutAnalysisInput | InterviewEvaluationUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: InterviewEvaluationCreateManyAnalysisInputEnvelope
+    set?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    disconnect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    delete?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    connect?: InterviewEvaluationWhereUniqueInput | InterviewEvaluationWhereUniqueInput[]
+    update?: InterviewEvaluationUpdateWithWhereUniqueWithoutAnalysisInput | InterviewEvaluationUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: InterviewEvaluationUpdateManyWithWhereWithoutAnalysisInput | InterviewEvaluationUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: InterviewEvaluationScalarWhereInput | InterviewEvaluationScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutInvoicesInput = {
@@ -27570,6 +31382,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutUserInput = {
@@ -27585,6 +31398,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutUserInput = {
@@ -27617,6 +31431,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -27638,6 +31453,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -27765,6 +31581,72 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InterviewPrepCreateWithoutUserInput = {
+    id?: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    resume?: ResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutInterviewPrepsInput
+    llmCalls?: LlmCallCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepUncheckedCreateWithoutUserInput = {
+    id?: string
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepCreateOrConnectWithoutUserInput = {
+    where: InterviewPrepWhereUniqueInput
+    create: XOR<InterviewPrepCreateWithoutUserInput, InterviewPrepUncheckedCreateWithoutUserInput>
+  }
+
+  export type InterviewPrepCreateManyUserInputEnvelope = {
+    data: InterviewPrepCreateManyUserInput | InterviewPrepCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InterviewEvaluationCreateWithoutUserInput = {
+    id?: string
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+    analysis: SharedAnalysisCreateNestedOneWithoutInterviewEvaluationsInput
+  }
+
+  export type InterviewEvaluationUncheckedCreateWithoutUserInput = {
+    id?: string
+    analysisId: string
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+  }
+
+  export type InterviewEvaluationCreateOrConnectWithoutUserInput = {
+    where: InterviewEvaluationWhereUniqueInput
+    create: XOR<InterviewEvaluationCreateWithoutUserInput, InterviewEvaluationUncheckedCreateWithoutUserInput>
+  }
+
+  export type InterviewEvaluationCreateManyUserInputEnvelope = {
+    data: InterviewEvaluationCreateManyUserInput | InterviewEvaluationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SharedAnalysisCreateWithoutUserInput = {
     id: string
     settings?: NullableJsonNullValueInput | InputJsonValue
@@ -27772,6 +31654,7 @@ export namespace Prisma {
     expiresAt: Date | string
     createdAt?: Date | string
     roast: GeneratedRoastCreateNestedOneWithoutSharedAnalysesInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutAnalysisInput
   }
 
   export type SharedAnalysisUncheckedCreateWithoutUserInput = {
@@ -27781,6 +31664,7 @@ export namespace Prisma {
     viewCount?: number
     expiresAt: Date | string
     createdAt?: Date | string
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type SharedAnalysisCreateOrConnectWithoutUserInput = {
@@ -27926,6 +31810,7 @@ export namespace Prisma {
     generatedRoastId?: StringNullableFilter<"LlmCall"> | string | null
     generatedCoverLetterId?: StringNullableFilter<"LlmCall"> | string | null
     generatedResumeId?: StringNullableFilter<"LlmCall"> | string | null
+    interviewPrepId?: StringNullableFilter<"LlmCall"> | string | null
     createdAt?: DateTimeFilter<"LlmCall"> | Date | string
     completedAt?: DateTimeNullableFilter<"LlmCall"> | Date | string | null
   }
@@ -28027,6 +31912,68 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"GeneratedResume"> | Date | string
   }
 
+  export type InterviewPrepUpsertWithWhereUniqueWithoutUserInput = {
+    where: InterviewPrepWhereUniqueInput
+    update: XOR<InterviewPrepUpdateWithoutUserInput, InterviewPrepUncheckedUpdateWithoutUserInput>
+    create: XOR<InterviewPrepCreateWithoutUserInput, InterviewPrepUncheckedCreateWithoutUserInput>
+  }
+
+  export type InterviewPrepUpdateWithWhereUniqueWithoutUserInput = {
+    where: InterviewPrepWhereUniqueInput
+    data: XOR<InterviewPrepUpdateWithoutUserInput, InterviewPrepUncheckedUpdateWithoutUserInput>
+  }
+
+  export type InterviewPrepUpdateManyWithWhereWithoutUserInput = {
+    where: InterviewPrepScalarWhereInput
+    data: XOR<InterviewPrepUpdateManyMutationInput, InterviewPrepUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type InterviewPrepScalarWhereInput = {
+    AND?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+    OR?: InterviewPrepScalarWhereInput[]
+    NOT?: InterviewPrepScalarWhereInput | InterviewPrepScalarWhereInput[]
+    id?: StringFilter<"InterviewPrep"> | string
+    userId?: StringNullableFilter<"InterviewPrep"> | string | null
+    resumeId?: StringNullableFilter<"InterviewPrep"> | string | null
+    extractedResumeId?: StringNullableFilter<"InterviewPrep"> | string | null
+    extractedJobId?: StringNullableFilter<"InterviewPrep"> | string | null
+    contentHash?: StringFilter<"InterviewPrep"> | string
+    data?: JsonFilter<"InterviewPrep">
+    difficulty?: StringFilter<"InterviewPrep"> | string
+    category?: StringFilter<"InterviewPrep"> | string
+    createdAt?: DateTimeFilter<"InterviewPrep"> | Date | string
+  }
+
+  export type InterviewEvaluationUpsertWithWhereUniqueWithoutUserInput = {
+    where: InterviewEvaluationWhereUniqueInput
+    update: XOR<InterviewEvaluationUpdateWithoutUserInput, InterviewEvaluationUncheckedUpdateWithoutUserInput>
+    create: XOR<InterviewEvaluationCreateWithoutUserInput, InterviewEvaluationUncheckedCreateWithoutUserInput>
+  }
+
+  export type InterviewEvaluationUpdateWithWhereUniqueWithoutUserInput = {
+    where: InterviewEvaluationWhereUniqueInput
+    data: XOR<InterviewEvaluationUpdateWithoutUserInput, InterviewEvaluationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type InterviewEvaluationUpdateManyWithWhereWithoutUserInput = {
+    where: InterviewEvaluationScalarWhereInput
+    data: XOR<InterviewEvaluationUpdateManyMutationInput, InterviewEvaluationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type InterviewEvaluationScalarWhereInput = {
+    AND?: InterviewEvaluationScalarWhereInput | InterviewEvaluationScalarWhereInput[]
+    OR?: InterviewEvaluationScalarWhereInput[]
+    NOT?: InterviewEvaluationScalarWhereInput | InterviewEvaluationScalarWhereInput[]
+    id?: StringFilter<"InterviewEvaluation"> | string
+    analysisId?: StringFilter<"InterviewEvaluation"> | string
+    userId?: StringNullableFilter<"InterviewEvaluation"> | string | null
+    evaluationType?: StringFilter<"InterviewEvaluation"> | string
+    data?: JsonFilter<"InterviewEvaluation">
+    questionsCount?: IntFilter<"InterviewEvaluation"> | number
+    overallScore?: IntFilter<"InterviewEvaluation"> | number
+    createdAt?: DateTimeFilter<"InterviewEvaluation"> | Date | string
+  }
+
   export type SharedAnalysisUpsertWithWhereUniqueWithoutUserInput = {
     where: SharedAnalysisWhereUniqueInput
     update: XOR<SharedAnalysisUpdateWithoutUserInput, SharedAnalysisUncheckedUpdateWithoutUserInput>
@@ -28111,6 +32058,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
@@ -28136,6 +32085,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -28177,6 +32128,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
@@ -28202,6 +32155,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -28227,6 +32182,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
@@ -28252,6 +32209,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -28274,6 +32233,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutLlmCallsInput = {
@@ -28289,6 +32249,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutLlmCallsInput = {
@@ -28306,6 +32267,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUncheckedCreateWithoutLlmCallsInput = {
@@ -28318,6 +32280,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeCreateOrConnectWithoutLlmCallsInput = {
@@ -28329,26 +32292,26 @@ export namespace Prisma {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     summarizedJobDescriptions?: SummarizedJobDescriptionCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionUncheckedCreateWithoutLlmCallsInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionCreateOrConnectWithoutLlmCallsInput = {
@@ -28453,6 +32416,37 @@ export namespace Prisma {
     create: XOR<GeneratedResumeCreateWithoutLlmCallsInput, GeneratedResumeUncheckedCreateWithoutLlmCallsInput>
   }
 
+  export type InterviewPrepCreateWithoutLlmCallsInput = {
+    id?: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutInterviewPrepsInput
+    resume?: ResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutInterviewPrepsInput
+  }
+
+  export type InterviewPrepUncheckedCreateWithoutLlmCallsInput = {
+    id?: string
+    userId?: string | null
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+  }
+
+  export type InterviewPrepCreateOrConnectWithoutLlmCallsInput = {
+    where: InterviewPrepWhereUniqueInput
+    create: XOR<InterviewPrepCreateWithoutLlmCallsInput, InterviewPrepUncheckedCreateWithoutLlmCallsInput>
+  }
+
   export type LlmMessageCreateWithoutLlmCallInput = {
     id?: string
     role: $Enums.MessageRole
@@ -28529,6 +32523,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
@@ -28554,6 +32550,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -28582,6 +32580,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutLlmCallsInput = {
@@ -28597,6 +32596,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ExtractedResumeUpsertWithoutLlmCallsInput = {
@@ -28620,6 +32620,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateWithoutLlmCallsInput = {
@@ -28632,6 +32633,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedJobDescriptionUpsertWithoutLlmCallsInput = {
@@ -28649,26 +32651,26 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     summarizedJobDescriptions?: SummarizedJobDescriptionUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type ExtractedJobDescriptionUncheckedUpdateWithoutLlmCallsInput = {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type GeneratedRoastUpsertWithoutLlmCallsInput = {
@@ -28786,6 +32788,43 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewPrepUpsertWithoutLlmCallsInput = {
+    update: XOR<InterviewPrepUpdateWithoutLlmCallsInput, InterviewPrepUncheckedUpdateWithoutLlmCallsInput>
+    create: XOR<InterviewPrepCreateWithoutLlmCallsInput, InterviewPrepUncheckedCreateWithoutLlmCallsInput>
+    where?: InterviewPrepWhereInput
+  }
+
+  export type InterviewPrepUpdateToOneWithWhereWithoutLlmCallsInput = {
+    where?: InterviewPrepWhereInput
+    data: XOR<InterviewPrepUpdateWithoutLlmCallsInput, InterviewPrepUncheckedUpdateWithoutLlmCallsInput>
+  }
+
+  export type InterviewPrepUpdateWithoutLlmCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutInterviewPrepsNestedInput
+    resume?: ResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedJob?: ExtractedJobDescriptionUpdateOneWithoutInterviewPrepsNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateWithoutLlmCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LlmMessageUpsertWithWhereUniqueWithoutLlmCallInput = {
     where: LlmMessageWhereUniqueInput
     update: XOR<LlmMessageUpdateWithoutLlmCallInput, LlmMessageUncheckedUpdateWithoutLlmCallInput>
@@ -28844,6 +32883,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
   }
 
   export type LlmCallUncheckedCreateWithoutMessagesInput = {
@@ -28865,6 +32905,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -28906,6 +32947,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
   }
 
   export type LlmCallUncheckedUpdateWithoutMessagesInput = {
@@ -28927,6 +32969,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -28952,6 +32995,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
@@ -28977,6 +33022,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -29006,6 +33053,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -29027,6 +33075,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -29052,6 +33101,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUncheckedCreateWithoutResumeInput = {
@@ -29064,6 +33114,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeCreateOrConnectWithoutResumeInput = {
@@ -29188,6 +33239,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InterviewPrepCreateWithoutResumeInput = {
+    id?: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutInterviewPrepsInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutInterviewPrepsInput
+    llmCalls?: LlmCallCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepUncheckedCreateWithoutResumeInput = {
+    id?: string
+    userId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepCreateOrConnectWithoutResumeInput = {
+    where: InterviewPrepWhereUniqueInput
+    create: XOR<InterviewPrepCreateWithoutResumeInput, InterviewPrepUncheckedCreateWithoutResumeInput>
+  }
+
+  export type InterviewPrepCreateManyResumeInputEnvelope = {
+    data: InterviewPrepCreateManyResumeInput | InterviewPrepCreateManyResumeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutResumesInput = {
     update: XOR<UserUpdateWithoutResumesInput, UserUncheckedUpdateWithoutResumesInput>
     create: XOR<UserCreateWithoutResumesInput, UserUncheckedCreateWithoutResumesInput>
@@ -29220,6 +33307,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
@@ -29245,6 +33334,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -29340,6 +33431,22 @@ export namespace Prisma {
     data: XOR<GeneratedResumeUpdateManyMutationInput, GeneratedResumeUncheckedUpdateManyWithoutResumeInput>
   }
 
+  export type InterviewPrepUpsertWithWhereUniqueWithoutResumeInput = {
+    where: InterviewPrepWhereUniqueInput
+    update: XOR<InterviewPrepUpdateWithoutResumeInput, InterviewPrepUncheckedUpdateWithoutResumeInput>
+    create: XOR<InterviewPrepCreateWithoutResumeInput, InterviewPrepUncheckedCreateWithoutResumeInput>
+  }
+
+  export type InterviewPrepUpdateWithWhereUniqueWithoutResumeInput = {
+    where: InterviewPrepWhereUniqueInput
+    data: XOR<InterviewPrepUpdateWithoutResumeInput, InterviewPrepUncheckedUpdateWithoutResumeInput>
+  }
+
+  export type InterviewPrepUpdateManyWithWhereWithoutResumeInput = {
+    where: InterviewPrepScalarWhereInput
+    data: XOR<InterviewPrepUpdateManyMutationInput, InterviewPrepUncheckedUpdateManyWithoutResumeInput>
+  }
+
   export type ResumeCreateWithoutExtractedResumesInput = {
     id?: string
     filename: string
@@ -29353,6 +33460,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutExtractedResumesInput = {
@@ -29368,6 +33476,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutExtractedResumesInput = {
@@ -29395,6 +33504,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -29416,6 +33526,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -29567,6 +33678,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InterviewPrepCreateWithoutExtractedResumeInput = {
+    id?: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutInterviewPrepsInput
+    resume?: ResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutInterviewPrepsInput
+    llmCalls?: LlmCallCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepUncheckedCreateWithoutExtractedResumeInput = {
+    id?: string
+    userId?: string | null
+    resumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepCreateOrConnectWithoutExtractedResumeInput = {
+    where: InterviewPrepWhereUniqueInput
+    create: XOR<InterviewPrepCreateWithoutExtractedResumeInput, InterviewPrepUncheckedCreateWithoutExtractedResumeInput>
+  }
+
+  export type InterviewPrepCreateManyExtractedResumeInputEnvelope = {
+    data: InterviewPrepCreateManyExtractedResumeInput | InterviewPrepCreateManyExtractedResumeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ResumeUpsertWithoutExtractedResumesInput = {
     update: XOR<ResumeUpdateWithoutExtractedResumesInput, ResumeUncheckedUpdateWithoutExtractedResumesInput>
     create: XOR<ResumeCreateWithoutExtractedResumesInput, ResumeUncheckedCreateWithoutExtractedResumesInput>
@@ -29591,6 +33738,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutExtractedResumesInput = {
@@ -29606,6 +33754,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type LlmCallUpsertWithWhereUniqueWithoutExtractedResumeInput = {
@@ -29699,6 +33848,22 @@ export namespace Prisma {
     data: XOR<GeneratedResumeUpdateManyMutationInput, GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeInput>
   }
 
+  export type InterviewPrepUpsertWithWhereUniqueWithoutExtractedResumeInput = {
+    where: InterviewPrepWhereUniqueInput
+    update: XOR<InterviewPrepUpdateWithoutExtractedResumeInput, InterviewPrepUncheckedUpdateWithoutExtractedResumeInput>
+    create: XOR<InterviewPrepCreateWithoutExtractedResumeInput, InterviewPrepUncheckedCreateWithoutExtractedResumeInput>
+  }
+
+  export type InterviewPrepUpdateWithWhereUniqueWithoutExtractedResumeInput = {
+    where: InterviewPrepWhereUniqueInput
+    data: XOR<InterviewPrepUpdateWithoutExtractedResumeInput, InterviewPrepUncheckedUpdateWithoutExtractedResumeInput>
+  }
+
+  export type InterviewPrepUpdateManyWithWhereWithoutExtractedResumeInput = {
+    where: InterviewPrepScalarWhereInput
+    data: XOR<InterviewPrepUpdateManyMutationInput, InterviewPrepUncheckedUpdateManyWithoutExtractedResumeInput>
+  }
+
   export type LlmCallCreateWithoutExtractedJobInput = {
     id?: string
     provider: string
@@ -29719,6 +33884,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -29740,6 +33906,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -29891,6 +34058,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InterviewPrepCreateWithoutExtractedJobInput = {
+    id?: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutInterviewPrepsInput
+    resume?: ResumeCreateNestedOneWithoutInterviewPrepsInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutInterviewPrepsInput
+    llmCalls?: LlmCallCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepUncheckedCreateWithoutExtractedJobInput = {
+    id?: string
+    userId?: string | null
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutInterviewPrepInput
+  }
+
+  export type InterviewPrepCreateOrConnectWithoutExtractedJobInput = {
+    where: InterviewPrepWhereUniqueInput
+    create: XOR<InterviewPrepCreateWithoutExtractedJobInput, InterviewPrepUncheckedCreateWithoutExtractedJobInput>
+  }
+
+  export type InterviewPrepCreateManyExtractedJobInputEnvelope = {
+    data: InterviewPrepCreateManyExtractedJobInput | InterviewPrepCreateManyExtractedJobInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LlmCallUpsertWithWhereUniqueWithoutExtractedJobInput = {
     where: LlmCallWhereUniqueInput
     update: XOR<LlmCallUpdateWithoutExtractedJobInput, LlmCallUncheckedUpdateWithoutExtractedJobInput>
@@ -29982,6 +34185,22 @@ export namespace Prisma {
     data: XOR<GeneratedResumeUpdateManyMutationInput, GeneratedResumeUncheckedUpdateManyWithoutExtractedJobInput>
   }
 
+  export type InterviewPrepUpsertWithWhereUniqueWithoutExtractedJobInput = {
+    where: InterviewPrepWhereUniqueInput
+    update: XOR<InterviewPrepUpdateWithoutExtractedJobInput, InterviewPrepUncheckedUpdateWithoutExtractedJobInput>
+    create: XOR<InterviewPrepCreateWithoutExtractedJobInput, InterviewPrepUncheckedCreateWithoutExtractedJobInput>
+  }
+
+  export type InterviewPrepUpdateWithWhereUniqueWithoutExtractedJobInput = {
+    where: InterviewPrepWhereUniqueInput
+    data: XOR<InterviewPrepUpdateWithoutExtractedJobInput, InterviewPrepUncheckedUpdateWithoutExtractedJobInput>
+  }
+
+  export type InterviewPrepUpdateManyWithWhereWithoutExtractedJobInput = {
+    where: InterviewPrepScalarWhereInput
+    data: XOR<InterviewPrepUpdateManyMutationInput, InterviewPrepUncheckedUpdateManyWithoutExtractedJobInput>
+  }
+
   export type ExtractedResumeCreateWithoutSummarizedResumesInput = {
     id?: string
     contentHash: string
@@ -29992,6 +34211,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUncheckedCreateWithoutSummarizedResumesInput = {
@@ -30004,6 +34224,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeCreateOrConnectWithoutSummarizedResumesInput = {
@@ -30032,6 +34253,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateWithoutSummarizedResumesInput = {
@@ -30044,32 +34266,33 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedJobDescriptionCreateWithoutSummarizedJobDescriptionsInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionUncheckedCreateWithoutSummarizedJobDescriptionsInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionCreateOrConnectWithoutSummarizedJobDescriptionsInput = {
@@ -30092,26 +34315,26 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type ExtractedJobDescriptionUncheckedUpdateWithoutSummarizedJobDescriptionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type UserCreateWithoutGeneratedRoastsInput = {
@@ -30135,6 +34358,8 @@ export namespace Prisma {
     llmCalls?: LlmCallCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
@@ -30160,6 +34385,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -30182,6 +34409,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutGeneratedRoastsInput = {
@@ -30197,6 +34425,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutGeneratedRoastsInput = {
@@ -30214,6 +34443,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUncheckedCreateWithoutGeneratedRoastsInput = {
@@ -30226,6 +34456,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeCreateOrConnectWithoutGeneratedRoastsInput = {
@@ -30237,26 +34468,26 @@ export namespace Prisma {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallCreateNestedManyWithoutExtractedJobInput
     summarizedJobDescriptions?: SummarizedJobDescriptionCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionUncheckedCreateWithoutGeneratedRoastsInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutExtractedJobInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionCreateOrConnectWithoutGeneratedRoastsInput = {
@@ -30284,6 +34515,7 @@ export namespace Prisma {
     extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -30305,6 +34537,7 @@ export namespace Prisma {
     extractedJobId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -30327,6 +34560,7 @@ export namespace Prisma {
     expiresAt: Date | string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutSharedAnalysesInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutAnalysisInput
   }
 
   export type SharedAnalysisUncheckedCreateWithoutRoastInput = {
@@ -30336,6 +34570,7 @@ export namespace Prisma {
     viewCount?: number
     expiresAt: Date | string
     createdAt?: Date | string
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type SharedAnalysisCreateOrConnectWithoutRoastInput = {
@@ -30380,6 +34615,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
@@ -30405,6 +34642,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -30433,6 +34672,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutGeneratedRoastsInput = {
@@ -30448,6 +34688,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ExtractedResumeUpsertWithoutGeneratedRoastsInput = {
@@ -30471,6 +34712,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateWithoutGeneratedRoastsInput = {
@@ -30483,6 +34725,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedJobDescriptionUpsertWithoutGeneratedRoastsInput = {
@@ -30500,26 +34743,26 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUpdateManyWithoutExtractedJobNestedInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type ExtractedJobDescriptionUncheckedUpdateWithoutGeneratedRoastsInput = {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUncheckedUpdateManyWithoutExtractedJobNestedInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type LlmCallUpsertWithWhereUniqueWithoutGeneratedRoastInput = {
@@ -30575,6 +34818,8 @@ export namespace Prisma {
     llmCalls?: LlmCallCreateNestedManyWithoutUserInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
@@ -30600,6 +34845,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutUserInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -30622,6 +34869,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeCreateNestedManyWithoutResumeInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutGeneratedCoverLettersInput = {
@@ -30637,6 +34885,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutResumeInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutGeneratedCoverLettersInput = {
@@ -30654,6 +34903,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeCreateNestedManyWithoutExtractedResumeInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUncheckedCreateWithoutGeneratedCoverLettersInput = {
@@ -30666,6 +34916,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeCreateOrConnectWithoutGeneratedCoverLettersInput = {
@@ -30677,26 +34928,26 @@ export namespace Prisma {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallCreateNestedManyWithoutExtractedJobInput
     summarizedJobDescriptions?: SummarizedJobDescriptionCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionUncheckedCreateWithoutGeneratedCoverLettersInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutExtractedJobInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionCreateOrConnectWithoutGeneratedCoverLettersInput = {
@@ -30724,6 +34975,7 @@ export namespace Prisma {
     extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutLlmCallsInput
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -30745,6 +34997,7 @@ export namespace Prisma {
     extractedJobId?: string | null
     generatedRoastId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -30792,6 +35045,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUpdateManyWithoutUserNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
@@ -30817,6 +35072,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUncheckedUpdateManyWithoutUserNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -30845,6 +35102,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUpdateManyWithoutResumeNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutGeneratedCoverLettersInput = {
@@ -30860,6 +35118,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutResumeNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ExtractedResumeUpsertWithoutGeneratedCoverLettersInput = {
@@ -30883,6 +35142,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUpdateManyWithoutExtractedResumeNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateWithoutGeneratedCoverLettersInput = {
@@ -30895,6 +35155,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedJobDescriptionUpsertWithoutGeneratedCoverLettersInput = {
@@ -30912,26 +35173,26 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUpdateManyWithoutExtractedJobNestedInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type ExtractedJobDescriptionUncheckedUpdateWithoutGeneratedCoverLettersInput = {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUncheckedUpdateManyWithoutExtractedJobNestedInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type LlmCallUpsertWithWhereUniqueWithoutGeneratedCoverLetterInput = {
@@ -30971,6 +35232,8 @@ export namespace Prisma {
     llmCalls?: LlmCallCreateNestedManyWithoutUserInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
@@ -30996,6 +35259,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutUserInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -31018,6 +35283,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeCreateNestedManyWithoutResumeInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutGeneratedResumesInput = {
@@ -31033,6 +35299,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutResumeInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutGeneratedResumesInput = {
@@ -31050,6 +35317,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeCreateNestedManyWithoutExtractedResumeInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeUncheckedCreateWithoutGeneratedResumesInput = {
@@ -31062,6 +35330,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedResumeInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedResumeInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedResumeInput
   }
 
   export type ExtractedResumeCreateOrConnectWithoutGeneratedResumesInput = {
@@ -31073,26 +35342,26 @@ export namespace Prisma {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallCreateNestedManyWithoutExtractedJobInput
     summarizedJobDescriptions?: SummarizedJobDescriptionCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionUncheckedCreateWithoutGeneratedResumesInput = {
     id?: string
     contentHash: string
     originalText: string
-    url?: string | null
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     llmCalls?: LlmCallUncheckedCreateNestedManyWithoutExtractedJobInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedJobInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedJobInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutExtractedJobInput
   }
 
   export type ExtractedJobDescriptionCreateOrConnectWithoutGeneratedResumesInput = {
@@ -31120,6 +35389,7 @@ export namespace Prisma {
     extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutLlmCallsInput
     generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
     generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
+    interviewPrep?: InterviewPrepCreateNestedOneWithoutLlmCallsInput
     messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
   }
 
@@ -31141,6 +35411,7 @@ export namespace Prisma {
     extractedJobId?: string | null
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
     messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
@@ -31188,6 +35459,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUpdateManyWithoutUserNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
@@ -31213,6 +35486,8 @@ export namespace Prisma {
     llmCalls?: LlmCallUncheckedUpdateManyWithoutUserNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -31241,6 +35516,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUpdateManyWithoutResumeNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutGeneratedResumesInput = {
@@ -31256,6 +35532,7 @@ export namespace Prisma {
     extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutResumeNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ExtractedResumeUpsertWithoutGeneratedResumesInput = {
@@ -31279,6 +35556,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUpdateManyWithoutExtractedResumeNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateWithoutGeneratedResumesInput = {
@@ -31291,6 +35569,7 @@ export namespace Prisma {
     summarizedResumes?: SummarizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedJobDescriptionUpsertWithoutGeneratedResumesInput = {
@@ -31308,26 +35587,26 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUpdateManyWithoutExtractedJobNestedInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type ExtractedJobDescriptionUncheckedUpdateWithoutGeneratedResumesInput = {
     id?: StringFieldUpdateOperationsInput | string
     contentHash?: StringFieldUpdateOperationsInput | string
     originalText?: StringFieldUpdateOperationsInput | string
-    url?: NullableStringFieldUpdateOperationsInput | string | null
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     llmCalls?: LlmCallUncheckedUpdateManyWithoutExtractedJobNestedInput
     summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedJobNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedJobNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedJobNestedInput
   }
 
   export type LlmCallUpsertWithWhereUniqueWithoutGeneratedResumeInput = {
@@ -31344,6 +35623,600 @@ export namespace Prisma {
   export type LlmCallUpdateManyWithWhereWithoutGeneratedResumeInput = {
     where: LlmCallScalarWhereInput
     data: XOR<LlmCallUpdateManyMutationInput, LlmCallUncheckedUpdateManyWithoutGeneratedResumeInput>
+  }
+
+  export type UserCreateWithoutInterviewPrepsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    resumes?: ResumeCreateNestedManyWithoutUserInput
+    llmCalls?: LlmCallCreateNestedManyWithoutUserInput
+    generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
+    generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
+    generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutInterviewPrepsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutUserInput
+    generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
+    generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutInterviewPrepsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInterviewPrepsInput, UserUncheckedCreateWithoutInterviewPrepsInput>
+  }
+
+  export type ResumeCreateWithoutInterviewPrepsInput = {
+    id?: string
+    filename: string
+    fileHash: string
+    mimeType: string
+    images?: ResumeCreateimagesInput | string[]
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutResumesInput
+    llmCalls?: LlmCallCreateNestedManyWithoutResumeInput
+    extractedResumes?: ExtractedResumeCreateNestedManyWithoutResumeInput
+    generatedRoasts?: GeneratedRoastCreateNestedManyWithoutResumeInput
+    generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutResumeInput
+    generatedResumes?: GeneratedResumeCreateNestedManyWithoutResumeInput
+  }
+
+  export type ResumeUncheckedCreateWithoutInterviewPrepsInput = {
+    id?: string
+    userId?: string | null
+    filename: string
+    fileHash: string
+    mimeType: string
+    images?: ResumeCreateimagesInput | string[]
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutResumeInput
+    extractedResumes?: ExtractedResumeUncheckedCreateNestedManyWithoutResumeInput
+    generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutResumeInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutResumeInput
+    generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutResumeInput
+  }
+
+  export type ResumeCreateOrConnectWithoutInterviewPrepsInput = {
+    where: ResumeWhereUniqueInput
+    create: XOR<ResumeCreateWithoutInterviewPrepsInput, ResumeUncheckedCreateWithoutInterviewPrepsInput>
+  }
+
+  export type ExtractedResumeCreateWithoutInterviewPrepsInput = {
+    id?: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    resume: ResumeCreateNestedOneWithoutExtractedResumesInput
+    llmCalls?: LlmCallCreateNestedManyWithoutExtractedResumeInput
+    summarizedResumes?: SummarizedResumeCreateNestedManyWithoutExtractedResumeInput
+    generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedResumeInput
+    generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedResumeInput
+    generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeUncheckedCreateWithoutInterviewPrepsInput = {
+    id?: string
+    resumeId: string
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutExtractedResumeInput
+    summarizedResumes?: SummarizedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+    generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedResumeInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedResumeInput
+    generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedResumeInput
+  }
+
+  export type ExtractedResumeCreateOrConnectWithoutInterviewPrepsInput = {
+    where: ExtractedResumeWhereUniqueInput
+    create: XOR<ExtractedResumeCreateWithoutInterviewPrepsInput, ExtractedResumeUncheckedCreateWithoutInterviewPrepsInput>
+  }
+
+  export type ExtractedJobDescriptionCreateWithoutInterviewPrepsInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    llmCalls?: LlmCallCreateNestedManyWithoutExtractedJobInput
+    summarizedJobDescriptions?: SummarizedJobDescriptionCreateNestedManyWithoutExtractedJobInput
+    generatedRoasts?: GeneratedRoastCreateNestedManyWithoutExtractedJobInput
+    generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutExtractedJobInput
+    generatedResumes?: GeneratedResumeCreateNestedManyWithoutExtractedJobInput
+  }
+
+  export type ExtractedJobDescriptionUncheckedCreateWithoutInterviewPrepsInput = {
+    id?: string
+    contentHash: string
+    originalText: string
+    data: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutExtractedJobInput
+    summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedCreateNestedManyWithoutExtractedJobInput
+    generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutExtractedJobInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutExtractedJobInput
+    generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutExtractedJobInput
+  }
+
+  export type ExtractedJobDescriptionCreateOrConnectWithoutInterviewPrepsInput = {
+    where: ExtractedJobDescriptionWhereUniqueInput
+    create: XOR<ExtractedJobDescriptionCreateWithoutInterviewPrepsInput, ExtractedJobDescriptionUncheckedCreateWithoutInterviewPrepsInput>
+  }
+
+  export type LlmCallCreateWithoutInterviewPrepInput = {
+    id?: string
+    provider: string
+    model: string
+    operationType: string
+    totalInputTokens?: number
+    totalOutputTokens?: number
+    totalTokens?: number
+    totalCostUsd?: Decimal | DecimalJsLike | number | string
+    totalProcessingTimeMs?: number | null
+    status?: $Enums.LlmCallStatus
+    errorMessage?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    user?: UserCreateNestedOneWithoutLlmCallsInput
+    resume?: ResumeCreateNestedOneWithoutLlmCallsInput
+    extractedResume?: ExtractedResumeCreateNestedOneWithoutLlmCallsInput
+    extractedJob?: ExtractedJobDescriptionCreateNestedOneWithoutLlmCallsInput
+    generatedRoast?: GeneratedRoastCreateNestedOneWithoutLlmCallsInput
+    generatedCoverLetter?: GeneratedCoverLetterCreateNestedOneWithoutLlmCallsInput
+    generatedResume?: GeneratedResumeCreateNestedOneWithoutLlmCallsInput
+    messages?: LlmMessageCreateNestedManyWithoutLlmCallInput
+  }
+
+  export type LlmCallUncheckedCreateWithoutInterviewPrepInput = {
+    id?: string
+    userId?: string | null
+    provider: string
+    model: string
+    operationType: string
+    totalInputTokens?: number
+    totalOutputTokens?: number
+    totalTokens?: number
+    totalCostUsd?: Decimal | DecimalJsLike | number | string
+    totalProcessingTimeMs?: number | null
+    status?: $Enums.LlmCallStatus
+    errorMessage?: string | null
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    generatedRoastId?: string | null
+    generatedCoverLetterId?: string | null
+    generatedResumeId?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    messages?: LlmMessageUncheckedCreateNestedManyWithoutLlmCallInput
+  }
+
+  export type LlmCallCreateOrConnectWithoutInterviewPrepInput = {
+    where: LlmCallWhereUniqueInput
+    create: XOR<LlmCallCreateWithoutInterviewPrepInput, LlmCallUncheckedCreateWithoutInterviewPrepInput>
+  }
+
+  export type LlmCallCreateManyInterviewPrepInputEnvelope = {
+    data: LlmCallCreateManyInterviewPrepInput | LlmCallCreateManyInterviewPrepInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutInterviewPrepsInput = {
+    update: XOR<UserUpdateWithoutInterviewPrepsInput, UserUncheckedUpdateWithoutInterviewPrepsInput>
+    create: XOR<UserCreateWithoutInterviewPrepsInput, UserUncheckedCreateWithoutInterviewPrepsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInterviewPrepsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInterviewPrepsInput, UserUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type UserUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    resumes?: ResumeUpdateManyWithoutUserNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutUserNestedInput
+    generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
+    generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutUserNestedInput
+    generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ResumeUpsertWithoutInterviewPrepsInput = {
+    update: XOR<ResumeUpdateWithoutInterviewPrepsInput, ResumeUncheckedUpdateWithoutInterviewPrepsInput>
+    create: XOR<ResumeCreateWithoutInterviewPrepsInput, ResumeUncheckedCreateWithoutInterviewPrepsInput>
+    where?: ResumeWhereInput
+  }
+
+  export type ResumeUpdateToOneWithWhereWithoutInterviewPrepsInput = {
+    where?: ResumeWhereInput
+    data: XOR<ResumeUpdateWithoutInterviewPrepsInput, ResumeUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type ResumeUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    images?: ResumeUpdateimagesInput | string[]
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutResumesNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutResumeNestedInput
+    extractedResumes?: ExtractedResumeUpdateManyWithoutResumeNestedInput
+    generatedRoasts?: GeneratedRoastUpdateManyWithoutResumeNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutResumeNestedInput
+    generatedResumes?: GeneratedResumeUpdateManyWithoutResumeNestedInput
+  }
+
+  export type ResumeUncheckedUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    images?: ResumeUpdateimagesInput | string[]
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutResumeNestedInput
+    extractedResumes?: ExtractedResumeUncheckedUpdateManyWithoutResumeNestedInput
+    generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutResumeNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutResumeNestedInput
+    generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutResumeNestedInput
+  }
+
+  export type ExtractedResumeUpsertWithoutInterviewPrepsInput = {
+    update: XOR<ExtractedResumeUpdateWithoutInterviewPrepsInput, ExtractedResumeUncheckedUpdateWithoutInterviewPrepsInput>
+    create: XOR<ExtractedResumeCreateWithoutInterviewPrepsInput, ExtractedResumeUncheckedCreateWithoutInterviewPrepsInput>
+    where?: ExtractedResumeWhereInput
+  }
+
+  export type ExtractedResumeUpdateToOneWithWhereWithoutInterviewPrepsInput = {
+    where?: ExtractedResumeWhereInput
+    data: XOR<ExtractedResumeUpdateWithoutInterviewPrepsInput, ExtractedResumeUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type ExtractedResumeUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resume?: ResumeUpdateOneRequiredWithoutExtractedResumesNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutExtractedResumeNestedInput
+    summarizedResumes?: SummarizedResumeUpdateManyWithoutExtractedResumeNestedInput
+    generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedResumeNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedResumeNestedInput
+    generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedResumeUncheckedUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeId?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    summarizedResumes?: SummarizedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+  }
+
+  export type ExtractedJobDescriptionUpsertWithoutInterviewPrepsInput = {
+    update: XOR<ExtractedJobDescriptionUpdateWithoutInterviewPrepsInput, ExtractedJobDescriptionUncheckedUpdateWithoutInterviewPrepsInput>
+    create: XOR<ExtractedJobDescriptionCreateWithoutInterviewPrepsInput, ExtractedJobDescriptionUncheckedCreateWithoutInterviewPrepsInput>
+    where?: ExtractedJobDescriptionWhereInput
+  }
+
+  export type ExtractedJobDescriptionUpdateToOneWithWhereWithoutInterviewPrepsInput = {
+    where?: ExtractedJobDescriptionWhereInput
+    data: XOR<ExtractedJobDescriptionUpdateWithoutInterviewPrepsInput, ExtractedJobDescriptionUncheckedUpdateWithoutInterviewPrepsInput>
+  }
+
+  export type ExtractedJobDescriptionUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUpdateManyWithoutExtractedJobNestedInput
+    summarizedJobDescriptions?: SummarizedJobDescriptionUpdateManyWithoutExtractedJobNestedInput
+    generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedJobNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedJobNestedInput
+    generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedJobNestedInput
+  }
+
+  export type ExtractedJobDescriptionUncheckedUpdateWithoutInterviewPrepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    originalText?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutExtractedJobNestedInput
+    summarizedJobDescriptions?: SummarizedJobDescriptionUncheckedUpdateManyWithoutExtractedJobNestedInput
+    generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedJobNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedJobNestedInput
+    generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedJobNestedInput
+  }
+
+  export type LlmCallUpsertWithWhereUniqueWithoutInterviewPrepInput = {
+    where: LlmCallWhereUniqueInput
+    update: XOR<LlmCallUpdateWithoutInterviewPrepInput, LlmCallUncheckedUpdateWithoutInterviewPrepInput>
+    create: XOR<LlmCallCreateWithoutInterviewPrepInput, LlmCallUncheckedCreateWithoutInterviewPrepInput>
+  }
+
+  export type LlmCallUpdateWithWhereUniqueWithoutInterviewPrepInput = {
+    where: LlmCallWhereUniqueInput
+    data: XOR<LlmCallUpdateWithoutInterviewPrepInput, LlmCallUncheckedUpdateWithoutInterviewPrepInput>
+  }
+
+  export type LlmCallUpdateManyWithWhereWithoutInterviewPrepInput = {
+    where: LlmCallScalarWhereInput
+    data: XOR<LlmCallUpdateManyMutationInput, LlmCallUncheckedUpdateManyWithoutInterviewPrepInput>
+  }
+
+  export type UserCreateWithoutInterviewEvaluationsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    resumes?: ResumeCreateNestedManyWithoutUserInput
+    llmCalls?: LlmCallCreateNestedManyWithoutUserInput
+    generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
+    generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
+    generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutInterviewEvaluationsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    hashedPassword?: string | null
+    subscriptionTier?: $Enums.SubscriptionTier
+    subscriptionId?: string | null
+    customerId?: string | null
+    subscriptionEndsAt?: Date | string | null
+    monthlyRoasts?: number
+    totalRoasts?: number
+    lastRoastReset?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
+    llmCalls?: LlmCallUncheckedCreateNestedManyWithoutUserInput
+    generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
+    generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutInterviewEvaluationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInterviewEvaluationsInput, UserUncheckedCreateWithoutInterviewEvaluationsInput>
+  }
+
+  export type SharedAnalysisCreateWithoutInterviewEvaluationsInput = {
+    id: string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    viewCount?: number
+    expiresAt: Date | string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutSharedAnalysesInput
+    roast: GeneratedRoastCreateNestedOneWithoutSharedAnalysesInput
+  }
+
+  export type SharedAnalysisUncheckedCreateWithoutInterviewEvaluationsInput = {
+    id: string
+    userId: string
+    roastId: string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    viewCount?: number
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SharedAnalysisCreateOrConnectWithoutInterviewEvaluationsInput = {
+    where: SharedAnalysisWhereUniqueInput
+    create: XOR<SharedAnalysisCreateWithoutInterviewEvaluationsInput, SharedAnalysisUncheckedCreateWithoutInterviewEvaluationsInput>
+  }
+
+  export type UserUpsertWithoutInterviewEvaluationsInput = {
+    update: XOR<UserUpdateWithoutInterviewEvaluationsInput, UserUncheckedUpdateWithoutInterviewEvaluationsInput>
+    create: XOR<UserCreateWithoutInterviewEvaluationsInput, UserUncheckedCreateWithoutInterviewEvaluationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInterviewEvaluationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInterviewEvaluationsInput, UserUncheckedUpdateWithoutInterviewEvaluationsInput>
+  }
+
+  export type UserUpdateWithoutInterviewEvaluationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    resumes?: ResumeUpdateManyWithoutUserNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutUserNestedInput
+    generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
+    generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInterviewEvaluationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    hashedPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: EnumSubscriptionTierFieldUpdateOperationsInput | $Enums.SubscriptionTier
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    monthlyRoasts?: IntFieldUpdateOperationsInput | number
+    totalRoasts?: IntFieldUpdateOperationsInput | number
+    lastRoastReset?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutUserNestedInput
+    generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
+    generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
+    generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type SharedAnalysisUpsertWithoutInterviewEvaluationsInput = {
+    update: XOR<SharedAnalysisUpdateWithoutInterviewEvaluationsInput, SharedAnalysisUncheckedUpdateWithoutInterviewEvaluationsInput>
+    create: XOR<SharedAnalysisCreateWithoutInterviewEvaluationsInput, SharedAnalysisUncheckedCreateWithoutInterviewEvaluationsInput>
+    where?: SharedAnalysisWhereInput
+  }
+
+  export type SharedAnalysisUpdateToOneWithWhereWithoutInterviewEvaluationsInput = {
+    where?: SharedAnalysisWhereInput
+    data: XOR<SharedAnalysisUpdateWithoutInterviewEvaluationsInput, SharedAnalysisUncheckedUpdateWithoutInterviewEvaluationsInput>
+  }
+
+  export type SharedAnalysisUpdateWithoutInterviewEvaluationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    viewCount?: IntFieldUpdateOperationsInput | number
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSharedAnalysesNestedInput
+    roast?: GeneratedRoastUpdateOneRequiredWithoutSharedAnalysesNestedInput
+  }
+
+  export type SharedAnalysisUncheckedUpdateWithoutInterviewEvaluationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    roastId?: StringFieldUpdateOperationsInput | string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    viewCount?: IntFieldUpdateOperationsInput | number
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateWithoutSharedAnalysesInput = {
@@ -31368,6 +36241,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
   }
 
@@ -31393,6 +36268,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -31432,6 +36309,36 @@ export namespace Prisma {
     create: XOR<GeneratedRoastCreateWithoutSharedAnalysesInput, GeneratedRoastUncheckedCreateWithoutSharedAnalysesInput>
   }
 
+  export type InterviewEvaluationCreateWithoutAnalysisInput = {
+    id?: string
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutInterviewEvaluationsInput
+  }
+
+  export type InterviewEvaluationUncheckedCreateWithoutAnalysisInput = {
+    id?: string
+    userId?: string | null
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+  }
+
+  export type InterviewEvaluationCreateOrConnectWithoutAnalysisInput = {
+    where: InterviewEvaluationWhereUniqueInput
+    create: XOR<InterviewEvaluationCreateWithoutAnalysisInput, InterviewEvaluationUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type InterviewEvaluationCreateManyAnalysisInputEnvelope = {
+    data: InterviewEvaluationCreateManyAnalysisInput | InterviewEvaluationCreateManyAnalysisInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutSharedAnalysesInput = {
     update: XOR<UserUpdateWithoutSharedAnalysesInput, UserUncheckedUpdateWithoutSharedAnalysesInput>
     create: XOR<UserCreateWithoutSharedAnalysesInput, UserUncheckedCreateWithoutSharedAnalysesInput>
@@ -31465,6 +36372,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
   }
 
@@ -31490,6 +36399,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -31530,6 +36441,22 @@ export namespace Prisma {
     llmCalls?: LlmCallUncheckedUpdateManyWithoutGeneratedRoastNestedInput
   }
 
+  export type InterviewEvaluationUpsertWithWhereUniqueWithoutAnalysisInput = {
+    where: InterviewEvaluationWhereUniqueInput
+    update: XOR<InterviewEvaluationUpdateWithoutAnalysisInput, InterviewEvaluationUncheckedUpdateWithoutAnalysisInput>
+    create: XOR<InterviewEvaluationCreateWithoutAnalysisInput, InterviewEvaluationUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type InterviewEvaluationUpdateWithWhereUniqueWithoutAnalysisInput = {
+    where: InterviewEvaluationWhereUniqueInput
+    data: XOR<InterviewEvaluationUpdateWithoutAnalysisInput, InterviewEvaluationUncheckedUpdateWithoutAnalysisInput>
+  }
+
+  export type InterviewEvaluationUpdateManyWithWhereWithoutAnalysisInput = {
+    where: InterviewEvaluationScalarWhereInput
+    data: XOR<InterviewEvaluationUpdateManyMutationInput, InterviewEvaluationUncheckedUpdateManyWithoutAnalysisInput>
+  }
+
   export type UserCreateWithoutInvoicesInput = {
     id?: string
     email: string
@@ -31552,6 +36479,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisCreateNestedManyWithoutUserInput
   }
 
@@ -31577,6 +36506,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedCreateNestedManyWithoutUserInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedCreateNestedManyWithoutUserInput
     generatedResumes?: GeneratedResumeUncheckedCreateNestedManyWithoutUserInput
+    interviewPreps?: InterviewPrepUncheckedCreateNestedManyWithoutUserInput
+    interviewEvaluations?: InterviewEvaluationUncheckedCreateNestedManyWithoutUserInput
     sharedAnalyses?: SharedAnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -31618,6 +36549,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUpdateManyWithoutUserNestedInput
   }
 
@@ -31643,6 +36576,8 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutUserNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutUserNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutUserNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutUserNestedInput
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutUserNestedInput
     sharedAnalyses?: SharedAnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -31681,6 +36616,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -31719,6 +36655,28 @@ export namespace Prisma {
     data: JsonNullValueInput | InputJsonValue
     atsScore?: number | null
     keywordsMatched?: GeneratedResumeCreatekeywordsMatchedInput | string[]
+    createdAt?: Date | string
+  }
+
+  export type InterviewPrepCreateManyUserInput = {
+    id?: string
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+  }
+
+  export type InterviewEvaluationCreateManyUserInput = {
+    id?: string
+    analysisId: string
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
     createdAt?: Date | string
   }
 
@@ -31779,6 +36737,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutUserInput = {
@@ -31794,6 +36753,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateManyWithoutUserInput = {
@@ -31826,6 +36786,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -31847,6 +36808,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -31870,6 +36832,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31993,6 +36956,74 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewPrepUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resume?: ResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedJob?: ExtractedJobDescriptionUpdateOneWithoutInterviewPrepsNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewEvaluationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analysis?: SharedAnalysisUpdateOneRequiredWithoutInterviewEvaluationsNestedInput
+  }
+
+  export type InterviewEvaluationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    analysisId?: StringFieldUpdateOperationsInput | string
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewEvaluationUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    analysisId?: StringFieldUpdateOperationsInput | string
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type SharedAnalysisUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     settings?: NullableJsonNullValueInput | InputJsonValue
@@ -32000,6 +37031,7 @@ export namespace Prisma {
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roast?: GeneratedRoastUpdateOneRequiredWithoutSharedAnalysesNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutAnalysisNestedInput
   }
 
   export type SharedAnalysisUncheckedUpdateWithoutUserInput = {
@@ -32009,6 +37041,7 @@ export namespace Prisma {
     viewCount?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type SharedAnalysisUncheckedUpdateManyWithoutUserInput = {
@@ -32148,6 +37181,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -32196,6 +37230,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type InterviewPrepCreateManyResumeInput = {
+    id?: string
+    userId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+  }
+
   export type LlmCallUpdateWithoutResumeInput = {
     id?: StringFieldUpdateOperationsInput | string
     provider?: StringFieldUpdateOperationsInput | string
@@ -32216,6 +37262,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -32237,6 +37284,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -32260,6 +37308,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -32274,6 +37323,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateWithoutResumeInput = {
@@ -32286,6 +37336,7 @@ export namespace Prisma {
     generatedRoasts?: GeneratedRoastUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedCoverLetters?: GeneratedCoverLetterUncheckedUpdateManyWithoutExtractedResumeNestedInput
     generatedResumes?: GeneratedResumeUncheckedUpdateManyWithoutExtractedResumeNestedInput
+    interviewPreps?: InterviewPrepUncheckedUpdateManyWithoutExtractedResumeNestedInput
   }
 
   export type ExtractedResumeUncheckedUpdateManyWithoutResumeInput = {
@@ -32414,6 +37465,44 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewPrepUpdateWithoutResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutInterviewPrepsNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedJob?: ExtractedJobDescriptionUpdateOneWithoutInterviewPrepsNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateWithoutResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateManyWithoutResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LlmCallCreateManyExtractedResumeInput = {
     id?: string
     userId?: string | null
@@ -32432,6 +37521,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -32480,6 +37570,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type InterviewPrepCreateManyExtractedResumeInput = {
+    id?: string
+    userId?: string | null
+    resumeId?: string | null
+    extractedJobId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+  }
+
   export type LlmCallUpdateWithoutExtractedResumeInput = {
     id?: StringFieldUpdateOperationsInput | string
     provider?: StringFieldUpdateOperationsInput | string
@@ -32500,6 +37602,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -32521,6 +37624,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -32544,6 +37648,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -32688,6 +37793,44 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewPrepUpdateWithoutExtractedResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutInterviewPrepsNestedInput
+    resume?: ResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedJob?: ExtractedJobDescriptionUpdateOneWithoutInterviewPrepsNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateWithoutExtractedResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateManyWithoutExtractedResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LlmCallCreateManyExtractedJobInput = {
     id?: string
     userId?: string | null
@@ -32706,6 +37849,7 @@ export namespace Prisma {
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -32754,6 +37898,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type InterviewPrepCreateManyExtractedJobInput = {
+    id?: string
+    userId?: string | null
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    contentHash: string
+    data: JsonNullValueInput | InputJsonValue
+    difficulty?: string
+    category?: string
+    createdAt?: Date | string
+  }
+
   export type LlmCallUpdateWithoutExtractedJobInput = {
     id?: StringFieldUpdateOperationsInput | string
     provider?: StringFieldUpdateOperationsInput | string
@@ -32774,6 +37930,7 @@ export namespace Prisma {
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -32795,6 +37952,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -32818,6 +37976,7 @@ export namespace Prisma {
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -32962,6 +38121,44 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewPrepUpdateWithoutExtractedJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutInterviewPrepsNestedInput
+    resume?: ResumeUpdateOneWithoutInterviewPrepsNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutInterviewPrepsNestedInput
+    llmCalls?: LlmCallUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateWithoutExtractedJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    llmCalls?: LlmCallUncheckedUpdateManyWithoutInterviewPrepNestedInput
+  }
+
+  export type InterviewPrepUncheckedUpdateManyWithoutExtractedJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    difficulty?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LlmCallCreateManyGeneratedRoastInput = {
     id?: string
     userId?: string | null
@@ -32980,6 +38177,7 @@ export namespace Prisma {
     extractedJobId?: string | null
     generatedCoverLetterId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -33013,6 +38211,7 @@ export namespace Prisma {
     extractedJob?: ExtractedJobDescriptionUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -33034,6 +38233,7 @@ export namespace Prisma {
     extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -33057,6 +38257,7 @@ export namespace Prisma {
     extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -33068,6 +38269,7 @@ export namespace Prisma {
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutSharedAnalysesNestedInput
+    interviewEvaluations?: InterviewEvaluationUpdateManyWithoutAnalysisNestedInput
   }
 
   export type SharedAnalysisUncheckedUpdateWithoutRoastInput = {
@@ -33077,6 +38279,7 @@ export namespace Prisma {
     viewCount?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interviewEvaluations?: InterviewEvaluationUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type SharedAnalysisUncheckedUpdateManyWithoutRoastInput = {
@@ -33106,6 +38309,7 @@ export namespace Prisma {
     extractedJobId?: string | null
     generatedRoastId?: string | null
     generatedResumeId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -33130,6 +38334,7 @@ export namespace Prisma {
     extractedJob?: ExtractedJobDescriptionUpdateOneWithoutLlmCallsNestedInput
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -33151,6 +38356,7 @@ export namespace Prisma {
     extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -33174,6 +38380,7 @@ export namespace Prisma {
     extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -33196,6 +38403,7 @@ export namespace Prisma {
     extractedJobId?: string | null
     generatedRoastId?: string | null
     generatedCoverLetterId?: string | null
+    interviewPrepId?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
   }
@@ -33220,6 +38428,7 @@ export namespace Prisma {
     extractedJob?: ExtractedJobDescriptionUpdateOneWithoutLlmCallsNestedInput
     generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
     generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
+    interviewPrep?: InterviewPrepUpdateOneWithoutLlmCallsNestedInput
     messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
   }
 
@@ -33241,6 +38450,7 @@ export namespace Prisma {
     extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
@@ -33264,8 +38474,143 @@ export namespace Prisma {
     extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
     generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewPrepId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type LlmCallCreateManyInterviewPrepInput = {
+    id?: string
+    userId?: string | null
+    provider: string
+    model: string
+    operationType: string
+    totalInputTokens?: number
+    totalOutputTokens?: number
+    totalTokens?: number
+    totalCostUsd?: Decimal | DecimalJsLike | number | string
+    totalProcessingTimeMs?: number | null
+    status?: $Enums.LlmCallStatus
+    errorMessage?: string | null
+    resumeId?: string | null
+    extractedResumeId?: string | null
+    extractedJobId?: string | null
+    generatedRoastId?: string | null
+    generatedCoverLetterId?: string | null
+    generatedResumeId?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type LlmCallUpdateWithoutInterviewPrepInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    operationType?: StringFieldUpdateOperationsInput | string
+    totalInputTokens?: IntFieldUpdateOperationsInput | number
+    totalOutputTokens?: IntFieldUpdateOperationsInput | number
+    totalTokens?: IntFieldUpdateOperationsInput | number
+    totalCostUsd?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalProcessingTimeMs?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumLlmCallStatusFieldUpdateOperationsInput | $Enums.LlmCallStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneWithoutLlmCallsNestedInput
+    resume?: ResumeUpdateOneWithoutLlmCallsNestedInput
+    extractedResume?: ExtractedResumeUpdateOneWithoutLlmCallsNestedInput
+    extractedJob?: ExtractedJobDescriptionUpdateOneWithoutLlmCallsNestedInput
+    generatedRoast?: GeneratedRoastUpdateOneWithoutLlmCallsNestedInput
+    generatedCoverLetter?: GeneratedCoverLetterUpdateOneWithoutLlmCallsNestedInput
+    generatedResume?: GeneratedResumeUpdateOneWithoutLlmCallsNestedInput
+    messages?: LlmMessageUpdateManyWithoutLlmCallNestedInput
+  }
+
+  export type LlmCallUncheckedUpdateWithoutInterviewPrepInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    operationType?: StringFieldUpdateOperationsInput | string
+    totalInputTokens?: IntFieldUpdateOperationsInput | number
+    totalOutputTokens?: IntFieldUpdateOperationsInput | number
+    totalTokens?: IntFieldUpdateOperationsInput | number
+    totalCostUsd?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalProcessingTimeMs?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumLlmCallStatusFieldUpdateOperationsInput | $Enums.LlmCallStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: LlmMessageUncheckedUpdateManyWithoutLlmCallNestedInput
+  }
+
+  export type LlmCallUncheckedUpdateManyWithoutInterviewPrepInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    operationType?: StringFieldUpdateOperationsInput | string
+    totalInputTokens?: IntFieldUpdateOperationsInput | number
+    totalOutputTokens?: IntFieldUpdateOperationsInput | number
+    totalTokens?: IntFieldUpdateOperationsInput | number
+    totalCostUsd?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalProcessingTimeMs?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumLlmCallStatusFieldUpdateOperationsInput | $Enums.LlmCallStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    extractedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedRoastId?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedCoverLetterId?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedResumeId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type InterviewEvaluationCreateManyAnalysisInput = {
+    id?: string
+    userId?: string | null
+    evaluationType: string
+    data: JsonNullValueInput | InputJsonValue
+    questionsCount: number
+    overallScore: number
+    createdAt?: Date | string
+  }
+
+  export type InterviewEvaluationUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutInterviewEvaluationsNestedInput
+  }
+
+  export type InterviewEvaluationUncheckedUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewEvaluationUncheckedUpdateManyWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    evaluationType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    questionsCount?: IntFieldUpdateOperationsInput | number
+    overallScore?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
