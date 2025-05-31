@@ -5,11 +5,11 @@ import { authOptions } from '@/lib/auth'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { analysisId: string } }
+  { params }: { params: Promise<{ analysisId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
-    const { analysisId } = params
+    const { analysisId } = await params
 
     if (!analysisId) {
       return NextResponse.json(
@@ -18,10 +18,12 @@ export async function GET(
       )
     }
 
-    // Load evaluations for this analysis
+    // Load evaluations for this analysis through the InterviewPrep relationship
     const evaluations = await db.interviewEvaluation.findMany({
       where: {
-        analysisId,
+        interviewPrep: {
+          analysisId: analysisId
+        },
         // Only show user's own evaluations if logged in
         ...(session?.user?.id ? { userId: session.user.id } : {})
       },

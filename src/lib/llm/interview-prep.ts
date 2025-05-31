@@ -23,12 +23,14 @@ interface GenerateInterviewQuestionsParams {
   resumeData: any
   jobDescription?: string
   analysisData?: any
+  llm?: string
 }
 
 export async function generateInterviewQuestions({
   resumeData,
   jobDescription,
-  analysisData
+  analysisData,
+  llm = OPENAI_MODELS.MINI
 }: GenerateInterviewQuestionsParams): Promise<InterviewPrepData> {
   
   const systemPrompt = `You are an expert interview coach with 15+ years of experience helping candidates prepare for technical and behavioral interviews across all industries. Your specialty is creating hyper-personalized interview questions that interviewers would ACTUALLY ask based on specific resume details and job requirements.
@@ -140,9 +142,11 @@ EXAMPLE OF GOOD vs BAD:
 Generate questions that make it obvious you've read their resume and understand the target role.`
 
   try {
-    // Try Anthropic first, fallback to OpenAI
+    // Use the selected LLM model
     let interviewPrepData: InterviewPrepData
-    try {
+    
+    if (llm === ANTHROPIC_MODELS.SONNET) {
+      // Use Anthropic Claude
       const anthropicResponse = await callAnthropicInterviewPrep(userPrompt, {
         systemPrompt,
         model: ANTHROPIC_MODELS.SONNET,
@@ -150,8 +154,8 @@ Generate questions that make it obvious you've read their resume and understand 
         temperature: TEMPERATURES.NORMAL
       })
       interviewPrepData = anthropicResponse.data
-    } catch (anthropicError) {
-      console.log('Anthropic failed, trying OpenAI:', anthropicError)
+    } else {
+      // Use OpenAI GPT-4 Mini (default)
       const openaiResponse = await callOpenAIInterviewPrep(userPrompt, {
         systemPrompt,
         model: OPENAI_MODELS.MINI,

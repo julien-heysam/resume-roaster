@@ -57,26 +57,36 @@ Focus on the most impactful feedback that will help the user improve their inter
     let savedEvaluationId = null
     if (analysisId && questionId) {
       try {
-        const evaluationData = {
-          ...response.data,
-          questionId,
-          question,
-          userAnswer,
-          category,
-          difficulty
-        }
-
-        const savedEvaluation = await db.interviewEvaluation.create({
-          data: {
-            analysisId,
-            userId: session?.user?.id || null,
-            evaluationType: 'individual',
-            data: evaluationData as any,
-            questionsCount: 1,
-            overallScore: response.data.score || 0
+        // First find the InterviewPrep record for this analysisId
+        const interviewPrep = await db.interviewPrep.findFirst({
+          where: {
+            analysisId: analysisId,
+            ...(session?.user?.id ? { userId: session.user.id } : {})
           }
         })
-        savedEvaluationId = savedEvaluation.id
+
+        if (interviewPrep) {
+          const evaluationData = {
+            ...response.data,
+            questionId,
+            question,
+            userAnswer,
+            category,
+            difficulty
+          }
+
+          const savedEvaluation = await db.interviewEvaluation.create({
+            data: {
+              interviewPrepId: interviewPrep.id,
+              userId: session?.user?.id || null,
+              evaluationType: 'individual',
+              data: evaluationData as any,
+              questionsCount: 1,
+              overallScore: response.data.score || 0
+            }
+          })
+          savedEvaluationId = savedEvaluation.id
+        }
       } catch (dbError) {
         console.error('Error saving individual evaluation to database:', dbError)
         // Continue without saving to DB

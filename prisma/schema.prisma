@@ -340,6 +340,7 @@ model GeneratedResume {
 model InterviewPrep {
   id                String   @id @default(cuid())
   userId            String?  @map("user_id")
+  analysisId        String   @map("analysis_id") // Links to the analysis this prep is for
   resumeId          String?  @map("resume_id")
   extractedResumeId String?  @map("extracted_resume_id")
   extractedJobId    String?  @map("extracted_job_id")
@@ -355,8 +356,10 @@ model InterviewPrep {
   extractedResume ExtractedResume?         @relation(fields: [extractedResumeId], references: [id], onDelete: SetNull)
   extractedJob    ExtractedJobDescription? @relation(fields: [extractedJobId], references: [id], onDelete: SetNull)
   llmCalls        LlmCall[]
+  evaluations     InterviewEvaluation[]
 
   @@index([userId])
+  @@index([analysisId])
   @@index([contentHash])
   @@index([difficulty])
   @@index([category])
@@ -365,7 +368,7 @@ model InterviewPrep {
 
 model InterviewEvaluation {
   id              String   @id @default(cuid())
-  analysisId      String   @map("analysis_id") // Links to SharedAnalysis
+  interviewPrepId String   @map("interview_prep_id") // Links to InterviewPrep
   userId          String?  @map("user_id")
   evaluationType  String   @map("evaluation_type") // 'session' or 'individual'
   data            Json     // Evaluation results
@@ -374,10 +377,10 @@ model InterviewEvaluation {
   createdAt       DateTime @default(now()) @map("created_at")
 
   // Relations
-  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  analysis        SharedAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  user            User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  interviewPrep   InterviewPrep @relation(fields: [interviewPrepId], references: [id], onDelete: Cascade)
 
-  @@index([analysisId])
+  @@index([interviewPrepId])
   @@index([userId])
   @@index([evaluationType])
   @@index([createdAt])
@@ -397,7 +400,6 @@ model SharedAnalysis {
   // Relations
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   roast GeneratedRoast @relation(fields: [roastId], references: [id], onDelete: Cascade)
-  interviewEvaluations InterviewEvaluation[]
 
   @@index([userId])
   @@index([expiresAt])

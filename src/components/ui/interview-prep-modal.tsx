@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog"
 import { Button } from "./button"
-import { Card, CardContent, CardHeader, CardTitle } from "./card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./card"
 import { Badge } from "./badge"
 import { Separator } from "./separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs"
@@ -26,10 +26,13 @@ import {
   AlertTriangle,
   Loader2,
   BarChart3,
-  AlertCircle
+  AlertCircle,
+  Zap,
+  Crown
 } from "lucide-react"
 import { toast } from 'sonner'
 import { useSubscription } from "@/hooks/useSubscription"
+import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/lib/constants"
 
 interface InterviewQuestion {
   id: string
@@ -66,6 +69,7 @@ export function InterviewPrepModal({
   analysisId
 }: InterviewPrepModalProps) {
   const [isGenerating, setIsGenerating] = useState(false)
+  const [selectedLLM, setSelectedLLM] = useState<string>(OPENAI_MODELS.MINI)
   const [interviewData, setInterviewData] = useState<InterviewPrepData | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [activeTab, setActiveTab] = useState("questions")
@@ -81,6 +85,25 @@ export function InterviewPrepModal({
   const [isLoadingEvaluations, setIsLoadingEvaluations] = useState(false)
   
   const { subscription } = useSubscription()
+
+  const llmOptions = [
+    { 
+      value: OPENAI_MODELS.MINI,
+      label: 'GPT-4 Mini', 
+      description: 'Fast and efficient generation',
+      credits: 0.5,
+      icon: Zap,
+      badge: 'Fast'
+    },
+    { 
+      value: ANTHROPIC_MODELS.SONNET, 
+      label: 'Claude Sonnet 4', 
+      description: 'Premium quality with superior accuracy',
+      credits: 1,
+      icon: Crown,
+      badge: 'Premium'
+    }
+  ]
 
   // Timer effect
   useEffect(() => {
@@ -117,7 +140,8 @@ export function InterviewPrepModal({
           resumeData,
           jobDescription,
           analysisData,
-          analysisId
+          analysisId,
+          llm: selectedLLM
         }),
       })
 
@@ -412,26 +436,118 @@ export function InterviewPrepModal({
                   </Card>
                 </div>
 
-                <div className="flex justify-center">
-                  <Button 
-                    onClick={generateInterviewPrep}
-                    disabled={isGenerating || !resumeData}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
-                    size="lg"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                        Generating Interview Prep...
-                      </>
-                    ) : (
-                      <>
-                        <Brain className="h-5 w-5 mr-2" />
-                        Generate Interview Prep
-                      </>
-                    )}
-                  </Button>
-                </div>
+                {/* AI Model Selection */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Brain className="h-5 w-5 text-purple-500" />
+                      <span>Generate Your Interview Prep</span>
+                    </CardTitle>
+                    <CardDescription>
+                      Create personalized interview questions based on your resume and the job description
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* LLM Selection */}
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-3 block">
+                        Choose AI Model
+                      </label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {llmOptions.map((llm) => {
+                          const IconComponent = llm.icon
+                          return (
+                            <div
+                              key={llm.value}
+                              className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                                selectedLLM === llm.value
+                                  ? 'border-purple-500 bg-purple-50'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                              onClick={() => setSelectedLLM(llm.value)}
+                            >
+                              <div className="flex items-start justify-between mb-2">
+                                <div className="flex items-center space-x-2">
+                                  <IconComponent className={`h-5 w-5 ${
+                                    llm.value === OPENAI_MODELS.MINI ? 'text-blue-600' : 'text-purple-600'
+                                  }`} />
+                                  <span className="font-medium text-gray-900">{llm.label}</span>
+                                </div>
+                                <div className="flex flex-col items-end space-y-1">
+                                  <Badge variant="outline" className={`text-xs ${
+                                    llm.value === OPENAI_MODELS.MINI 
+                                      ? 'bg-blue-100 text-blue-700 border-blue-200' 
+                                      : 'bg-purple-100 text-purple-700 border-purple-200'
+                                  }`}>
+                                    {llm.badge}
+                                  </Badge>
+                                  <Badge variant="secondary" className={`text-xs ${
+                                    llm.value === OPENAI_MODELS.MINI
+                                      ? 'bg-orange-100 text-orange-800'
+                                      : 'bg-red-100 text-red-800'
+                                  }`}>
+                                    {llm.credits} Credit{llm.credits !== 1 ? 's' : ''}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-600">{llm.description}</p>
+                              {selectedLLM === llm.value && (
+                                <div className="absolute top-2 left-2">
+                                  <CheckCircle className="h-4 w-4 text-purple-500" />
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Requirements Check */}
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        {resumeData ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-red-500" />
+                        )}
+                        <span className="text-sm">Resume data available</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {jobDescription ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-yellow-500" />
+                        )}
+                        <span className="text-sm">Job description {jobDescription ? 'available' : 'optional'}</span>
+                      </div>
+                      {analysisData && (
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-blue-500" />
+                          <span className="text-sm">Analysis insights will be included</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <Button 
+                      onClick={generateInterviewPrep}
+                      disabled={isGenerating || !resumeData}
+                      className="w-full bg-purple-600 hover:bg-purple-700"
+                      size="lg"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Generating Interview Prep...
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="h-5 w-5 mr-2" />
+                          Generate Interview Prep
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
 
                 {(!subscription || subscription.tier === 'FREE') && (
                   <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">

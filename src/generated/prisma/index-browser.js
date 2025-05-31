@@ -274,6 +274,7 @@ exports.Prisma.GeneratedResumeScalarFieldEnum = {
 exports.Prisma.InterviewPrepScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  analysisId: 'analysisId',
   resumeId: 'resumeId',
   extractedResumeId: 'extractedResumeId',
   extractedJobId: 'extractedJobId',
@@ -286,7 +287,7 @@ exports.Prisma.InterviewPrepScalarFieldEnum = {
 
 exports.Prisma.InterviewEvaluationScalarFieldEnum = {
   id: 'id',
-  analysisId: 'analysisId',
+  interviewPrepId: 'interviewPrepId',
   userId: 'userId',
   evaluationType: 'evaluationType',
   data: 'data',

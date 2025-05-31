@@ -50,6 +50,7 @@ function DashboardContent() {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
+  const [interviewPracticeCount, setInterviewPracticeCount] = useState(0)
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
     limit: 10,
@@ -107,9 +108,14 @@ function DashboardContent() {
         params.append('search', search)
       }
 
-      const response = await fetch(`/api/user/analysis-history?${params}`)
-      if (response.ok) {
-        const result = await response.json()
+      // Fetch analyses and interview practice count in parallel
+      const [analysesResponse, interviewCountResponse] = await Promise.all([
+        fetch(`/api/user/analysis-history?${params}`),
+        fetch('/api/user/interview-practice-count')
+      ])
+
+      if (analysesResponse.ok) {
+        const result = await analysesResponse.json()
         
         // Transform the API response to match the expected format
         const transformedAnalyses = (result.data || []).map((item: any) => ({
@@ -131,12 +137,22 @@ function DashboardContent() {
         setAnalyses(transformedAnalyses)
         setPagination(result.pagination || { page: 1, limit: 10, total: 0, totalPages: 0 })
       } else {
-        console.error('Failed to fetch analyses:', response.status, response.statusText)
+        console.error('Failed to fetch analyses:', analysesResponse.status, analysesResponse.statusText)
         setAnalyses([])
+      }
+
+      // Update interview practice count
+      if (interviewCountResponse.ok) {
+        const countResult = await interviewCountResponse.json()
+        setInterviewPracticeCount(countResult.count || 0)
+      } else {
+        console.error('Failed to fetch interview practice count')
+        setInterviewPracticeCount(0)
       }
     } catch (error) {
       console.error('Error fetching analyses:', error)
       setAnalyses([])
+      setInterviewPracticeCount(0)
     } finally {
       setLoading(false)
     }
@@ -509,7 +525,7 @@ function DashboardContent() {
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-purple-600">
-                        {analyses.filter(a => a.data.jobDescription).length}
+                        {interviewPracticeCount}
                       </div>
                       <div className="text-sm text-gray-600">Interview Practice</div>
                     </div>

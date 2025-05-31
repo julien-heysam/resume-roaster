@@ -75,17 +75,27 @@ Focus on patterns across all answers and provide insights that help the candidat
     let savedEvaluationId = null
     if (analysisId) {
       try {
-        const savedEvaluation = await db.interviewEvaluation.create({
-          data: {
-            analysisId,
-            userId: session?.user?.id || null,
-            evaluationType: 'session',
-            data: response.data as any,
-            questionsCount: answeredQuestions.length,
-            overallScore: response.data.overallScore || 0
+        // First find the InterviewPrep record for this analysisId
+        const interviewPrep = await db.interviewPrep.findFirst({
+          where: {
+            analysisId: analysisId,
+            ...(session?.user?.id ? { userId: session.user.id } : {})
           }
         })
-        savedEvaluationId = savedEvaluation.id
+
+        if (interviewPrep) {
+          const savedEvaluation = await db.interviewEvaluation.create({
+            data: {
+              interviewPrepId: interviewPrep.id,
+              userId: session?.user?.id || null,
+              evaluationType: 'session',
+              data: response.data as any,
+              questionsCount: answeredQuestions.length,
+              overallScore: response.data.overallScore || 0
+            }
+          })
+          savedEvaluationId = savedEvaluation.id
+        }
       } catch (dbError) {
         console.error('Error saving evaluation to database:', dbError)
         // Continue without saving to DB
