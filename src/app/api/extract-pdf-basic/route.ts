@@ -44,14 +44,23 @@ const extractTextFromPDF = async (filePath: string, originalName?: string): Prom
   } catch (popplerError) {
     console.log('node-poppler failed, trying pdf-parse fallback...', popplerError)
     
-    // Try pdf-parse as fallback (simplified approach)
+    // Try pdf-parse as fallback - import directly from lib to bypass bundling issues
     try {
       console.log('Attempting extraction with pdf-parse...')
-      const pdf = await import('pdf-parse')
+      // Import directly from lib to bypass index bundling issues
+      const pdf = require('pdf-parse/lib/pdf-parse')
       const buffer = await fs.readFile(filePath)
       
+      // Ensure we have a valid buffer
+      if (!buffer || buffer.length === 0) {
+        throw new Error('Invalid or empty PDF buffer')
+      }
+      
       // Use pdf-parse with minimal configuration
-      const data = await pdf.default(buffer)
+      const data = await pdf(buffer, {
+        // Add options for better compatibility
+        max: 0, // No page limit
+      })
       
       if (data.text && data.text.trim().length > 0) {
         console.log(`Successfully extracted ${data.text.length} characters with pdf-parse`)
@@ -61,6 +70,24 @@ const extractTextFromPDF = async (filePath: string, originalName?: string): Prom
       }
     } catch (pdfParseError) {
       console.error('All PDF extraction methods failed:', pdfParseError)
+      
+      // If pdf-parse fails due to bundling issues, try a more basic approach
+      if (pdfParseError instanceof Error && pdfParseError.message.includes('ENOENT')) {
+        console.log('pdf-parse bundling issue detected, trying alternative approach...')
+        try {
+          // Try to use pdf-parse with minimal options
+          const pdf = require('pdf-parse')
+          const buffer = await fs.readFile(filePath)
+          const data = await pdf(buffer, { max: 0 })
+          
+          if (data.text && data.text.trim().length > 0) {
+            console.log(`Successfully extracted ${data.text.length} characters with pdf-parse (alternative)`)
+            return data.text.trim()
+          }
+        } catch (altError) {
+          console.log('Alternative pdf-parse approach also failed:', altError)
+        }
+      }
       
       // Only use fallback if ALL methods fail
       console.log('All extraction methods failed, using fallback...')

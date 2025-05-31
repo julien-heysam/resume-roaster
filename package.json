@@ -13,7 +13,8 @@
     "db:reset": "npx prisma db push --force-reset",
     "deploy": "vercel --prod",
     "postinstall": "prisma generate",
-    "index-docs": "node scripts/index-documentation.js"
+    "index-docs": "node scripts/index-documentation.js",
+    "test-pdf": "node scripts/test-pdf-extraction.js"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",

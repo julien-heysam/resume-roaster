@@ -50,11 +50,22 @@ const extractTextFromPDFBasic = async (filePath: string, originalName?: string):
     console.log('node-poppler failed, trying pdf-parse...', error)
   }
 
-  // Fallback to pdf-parse
+  // Fallback to pdf-parse - import directly from lib to bypass bundling issues
   try {
     console.log('Attempting extraction with pdf-parse...')
-    const pdfParse = await import('pdf-parse')
-    const data = await pdfParse.default(await fs.readFile(filePath))
+    // Import directly from lib to bypass index bundling issues
+    const pdfParse = require('pdf-parse/lib/pdf-parse')
+    const buffer = await fs.readFile(filePath)
+    
+    // Ensure we have a valid buffer
+    if (!buffer || buffer.length === 0) {
+      throw new Error('Invalid or empty PDF buffer')
+    }
+    
+    const data = await pdfParse(buffer, {
+      // Add options for better compatibility
+      max: 0, // No page limit
+    })
     
     if (data.text && data.text.trim().length > 0) {
       console.log(`Successfully extracted ${data.text.length} characters with pdf-parse`)

@@ -15,6 +15,20 @@ const nextConfig: NextConfig = {
     // Enable optimizations
     optimizePackageImports: ['@anthropic-ai/sdk', '@supabase/supabase-js'],
   },
+  // Configure webpack for better module resolution
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Ensure proper module resolution for server-side rendering
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        os: false,
+      };
+    }
+    
+    return config;
+  },
   // Configure API timeouts for long-running operations
   api: {
     responseLimit: false,
