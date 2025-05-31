@@ -29,13 +29,6 @@ const nextConfig: NextConfig = {
     
     return config;
   },
-  // Configure API timeouts for long-running operations
-  api: {
-    responseLimit: false,
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
   // Configure headers for better performance
   async headers() {
     return [

@@ -1003,4 +1003,283 @@ export async function callOpenAIResumeAnalysis(
     tools: [resumeAnalysisTool],
     toolChoice: { type: 'function', function: { name: 'analyze_resume' } }
   })
+}
+
+/**
+ * Enhanced callOpenAI function that supports multimodal content (text + images)
+ */
+export async function callOpenAIWithContent<T = any>(
+  content: any[], // Array of content blocks (text and images)
+  options: OpenAICallOptions = {}
+): Promise<OpenAIResponse<T>> {
+  const opts = { ...DEFAULT_OPTIONS, ...options }
+  const startTime = Date.now()
+
+  console.log('🚀 Starting OpenAI API call with multimodal content...')
+  console.log('Model:', opts.model)
+  console.log('Max tokens:', opts.maxTokens)
+  console.log('Temperature:', opts.temperature)
+  console.log('Content blocks:', content.length)
+
+  try {
+    // Prepare messages
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = []
+    
+    if (opts.systemPrompt) {
+      messages.push({
+        role: 'system',
+        content: opts.systemPrompt
+      })
+    }
+    
+    messages.push({
+      role: 'user',
+      content: content
+    })
+
+    // Prepare request options
+    const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParams = {
+      model: opts.model,
+      messages,
+      max_tokens: opts.maxTokens,
+      temperature: opts.temperature,
+    }
+
+    // Add JSON format enforcement if requested (and no tools)
+    if (opts.enforceJSON && !opts.tools) {
+      requestOptions.response_format = { type: 'json_object' }
+    }
+
+    // Add tools if provided
+    if (opts.tools && opts.tools.length > 0) {
+      requestOptions.tools = opts.tools
+      if (opts.toolChoice) {
+        requestOptions.tool_choice = opts.toolChoice
+      }
+    }
+
+    // Make the API call with timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), opts.timeout)
+
+    let completion: OpenAI.Chat.Completions.ChatCompletion
+    try {
+      completion = await openai.chat.completions.create(requestOptions)
+    } catch (error: any) {
+      clearTimeout(timeoutId)
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out after ${opts.timeout / 1000} seconds`)
+      }
+      throw error
+    }
+
+    clearTimeout(timeoutId)
+    const apiCallTime = Date.now() - startTime
+    console.log(`✅ OpenAI multimodal API call completed in ${apiCallTime}ms`)
+
+    const message = completion.choices[0]?.message
+    if (!message) {
+      throw new Error('No message generated')
+    }
+
+    const usage = completion.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
+    const cost = calculateCost(opts.model, usage.prompt_tokens, usage.completion_tokens)
+    const finishReason = completion.choices[0]?.finish_reason || 'stop'
+
+    let parsedData: T
+    let finalContent = ''
+
+    // Handle function calling response
+    if (message.tool_calls && message.tool_calls.length > 0) {
+      console.log('✅ Function call response received')
+      const toolCall = message.tool_calls[0]
+      if (toolCall.function?.arguments) {
+        try {
+          parsedData = JSON.parse(toolCall.function.arguments) as T
+          finalContent = toolCall.function.arguments
+          console.log('✅ Function call arguments parsed successfully')
+        } catch (parseError) {
+          console.error('❌ Failed to parse function call arguments:', parseError)
+          throw new Error('Failed to parse function call response')
+        }
+      } else {
+        throw new Error('No function arguments in tool call')
+      }
+    } else {
+      // Handle regular content response
+      const content = message.content
+      if (!content) {
+        throw new Error('No content generated')
+      }
+      finalContent = content
+
+      // Handle JSON parsing if enforced
+      if (opts.enforceJSON) {
+        try {
+          parsedData = JSON.parse(content) as T
+          console.log('✅ JSON parsing successful')
+        } catch (parseError) {
+          console.error('❌ JSON parsing failed despite enforcement:', parseError)
+          throw new Error('Failed to parse JSON response despite enforcement')
+        }
+      } else {
+        // Try to parse as JSON if it looks like JSON, otherwise return as string
+        if (!content.includes('{')) {
+          console.log('✅ No JSON braces found, returning as plain text')
+          parsedData = content as T
+        } else {
+          try {
+            parsedData = parseJSONResponse(content) as T
+            console.log('✅ JSON parsing successful')
+          } catch (parseError) {
+            // Return content as string if not JSON
+            parsedData = content as T
+          }
+        }
+      }
+    }
+
+    const processingTime = Date.now() - startTime
+    const finalCost = calculateCost(opts.model, usage.prompt_tokens, usage.completion_tokens)
+
+    console.log('📊 OpenAI multimodal call completed successfully')
+    console.log('Processing time:', processingTime, 'ms')
+    console.log('Tokens used:', usage.total_tokens)
+    console.log('Cost:', finalCost)
+
+    return {
+      data: parsedData,
+      usage: {
+        promptTokens: usage.prompt_tokens,
+        completionTokens: usage.completion_tokens,
+        totalTokens: usage.total_tokens
+      },
+      cost: finalCost,
+      processingTime,
+      finishReason
+    }
+
+  } catch (error: any) {
+    const processingTime = Date.now() - startTime
+    console.error('❌ OpenAI multimodal API call failed:', error)
+    
+    // Create a more informative error
+    const openaiError: OpenAIError = new Error(error.message || 'OpenAI multimodal API call failed')
+    openaiError.code = error.code
+    openaiError.status = error.status
+    openaiError.type = error.type
+    openaiError.name = 'OpenAIError'
+    
+    throw openaiError
+  }
+}
+
+/**
+ * Helper function for PDF extraction with vision capabilities using OpenAI
+ */
+export async function callOpenAIPDFExtractionWithVision(
+  userPrompt: string,
+  images: string[], // Base64 encoded images
+  options: Omit<OpenAICallOptions, 'tools' | 'toolChoice' | 'enforceJSON'> = {}
+): Promise<OpenAIResponse<any>> {
+  const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
+    {
+      type: 'function',
+      function: {
+        name: 'extract_resume_content',
+        description: 'Extracts and formats resume content from PDF images as clean, professional markdown',
+        parameters: {
+          type: 'object',
+          properties: {
+            markdown: {
+              type: 'string',
+              description: 'The extracted content formatted as clean, professional markdown'
+            },
+            summary: {
+              type: 'string',
+              description: 'A brief summary of the resume content and key highlights'
+            },
+            sections: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Array of main sections found in the resume (e.g., Personal Info, Experience, Education, Skills)'
+            },
+            personalInfo: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                email: { type: 'string' },
+                phone: { type: 'string' },
+                location: { type: 'string' },
+                linkedin: { type: 'string' },
+                website: { type: 'string' }
+              }
+            },
+            keySkills: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Key technical and professional skills identified'
+            },
+            experience: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  title: { type: 'string' },
+                  company: { type: 'string' },
+                  duration: { type: 'string' },
+                  description: { type: 'string' }
+                }
+              }
+            },
+            education: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  degree: { type: 'string' },
+                  institution: { type: 'string' },
+                  year: { type: 'string' }
+                }
+              }
+            }
+          },
+          required: ['markdown', 'summary', 'sections']
+        }
+      }
+    }
+  ]
+
+  // Create content array with images and text
+  const content: any[] = []
+  
+  // Add images first
+  images.forEach((imageBase64, index) => {
+    if (index > 0) {
+      content.push({
+        type: 'text',
+        text: `\n\nPage ${index + 1}:`
+      })
+    }
+    content.push({
+      type: 'image_url',
+      image_url: {
+        url: `data:image/png;base64,${imageBase64}`,
+        detail: 'high' // Use high detail for better text extraction
+      }
+    })
+  })
+  
+  // Add the text prompt
+  content.push({
+    type: 'text',
+    text: userPrompt
+  })
+
+  // Use the enhanced callOpenAI function with multimodal content
+  return callOpenAIWithContent(content, {
+    ...options,
+    tools,
+    toolChoice: { type: 'function', function: { name: 'extract_resume_content' } }
+  })
 } 

@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File
     const extractionMethod = (formData.get('extractionMethod') as string) || 'ai'
     const provider = (formData.get('provider') as string) || 'anthropic'
+    const model = formData.get('model') as string // New model parameter
     const bypassCache = (formData.get('bypassCache') as string) === 'true'
     const useAI = extractionMethod === 'ai'
 
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(`Processing file: ${file.name} (${file.size} bytes)`)
-    console.log(`Method: ${extractionMethod}, Use AI: ${useAI}, Provider: ${provider}, Bypass Cache: ${bypassCache}`)
+    console.log(`Method: ${extractionMethod}, Use AI: ${useAI}, Provider: ${provider}, Model: ${model || 'default'}, Bypass Cache: ${bypassCache}`)
 
     // Validate file type
     if (file.type !== 'application/pdf') {
@@ -115,7 +116,7 @@ export async function POST(request: NextRequest) {
     const fileHash = generateFileHash(buffer)
     
     console.log(`File hash: ${fileHash}`)
-    console.log(`Cache key will be: ${fileHash}-${extractionMethod}-${useAI ? provider : 'basic'}`)
+    console.log(`Cache key will be: ${fileHash}-${extractionMethod}-${useAI ? `${provider}-${model || 'default'}` : 'basic'}`)
 
     // Check if resume was already processed
     const existingResume = await ResumeService.findByHash(fileHash)
@@ -123,13 +124,13 @@ export async function POST(request: NextRequest) {
     if (existingResume && !bypassCache) {
       console.log(`Found cached resume for ${file.name}`)
       
-      // Check if we have extracted data for this resume with the same method and provider
-      const cacheKey = `${fileHash}-${extractionMethod}-${useAI ? provider : 'basic'}`
+      // Check if we have extracted data for this resume with the same method, provider, and model
+      const cacheKey = `${fileHash}-${extractionMethod}-${useAI ? `${provider}-${model || 'default'}` : 'basic'}`
       const resumeContentHash = crypto.createHash('sha256').update(cacheKey).digest('hex')
       const existingExtracted = await ExtractedResumeService.findByHash(resumeContentHash)
       
       if (existingExtracted) {
-        console.log(`Found cached extraction for method: ${extractionMethod}, provider: ${useAI ? provider : 'basic'}`)
+        console.log(`Found cached extraction for method: ${extractionMethod}, provider: ${useAI ? provider : 'basic'}, model: ${model || 'default'}`)
         const data = existingExtracted.data as any // Type assertion for JSON data
         const extractedData: ExtractedResumeData = {
           text: data?.text || '',
@@ -158,15 +159,18 @@ export async function POST(request: NextRequest) {
           fromCache: true,
           resumeId: existingResume.id,
           extractedResumeId: existingExtracted.id,
-          fileHash: fileHash
+          fileHash: fileHash,
+          extractionMethod: data?.extractionMethod || 'unknown',
+          hasImages: (existingResume.images || []).length > 0,
+          imageCount: (existingResume.images || []).length
         })
       }
     }
 
     if (bypassCache) {
-      console.log(`🔄 BYPASS CACHE: Force re-extracting for method: ${extractionMethod}, provider: ${useAI ? provider : 'basic'}`)
+      console.log(`🔄 BYPASS CACHE: Force re-extracting for method: ${extractionMethod}, provider: ${useAI ? provider : 'basic'}, model: ${model || 'default'}`)
     } else {
-      console.log(`No cached extraction found for method: ${extractionMethod}, provider: ${useAI ? provider : 'basic'}. Proceeding with new extraction.`)
+      console.log(`No cached extraction found for method: ${extractionMethod}, provider: ${useAI ? provider : 'basic'}, model: ${model || 'default'}. Proceeding with new extraction.`)
     }
 
     // Extract text from PDF
@@ -216,12 +220,28 @@ export async function POST(request: NextRequest) {
         llmCallId = await LLMLogger.createLlmCall({
           userId: userId || undefined,
           provider: provider,
-          model: provider === 'openai' ? OPENAI_MODELS.MINI : ANTHROPIC_MODELS.SONNET,
+          model: model || (provider === 'openai' ? OPENAI_MODELS.MINI : ANTHROPIC_MODELS.SONNET),
           operationType: 'resume_extraction'
         })
 
         // Create the extraction prompt
-        const prompt = `Extract and format the following resume content from PDF text into clean, professional markdown:
+        const prompt = pdfImages.length > 0 
+          ? `Analyze the PDF images of this resume and extract the content into clean, professional markdown format.
+
+IMPORTANT INSTRUCTIONS:
+1. Extract ALL text content visible in the images accurately
+2. Preserve the original structure and formatting as much as possible
+3. Organize content into logical sections (Personal Info, Summary, Experience, Education, Skills, etc.)
+4. Format dates consistently (MM/YYYY format)
+5. Use proper markdown formatting (headers, lists, bold text, etc.)
+6. Include all achievements, responsibilities, and details visible in the images
+7. Pay attention to visual formatting cues like bullet points, headers, and sections
+8. If text is partially obscured or unclear, make reasonable inferences based on context
+9. Organize skills into categories if possible
+10. Return the content as clean, professional markdown
+
+Please use the extract_resume_content function to return the formatted content.`
+          : `Extract and format the following resume content from PDF text into clean, professional markdown:
 
 RESUME TEXT:
 ${extractedText}
@@ -248,28 +268,59 @@ Please use the extract_resume_content function to return the formatted content.`
         })
 
         console.log(`Sending request to ${provider} for PDF extraction...`)
+        console.log(`Using ${pdfImages.length > 0 ? 'VISION' : 'TEXT'} mode with ${pdfImages.length} images`)
 
         const startTime = Date.now()
         let response
 
         if (provider === 'openai') {
           // Use OpenAI for PDF extraction
-          const { callOpenAIPDFExtraction, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } = await import('@/lib/openai-utils')
+          const { callOpenAIPDFExtraction, callOpenAIPDFExtractionWithVision, OPENAI_MODELS, CONTEXT_SIZES, TEMPERATURES } = await import('@/lib/openai-utils')
           
-          response = await callOpenAIPDFExtraction(prompt, {
-            model: OPENAI_MODELS.MINI,
-            maxTokens: CONTEXT_SIZES.NORMAL,
-            temperature: TEMPERATURES.LOW,
-            systemPrompt: 'You are an expert resume parser and formatter. Extract resume content from PDF text and format it as clean, professional markdown that preserves all information while improving readability.'
-          })
+          // Determine the model to use (with fallback to default)
+          const selectedModel = model || OPENAI_MODELS.MINI
+          
+          if (pdfImages.length > 0) {
+            // Use vision-capable extraction
+            response = await callOpenAIPDFExtractionWithVision(prompt, pdfImages, {
+              model: selectedModel,
+              maxTokens: CONTEXT_SIZES.NORMAL,
+              temperature: TEMPERATURES.LOW,
+              systemPrompt: 'You are an expert resume parser and formatter. Extract resume content from PDF images and format it as clean, professional markdown that preserves all information while improving readability.'
+            })
+          } else {
+            // Fallback to text-only extraction
+            response = await callOpenAIPDFExtraction(prompt, {
+              model: selectedModel,
+              maxTokens: CONTEXT_SIZES.NORMAL,
+              temperature: TEMPERATURES.LOW,
+              systemPrompt: 'You are an expert resume parser and formatter. Extract resume content from PDF text and format it as clean, professional markdown that preserves all information while improving readability.'
+            })
+          }
         } else {
           // Use Anthropic for PDF extraction
-          response = await callAnthropicPDFExtraction(prompt, {
-            model: ANTHROPIC_MODELS.SONNET,
-            maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL,
-            temperature: ANTHROPIC_TEMPERATURES.LOW,
-            systemPrompt: 'You are an expert resume parser and formatter. Extract resume content from PDF text and format it as clean, professional markdown that preserves all information while improving readability.'
-          })
+          const { callAnthropicPDFExtraction, callAnthropicPDFExtractionWithVision } = await import('@/lib/anthropic-utils')
+          
+          // Determine the model to use (with fallback to default)
+          const selectedModel = model || ANTHROPIC_MODELS.SONNET
+          
+          if (pdfImages.length > 0) {
+            // Use vision-capable extraction
+            response = await callAnthropicPDFExtractionWithVision(prompt, pdfImages, {
+              model: selectedModel,
+              maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL,
+              temperature: ANTHROPIC_TEMPERATURES.LOW,
+              systemPrompt: 'You are an expert resume parser and formatter. Extract resume content from PDF images and format it as clean, professional markdown that preserves all information while improving readability.'
+            })
+          } else {
+            // Fallback to text-only extraction
+            response = await callAnthropicPDFExtraction(prompt, {
+              model: selectedModel,
+              maxTokens: ANTHROPIC_CONTEXT_SIZES.NORMAL,
+              temperature: ANTHROPIC_TEMPERATURES.LOW,
+              systemPrompt: 'You are an expert resume parser and formatter. Extract resume content from PDF text and format it as clean, professional markdown that preserves all information while improving readability.'
+            })
+          }
         }
 
         const processingTime = Date.now() - startTime
@@ -277,12 +328,18 @@ Please use the extract_resume_content function to return the formatted content.`
           markdown: response.data.markdown,
           summary: response.data.summary,
           sections: response.data.sections,
-          originalText: extractedText
+          originalText: extractedText,
+          personalInfo: response.data.personalInfo || null,
+          keySkills: response.data.keySkills || [],
+          experience: response.data.experience || [],
+          education: response.data.education || [],
+          extractionMethod: pdfImages.length > 0 ? 'vision' : 'text'
         }
         tokensUsed = response.usage.totalTokens
         estimatedCost = response.cost
 
         console.log('AI resume extraction completed successfully')
+        console.log('Extraction method:', pdfImages.length > 0 ? 'VISION' : 'TEXT')
         console.log('Processing time:', processingTime, 'ms')
         console.log('Tokens used:', tokensUsed)
         console.log('Cost:', estimatedCost)
@@ -334,7 +391,10 @@ Please use the extract_resume_content function to return the formatted content.`
       summary: structuredData ? structuredData.summary : 'Resume content extracted using basic PDF parsing',
       sections: structuredData ? structuredData.sections : ['Resume Content'],
       tokensUsed,
-      estimatedCost
+      estimatedCost,
+      extractionMethod: structuredData?.extractionMethod || 'basic',
+      hasImages: pdfImages.length > 0,
+      imageCount: pdfImages.length
     }
 
     // Save resume to database
@@ -359,7 +419,7 @@ Please use the extract_resume_content function to return the formatted content.`
     }
 
     // Save extracted data
-    const cacheKey = `${fileHash}-${extractionMethod}-${useAI ? provider : 'basic'}`
+    const cacheKey = `${fileHash}-${extractionMethod}-${useAI ? `${provider}-${model || 'default'}` : 'basic'}`
     const resumeContentHash = crypto.createHash('sha256').update(cacheKey).digest('hex')
     
     // If bypassing cache, delete existing extracted data first
@@ -409,7 +469,10 @@ Please use the extract_resume_content function to return the formatted content.`
       fileHash: fileHash,
       estimatedCost: estimatedCost,
       tokensUsed: tokensUsed,
-      llmCallId: llmCallId
+      llmCallId: llmCallId,
+      extractionMethod: extractedData.extractionMethod,
+      hasImages: extractedData.hasImages,
+      imageCount: extractedData.imageCount
     })
 
   } catch (error) {

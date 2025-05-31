@@ -41,6 +41,7 @@ export function useFileExtraction() {
     userId?: string, 
     extractionMethod: 'basic' | 'ai' | 'auto' = 'auto',
     provider: 'anthropic' | 'openai' = 'anthropic',
+    model?: string,
     bypassCache: boolean = false
   ): Promise<ExtractedResumeData | null> => {
     setState(prev => ({ 
@@ -85,10 +86,13 @@ export function useFileExtraction() {
       // Add bypassCache parameter to all endpoints
       formData.append('bypassCache', bypassCache.toString())
       
-      // For PDF files, add extraction method and provider parameters
+      // For PDF files, add extraction method, provider, and model parameters
       if (apiEndpoint === '/api/extract-pdf-ai') {
         formData.append('extractionMethod', extractionMethod)
         formData.append('provider', provider)
+        if (model) {
+          formData.append('model', model)
+        }
       }
 
       // Call the appropriate API endpoint
@@ -205,9 +209,10 @@ export function useFileExtraction() {
     userId?: string, 
     extractionMethod?: 'basic' | 'ai' | 'auto',
     provider?: 'anthropic' | 'openai',
+    model?: string,
     bypassCache: boolean = true
   ) => {
-    return await extractFile(file, userId, extractionMethod, provider, bypassCache)
+    return await extractFile(file, userId, extractionMethod, provider, model, bypassCache)
   }
 
   const getFileTypeInfo = (file: File) => {

@@ -120,7 +120,8 @@ export default function Home() {
     
     if (selectedFile) {
       const extractionProvider = method === 'ai' ? (provider || 'openai') : 'openai'
-      const extracted = await extractFile(selectedFile, session?.user?.id, method, extractionProvider)
+      const selectedModelForExtraction = method === 'ai' ? model : undefined
+      const extracted = await extractFile(selectedFile, session?.user?.id, method, extractionProvider, selectedModelForExtraction)
       if (extracted) {
         setStep('extracted')
       }
@@ -170,7 +171,7 @@ export default function Home() {
       }
 
       // Re-run extraction with new settings and bypass cache to force fresh extraction
-      const extracted = await retryExtraction(selectedFile, session?.user?.id, method, provider, true)
+      const extracted = await retryExtraction(selectedFile, session?.user?.id, method, provider, model, true)
       if (extracted) {
         showAlert({
           title: "Re-extraction Complete",
@@ -364,7 +365,7 @@ export default function Home() {
   const handleRetryExtraction = async () => {
     if (selectedFile) {
       const method = step === 'method-select' ? selectedExtractionMethod : 'auto'
-      await retryExtraction(selectedFile, session?.user?.id, method)
+      await retryExtraction(selectedFile, session?.user?.id, method, selectedProvider, selectedModel)
     }
   }
 
