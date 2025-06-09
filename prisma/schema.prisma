@@ -52,6 +52,7 @@ model User {
   invoices                Invoice[]
   chatbot                 Chatbot[]
   verificationTokens      VerificationToken[]
+  conversations           Conversation[]
 
   @@map("users")
 }
@@ -497,6 +498,59 @@ model Chatbot {
   @@index([conversationId])
   @@index([createdAt])
   @@map("chatbot")
+}
+
+// Resume Chat Conversations
+model Conversation {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  title           String   // Auto-generated or user-defined title
+  lastMessageAt   DateTime @map("last_message_at")
+  messageCount    Int      @default(0) @map("message_count")
+  selectedTemplate String? @map("selected_template") // Last used template
+  selectedModel   String?  @map("selected_model") // Last used model
+  metadata        Json?    // Additional conversation metadata
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages        ConversationMessage[]
+
+  @@index([userId])
+  @@index([lastMessageAt])
+  @@index([createdAt])
+  @@map("conversations")
+}
+
+model ConversationMessage {
+  id              String   @id @default(cuid())
+  conversationId  String   @map("conversation_id")
+  role            MessageRole // system, user, assistant
+  content         String   @db.Text
+  messageIndex    Int      @map("message_index") // Order within conversation
+  
+  // Optional metadata
+  model           String?  // Model used for this message (if assistant)
+  template        String?  // Template used (if relevant)
+  tokensUsed      Int?     @map("tokens_used")
+  costUsd         Decimal? @map("cost_usd") @db.Decimal(10,6)
+  processingTimeMs Int?    @map("processing_time_ms")
+  hasLatexCode    Boolean  @default(false) @map("has_latex_code")
+  
+  // Additional metadata
+  metadata        Json?
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, messageIndex])
+  @@index([conversationId])
+  @@index([role])
+  @@index([createdAt])
+  @@map("conversation_messages")
 }
 
 // Enums

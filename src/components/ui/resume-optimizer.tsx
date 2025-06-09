@@ -37,7 +37,7 @@ import {
 import { ResumeData } from "@/lib/resume-templates"
 import { generatePDF, generateDOCX, downloadBlob } from "@/lib/document-generators"
 import { latexTemplates } from "@/lib/latex-templates"
-import { compileLatexToPDF, downloadLatexSource } from "@/lib/latex-compiler"
+import { openInOverleafBase64 } from "@/lib/overleaf-integration"
 
 interface Template {
   id: string

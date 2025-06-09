@@ -1,0 +1,1 @@
+{"detail":"Tectonic compilation failed: error: document.tex:1: Undefined control sequence\nerror: halted on potentially-recoverable error as specified\n\nnote: Running TeX ...\n\n\nPossible issues: Missing \\usepackage{fontawesome} - detected usage of ['\\\\fa']\n\nTip: Try the /latex-to-pdf endpoint instead, which supports more LaTeX packages."}

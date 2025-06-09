@@ -1,0 +1,233 @@
+"use client"
+
+import { ResumeData } from './resume-templates'
+import { getLatexTemplate } from './latex-templates'
+
+export interface LaTeXCompilationResult {
+  success: boolean
+  latexCode?: string
+  error?: string
+  logs?: string
+}
+
+export interface CompilationResult {
+  success: boolean
+  pdfBlob?: Blob
+  error?: string
+  warnings?: string[]
+  logs?: string
+}
+
+// LaTeX to PDF compilation with improved error handling
+export async function compileLatexToPdf(latexCode: string): Promise<CompilationResult> {
+  try {
+    // Try the external PDF converter service
+    const response = await fetch('/api/compile-latex-to-pdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        latex_code: latexCode,
+        filename: 'optimized_resume.pdf'
+      }),
+    })
+
+    if (response.ok) {
+      const pdfBlob = await response.blob()
+      
+      // Verify the blob is actually a PDF
+      if (pdfBlob.size === 0) {
+        throw new Error('Received empty PDF file')
+      }
+      
+      return {
+        success: true,
+        pdfBlob,
+        logs: 'Compiled successfully using external LaTeX service'
+      }
+    } else {
+      // Get error details from response
+      let errorMessage = 'External LaTeX service failed'
+      try {
+        const errorText = await response.text()
+        const errorData = JSON.parse(errorText)
+        errorMessage = errorData.error || errorData.message || errorMessage
+      } catch {
+        errorMessage = `External service returned ${response.status}: ${response.statusText}`
+      }
+      
+      return {
+        success: false,
+        error: `${errorMessage}. Please try downloading the .tex file and compiling it locally with a LaTeX distribution like TeX Live or MiKTeX.`,
+        logs: `External service failed with status ${response.status}`
+      }
+    }
+  } catch (error) {
+    console.error('LaTeX compilation failed:', error)
+    
+    let errorMessage = 'LaTeX compilation failed'
+    if (error instanceof Error) {
+      if (error.message.includes('fetch')) {
+        errorMessage = 'Could not connect to LaTeX compilation service. Please check your internet connection.'
+      } else {
+        errorMessage = error.message
+      }
+    }
+    
+    return {
+      success: false,
+      error: `${errorMessage}. You can download the .tex file and compile it locally using a LaTeX distribution like TeX Live, MiKTeX, or Overleaf.`,
+      warnings: ['External LaTeX service is not available. Consider setting up a local LaTeX environment.']
+    }
+  }
+}
+
+// Generate LaTeX code from resume data and template
+export async function generateLatexFromTemplate(
+  templateId: string, 
+  resumeData: ResumeData
+): Promise<LaTeXCompilationResult> {
+  try {
+    const template = getLatexTemplate(templateId)
+    if (!template) {
+      return {
+        success: false,
+        error: `Template '${templateId}' not found`
+      }
+    }
+
+    const latexCode = template.generateLaTeX(resumeData)
+    
+    return {
+      success: true,
+      latexCode,
+      logs: `LaTeX code generated successfully using template '${templateId}'`
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error during LaTeX generation'
+    }
+  }
+}
+
+// Preload function (no-op for this implementation)
+export async function preloadSwiftLaTeX(): Promise<void> {
+  // This is now a no-op since we're using external service
+  console.log('LaTeX compiler ready (using external service)')
+}
+
+// Check if LaTeX service is available
+export function isLatexServiceAvailable(): boolean {
+  return typeof window !== 'undefined'
+}
+
+// Main compilation function (existing function for backward compatibility)
+export async function compileResumeToLatex(
+  resumeData: ResumeData,
+  templateId: string = 'altacv'
+): Promise<LaTeXCompilationResult> {
+  try {
+    const template = getLatexTemplate(templateId)
+    if (!template) {
+      return {
+        success: false,
+        error: `Template '${templateId}' not found`
+      }
+    }
+
+    const latexCode = template.generateLaTeX(resumeData)
+    
+    return {
+      success: true,
+      latexCode
+    }
+  } catch (error) {
+    console.error('LaTeX compilation error:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown compilation error'
+    }
+  }
+}
+
+// Download LaTeX source file
+export function downloadLatexSource(templateId: string, resumeData: ResumeData): void {
+  try {
+    const template = getLatexTemplate(templateId)
+    if (!template) {
+      throw new Error(`Template '${templateId}' not found`)
+    }
+
+    const latexCode = template.generateLaTeX(resumeData)
+    const blob = new Blob([latexCode], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${resumeData.personalInfo.name.replace(/\s+/g, '-').toLowerCase()}-resume-${templateId}.tex`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Error downloading LaTeX source:', error)
+    throw error
+  }
+}
+
+// Compile LaTeX to PDF (wrapper for backward compatibility)
+export async function compileLatexToPDF(templateId: string, resumeData: ResumeData): Promise<{
+  success: boolean
+  pdfBuffer?: ArrayBuffer
+  error?: string
+}> {
+  try {
+    const template = getLatexTemplate(templateId)
+    if (!template) {
+      return {
+        success: false,
+        error: `Template '${templateId}' not found`
+      }
+    }
+
+    const latexCode = template.generateLaTeX(resumeData)
+    const result = await compileLatexToPdf(latexCode)
+    
+    if (result.success && result.pdfBlob) {
+      const pdfBuffer = await result.pdfBlob.arrayBuffer()
+      return {
+        success: true,
+        pdfBuffer
+      }
+    } else {
+      return {
+        success: false,
+        error: result.error
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
+  }
+}
+
+// Utility function to escape LaTeX special characters
+export function escapeLatex(text: string): string {
+  if (!text) return ''
+  
+  return text
+    .replace(/\\/g, '\\textbackslash{}')
+    .replace(/\{/g, '\\{')
+    .replace(/\}/g, '\\}')
+    .replace(/\$/g, '\\$')
+    .replace(/&/g, '\\&')
+    .replace(/%/g, '\\%')
+    .replace(/#/g, '\\#')
+    .replace(/\^/g, '\\textasciicircum{}')
+    .replace(/_/g, '\\_')
+    .replace(/~/g, '\\textasciitilde{}')
+} 

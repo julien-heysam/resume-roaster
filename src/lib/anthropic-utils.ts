@@ -1027,4 +1027,103 @@ function validateAnalysisData(analysisData: any): any {
     keywordMatch: analysisData.keywordMatch || { matched: [], missing: [], matchPercentage: 0 },
     atsIssues: Array.isArray(analysisData.atsIssues) ? analysisData.atsIssues : []
   }
+}
+
+/**
+ * Streaming Anthropic API call function
+ */
+export async function callAnthropicStream(
+  userPrompt: string,
+  options: Omit<AnthropicCallOptions, 'tools'> = {}
+): Promise<ReadableStream<Uint8Array>> {
+  const opts = { ...DEFAULT_OPTIONS, ...options }
+
+  console.log('🚀 Starting Anthropic streaming API call...')
+  console.log('Model:', opts.model)
+  console.log('Max tokens:', opts.maxTokens)
+  console.log('Temperature:', opts.temperature)
+  console.log('Prompt length:', userPrompt.length)
+
+  // Prepare request options for streaming
+  const requestOptions: Anthropic.MessageCreateParams = {
+    model: opts.model,
+    max_tokens: opts.maxTokens,
+    temperature: opts.temperature,
+    messages: [
+      {
+        role: 'user',
+        content: userPrompt
+      }
+    ],
+    stream: true
+  }
+
+  // Add system prompt if provided
+  if (opts.systemPrompt) {
+    requestOptions.system = opts.systemPrompt
+  }
+
+  try {
+    const stream = await anthropic.messages.create(requestOptions)
+    
+    return new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder()
+        let accumulatedContent = ''
+        let inputTokens = 0
+        let outputTokens = 0
+        
+        try {
+          for await (const chunk of stream) {
+            if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+              const content = chunk.delta.text
+              accumulatedContent += content
+              outputTokens += 1 // Rough estimation
+              
+              const data = JSON.stringify({
+                chunk: content,
+                isComplete: false,
+                hasLatexCode: false
+              })
+              
+              controller.enqueue(encoder.encode(`data: ${data}\n\n`))
+            }
+            
+            // Check if stream is finished
+            if (chunk.type === 'message_stop') {
+              const hasLatexCode = accumulatedContent.includes('```latex')
+              
+              const finalData = JSON.stringify({
+                chunk: '',
+                isComplete: true,
+                hasLatexCode,
+                metadata: {
+                  tokensUsed: inputTokens + outputTokens,
+                  estimatedCost: calculateCost(opts.model, inputTokens, outputTokens),
+                  stopReason: 'end_turn'
+                }
+              })
+              
+              controller.enqueue(encoder.encode(`data: ${finalData}\n\n`))
+              controller.close()
+              break
+            }
+          }
+        } catch (error) {
+          console.error('Anthropic streaming error:', error)
+          const errorData = JSON.stringify({
+            chunk: '',
+            isComplete: true,
+            hasLatexCode: false,
+            error: error instanceof Error ? error.message : 'Unknown streaming error'
+          })
+          controller.enqueue(encoder.encode(`data: ${errorData}\n\n`))
+          controller.close()
+        }
+      }
+    })
+  } catch (error) {
+    console.error('Failed to create Anthropic stream:', error)
+    throw error
+  }
 } 

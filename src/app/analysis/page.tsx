@@ -308,15 +308,8 @@ Note: Original resume text was not available, using analysis data for optimizati
 
   // Helper function to proceed with existing data
   const proceedWithExistingData = () => {
-    // Store the analysis data for the resume optimizer
-    sessionStorage.setItem('roastId', roastId || '')
-    sessionStorage.setItem('isFromAnalysis', 'true')
-    if (jobDescription) {
-      sessionStorage.setItem('analysisJobDescription', jobDescription)
-    }
-    
-    // Redirect to Resume Optimizer with prefilled parameter
-    router.push('/resume-optimizer?prefilled=true')
+    // Redirect to Resume Optimizer with roast ID in URL
+    router.push(`/resume-optimizer?prefilled=true&roastId=${roastId}`)
   }
 
   // Helper function to proceed with fresh extraction
@@ -360,17 +353,8 @@ Note: Original resume text was not available, using analysis data for optimizati
   const proceedWithOptimizedData = (optimizedData: any, result: any) => {
     console.log('Optimized data ready:', optimizedData)
     
-    // Store the optimized data in session storage with analysis context
-    sessionStorage.setItem('optimizedResumeData', JSON.stringify(optimizedData))
-    sessionStorage.setItem('optimizedDataTimestamp', Date.now().toString())
-    sessionStorage.setItem('isFromAnalysis', 'true')
-    sessionStorage.setItem('roastId', roastId || '')
-    if (jobDescription) {
-      sessionStorage.setItem('analysisJobDescription', jobDescription)
-    }
-    
-    // Redirect to Resume Optimizer with prefilled parameter
-    router.push('/resume-optimizer?prefilled=true')
+    // Redirect to Resume Optimizer with roast ID in URL
+    router.push(`/resume-optimizer?prefilled=true&roastId=${roastId}`)
   }
 
   // Handle PDF image modal

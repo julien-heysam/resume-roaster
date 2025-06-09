@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overleaf Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            margin: 20px 0;
+        }
+        button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #e55a2b;
+        }
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Overleaf Integration Test</h1>
+    
+    <div class="container">
+        <h2>Test LaTeX Document</h2>
+        <div class="code-block" id="latexCode">\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\title{Test Resume}
+\author{John Doe}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Professional Summary}
+Experienced software developer with expertise in web technologies and LaTeX document preparation.
+
+\section{Skills}
+\begin{itemize}
+    \item JavaScript/TypeScript
+    \item React/Next.js
+    \item LaTeX/Overleaf
+    \item PDF Generation
+\end{itemize}
+
+\section{Experience}
+\subsection{Senior Developer}
+\textbf{Tech Company} \hfill 2020 - Present
+\begin{itemize}
+    \item Developed web applications using modern frameworks
+    \item Implemented LaTeX integration for document generation
+    \item Collaborated with cross-functional teams
+\end{itemize}
+
+\end{document}</div>
+        
+        <button onclick="openInOverleaf()">🚀 Open in Overleaf</button>
+        <button onclick="downloadLatex()">📥 Download .tex</button>
+        <button onclick="copyToClipboard()">📋 Copy LaTeX Code</button>
+    </div>
+
+    <div class="container">
+        <h3>How it works:</h3>
+        <ol>
+            <li><strong>Open in Overleaf:</strong> Creates a form and submits the LaTeX code to Overleaf using their API</li>
+            <li><strong>Download .tex:</strong> Downloads the LaTeX source file to your computer</li>
+            <li><strong>Copy LaTeX Code:</strong> Copies the code to your clipboard</li>
+        </ol>
+        
+        <p><strong>Benefits of Overleaf integration:</strong></p>
+        <ul>
+            <li>✅ No local LaTeX installation required</li>
+            <li>✅ Professional PDF compilation in the cloud</li>
+            <li>✅ Real-time collaboration features</li>
+            <li>✅ Version control and history</li>
+            <li>✅ Access to all LaTeX packages</li>
+            <li>✅ Works on any device with a browser</li>
+        </ul>
+    </div>
+
+    <script>
+        function openInOverleaf() {
+            const latexCode = document.getElementById('latexCode').textContent;
+            
+            try {
+                // Convert LaTeX code to Base64 (same method as our integration)
+                const base64Code = btoa(unescape(encodeURIComponent(latexCode)));
+                const dataUri = `data:application/x-tex;base64,${base64Code}`;
+
+                // Create a form element to submit to Overleaf
+                const form = document.createElement('form');
+                form.action = 'https://www.overleaf.com/docs';
+                form.method = 'post';
+                form.target = '_blank';
+                form.style.display = 'none';
+
+                // Add the Base64 encoded LaTeX code
+                const snippetInput = document.createElement('input');
+                snippetInput.type = 'hidden';
+                snippetInput.name = 'snip_uri';
+                snippetInput.value = dataUri;
+                form.appendChild(snippetInput);
+
+                // Set the engine to pdflatex
+                const engineInput = document.createElement('input');
+                engineInput.type = 'hidden';
+                engineInput.name = 'engine';
+                engineInput.value = 'pdflatex';
+                form.appendChild(engineInput);
+
+                // Set the main document name
+                const mainDocInput = document.createElement('input');
+                mainDocInput.type = 'hidden';
+                mainDocInput.name = 'main_document';
+                mainDocInput.value = 'test_resume.tex';
+                form.appendChild(mainDocInput);
+
+                // Add the form to the document and submit it
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+
+                alert('✅ Opening in Overleaf! A new tab should open with your LaTeX document ready to compile.');
+
+            } catch (error) {
+                console.error('Error opening in Overleaf:', error);
+                alert('❌ Failed to open in Overleaf. Please try copying the LaTeX code manually.');
+            }
+        }
+
+        function downloadLatex() {
+            const latexCode = document.getElementById('latexCode').textContent;
+            
+            try {
+                const blob = new Blob([latexCode], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'test_resume.tex';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                alert('✅ LaTeX file downloaded! You can now compile it locally or upload it to Overleaf.');
+
+            } catch (error) {
+                console.error('Error downloading LaTeX source:', error);
+                alert('❌ Failed to download LaTeX file.');
+            }
+        }
+
+        function copyToClipboard() {
+            const latexCode = document.getElementById('latexCode').textContent;
+            
+            navigator.clipboard.writeText(latexCode).then(() => {
+                alert('✅ LaTeX code copied to clipboard!');
+            }).catch(err => {
+                console.error('Error copying to clipboard:', err);
+                alert('❌ Failed to copy to clipboard.');
+            });
+        }
+    </script>
+</body>
+</html> 

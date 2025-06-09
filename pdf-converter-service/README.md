@@ -1,249 +1,163 @@
-# PDF to Image Converter Service
+# PDF Converter Service
 
-A FastAPI microservice that converts PDF files to JPEG images, designed for deployment on Heroku.
+A FastAPI service that converts PDF files to JPEG images and compiles LaTeX code to PDF documents.
 
 ## Features
 
-- Convert PDF files to high-quality JPEG images
-- Returns base64-encoded images for easy frontend integration
-- Supports up to 3 pages per PDF
-- CORS enabled for frontend integration
-- Health check endpoints for monitoring
-- Optimized for Heroku deployment
+- **PDF to Images**: Convert PDF files to JPEG images (up to 3 pages)
+- **LaTeX to PDF**: Compile LaTeX code to PDF documents
+- **Multiple LaTeX Engines**: Support for both traditional LaTeX and Tectonic
+- **Heroku Ready**: Configured for easy deployment on Heroku
 
 ## API Endpoints
 
-### `POST /pdf-to-images`
-Convert a PDF file to JPEG images.
+### Health Check
+- `GET /` - Basic health check
+- `GET /health` - Detailed health status
 
-**Request:**
-- Method: `POST`
-- Content-Type: `multipart/form-data`
-- Body: PDF file upload
+### LaTeX Compilation
+- `POST /latex-to-pdf` - Compile LaTeX using traditional engines (pdflatex)
+- `POST /latex-to-pdf-tectonic` - Compile LaTeX using Tectonic (lightweight alternative)
 
-**Response:**
-```json
-{
-  "success": true,
-  "images": ["base64_image_1", "base64_image_2", "base64_image_3"],
-  "page_count": 3,
-  "original_filename": "document.pdf"
-}
-```
-
-### `GET /health`
-Health check endpoint for monitoring.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "service": "pdf-converter"
-}
-```
+### PDF Processing
+- `POST /pdf-to-images` - Convert PDF to JPEG images
 
 ## Local Development
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Prerequisites
+- Python 3.8+
+- LaTeX distribution (TeX Live recommended)
+- poppler-utils (for PDF to image conversion)
 
-2. **Install system dependencies (Ubuntu/Debian):**
-   ```bash
-   sudo apt-get update
-   sudo apt-get install poppler-utils
-   ```
+### Setup
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-3. **Run the server:**
-   ```bash
-   python app.py
-   ```
+# Run the service
+python app.py
+```
 
-4. **Test the API:**
-   ```bash
-   curl -X POST "http://localhost:8000/pdf-to-images" \
-        -H "accept: application/json" \
-        -H "Content-Type: multipart/form-data" \
-        -F "file=@your-pdf-file.pdf"
-   ```
+The service will be available at `http://localhost:8000`
+
+### Testing
+```bash
+# Test the service
+python test_latex.py
+
+# Test with custom URL
+python test_latex.py https://your-app.herokuapp.com
+```
 
 ## Heroku Deployment
 
-### Prerequisites
-- Heroku CLI installed
-- Git repository initialized
+### 1. Setup Buildpacks
+```bash
+# Make the setup script executable
+chmod +x setup-heroku.sh
 
-### Deployment Steps
-
-1. **Create a new Heroku app:**
-   ```bash
-   heroku create your-pdf-converter-app
-   ```
-
-2. **Add the apt buildpack for system dependencies:**
-   ```bash
-   heroku buildpacks:add --index 1 heroku-community/apt
-   heroku buildpacks:add --index 2 heroku/python
-   ```
-
-3. **Deploy to Heroku:**
-   ```bash
-   git add .
-   git commit -m "Initial deployment"
-   git push heroku main
-   ```
-
-4. **Check the deployment:**
-   ```bash
-   heroku logs --tail
-   heroku open
-   ```
-
-### Environment Variables
-
-No additional environment variables are required for basic functionality.
-
-### Buildpacks Used
-
-1. `heroku-community/apt` - For installing `poppler-utils`
-2. `heroku/python` - For Python runtime
-
-## Frontend Integration
-
-### JavaScript/TypeScript Example
-
-```typescript
-async function convertPdfToImages(pdfFile: File): Promise<string[]> {
-  const formData = new FormData();
-  formData.append('file', pdfFile);
-
-  try {
-    const response = await fetch('https://your-pdf-converter-app.herokuapp.com/pdf-to-images', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    
-    if (result.success) {
-      return result.images; // Array of base64 strings
-    } else {
-      throw new Error('PDF conversion failed');
-    }
-  } catch (error) {
-    console.error('Error converting PDF:', error);
-    throw error;
-  }
-}
-
-// Usage
-const pdfFile = document.getElementById('pdf-input').files[0];
-const images = await convertPdfToImages(pdfFile);
-
-// Display images
-images.forEach((base64Image, index) => {
-  const img = document.createElement('img');
-  img.src = `data:image/jpeg;base64,${base64Image}`;
-  document.body.appendChild(img);
-});
+# Run the setup script
+./setup-heroku.sh
 ```
 
-### React Example
+Or manually:
+```bash
+# Add LaTeX buildpack
+heroku buildpacks:add https://github.com/Thermondo/heroku-buildpack-tex
 
-```tsx
-import React, { useState } from 'react';
+# Add Python buildpack
+heroku buildpacks:add heroku/python
+```
 
-const PdfConverter: React.FC = () => {
-  const [images, setImages] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+### 2. Deploy
+```bash
+git add .
+git commit -m "Add LaTeX compilation service"
+git push heroku main
+```
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+### 3. Verify Deployment
+```bash
+# Check logs
+heroku logs --tail
 
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
+# Test the service
+python test_latex.py https://your-app.herokuapp.com
+```
 
-      const response = await fetch('https://your-pdf-converter-app.herokuapp.com/pdf-to-images', {
-        method: 'POST',
-        body: formData,
-      });
+## API Usage Examples
 
-      const result = await response.json();
-      
-      if (result.success) {
-        setImages(result.images);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
+### LaTeX to PDF
+```python
+import requests
+
+latex_code = r"""
+\documentclass{article}
+\begin{document}
+\title{My Document}
+\maketitle
+Hello, World!
+\end{document}
+"""
+
+response = requests.post(
+    "https://your-app.herokuapp.com/latex-to-pdf",
+    json={
+        "latex_code": latex_code,
+        "filename": "my_document.pdf"
     }
-  };
+)
 
-  return (
-    <div>
-      <input type="file" accept=".pdf" onChange={handleFileUpload} />
-      {loading && <p>Converting PDF...</p>}
-      <div>
-        {images.map((image, index) => (
-          <img
-            key={index}
-            src={`data:image/jpeg;base64,${image}`}
-            alt={`Page ${index + 1}`}
-            style={{ maxWidth: '100%', margin: '10px' }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+if response.status_code == 200:
+    with open("output.pdf", "wb") as f:
+        f.write(response.content)
+```
 
-export default PdfConverter;
+### PDF to Images
+```python
+import requests
+
+with open("document.pdf", "rb") as f:
+    response = requests.post(
+        "https://your-app.herokuapp.com/pdf-to-images",
+        files={"file": f}
+    )
+
+if response.status_code == 200:
+    data = response.json()
+    images = data["images"]  # Base64 encoded JPEG images
 ```
 
 ## Troubleshooting
 
-### Common Issues
+### LaTeX Compilation Issues
+1. **Engine not found**: Try the Tectonic endpoint (`/latex-to-pdf-tectonic`)
+2. **Compilation errors**: Check the error message for specific LaTeX issues
+3. **Timeout**: Complex documents may need optimization
 
-1. **"poppler-utils not found" error:**
-   - Ensure the apt buildpack is added before the Python buildpack
-   - Check that `Aptfile` contains `poppler-utils`
+### Heroku Deployment Issues
+1. **Buildpack errors**: Ensure both LaTeX and Python buildpacks are added
+2. **Memory issues**: LaTeX compilation can be memory-intensive
+3. **Timeout**: Heroku has a 30-second request timeout
 
-2. **Memory issues on Heroku:**
-   - Consider upgrading to a higher dyno type for large PDFs
-   - The service limits to 3 pages to manage memory usage
+### Common LaTeX Packages
+The service includes common packages:
+- `amsmath`, `amsfonts`, `amssymb` - Mathematics
+- `inputenc` - Character encoding
+- `geometry` - Page layout
+- `graphicx` - Images
 
-3. **CORS issues:**
-   - Update the `allow_origins` in the CORS middleware to your specific domain in production
+For additional packages, they should be available in the TeX Live distribution included with the buildpack.
 
-### Monitoring
+## Environment Variables
 
-- Use `heroku logs --tail` to monitor real-time logs
-- The `/health` endpoint can be used for uptime monitoring
-- Consider adding application monitoring tools like New Relic or Datadog
+- `PORT` - Server port (default: 8000)
+- `TEXMFCACHE` - LaTeX cache directory (auto-configured)
+- `TEXMFVAR` - LaTeX variable directory (auto-configured)
 
-## Performance Considerations
+## Limitations
 
-- **DPI Setting:** Currently set to 150 DPI for good quality/performance balance
-- **Page Limit:** Limited to 3 pages to prevent memory issues
-- **Image Quality:** JPEG quality set to 85% for optimal size/quality ratio
-- **Memory Usage:** Each page conversion uses approximately 10-20MB of memory
-
-## Security Considerations
-
-- File type validation ensures only PDF files are processed
-- No file storage - all processing is done in memory
-- CORS should be configured for your specific domain in production
-- Consider adding rate limiting for production use
-
-## License
-
-MIT License - feel free to use and modify as needed. 
+- PDF to image conversion limited to first 3 pages
+- LaTeX compilation timeout: 30 seconds
+- Maximum file size depends on Heroku limits
+- Some advanced LaTeX packages may not be available 

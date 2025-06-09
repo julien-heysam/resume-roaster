@@ -292,6 +292,165 @@ export class LlmCallService {
   }
 }
 
+// Conversation service for resume chat
+export class ConversationService {
+  // Create a new conversation
+  static async create(data: {
+    userId: string
+    title: string
+    selectedTemplate?: string
+    selectedModel?: string
+    metadata?: any
+  }) {
+    return await db.conversation.create({
+      data: {
+        ...data,
+        lastMessageAt: new Date(),
+        messageCount: 0
+      }
+    })
+  }
+
+  // Get user's conversations
+  static async getUserConversations(userId: string, limit = 20) {
+    return await db.conversation.findMany({
+      where: { userId },
+      orderBy: { lastMessageAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        lastMessageAt: true,
+        messageCount: true,
+        selectedTemplate: true,
+        selectedModel: true,
+        createdAt: true
+      }
+    })
+  }
+
+  // Get conversation with messages
+  static async getConversationWithMessages(conversationId: string, userId: string) {
+    return await db.conversation.findFirst({
+      where: { 
+        id: conversationId,
+        userId 
+      },
+      include: {
+        messages: {
+          orderBy: { messageIndex: 'asc' }
+        }
+      }
+    })
+  }
+
+  // Add message to conversation
+  static async addMessage(data: {
+    conversationId: string
+    role: 'system' | 'user' | 'assistant'
+    content: string
+    model?: string
+    template?: string
+    tokensUsed?: number
+    costUsd?: number
+    processingTimeMs?: number
+    hasLatexCode?: boolean
+    metadata?: any
+  }) {
+    // Get current message count to set messageIndex
+    const conversation = await db.conversation.findUnique({
+      where: { id: data.conversationId },
+      select: { messageCount: true }
+    })
+
+    if (!conversation) {
+      throw new Error('Conversation not found')
+    }
+
+    const messageIndex = conversation.messageCount
+
+    // Create the message
+    const message = await db.conversationMessage.create({
+      data: {
+        ...data,
+        messageIndex,
+        costUsd: data.costUsd || 0
+      }
+    })
+
+    // Update conversation stats
+    await db.conversation.update({
+      where: { id: data.conversationId },
+      data: {
+        messageCount: { increment: 1 },
+        lastMessageAt: new Date(),
+        selectedTemplate: data.template || undefined,
+        selectedModel: data.model || undefined
+      }
+    })
+
+    return message
+  }
+
+  // Update conversation title
+  static async updateTitle(conversationId: string, userId: string, title: string) {
+    return await db.conversation.update({
+      where: { 
+        id: conversationId,
+        userId 
+      },
+      data: { title }
+    })
+  }
+
+  // Delete conversation
+  static async delete(conversationId: string, userId: string) {
+    return await db.conversation.delete({
+      where: { 
+        id: conversationId,
+        userId 
+      }
+    })
+  }
+
+  // Generate conversation title from first message
+  static generateTitle(firstMessage: string): string {
+    // Take first 50 characters and clean up
+    const title = firstMessage
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .substring(0, 50)
+    
+    return title.length < firstMessage.length ? title + '...' : title
+  }
+
+  // Get conversation stats
+  static async getStats(userId: string) {
+    const totalConversations = await db.conversation.count({
+      where: { userId }
+    })
+
+    const totalMessages = await db.conversationMessage.count({
+      where: {
+        conversation: { userId }
+      }
+    })
+
+    const recentActivity = await db.conversation.findFirst({
+      where: { userId },
+      orderBy: { lastMessageAt: 'desc' },
+      select: { lastMessageAt: true }
+    })
+
+    return {
+      totalConversations,
+      totalMessages,
+      lastActivity: recentActivity?.lastMessageAt
+    }
+  }
+}
+
 // User management
 export class UserService {
   // Get or create user

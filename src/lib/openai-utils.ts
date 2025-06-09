@@ -1356,4 +1356,109 @@ function validateAnalysisData(analysisData: any): any {
     keywordMatch: analysisData.keywordMatch || { matched: [], missing: [], matchPercentage: 0 },
     atsIssues: Array.isArray(analysisData.atsIssues) ? analysisData.atsIssues : []
   }
+}
+
+/**
+ * Streaming OpenAI API call function
+ */
+export async function callOpenAIStream(
+  userPrompt: string,
+  options: Omit<OpenAICallOptions, 'tools'> = {}
+): Promise<ReadableStream<Uint8Array>> {
+  const opts = { ...DEFAULT_OPTIONS, ...options }
+
+  console.log('🚀 Starting OpenAI streaming API call...')
+  console.log('Model:', opts.model)
+  console.log('Max tokens:', opts.maxTokens)
+  console.log('Temperature:', opts.temperature)
+  console.log('Prompt length:', userPrompt.length)
+
+  // Prepare messages
+  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = []
+  
+  if (opts.systemPrompt) {
+    messages.push({
+      role: 'system',
+      content: opts.systemPrompt
+    })
+  }
+  
+  messages.push({
+    role: 'user',
+    content: userPrompt
+  })
+
+  // Prepare request options for streaming
+  const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParams = {
+    model: opts.model,
+    messages,
+    max_tokens: opts.maxTokens,
+    temperature: opts.temperature,
+    stream: true
+  }
+
+  try {
+    const stream = await openai.chat.completions.create(requestOptions)
+    
+    return new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder()
+        let accumulatedContent = ''
+        let inputTokens = 0
+        let outputTokens = 0
+        
+        try {
+          for await (const chunk of stream) {
+            const delta = chunk.choices[0]?.delta
+            
+            if (delta?.content) {
+              accumulatedContent += delta.content
+              outputTokens += 1 // Rough estimation
+              
+              const data = JSON.stringify({
+                chunk: delta.content,
+                isComplete: false,
+                hasLatexCode: false
+              })
+              
+              controller.enqueue(encoder.encode(`data: ${data}\n\n`))
+            }
+            
+            // Check if stream is finished
+            if (chunk.choices[0]?.finish_reason) {
+              const hasLatexCode = accumulatedContent.includes('```latex')
+              
+              const finalData = JSON.stringify({
+                chunk: '',
+                isComplete: true,
+                hasLatexCode,
+                metadata: {
+                  tokensUsed: inputTokens + outputTokens,
+                  estimatedCost: calculateCost(opts.model, inputTokens, outputTokens),
+                  finishReason: chunk.choices[0].finish_reason
+                }
+              })
+              
+              controller.enqueue(encoder.encode(`data: ${finalData}\n\n`))
+              controller.close()
+              break
+            }
+          }
+        } catch (error) {
+          console.error('OpenAI streaming error:', error)
+          const errorData = JSON.stringify({
+            chunk: '',
+            isComplete: true,
+            hasLatexCode: false,
+            error: error instanceof Error ? error.message : 'Unknown streaming error'
+          })
+          controller.enqueue(encoder.encode(`data: ${errorData}\n\n`))
+          controller.close()
+        }
+      }
+    })
+  } catch (error) {
+    console.error('Failed to create OpenAI stream:', error)
+    throw error
+  }
 } 

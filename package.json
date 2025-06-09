@@ -24,6 +24,7 @@
     "@anthropic-ai/sdk": "^0.52.0",
     "@auth/prisma-adapter": "^2.7.2",
     "@napi-rs/canvas": "^0.1.70",
+    "@openai/agents": "^0.0.3",
     "@pinecone-database/pinecone": "^6.0.1",
     "@prisma/client": "^6.1.0",
     "@radix-ui/react-dialog": "^1.1.14",
@@ -85,7 +86,7 @@
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
-    "zod": "^3.25.28"
+    "zod": "^3.25.53"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

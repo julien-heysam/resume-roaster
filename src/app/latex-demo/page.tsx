@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 import { latexTemplates } from "@/lib/latex-templates"
 import { sampleResumeData } from "@/lib/sample-resume-data"
-import { downloadLatexSource, compileLatexToPDF } from "@/lib/latex-compiler"
+import { openInOverleafBase64, downloadLatexSource } from "@/lib/overleaf-integration"
 import { downloadBlob } from "@/lib/document-generators"
 import Link from "next/link"
 
@@ -37,26 +37,23 @@ export default function LaTeXDemoPage() {
 
   const downloadSource = () => {
     try {
-      downloadLatexSource(selectedTemplate, sampleResumeData)
+      const template = getCurrentTemplate()
+      const latexCode = template.generateLaTeX(sampleResumeData)
+      downloadLatexSource(latexCode, `${sampleResumeData.personalInfo.name.replace(/\s+/g, '-').toLowerCase()}-resume-${selectedTemplate}.tex`)
     } catch (error) {
       console.error('Error downloading LaTeX source:', error)
       alert('Failed to download LaTeX source. Please try again.')
     }
   }
 
-  const downloadPDF = async () => {
+  const openInOverleaf = () => {
     try {
-      const result = await compileLatexToPDF(selectedTemplate, sampleResumeData)
-      
-      if (result.success && result.pdfBuffer) {
-        const blob = new Blob([result.pdfBuffer], { type: 'application/pdf' })
-        downloadBlob(blob, 'alex-johnson-resume-latex.pdf')
-      } else {
-        alert(`PDF compilation failed: ${result.error || 'Unknown error'}. You can download the LaTeX source and compile it manually.`)
-      }
+      const template = getCurrentTemplate()
+      const latexCode = template.generateLaTeX(sampleResumeData)
+      openInOverleafBase64(latexCode, `${sampleResumeData.personalInfo.name.replace(/\s+/g, '-').toLowerCase()}-resume-${selectedTemplate}.tex`)
     } catch (error) {
-      console.error('Error compiling LaTeX to PDF:', error)
-      alert('Failed to compile LaTeX to PDF. You can download the LaTeX source and compile it manually.')
+      console.error('Error opening in Overleaf:', error)
+      alert('Failed to open in Overleaf. You can download the LaTeX source and compile it manually.')
     }
   }
 
@@ -166,9 +163,11 @@ export default function LaTeXDemoPage() {
                         <Download className="h-4 w-4 mr-2" />
                         Download .tex
                       </Button>
-                      <Button onClick={downloadPDF} className="bg-purple-600 hover:bg-purple-700">
-                        <Download className="h-4 w-4 mr-2" />
-                        Compile PDF
+                      <Button onClick={openInOverleaf} className="bg-orange-600 hover:bg-orange-700">
+                        <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        Open in Overleaf
                       </Button>
                     </div>
                   </div>

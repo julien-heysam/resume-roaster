@@ -351,29 +351,8 @@ function DashboardContent() {
   // New function to route to resume optimizer with pre-filled data
   const routeToResumeOptimizer = (analysis: AnalysisResult) => {
     try {
-      // Store the resume data and job description in sessionStorage
-      if (analysis.data.resumeData) {
-        sessionStorage.setItem('optimizedResumeData', JSON.stringify(analysis.data.resumeData))
-      }
-      
-      if (analysis.data.jobDescription) {
-        sessionStorage.setItem('analysisJobDescription', analysis.data.jobDescription)
-      }
-      
-      // Store analysis metadata
-      sessionStorage.setItem('isFromAnalysis', 'true')
-      sessionStorage.setItem('optimizedDataTimestamp', new Date().toISOString())
-      
-      if (analysis.documentId) {
-        sessionStorage.setItem('documentId', analysis.documentId)
-      }
-      
-      if (analysis.id) {
-        sessionStorage.setItem('roastId', analysis.id)
-      }
-      
-      // Navigate to resume optimizer with prefilled flag
-      router.push('/resume-optimizer?prefilled=true')
+      // Navigate to resume optimizer with roast ID in URL
+      router.push(`/resume-optimizer?prefilled=true&roastId=${analysis.id}`)
     } catch (error) {
       console.error('Error preparing data for resume optimizer:', error)
       toast.error('Failed to prepare data. Please try again.')

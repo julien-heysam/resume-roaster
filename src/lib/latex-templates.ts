@@ -8,7 +8,7 @@ export interface LaTeXTemplate {
   atsOptimized: boolean
   previewImage: string
   overleafUrl?: string
-  generateLaTeX: (data: ResumeData) => string
+  generateLaTeX: string
 }
 
 // AltaCV Template - Modern, clean design
@@ -20,22 +20,7 @@ export const altaCVTemplate: LaTeXTemplate = {
   atsOptimized: true,
   previewImage: '/images/latex-previews/altacv-preview.png',
   overleafUrl: 'https://www.overleaf.com/latex/templates/altacv-template/trgqjpwnmtgv',
-  generateLaTeX: (data: ResumeData) => {
-    const escapeLatex = (text: string): string => {
-      return text
-        .replace(/\\/g, '\\textbackslash{}')
-        .replace(/\{/g, '\\{')
-        .replace(/\}/g, '\\}')
-        .replace(/\$/g, '\\$')
-        .replace(/&/g, '\\&')
-        .replace(/%/g, '\\%')
-        .replace(/#/g, '\\#')
-        .replace(/\^/g, '\\textasciicircum{}')
-        .replace(/_/g, '\\_')
-        .replace(/~/g, '\\textasciitilde{}')
-    }
-
-    return `%%%%%%%%%%%%%%%%%
+  generateLaTeX: `%%%%%%%%%%%%%%%%%
 % This is an sample CV template created using altacv.cls
 % (v1.7.2, 28 August 2024) written by LianTze Lim (liantze@gmail.com). Compiles with pdfLaTeX, XeLaTeX and LuaLaTeX.
 %
@@ -48,7 +33,12 @@ export const altaCVTemplate: LaTeXTemplate = {
 %% version 2003/12/01 or later.
 %%%%%%%%%%%%%%%%
 
+%% Use the "normalphoto" option if you want a normal photo instead of cropped to a circle
+% \\documentclass[10pt,a4paper,normalphoto]{altacv}
+
 \\documentclass[10pt,a4paper,ragged2e,withhyper]{altacv}
+%% AltaCV uses the fontawesome5 and simpleicons packages.
+%% See http://texdoc.net/pkg/fontawesome5 and http://texdoc.net/pkg/simpleicons for full list of symbols.
 
 % Change the page layout if you need to
 \\geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
@@ -58,6 +48,8 @@ export const altaCVTemplate: LaTeXTemplate = {
 
 % Change the font if you want to, depending on whether
 % you're using pdflatex or xelatex/lualatex
+% WHEN COMPILING WITH XELATEX PLEASE USE
+% xelatex -shell-escape -output-driver="xdvipdfmx -z 0" sample.tex
 \\iftutex 
   % If using xelatex or lualatex:
   \\setmainfont{Roboto Slab}
@@ -67,6 +59,7 @@ export const altaCVTemplate: LaTeXTemplate = {
   % If using pdflatex:
   \\usepackage[rm]{roboto}
   \\usepackage[defaultsans]{lato}
+  % \\usepackage{sourcesanspro}
   \\renewcommand{\\familydefault}{\\sfdefault}
 \\fi
 
@@ -91,24 +84,81 @@ export const altaCVTemplate: LaTeXTemplate = {
 \\renewcommand{\\cvsectionfont}{\\LARGE\\rmfamily\\bfseries}
 \\renewcommand{\\cvsubsectionfont}{\\large\\bfseries}
 
+
 % Change the bullets for itemize and rating marker
+% for \\cvskill if you want to
 \\renewcommand{\\cvItemMarker}{{\\small\\textbullet}}
 \\renewcommand{\\cvRatingMarker}{\\faCircle}
+% ...and the markers for the date/location for \\cvevent
+% \\renewcommand{\\cvDateMarker}{\\faCalendar*[regular]}
+% \\renewcommand{\\cvLocationMarker}{\\faMapMarker*}
 
+
+% If your CV/résumé is in a language other than English,
+% then you probably want to change these so that when you
+% copy-paste from the PDF or run pdftotext, the location
+% and date marker icons for \\cvevent will paste as correct
+% translations. For example Spanish:
+% \\renewcommand{\\locationname}{Ubicación}
+% \\renewcommand{\\datename}{Fecha}
+
+
+%% Use (and optionally edit if necessary) this .tex if you
+%% want to use an author-year reference style like APA(6)
+%% for your publication list
+% \\input{pubs-authoryear.tex}
+
+%% Use (and optionally edit if necessary) this .tex if you
+%% want an originally numerical reference style like IEEE
+%% for your publication list
+\\input{pubs-num.tex}
+
+%% sample.bib contains your publications
+\\addbibresource{sample.bib}
+% \\usepackage{academicons}\\let\\faOrcid\\aiOrcid
 \\begin{document}
-\\name{${escapeLatex(data.personalInfo.name || 'Your Name Here')}}
-\\tagline{${escapeLatex(data.personalInfo.jobTitle || 'Your Position or Tagline Here')}}
+\\name{Your Name Here}
+\\tagline{Your Position or Tagline Here}
+%% You can add multiple photos on the left or right
+\\photoR{2.8cm}{Globe_High}
+% \\photoL{2.5cm}{Yacht_High,Suitcase_High}
 
 \\personalinfo{%
-  \\email{${escapeLatex(data.personalInfo.email || 'your_name@email.com')}}
-  \\phone{${escapeLatex(data.personalInfo.phone || '000-00-0000')}}
-  \\location{${escapeLatex(data.personalInfo.location || 'Location, COUNTRY')}}
-  ${data.personalInfo.linkedin ? `\\linkedin{${escapeLatex(data.personalInfo.linkedin)}}` : ''}
-  ${data.personalInfo.github ? `\\github{${escapeLatex(data.personalInfo.github)}}` : ''}
-  ${data.personalInfo.portfolio ? `\\homepage{${escapeLatex(data.personalInfo.portfolio)}}` : ''}
+  % Not all of these are required!
+  \\email{your_name@email.com}
+  \\phone{000-00-0000}
+  \\mailaddress{Åddrésş, Street, 00000 Cóuntry}
+  \\location{Location, COUNTRY}
+  \\homepage{www.homepage.com}
+  % \\twitter{@twitterhandle}
+  \\xtwitter{@x-handle}
+  \\linkedin{your_id}
+  \\github{your_id}
+  \\orcid{0000-0000-0000-0000}
+  %% You can add your own arbitrary detail with
+  %% \\printinfo{symbol}{detail}[optional hyperlink prefix]
+  % \\printinfo{\\faPaw}{Hey ho!}[https://example.com/]
+
+  %% Or you can declare your own field with
+  %% \\NewInfoFiled{fieldname}{symbol}[optional hyperlink prefix] and use it:
+  % \\NewInfoField{gitlab}{\\faGitlab}[https://gitlab.com/]
+  % \\gitlab{your_id}
+  %%
+  %% For services and platforms like Mastodon where there isn't a
+  %% straightforward relation between the user ID/nickname and the hyperlink,
+  %% you can use \\printinfo directly e.g.
+  % \\printinfo{\\faMastodon}{@username@instace}[https://instance.url/@username]
+  %% But if you absolutely want to create new dedicated info fields for
+  %% such platforms, then use \\NewInfoField* with a star:
+  % \\NewInfoField*{mastodon}{\\faMastodon}
+  %% then you can use \\mastodon, with TWO arguments where the 2nd argument is
+  %% the full hyperlink.
+  % \\mastodon{@username@instance}{https://instance.url/@username}
 }
 
 \\makecvheader
+%% Depending on your tastes, you may want to make fonts of itemize environments slightly smaller
+% \\AtBeginEnvironment{itemize}{\\small}
 
 %% Set the left/right column width ratio to 6:4.
 \\columnratio{0.6}
@@ -118,66 +168,162 @@ export const altaCVTemplate: LaTeXTemplate = {
 \\begin{paracol}{2}
 \\cvsection{Experience}
 
-${data.experience.map(exp => `
-\\cvevent{${escapeLatex(exp.title || 'Job Title')}}{${escapeLatex(exp.company || 'Company')}}{${escapeLatex(exp.startDate || 'Start')} -- ${escapeLatex(exp.endDate || 'End')}}{${escapeLatex(exp.location || 'Location')}}
+\\cvevent{Job Title 1}{Company 1}{Month 20XX -- Ongoing}{Location}
 \\begin{itemize}
-${exp.description.map(desc => `\\item ${escapeLatex(desc)}`).join('\n')}
-${exp.achievements?.map(ach => `\\item ${escapeLatex(ach)}`).join('\n') || ''}
+\\item Job description 1
+\\item Job description 2
 \\end{itemize}
 
 \\divider
-`).join('')}
 
-${data.projects && data.projects.length > 0 ? `
+\\cvevent{Job Title 2}{Company 2}{Month 20XX -- Ongoing}{Location}
+\\begin{itemize}
+\\item Job description 1
+\\item Job description 2
+\\end{itemize}
+
 \\cvsection{Projects}
 
-${data.projects.map(project => `
-\\cvevent{${escapeLatex(project.name || 'Project Name')}}{${escapeLatex(project.technologies?.join(', ') || 'Technologies')}}{}{}
-${escapeLatex(project.description || 'Project description')}
+\\cvevent{Project 1}{Funding agency/institution}{}{}
+\\begin{itemize}
+\\item Details
+\\end{itemize}
 
 \\divider
-`).join('')}
-` : ''}
+
+\\cvevent{Project 2}{Funding agency/institution}{Project duration}{}
+A short abstract would also work.
+
+\\medskip
+
+\\cvsection{A Day of My Life}
+
+% Adapted from @Jake's answer from http://tex.stackexchange.com/a/82729/226
+% \\wheelchart{outer radius}{inner radius}{
+% comma-separated list of value/text width/color/detail}
+\\wheelchart{1.5cm}{0.5cm}{%
+  6/8em/accent!30/{Sleep,\\\\beautiful sleep},
+  3/8em/accent!40/Hopeful novelist by night,
+  8/8em/accent!60/Daytime job,
+  2/10em/accent/Sports and relaxation,
+  5/6em/accent!20/Spending time with family
+}
+
+% use ONLY \\newpage if you want to force a page break for
+% ONLY the current column
+\\newpage
+
+\\cvsection{Publications}
+
+%% Specify your last name(s) and first name(s) as given in the .bib to automatically bold your own name in the publications list.
+%% One caveat: You need to write \\bibnamedelima where there's a space in your name for this to work properly; or write \\bibnamedelimi if you use initials in the .bib
+%% You can specify multiple names, especially if you have changed your name or if you need to highlight multiple authors.
+\\mynames{Lim/Lian\\bibnamedelima Tze,
+  Wong/Lian\\bibnamedelima Tze,
+  Lim/Tracy,
+  Lim/L.\\bibnamedelimi T.}
+%% MAKE SURE THERE IS NO SPACE AFTER THE FINAL NAME IN YOUR \\mynames LIST
+
+\\nocite{*}
+
+\\printbibliography[heading=pubtype,title={\\printinfo{\\faBook}{Books}},type=book]
+
+\\divider
+
+\\printbibliography[heading=pubtype,title={\\printinfo{\\faFile*[regular]}{Journal Articles}},type=article]
+
+\\divider
+
+\\printbibliography[heading=pubtype,title={\\printinfo{\\faUsers}{Conference Proceedings}},type=inproceedings]
 
 %% Switch to the right column. This will now automatically move to the second
 %% page if the content is too long.
 \\switchcolumn
 
-${data.summary ? `
-\\cvsection{Professional Summary}
+\\cvsection{My Life Philosophy}
 
 \\begin{quote}
-\`\`${escapeLatex(data.summary)}\'\'
+\`\`Something smart or heartfelt, preferably in one sentence.''
 \\end{quote}
-` : ''}
+
+\\cvsection{Most Proud of}
+
+\\cvachievement{\\faTrophy}{Fantastic Achievement}{and some details about it}
+
+\\divider
+
+\\cvachievement{\\faHeartbeat}{Another achievement}{more details about it of course}
+
+\\divider
+
+\\cvachievement{\\faHeartbeat}{Another achievement}{more details about it of course}
 
 \\cvsection{Strengths}
 
-${data.skills.technical.length > 0 ? `
+% Don't overuse these \\cvtag boxes — they're just eye-candies and not essential. If something doesn't fit on a single line, it probably works better as part of an itemized list (probably inlined itemized list), or just as a comma-separated list of strengths.
+
+% The ragged2e document class option might cause automatic linebreaks between \\cvtag to fail.
+% Either remove the ragged2e option; or 
+% add \\LaTeXraggedright in the paragraph for these \\cvtag
 {\\LaTeXraggedright
-${data.skills.technical.slice(0, 6).map(skill => `\\cvtag{${escapeLatex(skill)}}`).join('\n')}
+\\cvtag{Hard-working}
+\\cvtag{Eye for detail}
+\\cvtag{Motivator \\& Leader}
 \\par}
 
 \\divider\\smallskip
-` : ''}
 
-${data.skills.soft.length > 0 ? `
-${data.skills.soft.slice(0, 4).map(skill => `\\cvtag{${escapeLatex(skill)}}`).join('\\\\\n')}
-` : ''}
+%% ...Or manually add linebreaks yourself
+\\cvtag{C++}
+\\cvtag{Embedded Systems}\\\\
+\\cvtag{Statistical Analysis}
+
+\\cvsection{Languages}
+
+\\cvskill{English}{5}
+\\divider
+
+\\cvskill{Spanish}{4}
+\\divider
+
+\\cvskill{German}{3.5} %% Supports X.5 values.
+
+%% Yeah I didn't spend too much time making all the
+%% spacing consistent... sorry. Use \\smallskip, \\medskip,
+%% \\bigskip, \\vspace etc to make adjustments.
+\\medskip
 
 \\cvsection{Education}
 
-${data.education.map(edu => `
-\\cvevent{${escapeLatex(edu.degree || 'Degree')}}{${escapeLatex(edu.school || 'School')}}{${escapeLatex(edu.graduationDate || 'Graduation Date')}}{}
-${edu.honors && edu.honors.length > 0 ? escapeLatex(edu.honors.join(', ')) : ''}
+\\cvevent{Ph.D.\\ in Your Discipline}{Your University}{Sept 2002 -- June 2006}{}
+Thesis title: Wonderful Research
 
 \\divider
-`).join('')}
+
+\\cvevent{M.Sc.\\ in Your Discipline}{Your University}{Sept 2001 -- June 2002}{}
+
+\\divider
+
+\\cvevent{B.Sc.\\ in Your Discipline}{Stanford University}{Sept 1998 -- June 2001}{}
+
+% \\divider
+
+\\cvsection{Referees}
+
+% \\cvref{name}{email}{mailing address}
+\\cvref{Prof.\\ Alpha Beta}{Institute}{a.beta@university.edu}
+{Address Line 1\\\\Address line 2}
+
+\\divider
+
+\\cvref{Prof.\\ Gamma Delta}{Institute}{g.delta@university.edu}
+{Address Line 1\\\\Address line 2}
+
 
 \\end{paracol}
 
+
 \\end{document}`
-  }
 }
 
 // Simple Hipster CV Template - Modern with subtle colors
@@ -189,160 +335,208 @@ export const simpleHipsterTemplate: LaTeXTemplate = {
   atsOptimized: true,
   previewImage: '/images/latex-previews/simple-hipster-preview.png',
   overleafUrl: 'https://www.overleaf.com/latex/templates/simple-hipster-cv/qjbqvpqrqjqr',
-  generateLaTeX: (data: ResumeData) => {
-    const escapeLatex = (text: string): string => {
-      return text
-        .replace(/\\/g, '\\textbackslash{}')
-        .replace(/\{/g, '\\{')
-        .replace(/\}/g, '\\}')
-        .replace(/\$/g, '\\$')
-        .replace(/&/g, '\\&')
-        .replace(/%/g, '\\%')
-        .replace(/#/g, '\\#')
-        .replace(/\^/g, '\\textasciicircum{}')
-        .replace(/_/g, '\\_')
-        .replace(/~/g, '\\textasciitilde{}')
-    }
-
-    const fullName = data.personalInfo.name || 'Your Name'
-    const nameParts = fullName.split(' ')
-    const firstName = nameParts[0] || 'First'
-    const lastName = nameParts.slice(1).join(' ') || 'Last'
-
-    return `% a mashup of hipstercv, friggeri and twenty cv
+  generateLaTeX: `
+% a mashup of hipstercv, friggeri and twenty cv
 % https://www.latextemplates.com/template/twenty-seconds-resumecv
 % https://www.latextemplates.com/template/friggeri-resume-cv
 
 \\documentclass[lighthipster]{simplehipstercv}
-% available options are: darkhipster, lighthipster, pastel, allblack, grey, verylight, withoutsidebar
-\\usepackage[utf8]{inputenc}
-\\usepackage[default]{raleway}
-\\usepackage[margin=1cm, a4paper]{geometry}
-
-%------------------------------------------------------------------ Variables
-
-\\newlength{\\rightcolwidth}
-\\newlength{\\leftcolwidth}
-\\setlength{\\leftcolwidth}{0.23\\textwidth}
-\\setlength{\\rightcolwidth}{0.75\\textwidth}
-
-%------------------------------------------------------------------
-\\title{Professional CV}
-\\author{${escapeLatex(data.personalInfo.name || 'Your Name')}}
-\\date{\\today}
-
-\\pagestyle{empty}
-\\begin{document}
-
-\\thispagestyle{empty}
-
-\\section*{Start}
-
-\\simpleheader{headercolour}{${escapeLatex(firstName)}}{${escapeLatex(lastName)}}{${escapeLatex(data.personalInfo.jobTitle || 'Your Title')}}{white}
-
-\\subsection*{}
-\\vspace{4em}
-
-\\setlength{\\columnsep}{1.5cm}
-\\columnratio{0.23}[0.75]
-\\begin{paracol}{2}
-\\hbadness5000
-
-\\footnotesize
-{\\setasidefontcolour
-\\flushright
-
-\\bg{cvgreen}{white}{About me}\\\\[0.5em]
-
-{\\footnotesize
-${escapeLatex(data.summary || 'Professional summary and key achievements.')}}
-\\bigskip
-
-\\bg{cvgreen}{white}{personal} \\\\[0.5em]
-${escapeLatex(data.personalInfo.name || 'Your Name')}
-
-${data.personalInfo.location ? escapeLatex(data.personalInfo.location) : 'Location'}
-
-\\bigskip
-
-${data.skills.technical.length > 0 ? `
-\\bg{cvgreen}{white}{Technical Skills} \\\\[0.5em]
-
-${data.skills.technical.slice(0, 8).map(skill => escapeLatex(skill)).join(' ~•~ ')}
-
-\\bigskip
-` : ''}
-
-${data.skills.soft.length > 0 ? `
-\\bg{cvgreen}{white}{Soft Skills}\\\\[0.5em]
-
-${data.skills.soft.slice(0, 6).map(skill => escapeLatex(skill)).join(' ~•~ ')}
-
-\\bigskip
-` : ''}
-
-\\vspace{4em}
-
-\\infobubble{\\faAt}{cvgreen}{white}{${escapeLatex(data.personalInfo.email || 'email@example.com')}}
-${data.personalInfo.linkedin ? `\\infobubble{\\faLinkedin}{cvgreen}{white}{${escapeLatex(data.personalInfo.linkedin)}}` : ''}
-${data.personalInfo.github ? `\\infobubble{\\faGithub}{cvgreen}{white}{${escapeLatex(data.personalInfo.github)}}` : ''}
-
-}
-%-----------------------------------------------------------
-\\switchcolumn
-
-\\small
-\\section*{Professional Experience}
-
-\\begin{tabular}{r| p{0.5\\textwidth} c}
-${data.experience.map(exp => `
-    \\cvevent{${escapeLatex(exp.startDate || 'Start')}--${escapeLatex(exp.endDate || 'End')}}{${escapeLatex(exp.title || 'Job Title')}}{${escapeLatex(exp.company || 'Company')}}{${escapeLatex(exp.location || 'Location')} \\color{cvred}}{${escapeLatex(exp.description.join('. ') || 'Job description and achievements.')}}{} \\\\`).join('')}
-\\end{tabular}
-\\vspace{3em}
-
-\\begin{minipage}[t]{0.35\\textwidth}
-\\section*{Education}
-\\begin{tabular}{r p{0.6\\textwidth} c}
-${data.education.map(edu => `
-    \\cvdegree{${escapeLatex(edu.graduationDate || 'Year')}}{${escapeLatex(edu.degree || 'Degree')}}{}{${escapeLatex(edu.school || 'School')} \\color{headerblue}}{}{} \\\\`).join('')}
-\\end{tabular}
-\\end{minipage}\\hfill
-\\begin{minipage}[t]{0.3\\textwidth}
-\\section*{Skills}
-\\begin{tabular}{r @{\\hspace{0.5em}}l}
-${data.skills.technical.slice(0, 5).map((skill, index) => {
-  const level = Math.min(0.8, 0.3 + (index * 0.1)) // Vary skill levels
-  return `     \\bg{skilllabelcolour}{iconcolour}{${escapeLatex(skill)}} &  \\barrule{${level}}{0.5em}{cvpurple}\\\\`
-}).join('\n')}
-\\end{tabular}
-\\end{minipage}
-
-${data.projects && data.projects.length > 0 ? `
-\\section*{Projects}
-\\begin{tabular}{r| p{0.5\\textwidth} c}
-${data.projects.map(project => `
-    \\cvevent{Recent}{${escapeLatex(project.name || 'Project Name')}}{${escapeLatex(project.technologies?.join(', ') || 'Technologies')}}{\\color{cvred}}{${escapeLatex(project.description || 'Project description')}}{} \\\\`).join('')}
-\\end{tabular}
-\\vspace{3em}
-` : ''}
-
-\\vfill{} % Whitespace before final footer
-
-%----------------------------------------------------------------------------------------
-%	FINAL FOOTER
-%----------------------------------------------------------------------------------------
-\\setlength{\\parindent}{0pt}
-\\begin{minipage}[t]{\\rightcolwidth}
-\\begin{center}\\fontfamily{\\sfdefault}\\selectfont \\color{black!70}
-{\\small ${escapeLatex(data.personalInfo.name || 'Your Name')} \\icon{\\faEnvelopeO}{cvgreen}{} ${escapeLatex(data.personalInfo.email || 'email@example.com')} \\icon{\\faMapMarker}{cvgreen}{} ${escapeLatex(data.personalInfo.location || 'Location')} \\icon{\\faPhone}{cvgreen}{} ${escapeLatex(data.personalInfo.phone || 'Phone')}
-}
-\\end{center}
-\\end{minipage}
-
-\\end{paracol}
-
-\\end{document}`
+  % available options are: darkhipster, lighthipster, pastel, allblack, grey, verylight, withoutsidebar
+  % withoutsidebar
+  \\usepackage[utf8]{inputenc}
+  \\usepackage[default]{raleway}
+  \\usepackage[margin=1cm, a4paper]{geometry}
+  
+  %------------------------------------------------------------------ Variablen
+  
+  \\newlength{\\rightcolwidth}
+  \\newlength{\\leftcolwidth}
+  \\setlength{\\leftcolwidth}{0.23\\textwidth}
+  \\setlength{\\rightcolwidth}{0.75\\textwidth}
+  
+  %------------------------------------------------------------------
+  \\title{New Simple CV}
+  \\author{\\LaTeX{} Ninja}
+  \\date{June 2019}
+  
+  \\pagestyle{empty}
+  \\begin{document}
+  
+  \\thispagestyle{empty}
+  %-------------------------------------------------------------
+  
+  \\section*{Start}
+  
+  \\simpleheader{headercolour}{Jack}{Sparrow}{Captain}{white}
+  
+  %------------------------------------------------
+  
+  % this has to be here so the paracols starts..
+  \\subsection*{}
+  \\vspace{4em}
+  
+  \\setlength{\\columnsep}{1.5cm}
+  \\columnratio{0.23}[0.75]
+  \\begin{paracol}{2}
+  \\hbadness5000
+  %\\backgroundcolor{c[1]}[rgb]{1,1,0.8} % cream yellow for column-1 %\\backgroundcolor{g}[rgb]{0.8,1,1} % \\backgroundcolor{l}[rgb]{0,0,0.7} % dark blue for left margin
+  
+  \\paracolbackgroundoptions
+  
+  % 0.9,0.9,0.9 -- 0.8,0.8,0.8
+  
+  \\footnotesize
+  {\\setasidefontcolour
+  \\flushright
+  \\begin{center}
+      \\roundpic{jack.jpg}
+  \\end{center}
+  
+  \\bg{cvgreen}{white}{About me}\\\\[0.5em]
+  
+  {\\footnotesize
+  \\lorem\\lorem\\lorem}
+  \\bigskip
+  
+  \\bg{cvgreen}{white}{personal} \\\\[0.5em]
+  Jack Sparrow
+  
+  nationality: English 
+  
+  1690
+  
+  \\bigskip
+  
+  \\bg{cvgreen}{white}{Areas of specialization} \\\\[0.5em]
+  
+  Privateering ~•~ Bucaneering ~•~ Parler ~•~ Rum
+  
+  \\bigskip
+  
+  \\bigskip
+  
+  \\bg{cvgreen}{white}{Interests}\\\\[0.5em]
+  
+  \\lorem
+  \\bigskip
+  
+  \\bg{cvgreen}{white}{Interests}\\\\[0.5em]
+  
+  \\texttt{R} ~/~ \\texttt{Android} ~/~ \\texttt{Linux}
+  
+  \\texttt{R} ~/~ \\texttt{Android} ~/~ \\texttt{Linux}
+  
+  \\texttt{R} ~/~ \\texttt{Android} ~/~ \\texttt{Linux}
+  
+  \\vspace{4em}
+  
+  \\infobubble{\\faAt}{cvgreen}{white}{jack@sparrow.org}
+  \\infobubble{\\faTwitter}{cvgreen}{white}{@sparrow}
+  \\infobubble{\\faFacebook}{cvgreen}{white}{Jack Sparrow}
+  \\infobubble{\\faGithub}{cvgreen}{white}{sparrow}
+  
+  \\phantom{turn the page}
+  
+  \\phantom{turn the page}
   }
+  %-----------------------------------------------------------
+  \\switchcolumn
+  
+  \\small
+  \\section*{Short Resumé}
+  
+  \\begin{tabular}{r| p{0.5\\textwidth} c}
+      \\cvevent{2018--2021}{Captain of the Black Pearl}{Lead}{East Indies \\color{cvred}}{Finally got the goddamn ship back.\\lorem\\lorem\\lorem}{disney.png} \\\\
+      \\cvevent{2016--2017}{Captain of the Black Pearl}{Lead}{Tortuga \\color{cvred}}{Found a secret treasure, lost the ship. \\lorem\\lorem}{medal.jpeg}
+  \\end{tabular}
+  \\vspace{3em}
+  
+  \\begin{minipage}[t]{0.35\\textwidth}
+  \\section*{Degrees}
+  \\begin{tabular}{r p{0.6\\textwidth} c}
+      \\cvdegree{1710}{Captain}{Certified}{Tortuga Uni \\color{headerblue}}{}{disney.png} \\\\
+      \\cvdegree{1715}{Bucaneering}{M.A.}{London \\color{headerblue}}{}{medal.jpeg} \\\\
+      \\cvdegree{1720}{Bucaneering}{B.A.}{London \\color{headerblue}}{}{medal.jpeg}
+  \\end{tabular}
+  \\end{minipage}\\hfill
+  \\begin{minipage}[t]{0.3\\textwidth}
+  \\section*{Programming}
+  \\begin{tabular}{r @{\hspace{0.5em}}l}
+       \\bg{skilllabelcolour}{iconcolour}{html, css} &  \\barrule{0.4}{0.5em}{cvpurple}\\\\
+       \\bg{skilllabelcolour}{iconcolour}{\\LaTeX} & \\barrule{0.55}{0.5em}{cvgreen} \\\\
+       \\bg{skilllabelcolour}{iconcolour}{python} & \\barrule{0.5}{0.5em}{cvpurple} \\\\
+       \\bg{skilllabelcolour}{iconcolour}{R} & \\barrule{0.25}{0.5em}{cvpurple} \\\\
+       \\bg{skilllabelcolour}{iconcolour}{javascript} & \\barrule{0.1}{0.5em}{cvpurple} \\\\
+  \\end{tabular}
+  \\end{minipage}
+  
+  \\section*{Curriculum}
+  \\begin{tabular}{r| p{0.5\\textwidth} c}
+      \\cvevent{2018--2021}{Captain of the Black Pearl}{Lead}{East Indies \\color{cvred}}{Finally got the goddamn ship back. \\lorem}{disney.png} \\\\
+      \\cvevent{2019}{Freelance Pirate}{Bucaneering}{Tortuga \\color{cvred}}{This and that. The usual, aye?  \\lorem}{medal.jpeg} \\\\
+  \\end{tabular}
+  \\vspace{3em}
+  
+  \\begin{minipage}[t]{0.3\\textwidth}
+  \\section*{Certificates \\& Grants}
+  \\begin{tabular}{>{\\footnotesize\\bfseries}r >{\\footnotesize}p{0.55\\textwidth}}
+      1708 & Captain's Certificates \\\\
+      1710 & Travel grant \\\\
+      1715--1716 & Grant from the Pirate's Company
+  \\end{tabular}
+  \\bigskip
+  
+  \\section*{Languages}
+  \\begin{tabular}{l | ll}
+  \\textbf{English} & C2 & {\\phantom{x}\\footnotesize mother tongue} \\\\
+  \\textbf{French} & C2 & \\pictofraction{\\faCircle}{cvgreen}{3}{black!30}{1}{\\tiny} \\\\
+  \\textbf{Spanish} & C2 & \\pictofraction{\\faCircle}{cvgreen}{1}{black!30}{3}{\\tiny} \\\\
+  \\textbf{Italian} & C2 & \\pictofraction{\\faCircle}{cvgreen}{3}{black!30}{1}{\\tiny}
+  \\end{tabular}
+  \\bigskip
+  
+  \\end{minipage}\\hfill
+  
+  \\begin{minipage}[t]{0.3\\textwidth}
+  
+     \\section*{Publications}
+      \\begin{tabular}{>{\\footnotesize\\bfseries}r >{\\footnotesize}p{0.7\\textwidth}}
+       1729 & \\emph{How I almost got killed by Lady Swan}, Tortuga Printing Press. \\\\
+       1720 & \`\`Privateering for Beginners'', in: \\emph{The Pragmatic Pirate} (1/1720).
+  
+  \\end{tabular}
+  \\bigskip
+  
+  \\section*{Talks}
+  \\begin{tabular}{>{\\footnotesize\\bfseries}r >{\\footnotesize}p{0.7\\textwidth}}
+      1729 & \\emph{How I almost got killed by Lady Swan}, Tortuga Printing Press. \\\\
+      1720 & \`\`Privateering for Beginners'', in: \\emph{The Pragmatic Pirate} (1/1720).
+  
+  \\end{tabular}
+  \\bigskip
+  
+  \\section*{Talks}
+  \\begin{tabular}{>{\\footnotesize\\bfseries}r >{\\footnotesize}p{0.6\\textwidth}}
+      Nov. 1726 & \`\`How I lost my ship (\\& and how to get it back)'', at: \\emph{Annual Pirate's Conference} in Tortuga, Nov. 1726.
+  \\end{tabular}
+  \\end{minipage}
+  
+  \\vfill{} % Whitespace before final footer
+  
+  %----------------------------------------------------------------------------------------
+  %	FINAL FOOTER
+  %----------------------------------------------------------------------------------------
+  \\setlength{\\parindent}{0pt}
+  \\begin{minipage}[t]{\\rightcolwidth}
+  \\begin{center}\\fontfamily{\\sfdefault}\\selectfont \\color{black!70}
+  {\\small Jack Sparrow \\icon{\\faEnvelopeO}{cvgreen}{} The Black Pearl \\icon{\\faMapMarker}{cvgreen}{} Tortuga \\icon{\\faPhone}{cvgreen}{} 0099/333 5647380 \\newline\\icon{\\faAt}{cvgreen}{} \\protect\\url{jack@sparrow.com}
+  }
+  \\end{center}
+  \\end{minipage}
+  
+  \\end{paracol}
+  
+  \\end{document}`
 }
 
 // Academic CV Template
@@ -353,23 +547,9 @@ export const academicTemplate: LaTeXTemplate = {
   category: 'classic',
   atsOptimized: true,
   previewImage: '/images/latex-previews/academic-preview.png',
-  overleafUrl: 'https://www.overleaf.com/latex/templates/academic-cv/kqjqvpqrqjqr',
-  generateLaTeX: (data: ResumeData) => {
-    const escapeLatex = (text: string): string => {
-      return text
-        .replace(/\\/g, '\\textbackslash{}')
-        .replace(/\{/g, '\\{')
-        .replace(/\}/g, '\\}')
-        .replace(/\$/g, '\\$')
-        .replace(/&/g, '\\&')
-        .replace(/%/g, '\\%')
-        .replace(/#/g, '\\#')
-        .replace(/\^/g, '\\textasciicircum{}')
-        .replace(/_/g, '\\_')
-        .replace(/~/g, '\\textasciitilde{}')
-    }
-
-    return `%%%%%%%%%%%%%%%
+  overleafUrl: 'https://www.overleaf.com/project/684646e8a9ae06e57b9e1545',
+  generateLaTeX: `
+%%%%%%%%%%%%%%%
 % This CV example/template is based on my own
 % CV which I (lamely attempted) to clean up, so that
 % it's less of an eyesore and easier for others to use.
@@ -377,65 +557,108 @@ export const academicTemplate: LaTeXTemplate = {
 % LianTze Lim (liantze@gmail.com)
 % 23 Oct, 2022
 % 24 Aug, 2024 -- Updated X (Twitter) icon
-\\documentclass[a4paper,skipsamekey,11pt,english]{curve}
+\documentclass[a4paper,skipsamekey,11pt,english]{curve}
+
+% Uncomment to enable Chinese; needs XeLaTeX
+% \\usepackage{ctex}
+
+
+% Default biblatex style used for the publication list is APA6. If you wish to use a different style or pass other options to biblatex you can change them here. 
+\PassOptionsToPackage{style=ieee,sorting=ydnt,uniquename=init,defernumbers=true}{biblatex}
 
 % Most commands and style definitions are in settings.sty.
 \\usepackage{settings}
 
-\\leftheader{%
-  {\\LARGE\\bfseries\\sffamily ${escapeLatex(data.personalInfo.name || 'Your Name Here')}, Ph.D.}
+% If you need to further customise your biblatex setup e.g. with \DeclareFieldFormat etc please add them here AFTER loading settings.sty. For example, to remove the default "[Online] Available:" prefix before URLs when using the IEEE style:
+\DefineBibliographyStrings{english}{url={\textsc{url}}}
 
-  \\makefield{\\faEnvelope[regular]}{\\href{mailto:${escapeLatex(data.personalInfo.email || 'example@gmail.com')}}{\\texttt{${escapeLatex(data.personalInfo.email || 'example@gmail.com')}}}}
-  ${data.personalInfo.linkedin ? `\\makefield{\\faLinkedin}{\\href{${escapeLatex(data.personalInfo.linkedin)}}{\\texttt{LinkedIn}}}` : ''}
-  ${data.personalInfo.portfolio ? `\\makefield{\\faGlobe}{\\url{${escapeLatex(data.personalInfo.portfolio)}}}` : ''}
+%% Only needed if you want a Publication List
+\addbibresource{own-bib.bib}
+
+%% Specify your last name(s) and first name(s) (as given in the .bib) to automatically bold your own name in the publications list. 
+%% One caveat: You need to write \bibnamedelima where there's a space in your name for this to work properly; or write \bibnamedelimi if you use initials in the .bib
+% \mynames{Lim/Lian\bibnamedelima Tze}
+
+%% You can specify multiple names like this, especially if you have changed your name or if you need to highlight multiple authors. See items 6–9 in the example "Journal Articles" output.
+\mynames{Lim/Lian\bibnamedelima Tze,
+  Wong/Lian\bibnamedelima Tze,
+  Lim/Tracy,
+  Lim/L.\bibnamedelimi T.}
+%% MAKE SURE THERE IS NO SPACE AFTER THE FINAL NAME IN YOUR \mynames LIST
+
+% Change the fonts if you want
+\ifxetexorluatex % If you're using XeLaTeX or LuaLaTeX
+  \\usepackage{fontspec} 
+  %% You can use \setmainfont etc; I'm just using these font packages here because they provide OpenType fonts for use by XeLaTeX/LuaLaTeX anyway
+  \\usepackage[p,osf,swashQ]{cochineal}
+  \\usepackage[medium,bold]{cabin}
+  \\usepackage[varqu,varl,scale=0.9]{zi4}
+\else % If you're using pdfLaTeX or latex
+  \\usepackage[T1]{fontenc}
+  \\usepackage[p,osf,swashQ]{cochineal}
+  \\usepackage{cabin}
+  \\usepackage[varqu,varl,scale=0.9]{zi4}
+\fi
+
+% Change the page margins if you want
+% \geometry{left=1cm,right=1cm,top=1.5cm,bottom=1.5cm}
+
+% Change the colours if you want
+% \definecolor{SwishLineColour}{HTML}{00FFFF}
+% \definecolor{MarkerColour}{HTML}{0000CC}
+
+% Change the item prefix marker if you want
+% \prefixmarker{$\diamond$}
+
+%% Photo is only shown if "fullonly" is included
+\includecomment{fullonly}
+% \excludecomment{fullonly}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\leftheader{%
+  {\LARGE\bfseries\sffamily Your Name Here, Ph.D.}
+
+  \makefield{\faEnvelope[regular]}{\href{mailto:example@gmail.com}{\texttt{example@gmail.com}}}
+  % fontawesome5 doesn't have the X icon so we use
+  % the simpleicons package here instead; but some 
+  % font size adjustment might be needed
+  \makefield{{\scriptsize\simpleicon{x}}}{\!\href{https://x.com/overleaf_example}{\texttt{@overleaf\_example}}}
+  \makefield{\faLinkedin}
+  {\href{http://www.linkedin.com/in/example/}{\texttt{example}}}
+
+  %% Next line
+  \makefield{\faGlobe}{\\url{http://example.example.org/}}
+  % You can use a tabular here if you want to line up the fields.
 }
 
-\\rightheader{~}
+\rightheader{~}
+\begin{fullonly}
+\photo[r]{photo}
+\photoscale{0.13}
+\end{fullonly}
 
-\\title{Curriculum Vitae}
+\title{Curriculum Vitae}
 
-\\begin{document}
-\\makeheaders[c]
+\begin{document}
+\makeheaders[c]
 
-\\section{Employment History}
+\makerubric{employment}
+\makerubric{education}
 
-${data.experience.map(exp => `
-\\entry{${escapeLatex(exp.startDate || 'Start')} -- ${escapeLatex(exp.endDate || 'End')}}
-{\\textbf{${escapeLatex(exp.title || 'Position')}}, ${escapeLatex(exp.company || 'Institution')}}
-{${escapeLatex(exp.location || 'Location')}}
-{${escapeLatex(exp.description.join('. ') || 'Job description and key achievements.')}}
-`).join('')}
+% If you're not a researcher nor an academic, you probably don't have any publications; delete this line.
+%% Sometimes when a section can't be nicely modelled with the \entry[]... mechanism; hack our own and use \input NOT \makerubric
+\input{publications}
 
-\\section{Education}
+\makerubric{skills}
+\makerubric{misc}
 
-${data.education.map(edu => `
-\\entry{${escapeLatex(edu.graduationDate || 'Year')}}
-{\\textbf{${escapeLatex(edu.degree || 'Degree')}}, ${escapeLatex(edu.school || 'University')}}
-{${escapeLatex(edu.location || 'Location')}}
-{${edu.honors && edu.honors.length > 0 ? escapeLatex(edu.honors.join(', ')) : 'Academic achievements and honors'}}
-`).join('')}
+\makerubric{referee}
+% \input{referee-full}
 
-${data.projects && data.projects.length > 0 ? `
-\\section{Research Projects}
-
-${data.projects.map(project => `
-\\entry{Recent}
-{\\textbf{${escapeLatex(project.name || 'Project Title')}}}
-{${escapeLatex(project.technologies?.join(', ') || 'Technologies')}}
-{${escapeLatex(project.description || 'Project description and outcomes.')}}
-`).join('')}
-` : ''}
-
-\\section{Skills \\& Expertise}
-
-\\begin{description}
-${data.skills.technical.length > 0 ? `\\item[Technical Skills:] ${data.skills.technical.map(skill => escapeLatex(skill)).join(', ')}` : ''}
-${data.skills.soft.length > 0 ? `\\item[Professional Skills:] ${data.skills.soft.map(skill => escapeLatex(skill)).join(', ')}` : ''}
-${data.skills.languages && data.skills.languages.length > 0 ? `\\item[Languages:] ${data.skills.languages.map(lang => escapeLatex(lang)).join(', ')}` : ''}
-\\end{description}
-
-\\end{document}`
-  }
+\end{document}`  
 }
 
 export const latexTemplates: LaTeXTemplate[] = [
@@ -446,4 +669,4 @@ export const latexTemplates: LaTeXTemplate[] = [
 
 export function getLatexTemplate(id: string): LaTeXTemplate | undefined {
   return latexTemplates.find(template => template.id === id)
-} 
+}

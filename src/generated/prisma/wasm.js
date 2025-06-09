@@ -363,6 +363,35 @@ exports.Prisma.ChatbotScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ConversationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  lastMessageAt: 'lastMessageAt',
+  messageCount: 'messageCount',
+  selectedTemplate: 'selectedTemplate',
+  selectedModel: 'selectedModel',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ConversationMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  role: 'role',
+  content: 'content',
+  messageIndex: 'messageIndex',
+  model: 'model',
+  template: 'template',
+  tokensUsed: 'tokensUsed',
+  costUsd: 'costUsd',
+  processingTimeMs: 'processingTimeMs',
+  hasLatexCode: 'hasLatexCode',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -450,7 +479,9 @@ exports.Prisma.ModelName = {
   SharedAnalysis: 'SharedAnalysis',
   Invoice: 'Invoice',
   Announcement: 'Announcement',
-  Chatbot: 'Chatbot'
+  Chatbot: 'Chatbot',
+  Conversation: 'Conversation',
+  ConversationMessage: 'ConversationMessage'
 };
 
 /**
