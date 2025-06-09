@@ -36,7 +36,7 @@ import {
 } from "lucide-react"
 import { ResumeData } from "@/lib/resume-templates"
 import { generatePDF, generateDOCX, downloadBlob } from "@/lib/document-generators"
-import { latexTemplates } from "@/lib/latex-templates"
+// LaTeX templates removed - using HTML/CSS templates only
 import { openInOverleafBase64 } from "@/lib/overleaf-integration"
 
 interface Template {
@@ -45,7 +45,7 @@ interface Template {
   description: string
   category: 'modern' | 'classic' | 'tech' | 'creative' | 'executive'
   atsOptimized: boolean
-  type?: 'html' | 'latex' // Add type to distinguish template types
+  type?: 'html' // Only HTML templates supported
 }
 
 interface OptimizedResumeResponse {
@@ -1774,11 +1774,23 @@ Link: ${proj.link}
                               {template.description}
                             </p>
 
-                            {/* Template Category Badge */}
+                            {/* Template Category Badge and Preview Button */}
                             <div className="flex items-center justify-between">
                               <Badge className={`${categoryColors[template.category]} capitalize`}>
                                 {template.category}
                               </Badge>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  generateTemplatePreview(template.id)
+                                }}
+                                className="text-blue-600 border-blue-300 hover:bg-blue-50 hover:border-blue-400"
+                              >
+                                <Eye className="h-3 w-3 mr-1" />
+                                Preview
+                              </Button>
                             </div>
 
                             {/* Selection Indicator */}

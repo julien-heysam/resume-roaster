@@ -9,7 +9,7 @@
  *   - Shows user's uploaded resumes and analyzed job descriptions
  *   - Use arrow keys to navigate, Enter to select, Esc to close
  *   - Mentions are replaced with actual data when sending messages
- * - LaTeX template support with Overleaf integration
+ * - HTML/CSS template support with preview functionality
  * - Conversation history and management
  */
 
@@ -50,6 +50,7 @@ import {
   ChevronUp
 } from "lucide-react"
 import { MODEL_TIER_LABELS, MODEL_CREDIT_COSTS, getModelCreditCost, OPENAI_MODELS } from '@/lib/constants'
+import { allTemplates, getTemplateById } from '@/lib/resume-templates'
 
 
 interface Message {
@@ -67,7 +68,7 @@ interface ConversationStats {
   wasTrimmed: boolean
 }
 
-interface LatexTemplate {
+interface HtmlTemplate {
   id: string
   name: string
   description: string
@@ -120,26 +121,8 @@ const mentionCategories: MentionCategory[] = [
   }
 ]
 
-const latexTemplates: LatexTemplate[] = [
-  {
-    id: 'altacv',
-    name: 'Modern AltaCV',
-    description: 'Clean, minimalist LaTeX template with excellent ATS compatibility',
-    category: 'modern'
-  },
-  {
-    id: 'academic-cv',
-    name: 'Academic CV',
-    description: 'Traditional LaTeX template perfect for academic and research positions',
-    category: 'classic'
-  },
-  {
-    id: 'simple-hipster',
-    name: 'Simple Hipster CV',
-    description: 'Modern template with clean design and subtle color accents',
-    category: 'modern'
-  }
-]
+// HTML templates are now imported from resume-templates.ts
+// const htmlTemplates are available via allTemplates import
 
 const categoryIcons = {
   modern: <Sparkles className="h-4 w-4" />,
@@ -187,11 +170,11 @@ export default function ResumeChatOptimizer() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('altacv')
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('your-resume-style')
   const [showTemplateDropdown, setShowTemplateDropdown] = useState(false)
   const [showModelDropdown, setShowModelDropdown] = useState(false)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
-  const [hasLatexGenerated, setHasLatexGenerated] = useState(false)
+  const [hasHtmlGenerated, setHasHtmlGenerated] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [selectedLLM, setSelectedLLM] = useState<string>(OPENAI_MODELS.MINI)
   const [conversationStats, setConversationStats] = useState<ConversationStats | null>(null)
@@ -209,6 +192,8 @@ export default function ResumeChatOptimizer() {
   const [mentionStep, setMentionStep] = useState<'category' | 'items'>('category')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [showVariableHelp, setShowVariableHelp] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+  const [previewHtml, setPreviewHtml] = useState<string>('')
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -322,6 +307,78 @@ export default function ResumeChatOptimizer() {
 
 
 
+  const generatePreview = async (templateId: string) => {
+    try {
+      const template = getTemplateById(templateId)
+      if (!template) {
+        console.error('Template not found:', templateId)
+        return
+      }
+
+      // Sample data for preview
+      const sampleData = {
+        personalInfo: {
+          name: "Alex Johnson",
+          email: "alex.johnson@email.com",
+          phone: "+1 (555) 123-4567",
+          location: "San Francisco, CA",
+          linkedin: "https://linkedin.com/in/alexjohnson",
+          portfolio: "https://alexjohnson.dev",
+          github: "https://github.com/alexjohnson",
+          jobTitle: "Software Engineer",
+          jobDescription: "Experienced Software Engineer"
+        },
+        summary: "Experienced Software Engineer with 5+ years developing scalable web applications. Proven track record of leading cross-functional teams and delivering high-impact solutions that drive business growth.",
+        experience: [
+          {
+            title: "Senior Software Engineer",
+            company: "TechCorp Inc.",
+            location: "San Francisco, CA",
+            startDate: "2022",
+            endDate: "Present",
+            description: [
+              "Led development of microservices architecture serving 1M+ users",
+              "Mentored junior developers and established coding best practices"
+            ],
+            achievements: [
+              "Reduced system latency by 40% through optimization initiatives",
+              "Increased team productivity by 25% through process improvements"
+            ]
+          }
+        ],
+        education: [
+          {
+            degree: "Bachelor of Science in Computer Science",
+            school: "University of California",
+            location: "Berkeley, CA",
+            graduationDate: "2019",
+            gpa: "3.8",
+            honors: ["Magna Cum Laude", "Dean's List"]
+          }
+        ],
+        skills: {
+          technical: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS", "Docker", "Kubernetes"],
+          soft: ["Leadership", "Problem Solving", "Communication", "Team Collaboration"],
+          languages: ["Spanish", "French"]
+        },
+        projects: [
+          {
+            name: "E-commerce Platform",
+            description: "Built a full-stack e-commerce platform with React and Node.js",
+            technologies: ["React", "Node.js", "MongoDB", "Stripe"],
+            link: "https://github.com/alexjohnson/ecommerce"
+          }
+        ]
+      }
+
+      const html = template.generateHTML(sampleData)
+      setPreviewHtml(html)
+      setShowPreview(true)
+    } catch (error) {
+      console.error('Error generating preview:', error)
+    }
+  }
+
   const fetchAnalysisData = async (roastId: string) => {
     try {
       const response = await fetch(`/api/get-analysis-data?roastId=${roastId}`)
@@ -393,21 +450,21 @@ ${data.analysisResults.atsIssues && Array.isArray(data.analysisResults.atsIssues
 
 ## What I Need
 
-Please help me create an optimized LaTeX resume that:
+Please help me create an optimized HTML resume that:
 - Addresses all the feedback and recommendations above
 - Is perfectly tailored to this specific job description
 - Passes ATS systems effectively
 - Looks professional and modern
 - Uses the selected template format
 
-Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks when ready.`
+Please provide the complete HTML source code wrapped in \`\`\`html code blocks when ready.`
       
       setInputValue(predefinedPrompt)
       
       // Add a welcome message
       const welcomeMessage: Message = {
         id: '1',
-        content: "Hi! I've loaded your resume and analysis data from the database. I've prepared a comprehensive, easy-to-read prompt with all your information. You can review and edit it, or send it as-is to get your optimized LaTeX resume!",
+        content: "Hi! I've loaded your resume and analysis data from the database. I've prepared a comprehensive, easy-to-read prompt with all your information. You can review and edit it, or send it as-is to get your optimized HTML resume!",
         sender: 'bot',
         timestamp: new Date()
       }
@@ -592,10 +649,10 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
                     console.log('Stream completed - setting isTyping to false')
                     setIsTyping(false)
                     
-                    // Check if LaTeX was generated
-                    if (data.hasLatexCode || accumulatedContent.includes('```latex')) {
-                      setHasLatexGenerated(true)
-                    }
+                            // Check if HTML was generated (using hasLatexCode field for backward compatibility)
+        if (data.hasLatexCode || accumulatedContent.includes('```html')) {
+          setHasHtmlGenerated(true)
+        }
                     
                     // Refresh conversations list to show new conversation
                     fetchConversations()
@@ -644,18 +701,18 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
 
 
   const formatMessage = (content: string) => {
-    // Handle LaTeX code blocks specially
-    const latexCodeRegex = /```latex\n([\s\S]*?)\n```/g
+    // Handle HTML code blocks specially
+    const htmlCodeRegex = /```html\n([\s\S]*?)\n```/g
     const generalCodeRegex = /```(\w+)?\n([\s\S]*?)\n```/g
     
-    // First handle LaTeX blocks
-    const latexParts = content.split(latexCodeRegex)
+    // First handle HTML blocks
+    const htmlParts = content.split(htmlCodeRegex)
     const elements: React.ReactNode[] = []
     
-    for (let i = 0; i < latexParts.length; i++) {
+    for (let i = 0; i < htmlParts.length; i++) {
       if (i % 2 === 0) {
         // Regular text - check for other code blocks
-        const text = latexParts[i]
+        const text = htmlParts[i]
         if (text.trim()) {
           // Handle other code blocks
           const codeParts = text.split(generalCodeRegex)
@@ -698,23 +755,34 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
           }
         }
       } else {
-        // LaTeX code
-        const latexCode = latexParts[i]
+        // HTML code
+        const htmlCode = htmlParts[i]
         elements.push(
-          <div key={`latex-${i}`} className="my-4 w-full">
+          <div key={`html-${i}`} className="my-4 w-full">
             <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden w-full">
               <div className="bg-gray-100 px-3 py-2 border-b border-gray-200 flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">LaTeX Source Code</span>
-                <button
-                  onClick={() => copyToClipboard(latexCode)}
-                  className="text-xs bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-700 transition-colors"
-                >
-                  Copy
-                </button>
+                <span className="text-sm font-medium text-gray-700">HTML Source Code</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setPreviewHtml(htmlCode)
+                      setShowPreview(true)
+                    }}
+                    className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition-colors"
+                  >
+                    Preview
+                  </button>
+                  <button
+                    onClick={() => copyToClipboard(htmlCode)}
+                    className="text-xs bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-700 transition-colors"
+                  >
+                    Copy
+                  </button>
+                </div>
               </div>
               <div className="w-full overflow-hidden">
                 <pre className="p-4 text-sm font-mono overflow-x-auto max-h-96 overflow-y-auto w-full whitespace-pre-wrap break-all">
-                  <code>{latexCode}</code>
+                  <code>{htmlCode}</code>
                 </pre>
               </div>
             </div>
@@ -1038,29 +1106,50 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
                 className="text-xs text-gray-600 hover:text-gray-800 flex items-center gap-1 transition-colors hover:bg-gray-100 px-2 py-1 rounded"
               >
                 <FileText className="w-3 h-3" />
-                {latexTemplates.find(t => t.id === selectedTemplate)?.name || 'Template'}
+                {getTemplateById(selectedTemplate)?.name || 'Template'}
               </button>
               
               {showTemplateDropdown && (
-                <div className="absolute bottom-full left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[200px]">
+                <div className="absolute bottom-full left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[280px]">
                   <div className="p-2">
-                    <p className="text-xs font-medium text-gray-700 mb-2">LaTeX Template</p>
-                    {latexTemplates.map((template) => (
+                    <p className="text-xs font-medium text-gray-700 mb-2">HTML Template</p>
+                    {allTemplates.map((template) => (
                       <button
                         key={template.id}
                         onClick={() => {
                           setSelectedTemplate(template.id)
                           setShowTemplateDropdown(false)
                         }}
-                        className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-gray-50 flex items-center gap-2 ${
+                        className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-gray-50 ${
                           selectedTemplate === template.id ? 'bg-orange-50 text-orange-700' : 'text-gray-700'
                         }`}
                       >
-                        {categoryIcons[template.category]}
-                        <div>
-                          <div className="font-medium">{template.name}</div>
-                          <div className="text-gray-500 text-xs">{template.description}</div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-medium">{template.name}</span>
+                          <div className="flex items-center gap-1">
+                            <span className={`text-xs px-1.5 py-0.5 rounded ${
+                              template.category === 'modern' ? 'bg-blue-100 text-blue-700' :
+                              template.category === 'classic' ? 'bg-gray-100 text-gray-700' :
+                              template.category === 'tech' ? 'bg-green-100 text-green-700' :
+                              template.category === 'creative' ? 'bg-purple-100 text-purple-700' :
+                              'bg-amber-100 text-amber-700'
+                            }`}>
+                              {template.category}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                generatePreview(template.id)
+                              }}
+                              className="h-5 w-5 p-0 text-blue-600 hover:bg-blue-50"
+                            >
+                              <Eye className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
+                        <div className="text-gray-500 text-xs">{template.description}</div>
                       </button>
                     ))}
                   </div>
@@ -1152,7 +1241,7 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
 
   const startNewConversation = () => {
     setMessages([])
-    setHasLatexGenerated(false)
+    setHasHtmlGenerated(false)
     setConversationId(null)
     setConversationStats(null)
     setCustomVariables({})
@@ -1163,7 +1252,7 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
     // Add welcome message
     const welcomeMessage: Message = {
       id: '1',
-      content: "🎉 **Special Offer!** Hello! For a limited time, resume optimization is completely **FREE**!\n\nI'm here to help you optimize your resume. Tell me about the job you're applying for, share your current resume details, or ask me any questions about resume optimization.",
+      content: "🎉 **Special Offer!** Hello! For a limited time, resume optimization is completely **FREE**!\n\nI'm here to help you create the perfect HTML resume. Tell me about the job you're applying for, share your current resume details, and I'll generate optimized HTML code with professional styling that you can download and customize.",
       sender: 'bot',
       timestamp: new Date()
     }
@@ -1177,39 +1266,7 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
 
 
 
-  const handleOpenInOverleaf = async () => {
-    // Extract LaTeX code from the last message that contains it
-    const latexMessage = messages
-      .slice()
-      .reverse()
-      .find(msg => msg.content.includes('```latex'))
-    
-    if (!latexMessage) return
-
-    const latexMatch = latexMessage.content.match(/```latex\n([\s\S]*?)\n```/)
-    if (!latexMatch) return
-
-    const latexSource = latexMatch[1]
-
-    try {
-      const { openInOverleafBase64 } = await import('@/lib/overleaf-integration')
-      openInOverleafBase64(latexSource, 'optimized_resume.tex')
-
-      showAlert({
-        title: 'Opening in Overleaf!',
-        description: 'Your LaTeX resume is being opened in Overleaf. You can compile it to PDF there and collaborate with others.',
-        type: 'success'
-      })
-
-    } catch (error) {
-      console.error('Error opening in Overleaf:', error)
-      showAlert({
-        title: 'Failed to Open in Overleaf',
-        description: error instanceof Error ? error.message : 'Failed to open in Overleaf. Please try copying the LaTeX code manually.',
-        type: 'error'
-      })
-    }
-  }
+  // Removed Overleaf integration - now using HTML/CSS templates
 
 
 
@@ -1247,7 +1304,7 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
         setConversationId(conversation.id)
         setSelectedTemplate(conversation.selectedTemplate || 'altacv')
         setSelectedLLM(conversation.selectedModel || OPENAI_MODELS.MINI)
-        setHasLatexGenerated(convertedMessages.some(msg => msg.content.includes('```latex')))
+        setHasHtmlGenerated(convertedMessages.some(msg => msg.content.includes('```html')))
         
 
       }
@@ -1877,34 +1934,74 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
             </div>
           )}
 
-                        {/* LaTeX Compilation Section */}
-              {hasLatexGenerated && (
+                        {/* HTML Resume Preview Section */}
+              {hasHtmlGenerated && (
                 <div className="mb-4 space-y-4">
                   {/* Action Buttons */}
                   <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-green-800 mb-1">LaTeX Resume Generated!</h4>
+                        <h4 className="font-semibold text-green-800 mb-1">HTML Resume Generated!</h4>
                         <p className="text-sm text-green-600">
-                          Ready to compile in Overleaf's professional environment.
+                          Professional HTML/CSS resume ready for download and customization.
                         </p>
                       </div>
-                      <div className="flex-shrink-0">
+                      <div className="flex-shrink-0 flex gap-2">
                         <Button
-                          onClick={handleOpenInOverleaf}
+                          onClick={() => {
+                            // Extract HTML from the last message
+                            const htmlMessage = messages
+                              .slice()
+                              .reverse()
+                              .find(msg => msg.content.includes('```html'))
+                            
+                            if (htmlMessage) {
+                              const htmlMatch = htmlMessage.content.match(/```html\n([\s\S]*?)\n```/)
+                              if (htmlMatch) {
+                                setPreviewHtml(htmlMatch[1])
+                                setShowPreview(true)
+                              }
+                            }
+                          }}
+                          variant="outline"
+                          className="border-green-300 text-green-700 hover:bg-green-50"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          Preview
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            // Extract HTML from the last message and download
+                            const htmlMessage = messages
+                              .slice()
+                              .reverse()
+                              .find(msg => msg.content.includes('```html'))
+                            
+                            if (htmlMessage) {
+                              const htmlMatch = htmlMessage.content.match(/```html\n([\s\S]*?)\n```/)
+                              if (htmlMatch) {
+                                const blob = new Blob([htmlMatch[1]], { type: 'text/html' })
+                                const url = URL.createObjectURL(blob)
+                                const a = document.createElement('a')
+                                a.href = url
+                                a.download = 'resume.html'
+                                document.body.appendChild(a)
+                                a.click()
+                                document.body.removeChild(a)
+                                URL.revokeObjectURL(url)
+                              }
+                            }
+                          }}
                           className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-sm px-6 py-2 font-medium"
                         >
                           <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5l5 5 5-5m-5 5V3"/>
                           </svg>
-                          Open in Overleaf
+                          Download HTML
                         </Button>
                       </div>
                     </div>
-
                   </div>
-
-
             </div>
           )}
 
@@ -2231,6 +2328,52 @@ Please provide the complete LaTeX source code wrapped in \`\`\`latex code blocks
                 ? 'Use ↑↓ to navigate, Enter to select, Esc to close'
                 : 'Use ↑↓ to navigate, Enter to select, Backspace to go back, Esc to close'
               }
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* HTML Preview Modal */}
+      {showPreview && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl h-full max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold">Resume Preview</h3>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => {
+                    if (previewHtml) {
+                      const blob = new Blob([previewHtml], { type: 'text/html' })
+                      const url = URL.createObjectURL(blob)
+                      const a = document.createElement('a')
+                      a.href = url
+                      a.download = 'resume.html'
+                      document.body.appendChild(a)
+                      a.click()
+                      document.body.removeChild(a)
+                      URL.revokeObjectURL(url)
+                    }
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  Download HTML
+                </Button>
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <iframe
+                srcDoc={previewHtml}
+                className="w-full h-full border-0"
+                title="Resume Preview"
+                sandbox="allow-same-origin"
+              />
             </div>
           </div>
         </div>

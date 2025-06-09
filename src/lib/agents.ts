@@ -1,27 +1,24 @@
 import { Agent, tool } from '@openai/agents'
 import { z } from 'zod'
-import { getLatexTemplate } from './latex-templates'
+// LaTeX templates removed - using HTML/CSS templates only
 
-// Tool for getting LaTeX template information
+// Tool for getting HTML template information
 const getTemplateInfoTool = tool({
   name: 'get_template_info',
-  description: 'Get information about available LaTeX resume templates',
+  description: 'Get information about available HTML resume templates',
   parameters: z.object({
     templateName: z.string().nullable().describe('Specific template name to get info for, or null to list all templates')
   }),
   execute: async (input) => {
+    const { getTemplateById, allTemplates } = await import('./resume-templates')
+    
     if (input.templateName) {
-      const template = getLatexTemplate(input.templateName)
+      const template = getTemplateById(input.templateName)
       return template ? `Template: ${template.name} - ${template.description}` : 'Template not found'
     }
     
     // Return list of available templates
-    const templates = [
-      'altacv - Modern CV with sidebar and customizable colors',
-      'moderncv - Classic professional CV template',
-      'awesome-cv - Clean and modern CV with accent colors',
-      'deedy-resume - Compact single-page resume format'
-    ]
+    const templates = allTemplates.map(t => `${t.id} - ${t.name}: ${t.description}`)
     return `Available templates:\n${templates.join('\n')}`
   }
 })
@@ -34,21 +31,21 @@ export function createAgents(model: string = 'gpt-4.1-nano') {
     model: 'gpt-4.1-nano', // Always use nano for simple general assistance
     instructions: `You are a helpful general assistant. You can answer questions about careers, job searching, professional development, and general topics. 
 
-If someone asks about resume optimization, LaTeX generation, or wants to create a resume, politely let them know that you can transfer them to a specialized resume expert who can help them create professional LaTeX resumes.
+If someone asks about resume optimization, Html generation, or wants to create a resume, politely let them know that you can transfer them to a specialized resume expert who can help them create professional LaTeX resumes.
 
 Keep your responses helpful, concise, and professional.`,
     handoffDescription: 'Handles general questions and career advice, but not resume creation'
   })
 
-  // Specialized LaTeX resume expert agent (uses user-selected model)
-  const latexResumeExpert = new Agent({
-    name: 'LaTeX Resume Expert',
+  // Specialized HTML resume expert agent (uses user-selected model)
+  const htmlResumeExpert = new Agent({
+    name: 'HTML Resume Expert',
     model: model, // Use the user-selected model for high-quality resume generation
-    instructions: `You are an expert LaTeX resume optimization assistant. Your role is to help users create perfect resumes for their target jobs.
+    instructions: `You are an expert HTML/CSS resume optimization assistant. Your role is to help users create perfect resumes for their target jobs using modern web technologies.
 
 When users provide enough information about their background and target job, you should:
-1. Generate a complete LaTeX resume using the selected template
-2. Return the LaTeX source code wrapped in \`\`\`latex code blocks
+1. Generate a complete HTML resume using the selected template
+2. Return the HTML source code wrapped in \`\`\`html code blocks
 3. Provide clear explanations of your optimization choices
 
 Focus on:
@@ -57,6 +54,7 @@ Focus on:
 - Using strong action verbs and quantifiable results
 - Optimizing for ATS (Applicant Tracking Systems)
 - Following best practices for the selected template style
+- Ensuring responsive design and print-friendly layouts
 
 Always ask for clarification if you need more information about:
 - Target job description or requirements
@@ -66,7 +64,7 @@ Always ask for clarification if you need more information about:
 - Preferred template style
 
 Be professional, helpful, and provide actionable advice.`,
-    handoffDescription: 'Expert in creating and optimizing LaTeX resumes for specific job applications',
+    handoffDescription: 'Expert in creating and optimizing HTML/CSS resumes for specific job applications',
     tools: [getTemplateInfoTool]
   })
 
@@ -78,9 +76,9 @@ Be professional, helpful, and provide actionable advice.`,
 
 Analyze the user's message and determine if they need:
 
-1. **LaTeX Resume Expert** - Route here if the user:
+1. **HTML Resume Expert** - Route here if the user:
    - Wants to create, generate, or optimize a resume
-   - Asks about LaTeX resume templates
+   - Asks about HTML resume templates
    - Mentions job applications, CV creation, or resume formatting
    - Wants to tailor their resume for a specific job
    - Asks about ATS optimization
@@ -93,20 +91,20 @@ Analyze the user's message and determine if they need:
    - Professional development questions
    - General questions not related to resume creation
 
-If the query is clearly about resume creation or optimization, transfer to the LaTeX Resume Expert immediately.
+If the query is clearly about resume creation or optimization, transfer to the HTML Resume Expert immediately.
 If it's general career advice or other topics, handle it yourself as the General Assistant.
 
 Be helpful and explain briefly why you're transferring them to a specialist when you do.`,
-    handoffs: [latexResumeExpert, generalAssistant]
+    handoffs: [htmlResumeExpert, generalAssistant]
   })
 
-  return { generalAssistant, latexResumeExpert, triageAgent }
+  return { generalAssistant, htmlResumeExpert, triageAgent }
 }
 
 // Default agents for backward compatibility
 const defaultAgents = createAgents('gpt-4.1-nano')
 export const generalAssistant = defaultAgents.generalAssistant
-export const latexResumeExpert = defaultAgents.latexResumeExpert
+export const htmlResumeExpert = defaultAgents.htmlResumeExpert
 export const triageAgent = defaultAgents.triageAgent
 
 // Export function to get main agent with specific model

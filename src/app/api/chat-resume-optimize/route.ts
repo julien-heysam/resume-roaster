@@ -9,8 +9,8 @@ import { ConversationService } from '@/lib/database'
 const SYSTEM_PROMPT = `You are an expert resume optimization assistant. Your role is to help users create the perfect resume for their target job.
 
 When users provide enough information about their background and target job, you should:
-1. Generate a complete LaTeX resume using the selected template
-2. Return the LaTeX source code wrapped in \`\`\`latex code blocks
+    1. Generate a complete HTML resume using the selected template
+    2. Return the HTML source code wrapped in \`\`\`html code blocks
 3. Provide clear explanations of your optimization choices
 
 Focus on:
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the prompt with template context and conversation history
-    const templateInfo = selectedTemplate ? `\nSelected LaTeX template: ${selectedTemplate}` : ''
+    const templateInfo = selectedTemplate ? `\nSelected HTML template: ${selectedTemplate}` : ''
     const fullPrompt = `${conversationContext ? `Previous conversation:\n${conversationContext}\n\n` : ''}User: ${message}${templateInfo}`
 
     console.log('Chat resume optimize request:', {
@@ -180,12 +180,12 @@ export async function POST(request: NextRequest) {
       // await UserService.deductModelCredits(user.id, selectedLLM)
       await logLLMCall(user.id, 'openai', selectedLLM, 0, freeAffordability.creditCost, fullPrompt, result.finalOutput || '')
 
-      const hasLatexCode = (result.finalOutput || '').includes('```latex')
+      const hasHtmlCode = (result.finalOutput || '').includes('```html')
 
       return NextResponse.json({
         success: true,
         response: result.finalOutput || '',
-        hasLatexCode,
+        hasLatexCode: hasHtmlCode,
         metadata: {
           selectedTemplate,
           selectedLLM,
@@ -230,7 +230,7 @@ async function handleStreamingResponse(user: any, model: string, fullPrompt: str
       async start(controller) {
         const encoder = new TextEncoder()
         let accumulatedResponse = ''
-        let hasLatexCode = false
+        let hasHtmlCode = false
         let isFirstChunk = true
         
         try {
@@ -275,11 +275,11 @@ async function handleStreamingResponse(user: any, model: string, fullPrompt: str
           }
           
           // Send final completion with metadata
-          hasLatexCode = accumulatedResponse.includes('```latex')
+          hasHtmlCode = accumulatedResponse.includes('```html')
           const finalData = {
             chunk: '',
             isComplete: true,
-            hasLatexCode: hasLatexCode,
+            hasLatexCode: hasHtmlCode,
             metadata: {
               selectedTemplate: selectedTemplate,
               selectedLLM: model,
@@ -333,7 +333,7 @@ async function handleStreamingResponse(user: any, model: string, fullPrompt: str
                 template: selectedTemplate,
                 tokensUsed: 0, // Agent system doesn't provide token counts
                 costUsd: affordability.creditCost,
-                hasLatexCode: hasLatexCode
+                hasLatexCode: hasHtmlCode
               })
             } catch (convError) {
               console.error('Failed to save conversation messages:', convError)

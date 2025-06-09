@@ -1,7 +1,7 @@
 "use client"
 
 import { ResumeData } from './resume-templates'
-import { getLatexTemplate } from './latex-templates'
+// LaTeX templates removed - using HTML/CSS templates only
 
 export interface OverleafIntegrationResult {
   success: boolean
@@ -128,36 +128,16 @@ export function openInOverleafBase64(latexCode: string, filename: string = 'resu
 }
 
 /**
- * Generate LaTeX from template and open directly in Overleaf
+ * Generate HTML from template and open directly in Overleaf (deprecated - use HTML templates instead)
  */
 export function openResumeInOverleaf(
   templateId: string, 
   resumeData: ResumeData,
   filename: string = 'optimized_resume.tex'
 ): OverleafIntegrationResult {
-  try {
-    const template = getLatexTemplate(templateId)
-    if (!template) {
-      return {
-        success: false,
-        error: `Template '${templateId}' not found`
-      }
-    }
-
-    const latexCode = template.generateLaTeX(resumeData)
-    
-    // Use Base64 method for better reliability with complex templates
-    openInOverleafBase64(latexCode, filename)
-    
-    return {
-      success: true,
-      overleafUrl: 'https://www.overleaf.com' // User will be redirected there
-    }
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error opening in Overleaf'
-    }
+  return {
+    success: false,
+    error: 'LaTeX templates have been replaced with HTML/CSS templates. Please use the HTML resume generator instead.'
   }
 }
 
